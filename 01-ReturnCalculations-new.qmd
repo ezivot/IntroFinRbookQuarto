@@ -467,10 +467,12 @@ $$
 R_{t}(2)=\frac{\$90-\$80}{\$80}=\frac{\$90}{\$80}-1=1.1250-1=0.1250, 
 $$
 or 12.50% per two months. The two one-month returns are: 
-\begin{align*}
+$$
+\begin{aligned}
 R_{t-1} & =\frac{\$85-\$80}{\$80}=1.0625-1=0.0625,\\
 R_{t} & =\frac{\$90-85}{\$85}=1.0588-1=0.0588,
-\end{align*} 
+\end{aligned}
+$$ 
 and the geometric average of the two one-month gross returns is: $1+R_{t}(2)=1.0625 \times 1.0588=1.1250.$
 
 The calculations can be *vectorized* in R as follows:
@@ -506,8 +508,8 @@ for wealth to return to its initial level.
 
 In general, the $k$-month gross return is defined as the product of $k$
 one-month gross returns: $$
-\begin{align}1+R_{t}(k) & =(1+R_{t})(1+R_{t-1})\cdots(1+R_{t-k+1})\\
- & =\prod_{j=0}^{k-1}(1+R_{t-j}).\nonumber\end{align}
+\begin{aligned}1+R_{t}(k) & =(1+R_{t})(1+R_{t-1})\cdots(1+R_{t-k+1})\\
+ & =\prod_{j=0}^{k-1}(1+R_{t-j}).\end{aligned}
 $$ {#eq-k-period-return}
 
 If all returns are close to zero then
@@ -587,9 +589,9 @@ consumer price index) at time $t$[^01-returncalculations-new-1]. The
 deflated or real price at time $t$ is:
 $$P_{t}^{\textrm{Real}}=\frac{P_{t}}{CPI_{t}},$$
 and the real one-period return is: $$
-\begin{align}R_{t}^{\textrm{Real}}
-&=\frac{P_{t}^{\textrm{Real}}-P_{t-1}^{\textrm{Real}}}{P_{t-1}^{\textrm{Real}}}=\frac{\frac{P_{t}}{CPI_{t}}-\frac{P_{t-1}}{CPI_{t-1}}}{\frac{P_{t-1}}{CPI_{t-1}}} \nonumber \\
-&=\frac{P_{t}}{P_{t-1}}\cdot\frac{CPI_{t-1}}{CPI_{t}}-1.\end{align}
+\begin{aligned}R_{t}^{\textrm{Real}}
+&=\frac{P_{t}^{\textrm{Real}}-P_{t-1}^{\textrm{Real}}}{P_{t-1}^{\textrm{Real}}}=\frac{\frac{P_{t}}{CPI_{t}}-\frac{P_{t-1}}{CPI_{t-1}}}{\frac{P_{t-1}}{CPI_{t-1}}} \\
+&=\frac{P_{t}}{P_{t-1}}\cdot\frac{CPI_{t-1}}{CPI_{t}}-1.\end{aligned}
 $$ {#eq-simple-real-return} The one-period gross real return return is: $$
 1+R_{t}^{\textrm{Real}}=\frac{P_{t}}{P_{t-1}}\cdot\frac{CPI_{t-1}}{CPI_{t}}.
 $$ {#eq-simple-real-gross-return} If we define inflation between periods $t-1$ and $t$ as:
@@ -610,10 +612,10 @@ CPI in months $t-1$ and $t$ is 1 and 1.01, respectively, representing a
 1% monthly growth rate in the overall price level. The real prices of
 Microsoft stock are: 
 $$
-\begin{align*}
+\begin{aligned}
 P_{t-1}^{\textrm{Real}}&=\frac{\$85}{1}=\$85, \\
 P_{t}^{\textrm{Real}}&=\frac{\$90}{1.01}=\$89.1089, 
-\end{align*}
+\end{aligned}
 $$
 and the real monthly return is: 
 $$
@@ -621,10 +623,10 @@ R_{t}^{\textrm{Real}}=\frac{\$89.10891-\$85}{\$85}=0.0483.
 $$
 The nominal return and inflation over the month are: 
 $$
-\begin{align*}
+\begin{aligned}
 R_{t}&=\frac{\$90-\$85}{\$85}=0.0588,\\
 \pi_{t}&=\frac{1.01-1}{1}=0.01.
-\end{align*}
+\end{aligned}
 $$ 
 Then the real return computed using @eq-simple-real-return-2 is: 
 $$
@@ -651,9 +653,9 @@ as high as $35\%$). The future value without taxes is $V_{t}(1+R_{t})$,
 and $V_{t}R_{t}$ is the capital gain. The amount owed in taxes is
 $V_{t}R_{t}\tau$ and the amount remaining after taxes is
 $V_{t}R_{t}(1 -\tau)$. The after tax return is $$
-\begin{eqnarray}R_{t}^{Atax} &= \frac{V_{t}+V_{t}R_{t}(1 -\tau)-V_{t}}{V_{t}} \nonumber \\
-&=\frac{V_{t}(1+R_{t}(1-\tau)-1)}{V_{t}} \nonumber \\
-&= R_{t}(1-\tau).\end{eqnarray}
+\begin{aligned}R_{t}^{Atax} &= \frac{V_{t}+V_{t}R_{t}(1 -\tau)-V_{t}}{V_{t}} \\
+&=\frac{V_{t}(1+R_{t}(1-\tau)-1)}{V_{t}} \\
+&= R_{t}(1-\tau).\end{aligned}
 $$ {#eq-afterTaxReturn}
 
 Hence, the after tax return is the before tax return multiplied by one
@@ -701,9 +703,9 @@ $$P_{t}^{US}=E_{t}^{US/UK}\times P_{t}^{UK}=\$1.30\times£45=\$58.5.$$
 The U.S. dollar rate of return is then
 $$R_{t}^{US}=\frac{P_{t}^{US}-P_{t-1}^{US}}{P_{t-1}^{US}}=\frac{\$58.5-\$60}{\$60}=-0.025.$$
 Notice that $$
-\begin{eqnarray}R_{t}^{US} & = & \frac{E_{t}^{US/UK}\times P_{t}^{UK}-E_{t-1}^{US/UK}\times P_{t-1}^{UK}}{E_{t-1}^{US/UK}\times P_{t-1}^{UK}} \nonumber \\
- & = & \frac{E_{t}^{US/UK}\times P_{t}^{UK}}{E_{t-1}^{US/UK}\times P_{t-1}^{UK}}-1 \nonumber \\
- & = & (1+R_{t}^{US/UK})(1+R_{t}^{UK})-1,\end{eqnarray}
+\begin{aligned}R_{t}^{US} & = & \frac{E_{t}^{US/UK}\times P_{t}^{UK}-E_{t-1}^{US/UK}\times P_{t-1}^{UK}}{E_{t-1}^{US/UK}\times P_{t-1}^{UK}} \\
+ & = & \frac{E_{t}^{US/UK}\times P_{t}^{UK}}{E_{t-1}^{US/UK}\times P_{t-1}^{UK}}-1 \\
+ & = & (1+R_{t}^{US/UK})(1+R_{t}^{UK})-1,\end{aligned}
 $$ {#eq-domesticReturn2} where
 $$\frac{E_{t}^{US/UK}}{E_{t-1}^{US/UK}}=1+R_{t}^{US/UK},\,\frac{P_{t}^{UK}}{P_{t-1}^{UK}}=1+R_{t}^{UK}.$$
 Hence,
@@ -1048,12 +1050,12 @@ is defined as: $$
 r_{t}^{\textrm{Real}}=\ln(1+R_{t}^{\textrm{Real}}).
 $$ {#eq-cc-return-real} Using @eq-simple-real-gross-return, it follows that:
 $$
-\begin{align}r_{t}^{\textrm{Real}} &
+\begin{aligned}r_{t}^{\textrm{Real}} &
 =\ln\left(\frac{P_{t}}{P_{t-1}}\cdot\frac{CPI_{t-1}}{CPI_{t}}\right)\\
-&=\ln\left(\frac{P_{t}}{P_{t-1}}\right)+\ln\left(\frac{CPI_{t-1}}{CPI_{t}}\right)\nonumber\\
-& =\ln(P_{t})-\ln(P_{t-1})+\ln(CPI_{t-1})-\ln(CPI_{t})\nonumber\\
-&=\ln(P_{t})-\ln(P_{t-1})-\left(\ln(CPI_{t})-\ln(CPI_{t-1})\right)\nonumber\\
-& =r_{t}-\pi_{t}^{c},\nonumber\end{align}
+&=\ln\left(\frac{P_{t}}{P_{t-1}}\right)+\ln\left(\frac{CPI_{t-1}}{CPI_{t}}\right)\\
+& =\ln(P_{t})-\ln(P_{t-1})+\ln(CPI_{t-1})-\ln(CPI_{t})\\
+&=\ln(P_{t})-\ln(P_{t-1})-\left(\ln(CPI_{t})-\ln(CPI_{t-1})\right)\\
+& =r_{t}-\pi_{t}^{c},\end{aligned}
 $$ {#eq-cc-return-real-2} where $r_{t}=\ln(P_{t})-\ln(P_{t-1})=\ln(1+R_{t})$ is the
 nominal continuously compounded one-period return and
 $\pi_{t}^{c}=\ln(CPI_{t})-\ln(CPI_{t-1})=\ln(1+\pi_{t})$ is the
