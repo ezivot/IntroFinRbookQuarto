@@ -1,0 +1,33 @@
+project:
+  type: book
+
+book:
+  title: "Introduction to Computational Finance and Financial Econometrics with R"
+  author: "Eric Zivot"
+  date: last-modified
+  chapters:
+    - index.qmd
+    - 01-ReturnCalculations-new.qmd
+    - references.qmd
+
+bibliography: [book.bib, packages.bib]
+
+execute:
+  engine: knitr
+  message: false
+  warning: false
+  fig-show: hold
+
+knitr:
+  opts_chunk:
+    comment: "#>"
+    collapse: true
+
+format:
+  html:
+    theme: cosmo
+  pdf:
+    documentclass: scrreprt
+
+editor: source
+
