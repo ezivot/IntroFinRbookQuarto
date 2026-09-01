@@ -13,6 +13,41 @@ rmd_files <- list.files(
   recursive = FALSE
 )
 
+# Reserved Quarto crossref prefixes. Heading ids that already start with one
+# of these (e.g. "sec-", "fig-", "exm-") are left untouched.
+quarto_reserved_prefixes <- c(
+  "sec", "fig", "tbl", "lst", "tip", "nte", "wrn", "imp", "cau",
+  "thm", "lem", "cor", "prp", "cnj", "def", "exm", "exr", "sol",
+  "rem", "alg", "eq"
+)
+
+# Add the "sec-" prefix to bookdown-style heading ids so they become valid
+# Quarto section cross-reference targets, e.g.:
+#   ## Random Variables {#Random-Variables}
+# becomes:
+#   ## Random Variables {#sec-Random-Variables}
+# Headings whose id already starts with a reserved crossref prefix (most
+# commonly "sec-") are left unchanged.
+prefix_bookdown_section_ids <- function(lines) {
+  heading_pattern <- "^(#{1,6}\\s.*)\\{#([A-Za-z][A-Za-z0-9_-]*)((?:[^}]*))\\}\\s*$"
+
+  vapply(lines, function(line) {
+    m <- regmatches(line, regexec(heading_pattern, line, perl = TRUE))[[1]]
+    if (length(m) == 0) return(line)
+
+    heading_text <- m[2]
+    id <- m[3]
+    trailing_attrs <- m[4]
+
+    prefix <- sub("-.*$", "", id)
+    if (tolower(prefix) %in% quarto_reserved_prefixes) {
+      return(line)
+    }
+
+    paste0(heading_text, "{#sec-", id, trailing_attrs, "}")
+  }, character(1), USE.NAMES = FALSE)
+}
+
 # 1. Update Cross-References and Labels --------------------------------------
 convert_bookdown_syntax <- function(file_path) {
   content <- readLines(file_path, warn = FALSE)
@@ -45,6 +80,12 @@ convert_bookdown_syntax <- function(file_path) {
   
   # Convert general section references \@ref(sec-name) -> @sec-sec-name
   content <- gsub("\\\\@ref\\(([^):]+)\\)", "@sec-\\1", content)
+
+  # Convert bookdown section/heading labels to Quarto's required "sec-" prefix:
+  # # Some Heading {#some-id} -> # Some Heading {#sec-some-id}
+  # Skip ids that already use one of Quarto's reserved crossref prefixes
+  # (e.g. sec-, fig-, tbl-, thm-, exm-, ...) since those are already valid.
+  content <- prefix_bookdown_section_ids(content)
   
   # Convert LaTeX equation environments with labels:
   # \begin{equation} ... \label{eq:name} ... \end{equation} -> $$ ... $$ {#eq-name}

@@ -8,6 +8,7 @@ book:
   chapters:
     - index.qmd
     - 01-ReturnCalculations-new.qmd
+    - 02-probReview-new.qmd
     - references.qmd
 
 bibliography: [book.bib, packages.bib]
