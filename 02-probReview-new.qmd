@@ -5,15 +5,12 @@ Updated: August 30, 2026
 Copyright © Eric Zivot 2026
 
 
-This chapter reviews the probability concepts that are necessary for
-the modeling and statistical analysis of financial data presented
-in this book. This material is typically covered in an introductory
-probability and statistics course using calculus. In the course of
-the review, many examples related to finance will be presented and
+In this chapter I give a review of probability concepts that are necessary for
+the probability modeling of asset returns and for the statistical analysis of financial data presented in this book. Much of this material is typically covered in an introductory probability and statistics course using calculus. In the course of
+the review, I will present many examples related to finance and risk management and
 some important risk concepts, such as value-at-risk, will be introduced.
-The examples will also show how to use R for probability calculations
-and working with probability distributions.
-
+In the examples, I will also show how to use R for probability calculations
+and for working with probability distributions.
 
 The chapter is outlined as follows. Section @sec-Random-Variables
 reviews univariate random variables and properties of univariate probability
@@ -21,16 +18,14 @@ distributions. Important univariate distributions, such as the normal
 distribution, that are used throughout the book for modeling financial
 data, are described in detail. Section @sec-Bivariate-Distributions
 covers bivariate probability distributions for two random variables. The concepts 
-of dependence and independence between two random variables are discussed. The measures
-of linear dependence between two random variables, covariance and
+of dependence and independence between two random variables are discussed. The measures of linear dependence between two random variables, covariance and
 correlation, are defined and the bivariate normal distribution is
 introduced. Properties of linear combinations of two random variables
 are given and illustrated using an example to describe the return
 and risk properties of a portfolio of two assets. More than two random variables and
 Multivariate distributions are briefly discussed in section @sec-Multivariate-Distributions.
 
-
-The R packages used in this chapter are **mvtnorm** and **sn**. Make
+The R packages I use in this chapter are **mvtnorm** and **sn**. Make
 sure these packages are downloaded and installed prior to replicating
 the R examples in this chapter.
 
@@ -43,7 +38,7 @@ library(sn)
 
 ## Random Variables {#sec-Random-Variables}
 
-We start with the basic definition of a *random variable*\index{Random variable}:
+I start with the basic definition of a *random variable*\index{Random variable}:
 
 ::: {#def-random-variable name="Random variable"}
 A *random variable*, $X$, is a variable that can
@@ -53,10 +48,7 @@ by $X$'s *probability distribution function* (pdf).
 :::
 
 ::: {#exm-example0201 name="Future price of Microsoft stock"}
-Consider the price of Microsoft stock next month, $P_{t+1}$. Since $P_{t+1}$ is not known 
-with certainty today ($t$), we can consider it as a random variable. $P_{t+1}$ must be positive,
-and realistically it can't get too large. Therefore, the sample space
-is the set of positive real numbers bounded above by some large number:
+Consider the price of Microsoft stock next month, $P_{t+1}$. Since $P_{t+1}$ is not known with certainty today ($t$), you can consider it as a random variable. $P_{t+1}$ must be positive, and realistically it can't get too large. Therefore, the sample space is the set of positive real numbers bounded above by some large number:
 $S_{P_{t+1}}=\{P_{t+1}:P_{t+1}\in[0,M],~M>0\}$. It is an open question as
 to what is the best characterization of the probability distribution
 of stock prices. The log-normal distribution is one possibility.^[If $P_{t+1}$ is a positive random variable such that $\ln P_{t+1}$ is normally distributed then $P_{t+1}$ has a log-normal distribution.]
@@ -64,13 +56,10 @@ of stock prices. The log-normal distribution is one possibility.^[If $P_{t+1}$ i
 :::
 
 ::: {#exm-example0202 name="Return on Microsoft stock"}
-Consider a one-month investment in Microsoft stock. That is, we buy
+Consider a one-month investment in Microsoft stock. That is, you buy
 one share of Microsoft stock at the end of month $t-1$ (e.g., end
 of February) and plan to sell it at the end of month $t$ (e.g., end
-of March). The simple return over month $t$ on this investment, $R_{t}=(P_{t}-P_{t-1})/P_{t-1}$,
-is a random variable because we do not know what the price will be
-at the end of the month. In contrast to prices, returns can be positive
-or negative and are bounded from below by -100\%. We can express the
+of March). The simple return over month $t$ on this investment, $R_{t}=(P_{t}-P_{t-1})/P_{t-1}$, is a random variable because you do not know what the price will be at the end of the month. In contrast to prices, returns can be positive or negative and are bounded from below by -100\%. You can express the
 sample space as $S_{R_{t}}=\{R_{t}:R_{t}\in[-1,M],~M>0\}$. The normal
 distribution is often a good approximation to the distribution of
 simple monthly returns, and is a better approximation to the distribution
@@ -128,15 +117,14 @@ State of Economy        Sample Space        $\Pr(X=x)$
 
 
 Let $X$ denote the annual return on Microsoft stock over the next
-year. We might hypothesize that the annual return will be influenced
+year. You might hypothesize that the annual return will be influenced
 by the general state of the economy. Consider five possible states
 of the economy: depression, recession, normal, mild boom and major
 boom. A stock analyst might forecast different values of the return
 for each possible state. Hence, $X$ is a discrete random variable
 that can take on five different values. Table @tbl-msftdiscretedistribution
-describes such a probability distribution of the return and a graphical
-representation of the probability distribution is presented in Figure
-@fig-ProbRevMsftDiscreteDistn created with 
+describes such a probability distribution of the return. A graphical
+representation of the probability distribution is created with the following R code:
 
 ```{r}
 #| label: ProbRevMsftDiscreteDistn
@@ -154,7 +142,7 @@ points(r.msft, prob.vals, pch=16, cex=2, col="blue")
 axis(1, at=r.msft)
 ```
 
-The shape of the distribution is revealing. The center and most likely value is at
+This distribution is presented in Figure @fig-ProbRevMsftDiscreteDistn. The shape of the distribution is revealing. The center and most likely value is at
 $0.1$ and the distribution is symmetric about this value (has the same shape to the 
 left and to the right). Most of the probability is concentrated between $0$ and $0.2$
 and there is very little probability associated with very large or small returns. 
@@ -231,7 +219,7 @@ random variable, $f(x)\neq\Pr(X=x)$ but rather gives the height of
 the probability curve at $x$. In fact, $\Pr(X=x)=0$ for all values
 of $x$. That is, probabilities are not defined over single points.
 They are only defined over intervals. As a result, for a continuous
-random variable $X$ we have: 
+random variable $X$: 
 $$
 \Pr(a\leq X\leq b)=\Pr(a<X\leq b)=\Pr(a<X<b)=\Pr(a\leq X<b).
 $$
@@ -263,7 +251,7 @@ return on Microsoft stock can take on any value between $a$ and $b$.
 That is, the sample space is restricted to the interval $S_{X}=\{x\in\mathcal{R}:a\leq x\leq b\}$.
 Further suppose that the probability that $X$ will belong to any
 subinterval of $S_{X}$ is proportional to the length of the interval.
-In this case, we say that $X$ is *uniformly distributed* on
+In this case, it is said that $X$ is *uniformly distributed* on
 the interval $[a,b]$. The pdf of $X$ has a very simple mathematical
 form: 
 $$
@@ -284,7 +272,7 @@ $$
 
 ::: {#exm-example205 name="Uniform distribution on [-1 1]"}
 Let $a=-1$ and $b=1,$ so that $b-a=2$. Consider computing the probability
-that $X$ will be between -0.5 and 0.5. We solve: 
+that $X$ will be between -0.5 and 0.5. You must solve: 
 $$
 \Pr(-0.5\leq X\leq0.5)=\int_{-0.5}^{0.5}\frac{1}{2}~dx=\frac{1}{2}\left[x\right]_{-0.5}^{0.5}=\frac{1}{2}\left[0.5-(-0.5)\right]=\frac{1}{2}.
 $$
@@ -296,7 +284,7 @@ $$
 $$
 As $\delta\rightarrow0$, $\Pr(0\leq X\leq\delta)\rightarrow\Pr(X=0)$.
 
-Using the above result we see that 
+Using the above result notice that 
 $$
 \lim_{\delta\rightarrow0}\Pr(0\leq X\leq\delta)=\Pr(X=0)=\lim_{\delta\rightarrow0}\frac{1}{2}\delta=0.
 $$
@@ -310,12 +298,11 @@ intervals but not at distinct points.
 The normal or Gaussian distribution is perhaps the most famous and
 most useful continuous distribution in all of statistics. The shape
 of the normal distribution is the familiar "bell curve".
-As we shall see, it can be used to describe the probabilistic behavior
+As you shall see, it can be used to describe the probabilistic behavior
 of stock returns although other distributions may be more appropriate.
 
-
 If a random variable $X$ follows a *standard normal distribution*
-then we often write $X\sim N(0,1)$ as short-hand notation. This distribution
+then you often write $X\sim N(0,1)$ as short-hand notation. This distribution
 is centered at zero and has inflection points at $\pm1$.^[An inflection point is a point where a curve goes from concave up to concave down, or vice versa.] The pdf of a standard normal random variable is given by: 
 $$
 f(x)=\frac{1}{\sqrt{2\pi}}\cdot e^{-\frac{1}{2}x^{2}},~-\infty\leq x\leq\infty.
@@ -325,9 +312,7 @@ the area under the standard normal curve is one:
 $$
 \int_{-\infty}^{\infty}\frac{1}{\sqrt{2\pi}}\cdot e^{-\frac{1}{2}x^{2}}dx=1.
 $$
-The standard normal distribution is illustrated in Figure @fig-probReviewStdNormalDensity.
-Notice that the distribution is *symmetric* about zero; i.e.,
-the distribution has exactly the same form to the left and right of
+The standard normal distribution is illustrated in Figure @fig-probReviewStdNormalDensity. Notice that the distribution is *symmetric* about zero; i.e., the distribution has exactly the same form to the left and right of
 zero. Because the standard normal pdf formula is used so often it
 is given its own special symbol $\phi(x)$.
 
@@ -428,7 +413,7 @@ analytically:
 F_{X}(x) & =\Pr(X<x)=\int_{-\infty}^{x}f(t)~dt\\
  & =\frac{1}{b-a}\int_{a}^{x}~dt=\frac{1}{b-a}[t]_{a}^{x}=\frac{x-a}{b-a}.
 \end{align*}
-We can determine the pdf of $X$ directly from the cdf via, 
+You can determine the pdf of $X$ directly from the cdf via, 
 $$
 f(x)=F_{X}^{\prime}(x)=\frac{d}{dx}F_{X}(x)=\frac{1}{b-a}.
 $$
@@ -624,7 +609,7 @@ distribution, $\Pr(X\geq2)=\Pr(X\leq-2)=\Phi(-2)$. In R use:
 pnorm(-2)
 ```
 
-Next, consider finding $\Pr(-1\leq X\leq2)$. Using the cdf, we compute
+Next, consider finding $\Pr(-1\leq X\leq2)$. Using the cdf, you compute
 $\Pr(-1\leq X\leq2)=\Pr(X\leq2)-\Pr(X\leq-1)=\Phi(2)-\Phi(-1)$. In
 R use:
 
@@ -697,15 +682,15 @@ polygon(c(lb, x.vals[i], ub), c(0, d.vals[i], 0), col="red")
 
 ### Shape characteristics of probability distributions
 
-Very often we would like to know certain shape characteristics of
-a probability distribution. We might want to know where the distribution
+Very often you would like to know certain shape characteristics of
+a probability distribution. You might want to know where the distribution
 is centered, and how spread out the distribution is about the central
-value. We might want to know if the distribution is symmetric about
+value. You might want to know if the distribution is symmetric about
 the center or if the distribution has a long left or right tail. For
-stock returns we might want to know about the likelihood of observing
+stock returns you might want to know about the likelihood of observing
 extreme values for returns representing market crashes. This means
-that we would like to know about the amount of probability in the
-extreme tails of the distribution. In this section we discuss four
+that you would like to know about the amount of probability in the
+extreme tails of the distribution. In this section I will discuss four
 important shape characteristics of a probability distribution: 
 
 1.  *expected value* (mean): measures the center of mass of a distribution 
@@ -831,30 +816,28 @@ is the square root of the variance and is in the same units as $X$. For "bell-sh
 distributions, $\sigma_{X}$ measures the typical size of a deviation
 from the mean value. 
 
-The computation of @eq-variance can often be simplified by
-using the result: 
+The computation of @eq-variance can often be simplified by using the result: 
 $$
 \mathrm{var}(X)=E[(X-\mu_{X})^{2}]=E[X^{2}]-\mu_{X}^{2}
 $$ {#eq-variance-2}
-We will learn how to derive this result later in the chapter. 
+You will learn how to derive this result later in the chapter. 
 
 ::: {#exm-example217 name="Variance and standard deviation for a discrete random variable"}
 Using the discrete distribution for the return on Microsoft stock
-in Table @tbl-msftdiscretedistribution and the result
-that $\mu_{X}=0.1$, we have: 
+in Table @tbl-msftdiscretedistribution and the result that $\mu_{X}=0.1$, it follows that: 
 \begin{align*}
 \mathrm{var}(X) & =(-0.3-0.1)^{2}\cdot(0.05)+(0.0-0.1)^{2}\cdot(0.20)+(0.1-0.1)^{2}\cdot(0.5)\\
  & +(0.2-0.1)^{2}\cdot(0.2)+(0.5-0.1)^{2}\cdot(0.05)\\
  & =0.020.
 \end{align*}
-Alternatively, we can compute $\mathrm{var}(X)$ using @eq-variance-2:
+Alternatively, you can compute $\mathrm{var}(X)$ using @eq-variance-2:
 \begin{align*}
 E[X^{2}]-\mu_{X}^{2} & =(-0.3)^{2}\cdot(0.05)+(0.0)^{2}\cdot(0.20)+(0.1)^{2}\cdot(0.5)\\
  & +(0.2)^{2}\cdot(0.2)+(0.5)^{2}\cdot(0.05)-(0.1)^{2}\\
  & =0.020.
 \end{align*}
 The standard deviation is $\sqrt{0.020}=0.141$.
-Given that the distribution is fairly bell-shaped we can say that
+Given that the distribution is fairly bell-shaped you can say that
 typical values deviate from the mean value of $10\%$ by about $\pm 14.1\%$.
 \hfill{}$\blacksquare$
 :::
@@ -917,7 +900,7 @@ that:
 \Pr(\mu_{X}-3\sigma_{X} & <X<\mu_{X}+3\sigma_{X})\approx0.99.
 \end{align*}
 Hence, for a general normal random variable about 95\% of the time
-we expect to see values within $\pm$ 2 standard deviations from its
+you expect to see values within $\pm$ 2 standard deviations from its
 mean. Observations more than three standard deviations from the mean
 are very unlikely.
 
@@ -945,7 +928,7 @@ plot(x.vals, dnorm(x.vals, mean=mu.r, sd=sd.r), type="l", lwd=2,
 ```
 
 Notice that essentially all of the probability lies between $-0.3$
-and $0.3$. Using the R function `pnorm()`, we can easily compute
+and $0.3$. Using the R function `pnorm()`, you can easily compute
 the probabilities $\Pr(R<-0.5)$, $\Pr(R<0)$, $\Pr(R>0.5)$ and $\Pr(R>1)$:
 
 ```{r}
@@ -957,7 +940,7 @@ pnorm(0, mean=0.01, sd=0.1)
 1 - pnorm(1, mean=0.01, sd=0.1)
 ```
 
-Using the R function \texttt{qnorm()}, we can find the quantiles $q_{0.01}$,
+Using the R function `qnorm()`, you can find the quantiles $q_{0.01}$,
 $q_{0.05}$, $q_{0.95}$ and $q_{0.99}$:
 
 ```{r}
@@ -974,19 +957,19 @@ more than 22.2\% and 15.5\%, respectively. In addition, there are
 :::
 
 ::: {#exm-example222 name="Risk-return tradeoff"}
-Consider the following investment problem. We can invest in two non-dividend
+Consider the following investment problem. You can invest in two non-dividend
 paying stocks, Amazon and Boeing, over the next month. Let $R_{A}$
 denote the monthly return on Amazon and $R_{B}$ denote the monthly
 return on Boeing. Assume that $R_{A}\sim N(0.02,(0.10)^{2})$ and
 $R_{B}\sim N(0.01,(0.05)^{2})$. Figure @fig-probreviewRiskReturn
 shows the pdfs for the two returns. Notice that $\mu_{A}=0.02>\mu_{B}=0.01$
-but also that $\sigma_{A}=0.10>\sigma_{B}=0.05$. The return we expect
-on Amazon is bigger than the return we expect on Boeing but the variability
+but also that $\sigma_{A}=0.10>\sigma_{B}=0.05$. The return you expect
+on Amazon is bigger than the return you expect on Boeing but the variability
 of Amazon's return is also greater than the variability of Boeing's
 return. The high return variability (volatility) of Amazon reflects
 the higher risk associated with investing in Amazon compared to investing
-in Boeing. If we invest in Boeing we get a lower expected return,
-but we also get less return variability or risk. For example, the probability
+in Boeing. If you invest in Boeing you get a lower expected return,
+but you also get less return variability or risk. For example, the probability
 of losing more than $10\%$ in one month for Amazon is
 ```{r}
 pnorm(-0.1, 0.02, 0.1)
@@ -1056,8 +1039,7 @@ the implied simple return $R_{t}$ will always be greater than $-1$.
 Let $X$ $\sim N(\mu_{X},\sigma_{X}^{2})$, which is defined for $-\infty<X<\infty$.
 The *log-normally* distributed random variable $Y$ is determined from
 the normally distributed random variable $X$ using the transformation
-$Y=e^{X}$. In this case, we say that $Y$ is log-normally distributed
-and write: 
+$Y=e^{X}$. Here, $Y$ is log-normally distributed and you write: 
 $$
 Y\sim\ln N(\mu_{X},\sigma_{X}^{2}),~0<Y<\infty.
 $$ {#eq-lognormal-rv}
@@ -1166,9 +1148,9 @@ par(mfrow=c(1,1))
 ```
 
 ::: {#exm-example226 name="Skewness for a discrete random variable"}
-Using the discrete distribution for the return on Microsoft stock
-in Table @tbl-Table-msftdiscretedistribution, the results that
-$\mu_{X}=0.1$ and $\sigma_{X}=0.141$, we have: 
+From the discrete distribution for the return on Microsoft stock
+in Table @tbl-msftdiscretedistribution, and the results
+$\mu_{X}=0.1$ and $\sigma_{X}=0.141$, it follows that: 
 \begin{align*}
 \mathrm{skew}(X) & =[(-0.3-0.1)^{3}\cdot(0.05)+(0.0-0.1)^{3}\cdot(0.20)+(0.1-0.1)^{3}\cdot(0.5)\\
  & +(0.2-0.1)^{3}\cdot(0.2)+(0.5-0.1)^{3}\cdot(0.05)]/(0.141)^{3}\\
@@ -1224,9 +1206,9 @@ of the observations are tightly clustered around the mean and there
 is very little probability of observing extreme values. 
 
 ::: {#exm-example229 name="Kurtosis for a discrete random variable"}
-Using the discrete distribution for the return on Microsoft stock
-in Table @tbl-msftdiscretedistribution, the results that
-$\mu_{X}=0.1$ and $\sigma_{X}=0.141$, we have: 
+From the discrete distribution for the return on Microsoft stock
+in Table @tbl-msftdiscretedistribution, and the results that
+$\mu_{X}=0.1$ and $\sigma_{X}=0.141$, it follows that: 
 \begin{align*}
 \mathrm{kurt}(X) & =[(-0.3-0.1)^{4}\cdot(0.05)+(0.0-0.1)^{4}\cdot(0.20)+(0.1-0.1)^{4}\cdot(0.5)\\
  & +(0.2-0.1)^{4}\cdot(0.2)+(0.5-0.1)^{4}\cdot(0.05)]/(0.141)^{4}\\
@@ -1353,7 +1335,7 @@ $a$ increases the variance of $X$ by the square of $a.$ These results
 will be used often enough that it is instructive to go through the derivations.
 
 Consider the first result. Let $X$ be a discrete random variable.
-By the definition of $E[g(X)]$, with $g(X)=b+aX$, we have: 
+By the definition of $E[g(X)]$, with $g(X)=b+aX$, you can write: 
 \begin{align*}
 E[Y] & =\sum_{x\in S_{X}}(ax+b)\cdot\Pr(X=x)\\
  & =a\sum_{x\in S_{X}}x\cdot\Pr(X=x)+b\sum_{x\in S_{X}}\Pr(X=x)\\
@@ -1365,7 +1347,7 @@ If $X$ is a continuous random variable then by the linearity of integration:
 E[Y] & =\int_{-\infty}^{\infty}(ax+b)f(x)~dx=a\int_{-\infty}^{\infty}xf(x)~dx+b\int_{-\infty}^{\infty}f(x)~dx\\
  & =aE[X]+b.
 \end{align*}
-Next consider the second result. Since $\mu_{Y}=a\mu_{X}+b$ we have:
+Next consider the second result. Since $\mu_{Y}=a\mu_{X}+b$:
 \begin{align*}
 \mathrm{var}(Y) & =E[(Y-\mu_{Y})^{2}]\\
  & =E[(aX+b-(a\mu_{X}+b))^{2}]\\
@@ -1410,9 +1392,9 @@ $Z\sim N(0,1)$.
 :::
 
 ::: {#exm-example233 name="Computing probabilities using standardized random variables"}
-Let $X\sim N(2,4)$ and suppose we want to find $\Pr(X>5)$ but we
+Let $X\sim N(2,4)$ and suppose you want to find $\Pr(X>5)$ but you
 only know probabilities associated with a standard normal random variable
-$Z\sim N(0,1)$. We solve the problem by standardizing $X$ as follows:
+$Z\sim N(0,1)$. You can solve the problem by standardizing $X$ as follows:
 $$
 \Pr\left(X>5\right)=\Pr\left(\frac{X-2}{\sqrt{4}}>\frac{5-2}{\sqrt{4}}\right)=\Pr\left(Z>\frac{3}{2}\right)=0.06681.
 $$
@@ -1452,7 +1434,7 @@ which implies @eq-normal-quantile.
 ::: {#exm-example235 name="Generalized Student's t distribution"}
 The Student's t distribution defined in @eq-Students-t-pdf
 has zero mean and variance equal to $v/(v-2)$ where $v$ is the degrees
-of freedom parameter. We can define a Student's t random variable
+of freedom parameter. You can define a Student's t random variable
 with non-zero mean $\mu$ and variance $\sigma^{2}$ from a Student's
 t random variable $X$ as follows:
 $$
@@ -1467,7 +1449,7 @@ E[Y] & = & \mu+\sigma E[Z]=\mu,\\
 \mathrm{var}(Y) & = & \sigma^{2}\mathrm{var}(Z)=\sigma^{2}.
 \end{eqnarray*}
 
-We use the notation $Y \sim t_{v}(\mu, \sigma^{2})$ to denote that $Y$ has a 
+I use the notation $Y \sim t_{v}(\mu, \sigma^{2})$ to denote that $Y$ has a 
 *generalized Student's t*\index{Generalized Student's t} distribution with mean $\mu$, variance $\sigma^{2}$, and degrees of freedom $v$.
 \hfill{}$\blacksquare$
 :::
@@ -1512,7 +1494,7 @@ via the linear function:
 $$
 W_{1}=W_{0}(1+R)=W_{0}+W_{0}R=\$10,000+\$10,000\cdot R.
 $$
-Using the properties of linear functions of a random variable we have:
+Using the properties of linear functions of a random variable you get:
 $$
 E[W_{1}]=W_{0}+W_{0}E[R]=\$10,000+\$10,000(0.05)=\$10,500,
 $$
@@ -1526,13 +1508,13 @@ that $W_{1}$ is normally distributed:
 $$
 W_{1}\sim N(\$10,500,(\$1,000)^{2}).
 $$
-To answer (ii), we use the above normal distribution for $W_{1}$
+To answer (ii), you can use the above normal distribution for $W_{1}$
 to get: 
 $$
 \Pr(W_{1}<\$9,000)=0.067.
 $$
 To find the return that produces end-of-month wealth of \$9,000, or
-a loss of \$10,000-\$9,000=\$1,000, we solve 
+a loss of \$10,000-\$9,000=\$1,000, you solve 
 $$
 R=\frac{\$9,000-\$10,000}{\$10,000}=-0.10.
 $$
@@ -1542,7 +1524,7 @@ quantile of the distribution of $R$:
 $$
 \Pr(R<-0.10)=0.067.
 $$
-Question (iii) can be answered in two equivalent ways. First, we use
+Question (iii) can be answered in two equivalent ways. First, use
 $R\sim N(0.05,(0.10)^{2})$ and solve for the 5\% quantile of Microsoft
 Stock using @eq-normal-quantile^[Using R, $z_{.05}=\mathrm{qnorm}(0.05)=-1.645$.]:
 \begin{align*}
@@ -1664,11 +1646,11 @@ log-normal distribution.
 
 ## Bivariate Distributions {#sec-Bivariate-Distributions}
 \index{Bivariate distribution}
-So far we have only considered probability distributions for a single
-random variable. In many situations, we want to be able to characterize
+So far I have only considered probability distributions for a single
+random variable. In many situations, you want to be able to characterize
 the probabilistic behavior of two or more random variables simultaneously.
-For example, we might want to know about the probabilistic behavior of the 
-returns on a two asset portfolio. In this section, we discuss bivariate distributions
+For example, you might want to know about the probabilistic behavior of the 
+returns on a two asset portfolio. In this section, I discuss bivariate distributions
 and important concepts related to the analysis of two random variables.
 
 ### Discrete random variables
@@ -1717,19 +1699,19 @@ that the sum of all the entries in the table sum to unity.
 #### Marginal Distributions
 \index{Marginal distributions}
 The joint probability distribution tells us the probability of $X$ and
-$Y$ occurring together. What if we only want to know about the probability
+$Y$ occurring together. What if you only want to know about the probability
 of $X$ occurring, or the probability of $Y$ occurring?
 
 ::: {#exm-example239 name="Find $\\Pr(X=0)$ and $\\Pr(Y=1)$ from joint distribution"}
 Consider the joint distribution in Table @tbl-bivariateDistn.
 What is $\Pr(X=0)$ regardless of the value of $Y$? Now $X$ can
 occur if $Y=0$ or if $Y=1$ and since these two events are mutually
-exclusive we have that 
+exclusive you get: 
 $$
 \Pr(X=0)=\Pr(X=0,Y=0)+\Pr(X=0,Y=1)=0+1/8=1/8.
 $$
 Notice that this probability is equal to the horizontal (row) sum
-of the probabilities in the table at $X=0$. We can find $\Pr(Y=1)$
+of the probabilities in the table at $X=0$. You can find $\Pr(Y=1)$
 in a similar fashion: 
 \begin{align*}
 \Pr(Y=1)&=\Pr(X=0,Y=1)+\Pr(X=1,Y=1)+\Pr(X=2,Y=1)+\Pr(X=3,Y=1)\\
@@ -1756,7 +1738,7 @@ $$ {#eq-marginal-Y-discrete}
 The marginal probabilities of $X=x$ are given in the last column
 of Table @tbl-bivariateDistn, and the marginal probabilities
 of $Y=y$ are given in the last row of Table @tbl-bivariateDistn.
-Notice that these probabilities sum to 1. For future reference we
+Notice that these probabilities sum to 1. For future reference,
 note that $E[X]=3/2,\mathrm{var}(X)=3/4,E[Y]=1/2$, and $\mathrm{var}(Y)=1/4$.
 \hfill{}$\blacksquare$
 :::
@@ -1765,10 +1747,10 @@ note that $E[X]=3/2,\mathrm{var}(X)=3/4,E[Y]=1/2$, and $\mathrm{var}(Y)=1/4$.
 \index{Conditional distributions}
 
 For random variables in Table @tbl-bivariateDistn, suppose
-we know that the random variable $Y$ takes on the value $Y=0$. How
+you know that the random variable $Y$ takes on the value $Y=0$. How
 does this knowledge affect the likelihood that $X$ takes on the values
 0, 1, 2 or 3? For example, what is the probability that $X=0$ *given that* 
-we know $Y=0$? To find this probability, we use Bayes' law \index{Bayes' law}
+you know $Y=0$? To find this probability, you can use Bayes' law \index{Bayes' law}
 and compute the *conditional probability*:\index{Conditional probability}
 $$
 \Pr(X=0|Y=0)=\frac{\Pr(X=0,Y=0)}{\Pr(Y=0)}=\frac{1/8}{4/8}=1/4.
@@ -1779,8 +1761,8 @@ Hence, knowledge that $Y=0$ increases the likelihood that $X=0$.
 Clearly, $X$ *depends* on $Y$. 
 
 
-Now suppose that we know that $X=0$. How does this knowledge affect
-the probability that $Y=0?$ To find out we compute: 
+Now suppose that you know that $X=0$. How does this knowledge affect
+the probability that $Y=0?$ To find out compute: 
 $$
 \Pr(Y=0|X=0)=\frac{\Pr(X=0,Y=0)}{\Pr(X=0)}=\frac{1/8}{1/8}=1.
 $$
@@ -1838,13 +1820,11 @@ and the conditional distribution of $X|Y=1$ is centered at $x=2$.
 
 #### Conditional expectation and conditional variance
 
-Just as we defined shape characteristics of the marginal distributions
-of $X$ and $Y$, we can also define shape characteristics of the
+Just as I defined shape characteristics of the marginal distributions
+of $X$ and $Y$, I can also define shape characteristics of the
 conditional distributions of $X|Y=y$ and $Y|X=x$. The most important
 shape characteristics are the *conditional expectation*\index{Conditional expectation} (*conditional mean*) and the *conditional variance*\index{Conditional variance}. 
-The conditional mean
-of $X|Y=y$ is denoted by $\mu_{X|Y=y}=E[X|Y=y]$, and the conditional
-mean of $Y|X=x$ is denoted by $\mu_{Y|X=x}=E[Y|X=x]$. 
+The conditional mean of $X|Y=y$ is denoted by $\mu_{X|Y=y}=E[X|Y=y]$, and the conditional mean of $Y|X=x$ is denoted by $\mu_{Y|X=x}=E[Y|X=x]$. 
 
 ::: {#def-conditional-expectation name="Conditional expectation"}
 For discrete random variables $X$ and $Y$, the conditional expectations are defined as:
@@ -1874,8 +1854,7 @@ Then conditional mean is the center of mass of the conditional distribution,
 and the conditional variance and volatility measure the spread of the conditional distribution about the conditional mean. 
 
 ::: {#exm-example242 name="Compute conditional expectation and conditional variance"}
-For the random variables in Table @tbl-bivariateDistn,
-we have the following conditional moments for $X$: 
+For the random variables in Table @tbl-bivariateDistn, you can derive the following conditional moments for $X$: 
 \begin{align*}
 E[X|Y & =0]=0\cdot1/4+1\cdot1/2+2\cdot1/4+3\cdot0=1,\\
 E[X|Y & =1]=0\cdot0+1\cdot1/4+2\cdot1/2+3\cdot1/4=2,\\
@@ -1897,7 +1876,7 @@ that as $x$ increases $E[Y|X=x]$ increases.
 
 #### Conditional expectation and the regression function
 
-Consider the problem of predicting the value $Y$ given that we know
+Consider the problem of predicting the value $Y$ given that you know
 $X=x$. A natural predictor to use is the conditional expectation
 $E[Y|X=x]$. In this prediction context, the conditional expectation
 $E[Y|X=x]$ is called the *regression function*\index{Regression function}. The graph with
@@ -1916,11 +1895,11 @@ where $\varepsilon=Y-E[Y|X]$ is called the *regression error*.
 For the random variables in Table @tbl-bivariateDistn,
 the regression line is plotted in Figure @fig-figProbReviewDiscreteRegression.
 Notice that there is a linear relationship between $E[Y|X=x]$ and
-$x$. When such a linear relationship exists we call the regression
+$x$. When such a linear relationship exists you call the regression
 function a *linear regression*. Linearity of the regression function,
 however, is not guaranteed. It may be the case that there is a non-linear
 (e.g., quadratic) relationship between $E[Y|X=x]$ and $x$. In this
-case, we call the regression function a *non-linear regression*\index{Non-linear regression}.
+case, you call the regression function a *non-linear regression*\index{Non-linear regression}.
 \hfill{}$\blacksquare$
 :::
 
@@ -1975,9 +1954,7 @@ plot(x.vals, c(mu.y.x0, mu.y.x1, mu.y.x2, mu.y.x3), type="b", lwd=2,
 
 Before $Y$ is observed, $E[X|Y]$ is a random variable because its value depends on
 the value of $Y$ which is a random variable. Similarly, $E[Y|X]$ is also a random
-variable. Since $E[X|Y]$ and $E[Y|X]$ are random variables we can consider their mean
-values. To illustrate, for the random variables in Table @tbl-Table-bivariateDistn
-notice that: 
+variable. Since $E[X|Y]$ and $E[Y|X]$ are random variables you can consider their mean values. To illustrate, for the random variables in Table @tbl-bivariateDistn notice that: 
 \begin{align*}
 E[X] & = \sum_{y \in S_{Y}} E[X|Y=y]\cdot \Pr(Y=y)\\ 
 & =E[X|Y=0]\cdot\Pr(Y=0)+E[X|Y=1]\cdot\Pr(Y=1)\\
@@ -1989,11 +1966,10 @@ E[Y] & = \sum_{x \in S_{X}} E[Y|X=x]\cdot \Pr(X=x)\\
 & =E[Y|X=0]\cdot\Pr(X=0)+E[Y|X=1]\cdot\Pr(X=1)\\
 +E[Y|X & =2]\cdot\Pr(X=2)+E[Y|X=3]\cdot\Pr(X=3)=1/2.
 \end{align*}
-This result is known as the *law of total expectations*. 
+This result is known as the *law of iterated expectations* or the *law of total expectations*. 
 
 ::: {#prp-law-of-iterated-expectations names="Law of iterated expectations"}
-For two random variables $X$ and $Y$ (discrete or continuous) we
-have, 
+For two random variables $X$ and $Y$ (discrete or continuous) it can be shown that: 
 $$
 \begin{aligned}
 E[X] & =E[E[X|Y]],\\
@@ -2005,13 +1981,13 @@ variable $Y$, and the the expectation on the second line is taken with respect
 to the random variable $X$.
 :::
 
-In words, the law of total expectations says that the mean of the conditional mean
+In words, the law of iterated expectations says that the mean of the conditional mean
 is the unconditional mean.
 
 ### Bivariate distributions for continuous random variables
 
 Let $X$ and $Y$ be continuous random variables defined over the
-real line. We characterize the joint probability distribution of $X$
+real line. You can characterize the joint probability distribution of $X$
 and $Y$ using the joint probability function (pdf) $f(x,y)$ such
 that $f(x,y)\geq0$ and, 
 $$
@@ -2020,7 +1996,7 @@ $$
 The three-dimensional plot of the joint probability distribution gives
 a probability surface whose total volume is unity. To compute joint
 probabilities of $x_{1}\leq X\leq x_{2}$ and $y_{1}\leq Y\leq y_{2},$
-we need to find the volume under the probability surface over the
+you need to find the volume under the probability surface over the
 grid where the intervals $[x_{1},x_{2}]$ and $[y_{1},y_{2}]$ overlap.
 Finding this volume requries solving the double integral: 
 $$
@@ -2033,7 +2009,7 @@ $$
 f(x,y)=\frac{1}{2\pi}e^{-\frac{1}{2}(x^{2}+y^{2})},~-\infty\leq x,~y\leq\infty
 $$ {#eq-standard-bivariate-normal}
 and has the shape of a symmetric bell (think Liberty Bell) centered
-at $x=0$ and $y=0$. To find $\Pr(-1<X<1,-1<Y<1)$ we must solve:
+at $x=0$ and $y=0$. To find $\Pr(-1<X<1,-1<Y<1)$ you must solve:
 $$
 \int_{-1}^{1}\int_{-1}^{1}\frac{1}{2\pi}e^{-\frac{1}{2}(x^{2}+y^{2})}~dx~dy,
 $$
@@ -2086,14 +2062,14 @@ and the conditional variances are computed as,
 
 ::: {#exm-example244 name="Conditional and marginal distributions from bivariate standard normal"}
 Suppose $X$ and $Y$ are distributed bivariate standard normal. To
-find the marginal distribution of $X$ we use @eq-marginal-x-continuous
+find the marginal distribution of $X$ you use @eq-marginal-x-continuous
 and solve: 
 $$
 f(x)=\int_{-\infty}^{\infty}\frac{1}{2\pi}e^{-\frac{1}{2}(x^{2}+y^{2})}~dy=\frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}x^{2}}\int_{-\infty}^{\infty}\frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}y^{2}}~dy=\frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}x^{2}}.
 $$
 Hence, the marginal distribution of $X$ is standard normal. Similiar
 calculations show that the marginal distribution of $Y$ is also standard
-normal. To find the conditional distribution of $X|Y=y$ we use @eq-conditional-x-continuous
+normal. To find the conditional distribution of $X|Y=y$ use @eq-conditional-x-continuous
 and solve: 
 \begin{align*}
 f(x|y) & =\frac{f(x,y)}{f(x)}=\frac{\frac{1}{2\pi}e^{-\frac{1}{2}(x^{2}+y^{2})}}{\frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}y^{2}}}\\
@@ -2113,7 +2089,7 @@ is independent of $Y$ if knowledge about $Y$ does not influence
 the likelihood that $X=x$ for all possible values of $x\in S_{X}$
 and $y\in S_{Y}$. Similarly, $Y$ is independent of $X$ if knowledge
 about $X$ does not influence the likelihood that $Y=y$ for all values
-of $y\in S_{Y}$. We represent this intuition formally for discrete
+of $y\in S_{Y}$. I represent this intuition formally for discrete
 random variables as follows.
 
 ::: {#def-independence name="Independence of discrete random variables"}
@@ -2127,7 +2103,7 @@ are independent random variables if and only if (iff):
 :::
 
 ::: {#exm-example244 name="Check independence of bivariate discrete random variables"}
-For the data in Table @tbl-bivariateDistn, we know that
+For the data in Table @tbl-bivariateDistn, you know that
 $\Pr(X=0|Y=0)=1/4\neq\Pr(X=0)=1/8$ so $X$ and $Y$ are not independent.
 \hfill{}$\blacksquare$
 :::
@@ -2151,7 +2127,7 @@ Intuition for the above result follows from:
 which shows that $X$ and $Y$ are independent. 
 
 
-For continuous random variables, we have the following definition
+For continuous random variables, you have the following definition
 of independence.
 
 ::: {#def-independence-continuous name="Independence of continuous random variables"}
@@ -2163,7 +2139,7 @@ f(y|x) & =f(y),\textrm{ for }-\infty<x,y<\infty.
 \end{align*}
 :::
 
-As with discrete random variables, we have the following result for
+As with discrete random variables, you have the following result for
 continuous random variables.
 
 ::: {#prp-independence-continuous name="Independence of continuous random variables"}
@@ -2174,7 +2150,7 @@ f(x,y)=f(x)f(y)
 $$
 :::
 
-This result is extremely useful in practice because it gives us an easy way to compute the joint pdf for two independent random variables: we simply compute the product of the marginal distributions.
+This result is extremely useful in practice because it gives us an easy way to compute the joint pdf for two independent random variables: you simply compute the product of the marginal distributions.
 
 ::: {#exm-example245 name="Constructing the bivariate standard normal distribution"}
 Let $X\sim N(0,1)$, $Y\sim N(0,1)$ and let $X$ and $Y$ be independent.
@@ -2202,13 +2178,13 @@ are also independent.
 
 Let $X$ and $Y$ be two discrete random variables. Figure @fig-ProbReviewCovariancePlots
 displays several bivariate probability scatterplots (where equal probabilities
-are given on the dots). In panel (a) we see no linear relationship
-between $X$ and $Y$. In panel (b) we see a perfect positive linear
-relationship between $X$ and $Y$ and in panel (c) we see a perfect
-negative linear relationship. In panel (d) we see a positive, but
-not perfect, linear relationship; in panel (e) we see a negative,
-but not perfect, linear relationship. Finally, in panel (f) we see
-no systematic linear relationship but we see a strong nonlinear (parabolic)
+are given on the dots). In panel (a) you see no linear relationship
+between $X$ and $Y$. In panel (b) you see a perfect positive linear
+relationship between $X$ and $Y$ and in panel (c) you see a perfect
+negative linear relationship. In panel (d) you see a positive, but
+not perfect, linear relationship; in panel (e) you see a negative,
+but not perfect, linear relationship. Finally, in panel (f) you see
+no systematic linear relationship but you see a strong nonlinear (parabolic)
 relationship. The *covariance* \index{Covariance} between $X$ and $Y$ measures
 the *direction* of the linear relationship between the two random
 variables. The *correlation* \index{Correlation} between $X$ and $Y$ measures the
@@ -2358,7 +2334,7 @@ text(0.4, -0.5, labels=expression(y - mu[y] < 0))
 ```
 
 ::: {#exm-example246 name="Calculate covariance and correlation for discrete random variables"}
-For the data in Table @tbl-bivariateDistn, we have: 
+For the data in Table @tbl-bivariateDistn, you get: 
 \begin{gather*}
 \sigma_{XY}=\mathrm{cov}(X,Y)=(0-3/2)(0-1/2)\cdot1/8+(0-3/2)(1-1/2)\cdot0\\
 +\cdots+(3-3/2)(1-1/2)\cdot1/8=1/4\\
@@ -2400,8 +2376,8 @@ The fourth property follows from the linearity of expectations:
 \end{align*}
 The fourth property shows that the value of $\mathrm{cov}(X,Y)$ depends
 on the scaling of the random variables $X$ and $Y$. By simply changing
-the scale of $X$ or $Y$ we can make $\mathrm{cov}(X,Y)$ equal to
-any value that we want. Consequently, the numerical value of $\mathrm{cov}(X,Y)$
+the scale of $X$ or $Y$ you can make $\mathrm{cov}(X,Y)$ equal to
+any value that you want. Consequently, the numerical value of $\mathrm{cov}(X,Y)$
 is not informative about the strength of the linear association between
 $X$ and $Y$. However, the sign of $\mathrm{cov}(X,Y)$ is informative
 about the direction of linear association between $X$ and $Y$. 
@@ -2467,7 +2443,7 @@ $y$, respectively.
 
 ::: {#exm-example247 name="Expressing the bivariate normal distribution using matrix algebra"}
 The formula for the bivariate normal distribution @eq-bivariate-normal
-is a bit messy. We can greatly simplify the formula by using matrix
+is a bit messy. you can greatly simplify the formula by using matrix
 algebra. Define the $2\times1$ vectors $\mathbf{x}=(x,y)^{\prime}$
 and $\boldsymbol{\mu}=(\mu_{X},\mu_{y})^{\prime},$ and the $2\times2$
 matrix: 
@@ -2500,10 +2476,10 @@ The R package **mvtnorm** contains the functions `dmvnorm()`,
 the bivariate normal pdf, cdf and quantiles, respectively. Plotting
 the bivariate normal distribution over a specified grid of $x$ and
 $y$ values in R can be done with the `persp()` function. First,
-we specify the parameter values for the joint distribution. Here,
-we choose $\mu_{X}=\mu_{Y}=0$, $\sigma_{X}=\sigma_{Y}=1$ and $\rho=0.5$.
-We will use the `dmvnorm()` function to evaluate the joint
-pdf at these values. To do so, we must specify a covariance matrix
+I specify the parameter values for the joint distribution. Here,
+I choose $\mu_{X}=\mu_{Y}=0$, $\sigma_{X}=\sigma_{Y}=1$ and $\rho=0.5$.
+I will use the `dmvnorm()` function to evaluate the joint
+pdf at these values. To do so, I must specify a covariance matrix
 of the form: 
 $$
 \boldsymbol{\Sigma}=\left(\begin{array}{cc}
@@ -2522,7 +2498,7 @@ In R this matrix can be created using:
 sigma = matrix(c(1, 0.5, 0.5, 1), 2, 2)
 ```
 
-Next we specify a grid of $x$ and $y$ values between $-3$ and $3$:
+Next I specify a grid of $x$ and $y$ values between $-3$ and $3$:
 
 ```{r}
 #| echo: true
@@ -2531,7 +2507,7 @@ x = seq(-3, 3, length=25)
 y = seq(-3, 3, length=25)
 ```
 
-To evaluate the joint pdf over the two-dimensional grid we can use
+To evaluate the joint pdf over the two-dimensional grid I can use
 the `outer()` function:
 
 ```{r}
@@ -2546,7 +2522,7 @@ bv.norm <- function(x, y, sigma) {
 fxy = outer(x, y, bv.norm, sigma)
 ```
 
-To create the 3D plot of the joint pdf, use the `persp()` function:
+To create the 3D plot of the joint pdf, I use the `persp()` function:
 
 ```{r}
 #| label: fig-ProbReviewBivariateNormal
@@ -2604,7 +2580,7 @@ the summations are replaced by integrals and the joint probabilities
 are replaced by the joint pdf. 
 
 Next, let $X$ and $Y$ be discrete or continuous random variables. Then, using the
-definition of variance we get:
+definition of variance you get:
 \begin{align*}
 \mathrm{var}(aX+bY) & =E[(aX+bY-E[aX+bY])^{2}]\\
  & =E[(aX+bY-a\mu_{X}-b\mu_{Y})^{2}]\\
@@ -2647,7 +2623,7 @@ assets, and assume that $R_{A}\sim N(\mu_{A},\sigma_{A}^{2})$ and
 $R_{B}\sim N(\mu_{B},\sigma_{B}^{2})$. Furthermore, let $\sigma_{AB}=\rho_{AB}\sigma_{A}\sigma_{B}=\mathrm{cov}(R_{A},R_{B})$.
 The portfolio return is $R_{p}=x_{A}R_{A}+x_{B}R_{B}$, which is a
 linear function of two random variables. Using the properties of linear
-functions of random variables, we have: 
+functions of random variables, you get: 
 \begin{align*}
 \mu_{p} & =E[R_{p}]=x_{A}E[R_{A}]+x_{B}E[R_{B}]=x_{A}\mu_{A}+x_{B}\mu_{B}\\
 \sigma_{p}^{2} & =\mathrm{var}(R_{p})=x_{A}^{2}\mathrm{var}(R_{A})+x_{B}^{2}\mathrm{var}(R_{B})+2x_{A}x_{B}\mathrm{cov}(R_{A},R_{B})\\
@@ -2663,9 +2639,9 @@ functions of random variables, we have:
 of a collection of $N$ random variables $X_{1},X_{2},\ldots,X_{N}$
 for $N>1$. The mathematical formulation of this joint distribution
 can be quite complex and typically makes use of matrix algebra. Here,
-we summarize some basic properties of multivariate distributions without
+I summarize some basic properties of multivariate distributions without
 the use of matrix algebra. In chapter @sec-Matrix-Algebra-Review,
-we show how matrix algebra can greatly simplify the description of
+I will show how matrix algebra can greatly simplify the description of
 multivariate distributions.
 
 ### Discrete random variables
