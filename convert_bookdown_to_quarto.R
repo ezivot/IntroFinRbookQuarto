@@ -48,6 +48,63 @@ prefix_bookdown_section_ids <- function(lines) {
   }, character(1), USE.NAMES = FALSE)
 }
 
+# Map of bookdown custom-block class names to their required Quarto
+# cross-reference id prefix.
+theorem_div_prefixes <- c(
+  example = "exm", definition = "def", theorem = "thm", exercise = "exr",
+  lemma = "lem", corollary = "cor", proposition = "prp", remark = "rem",
+  solution = "sol", conjecture = "cnj"
+)
+
+# Slugify arbitrary text into a valid crossref id fragment: lower-case,
+# alphanumerics separated by single hyphens, no leading/trailing hyphens.
+slugify <- function(text) {
+  slug <- tolower(text)
+  slug <- gsub("[^a-z0-9]+", "-", slug)
+  slug <- gsub("^-+|-+$", "", slug)
+  slug
+}
+
+# Add a "#exm-", "#def-", "#exr-", etc. id to bookdown-style fenced divs that
+# only carry a class (e.g. ::: {.example name="..."}) with no id at all, e.g.:
+#   ::: {.example name="Matrix creation in R"}
+# becomes:
+#   ::: {#exm-matrix-creation-in-r .example name="Matrix creation in R"}
+# When no `name` attribute is present (e.g. ::: {.exercise}), a sequential
+# "<prefix>-NN" id is generated instead. Divs that already have an id (e.g.
+# {#example0101 .example ...}, handled elsewhere) or an id starting with a
+# reserved crossref prefix are left untouched.
+add_ids_to_unlabeled_theorem_divs <- function(lines) {
+  div_pattern <- paste0(
+    "^(:::+\\s*\\{)\\s*\\.(",
+    paste(names(theorem_div_prefixes), collapse = "|"),
+    ")(\\s+name=\"([^\"]*)\")?\\s*\\}\\s*$"
+  )
+
+  counters <- setNames(rep(0L, length(theorem_div_prefixes)), theorem_div_prefixes)
+
+  vapply(lines, function(line) {
+    m <- regmatches(line, regexec(div_pattern, line, perl = TRUE))[[1]]
+    if (length(m) == 0) return(line)
+
+    open_brace <- m[2]
+    class_name <- m[3]
+    name_attr <- m[5]
+    prefix <- theorem_div_prefixes[[class_name]]
+
+    slug <- if (nzchar(name_attr)) slugify(name_attr) else ""
+
+    if (!nzchar(slug)) {
+      counters[[prefix]] <<- counters[[prefix]] + 1L
+      slug <- sprintf("%02d", counters[[prefix]])
+    }
+    id <- paste0(prefix, "-", slug)
+
+    name_part <- if (nzchar(name_attr)) paste0(" name=\"", name_attr, "\"") else ""
+    paste0(open_brace, "#", id, " .", class_name, name_part, "}")
+  }, character(1), USE.NAMES = FALSE)
+}
+
 # 1. Update Cross-References and Labels --------------------------------------
 convert_bookdown_syntax <- function(file_path) {
   content <- readLines(file_path, warn = FALSE)
@@ -71,12 +128,16 @@ convert_bookdown_syntax <- function(file_path) {
   content <- gsub("\\\\@ref\\(exm:([^)]+)\\)", "@exm-\\1", content)
 
   # Convert bookdown example div ids to Quarto's required "exm-" prefix:
-  # ::: {#example0101 .example name="..."} -> ::: {#exm-example0101 .example name="..."}
+  # ::: {#example0101 .example name="..."} -> ::: {#exm-example0101 name="..."}
   content <- gsub(
     "(:::+\\s*\\{#)(example[A-Za-z0-9]*)(\\s)",
     "\\1exm-\\2\\3",
     content
   )
+
+  # Add a crossref id to bookdown-style custom-block divs that only carry a
+  # class and no id at all, e.g. ::: {.example name="..."} or ::: {.exercise}
+  content <- add_ids_to_unlabeled_theorem_divs(content)
   
   # Convert general section references \@ref(sec-name) -> @sec-sec-name
   content <- gsub("\\\\@ref\\(([^):]+)\\)", "@sec-\\1", content)
@@ -95,7 +156,11 @@ convert_bookdown_syntax <- function(file_path) {
   # Convert bookdown's native inline equation-label syntax:
   # ...(\#eq:name) -> ...{#eq-name}
   content <- gsub("\\(\\\\#eq:([^)]+)\\)", "{#eq-\\1}", content)
-  
+
+  # Convert LaTeX display-math delimiters \[ ... \] to Quarto/Pandoc's $$ ... $$
+  content <- gsub("\\\\\\[", "$$", content)
+  content <- gsub("\\\\\\]", "$$", content)
+
   # Write updated content back
   writeLines(content, file_path)
 }

@@ -2,18 +2,17 @@
 
 # Return Calculations {#Return-Calculations}
 
-Updated: August 30, 2026
+Updated: September 1, 2026
+Copyright © Eric Zivot 2026
 
-Copyright © Eric Zivot 2022, 2023, 2025, 2026
-
-In this chapter I cover asset return calculations with an emphasis on
+Asset returns are the fundamental object of study in this book and in this chapter 
+I review many important definitions and properties of asset returns with an emphasis on
 equity returns. It is important to understand the different ways in
-which asset returns are calculated because most of the models presented
-in the book are for asset returns. Simple returns are most commonly used
-for money and portfolio calculations in practice. However, simple
-returns have some undesirable properties that make mathematical and
-statistical modeling difficult. Continuously compounded returns, in
-contrast, have nicer properties that make mathematical and statistical
+which asset returns are calculated as they impact model choices for asset returns. 
+For example, simple returns are most commonly used for money and portfolio calculations 
+in practice. However, simple returns have some undesirable properties for time aggregation 
+that make mathematical and statistical modeling difficult. Continuously compounded returns, in
+contrast, have nicer aggregation properties that make mathematical and statistical
 modeling easier.
 
 This chapter is organized as follows. Section @sec-TimeValueMoney covers
@@ -41,34 +40,40 @@ suppressPackageStartupMessages(library(methods))
 
 ## The Time Value of Money {#sec-TimeValueMoney}
 
-This section reviews basic time value of money calculations. The
+In this section I review basic time value of money calculations. The
 concepts of future value, present value and the compounding of interest
 are defined and discussed.
 
 ### Future value, present value and simple interest
 
+I start with the definition of the *future value* \index{Future value} of an investment.
+
+::: {#def-futureValue name="Future value"}
 Consider an amount $\$V$ invested for $n$ years at a *simple interest
 rate* \index{Simple interest rate} of $R$ per annum (where $R$ is
 expressed as a decimal). If compounding takes place only at the end of
-the year, the *future value* \index{Future value} after $n$ years is:
+the year, the *future value*  after $n$ years is defined as:
 $$
 FV_{n}=\$V(1+R)\times\cdots\times(1+R)=\$V(1+R)^{n}.
-$$ {#eq-futureValue} Over the first year, $\$V$ grows to
+$$ {#eq-futureValue} 
+:::
+
+Over the first year, $\$V$ grows to
 $\$V(1+R)=\$V+\$V\times R$ which represents the initial principal $\$V$
 plus the payment of simple interest $\$V\times R$ for the year. Over the
 second year, the new principal $\$V(1+R)$ grows to
 $\$V(1+R)(1+R)=\$V(1+R)^{2},$ and so on.
 
-::: {#exm-example0101 .example name="Future value with simple interest"}
-Consider putting \$1000 in an interest checking account that pays a
+::: {#exm-example0101 name="Future value with simple interest"}
+Consider putting \$1,000 in an interest checking account that pays a
 simple annual percentage rate of 3%. The future value after $n=1,5$ and
 10 years is, respectively, \begin{align*}
-FV_{1} & =\$1000\cdot(1.03)^{1}=\$1030,\\
-FV_{5} & =\$1000\cdot(1.03)^{5}=\$1159.27,\\
-FV_{10} & =\$1000\cdot(1.03)^{10}=\$1343.92.
+FV_{1} & =\$1,000\cdot(1.03)^{1}=\$,1030,\\
+FV_{5} & =\$1,000\cdot(1.03)^{5}=\$1,159.27,\\
+FV_{10} & =\$1,000\cdot(1.03)^{10}=\$1,343.92.
 \end{align*} Over the first year, \$30 in interest is accrued; over
 three years, \$159.27 in interest is accrued; over five years, \$343.92
-in interest is accrued. These calculations are easy to perform in R.
+in interest is accrued. These calculations are easy to perform in R:
 :::
 
 ```{r}
@@ -88,9 +93,11 @@ The future value formula @eq-futureValue defines a relationship between
 four variables: $FV_{n},$ $V$, $R$ and $n$. Given three variables, the
 fourth variable can be determined. For example, given $FV_{n}$, $R$ and
 $n$ and solving for $V$ gives the *present value* \index{Present value}
-formula: $$
+formula: 
+$$
 V=\frac{FV_{n}}{(1+R)^{n}}.
-$$ {#eq-presentValue} Here, $V$ represents the present value (or current value)
+$$ {#eq-presentValue} 
+Here, $V$ represents the present value (or current value)
 of the future value $FV_{n}$ that is to be received $n$ years from
 today. The future value is discounted by the factor $(1+R)^{-n}$ to
 reflect the fact that dollars to be received in $n$ years are worth less
@@ -99,22 +106,29 @@ returning $R$ per year. The discount factor $(1+R)^{-n}$ is less than
 $1$, and represents the price today of $\$1$ to be received in $n$ years
 when the interest rate is $R$ per year.
 
-Taking $FV_{n}$, $n$ and $V$ as given, the *annual interest rate* on the
-investment is defined as: $$
+Taking $FV_{n}$, $n$ and $V$ as given, the *compound annual return* \index{Compound annual return} on the
+investment is defined as: 
+$$
 R=\left(\frac{FV_{n}}{V}\right)^{1/n}-1.
-$$ {#eq-annualReturn} Here, $R$ represents a type of average rate of return on
-an investment known as the *compound annual return*.
+$$ {#eq-annualReturn} 
+Here, the simple interest rate $R$ also represents a type of average rate of return on an investment. Specifically, 
+$R$ is the rate of return which compounded annually over $n$ years transforms the present 
+value $V$ into the future value $FV_n$.
 
-Finally, given $FV_{n}$, $V$ and $R$ we can solve for $n$:
+Finally, given $FV_{n}$, $V$ and $R$ you can solve for $n$:
 $$
 n=\frac{ln(FV_{n}/V)}{ln(1+R)}.
-$$ {#eq-horizon} The expression @eq-horizon is called the *horizon period*
-and can be used to determine the number of years it takes for an
+$$ {#eq-horizon} The expression @eq-horizon is called the *horizon period* \index{Horizon period}. 
+The horizon period is the number of years it takes for an investment of $\$V$ to grow to a future 
+value of $\$FV_{n}$ at a simple interest rate of $R$ per year. 
+
+The horizon period formula can be used to determine the number of years it takes for an 
 investment of $\$V$ to double. Setting $FV_{n}=2V$ in @eq-horizon gives:
 $$n=\frac{\ln(2)}{\ln(1+R)}\approx\frac{0.7}{R},$$
 which uses the approximations $\ln(2)=0.6931\approx0.7$ and
 $\ln(1+R)\approx R$ for $R$ close to zero. The approximation
-$n\approx0.7/R$ is called the *rule of 70*.
+$n\approx0.7/R$ is called the *rule of 70*. For example, if $R=0.07$ (7% per year) then 
+$n\approx0.7/0.07=70/7=10$ years for the investment to double.
 
 ::: {#exm-example0102 .example name="Using the rule of 70"}
 \index{Rule of 70} The rule of 70 gives a good approximation as long as
@@ -130,22 +144,27 @@ nRule70 = 0.7/R
 cbind(R, nExact, nRule70)
 ```
 
-For $R$ values between 1% and 10% the approximation error in the rule of
-70 is never more than half a year.
+When $R=0.01$ it takes approximately 70 years for your money to double. When $R=0.10$ it takes approximately 7 years. 
+For $R$ values between 1% and 10% the approximation error in the rule of 70 is never more than half a year.
 
 \hfill{}$\blacksquare$
 
 ### Multiple compounding periods
 
-\index{Compound interest} If interest is paid $m$ times per year, then
-the future value after $n$ years is:
-$$FV_{n}^{m}=\$V\cdot\left(1+\frac{R}{m}\right)^{m\cdot n}.$$
-$R/m$ is often referred to as the *periodic interest rate*
-\index{Periodic interest rate}. As $m$, the frequency of compounding,
-increases, the rate becomes continuously compounded and it can be shown
-that the future value becomes:
-$$FV_{n}^{c}=\lim_{m\rightarrow\infty}\$V\cdot\left(1+\frac{R}{m}\right)^{m\cdot n}=\$V\cdot e^{R\cdot n},$$
+Often interest is paid more than once per year. In the case, the future value formula needs to be adjusted.
+
+::: {#def-futureValueMultipleCompounding name="Future value with multiple compounding periods"}
+Consider an amount $\$V$ invested for $n$ years at a simple interest
+rate of $R$ per year. If interest is paid $m$ times per year, then the future value after $n$ years is:
+$$
+FV_{n}^{m}=\$V\cdot\left(1+\frac{R}{m}\right)^{m\cdot n}.
+$$
+The value $R/m$ is called the *periodic interest rate* \index{Periodic interest rate}. As $m \rightarrow \infty$, the periodic rate becomes *continuously compounded* and the future value becomes:
+$$
+FV_{n}^{c}=\lim_{m\rightarrow\infty}\$V\cdot\left(1+\frac{R}{m}\right)^{m\cdot n}=\$V\cdot e^{R\cdot n},
+$$
 where $e^{(\cdot)}$ is the exponential function and $e^{1}=2.71828$.
+:::
 
 ::: {#exm-example0103 .example name="Future value with different compounding frequencies"}
 For a simple annual percentage rate of 10%, the value of \$1000 at the
@@ -170,56 +189,80 @@ The result with continuous compounding is
 print(V*exp(R), digits=7)
 ```
 
+You get more interest as the number of compounding periods increases but the amount of 
+extra interest earned essentially peaks at daily compounding. The difference between daily 
+and continuous compounding is very small for a \$1,000 investment at 10% simple interest rate. 
 \hfill{}$\blacksquare$
 
 The continuously compounded return analogues to the present value,
 annual return and horizon period formulas @eq-presentValue,
-@eq-annualReturn and @eq-horizon are: \begin{align*}
-V & =e^{-Rn}FV_{n},\\
-R & =\frac{1}{n}\ln\left(\frac{FV_{n}}{V}\right),\\
-n & =\frac{1}{R}\ln\left(\frac{FV_{n}}{V}\right).
-\end{align*}
+@eq-annualReturn and @eq-horizon are: 
+$$
+V  =e^{-Rn}FV_{n},
+$$ {#eq-continuousPresentValue}
+$$
+R = \frac{1}{n}\ln\left(\frac{FV_{n}}{V}\right),
+$$ {#eq-continuousAnnualReturn}
+$$
+n  =\frac{1}{R}\ln\left(\frac{FV_{n}}{V}\right).
+$$ {#eq-continuousHorizon}
 
 ### Effective annual rate
 
-We now consider the relationship between simple interest rates, periodic
+I now consider the relationship between simple interest rates, periodic
 rates, effective annual rates and continuously compounded rates. Suppose
 an investment pays a periodic interest rate of 2% each quarter. This
 gives rise to a simple annual rate of 8% (2% $\times$ 4 quarters). At
-the end of the year, \$1000 invested accrues to:
+the end of the year, \$1,000 invested accrues to:
 $$\$1000\cdot\left(1+\frac{0.08}{4}\right)^{4\cdot1}=\$1082.40.$$
-The *effective annual rate*,\index{Effective annual rate} $R_{A}$, on
-the investment is determined by the relationship:
-$$\$1000\cdot(1+R_{A})=\$1082.40.$$
+Here, compounding the periodic rate 2% for 4 quarters produces \$82.20 of interest 
+on a \$1,000 investment. What simple interest rate $R_A$, compounded once per year, 
+would produce the same amount of interest? This *effective annual rate*,\index{Effective annual rate} 
+$R_{A}$, is determined by the relationship:
+$$\$1,000\cdot(1+R_{A})=\$1,082.40.$$
 Solving for $R_{A}$ gives:
-$$R_{A}=\frac{\$1082.40}{\$1000}-1=0.0824,$$
-or $R_{A}=8.24\%.$ Here, the effective annual rate is the simple
-interest rate with annual compounding that gives the same future value
-that occurs with simple interest compounded four times per year. The
-effective annual rate is greater than the simple annual rate due to the
-payment of interest on interest.
+$$
+R_{A}=\frac{\$1,082.40}{\$1,000}-1=0.0824,
+$$
+or $R_{A}=8.24\%.$ Here, the effective annual rate 8.4% is the simple interest rate with
+annual compounding that gives the same future value as the simple rate 8% compounded 
+four times per year. The effective annual rate is greater than the simple annual to account 
+for the payment of interest on interest. 
 
-The general relationship between the simple annual rate $R$ with
-payments $m$ times per year and the effective annual rate, $R_{A}$, is:
+The general relationship between the simple annual rate $R$ with interest compounded $m$ times 
+per year and the effective annual rate, $R_{A}$, compounded once per year is given in the following definition.
 
-$$(1+R_{A})=\left(1+\frac{R}{m}\right)^{m}.$$
-Given the simple rate $R$, we can solve for the effective annual rate
-using: $$
+::: {#def-effectiveAnnualRate name="Effective annual rate"}
+Let $R$ be a simple annual interest rate with interest compounded $m$ times per year and let $R_{A}$ be the effective annual rate. The relationship between the simple annual rate and the effective annual rate is given by:
+
+$$
+(1+R_{A})=\left(1+\frac{R}{m}\right)^{m}.
+$$
+Given the simple rate $R$, you can solve for the effective annual rate using: 
+$$
 R_{A}=\left(1+\frac{R}{m}\right)^{m}-1.
-$$ {#eq-effectiveAnnualRate} Given the effective annual rate $R_{A}$, we can solve for
-the simple rate using:
-$$R=m\left[(1+R_{A})^{1/m}-1\right].$$
+$$ {#eq-effectiveAnnualRate} 
+Given the effective annual rate $R_{A}$, you can solve for the corresponding simple rate using:
+$$
+R=m\left[(1+R_{A})^{1/m}-1\right].
+$$ {#eq-simpleRateFromEffectiveAnnualRate}
+:::
+
 The relationship between the effective annual rate and the simple rate
 that is compounded continuously is:
 $$(1+R_{A})=e^{R}.$$
-Hence, \begin{align*}
-R_{A} & =e^{R}-1,\\
-R & =\ln(1+R_{A}).
-\end{align*}
+The continuously compounded effective annual rate is then
+$$
+R_{A}  = e^{R}-1.
+$$ {#eq-effectiveAnnualRateContinuous}
+Given a continuously compounded effective annual rate, the implied simple rate is 
+$$
+R =\ln(1+R_{A}).
+$$ {#eq-simpleRateFromEffectiveAnnualRateContinuous}
 
 ::: {#exm-example0104 .example name="Determine effective annual rates"}
-The effective annual rates associated with the investments in example
-@exm-example0102 are calculated below.
+The effective annual rates associated with the investments in example @exm-example0102 
+are calculated below.
 :::
 
 ```{r}
@@ -245,7 +288,7 @@ annual percentage rate, $R_{A}$, of 10%. An investment of \$100 yields
 $\$100\cdot(1.05)^{2}=\$110.25$ after one year. The effective annual
 rate, $R_{A}$, is then 10.25%. To find the continuously compounded
 simple rate that gives the same future value as investing at the
-effective annual rate we solve: $R=\ln(1.1025)=0.09758.$ That is, if
+effective annual rate you solve: $R=\ln(1.1025)=0.09758.$ That is, if
 interest is compounded continuously at a simple annual rate of 9.758%
 then \$100 invested today would grow to
 $\$100\cdot e^{0.09758}=\$110.25$
@@ -255,18 +298,18 @@ $\$100\cdot e^{0.09758}=\$110.25$
 
 ## Asset Return Calculations {#sec-AssetReturnCalculations}
 
-In this section, we review asset return calculations given initial and
-future prices associated with an investment. We first summarize the main
-type of assets used for investment purposes. Next, we cover simple
+In this section, I review asset return calculations given initial and
+future prices associated with an investment. I first summarize the main
+type of assets used for investment purposes. Next, I cover simple
 return calculations, which are typically reported in practice but are
-often not convenient for statistical modeling purposes. We then describe
+often not convenient for statistical modeling purposes. I then describe
 continuously compounded return calculations, which are more convenient
-for statistical modeling purposes. We finish the section with a
+for statistical modeling purposes. I finish the section with a
 discussion of portfolio return calculations.
 
 ### Assets
 
-When we talk about assets in this book, we mean the typical investment
+When I talk about assets in this book, I mean the typical investment
 assets available for purchase to individuals through brokerage and
 retirement accounts. These include bonds, stocks, mutual funds, exchange
 traded funds and notes, and derivative securities. Investment assets can
@@ -354,7 +397,7 @@ www.etf.com.
 A *derivative security* is an asset whose value is derived from the
 behavior of other underlying assets such as bonds, stocks, ETFs, etc.
 Common derivative securities are forwards, futures, options and swaps.
-We will not consider derivative securities is this book.
+I will not consider derivative securities is this book.
 
 Information and historical price data on many publicly traded assets is
 freely available at https://finance.yahoo.com/.
@@ -366,37 +409,41 @@ stock, bond, ETF, mutual fund, option, etc.) at time $t_{0}$ for the
 price $P_{t_{0}}$, and then selling that share at time $t_{1}$ for the
 price $P_{t_{1}}.$ If there are no intermediate cash flows (e.g.,
 dividends) between $t_{0}$ and $t_{1}$, the rate of return over the
-period $t_{0}$ to $t_{1}$ is the percentage change in price:
+period $t_{0}$ to $t_{1}$ is defined as the percentage change in price:
 $$
 R(t_{0},t_{1})=\frac{P_{t_{1}}-P_{t_{0}}}{P_{t_{0}}}.
-$$ {#eq-holding-period-return} The time between $t_{0}$ and $t_{1}$ is called the
-*holding period* \index{Holding period} and equation
-@eq-holding-period-return is called the *holding period
-return*\index{Holding period return}. In principle, the holding period
-can be any amount of time: one second, five minutes, eight hours, two
-days six minutes and two seconds, fifteen years, etc.. To simplify
-matters, in this chapter we will assume that the holding period is some
+$$ {#eq-holding-period-return} 
+The time between $t_{0}$ and $t_{1}$ is called the *holding period* \index{Holding period} 
+and equation @eq-holding-period-return is called the *holding period return*\index{Holding period return}. 
+In principle, the holding period can be any amount of time: one second, five minutes, 
+eight hours, two days six minutes and two seconds, fifteen years, etc.. To simplify
+matters, in this chapter and throughout the book I will assume that the holding period is some
 increment of calendar time; e.g., one day, one month or one year. In
-particular, we will assume a default holding period of one month in what
-follows.
+particular, I will often assume a default holding period of one month.
 
+:::{#def-simpleNetReturn name="Simple net return"}
 Let $P_{t}$ denote the price at the end of month $t$ of an asset that
 pays no dividends and let $P_{t-1}$ denote the price at the end of month
 $t-1$. Then the one-month *simple net return*\index{Simple net return}
 on an investment in the asset between months $t-1$ and $t$ is defined
-as: $$
+as: 
+$$
 R_{t}=\frac{P_{t}-P_{t-1}}{P_{t-1}}=\Delta P_{t}.
-$$ {#eq-simple-net-return} Writing $(P_{t}-P_{t-1})/P_{t-1}=P_{t}/P_{t-1}-1$, we can
-define the *simple gross return*\index{Simple gross return} as:
+$$ {#eq-simple-net-return} 
+Writing $(P_{t}-P_{t-1})/P_{t-1}=P_{t}/P_{t-1}-1$, 
+the *simple gross return*\index{Simple gross return} is defined as:
 $$
 1+R_{t}=\frac{P_{t}}{P_{t-1}}.
-$$ {#eq-simple-gross-return} The one-month gross return has the interpretation of the
+$$ {#eq-simple-gross-return} 
+:::
+
+The one-month gross return has the interpretation of the
 future value of \$1 invested in the asset for one-month with simple
 interest rate $R_{t}$. Solving @eq-simple-gross-return for $P_{t}$ gives
 $$P_{t}=P_{t-1}(1+R_{t}),$$
 which shows $P_{t}$ can be thought of as the future value of $P_{t-1}$
 invested for one month with simple return $R_{t}.$ Unless otherwise
-stated, when we refer to returns we mean net returns. Since asset prices
+stated, when I refer to returns I mean net returns. Since asset prices
 must always be non-negative (a long position in an asset is a limited
 liability investment), the smallest value for $R_{t}$ is -1 or -100%.
 
@@ -440,24 +487,38 @@ As a result, the future value of the investment is equal to the current
 value times the gross return:
 $$V_{t} = V_{t-1} \times (1 + R_{t})$$
 
-#### Multi-period returns
+#### Two-period returns
 
-\index{Multi-period returns} The simple two-month return on an
-investment in an asset between months $t-2$ and $t$ is defined as:
-$$R_{t}(2)=\frac{P_{t}-P_{t-2}}{P_{t-2}}=\frac{P_{t}}{P_{t-2}}-1.$$
-Writing $P_{t}/P_{t-2}=(P_{t}/P_{t-1})\cdot (P_{t-1}/P_{t-2})$ the
-two-month return can be expressed as: \begin{align*}
+:::{#def-twoPeriodReturn name="Two-period return"}
+The *simple two-month return* on an investment in an asset between months $t-2$ and $t$ is defined as the percentage change in price over two months:
+$$
+R_{t}(2)=\frac{P_{t}-P_{t-2}}{P_{t-2}}=\frac{P_{t}}{P_{t-2}}-1.
+$$ {#eq-two-period-return}
+The *two-month gross return* is defined as:
+$$
+1+R_{t}(2)=\frac{P_{t}}{P_{t-2}}.
+$$ {#eq-two-period-gross-return}
+:::
+Writing 
+$$
+\frac{P_{t}}{P_{t-2}} = \frac{P_{t}}{P_{t-1}} \times \frac{P_{t-1}}{P_{t-2}} 
+$$
+the two-month return can be expressed as: 
+\begin{align*}
 R_{t}(2) & =\frac{P_{t}}{P_{t-1}}\cdot\frac{P_{t-1}}{P_{t-2}}-1\\
  & =(1+R_{t})(1+R_{t-1})-1.
 \end{align*} Then the simple two-month gross return becomes:
-$$1+R_{t}(2)=(1+R_{t})(1+R_{t-1})=1+R_{t-1}+R_{t}+R_{t-1}R_{t},$$
-which is the product of the two simple one-month gross returns, called
-the *geometric average*, and not one plus the sum of the two one-month
-returns. Hence, the two-month net return is
-$$R_{t}(2)=R_{t-1}+R_{t}+R_{t-1}R_{t}.$$
-If, however, $R_{t-1}$ and $R_{t}$ are close to zero then
-$R_{t-1}R_{t}\approx0$ and $1+R_{t}(2)\approx1+R_{t-1}+R_{t}$ so that
-$R_{t}(2)\approx R_{t-1}+R_{t}$.
+$$
+1+R_{t}(2)=(1+R_{t})(1+R_{t-1})=1+R_{t-1}+R_{t}+R_{t-1}R_{t},
+$$
+which is the *product* of the two simple one-month gross returns and not one plus the 
+sum of the two one-month returns. Hence, the two-month net return is
+$$
+R_{t}(2)=R_{t-1}+R_{t}+R_{t-1}R_{t},
+$$
+which is not the sum of the two one-month returns unless one of the one-month returns is zero. 
+If, however, either $R_{t-1}$ or $R_{t}$ is close to zero then $R_{t-1}R_{t}\approx0$ and 
+$1+R_{t}(2)\approx1+R_{t-1}+R_{t}$ so that $R_{t}(2)\approx R_{t-1}+R_{t}$.
 
 ::: {#exm-example0107 .example name="Computing two-period returns"}
 Continuing with the previous example, suppose that the price of
@@ -493,7 +554,7 @@ R
 cumprod(1+R) - 1
 ```
 
-In the above, `P[2:3]` represents the 2nd and 3rd elements of `P`, and
+In the above, `P[2:3]` represents the 2nd and 3rd elements of the price vector `P`, and
 `P[1:2]` represents the 1st and 2nd elements of `P`.
 
 \hfill{}$\blacksquare$
@@ -506,18 +567,28 @@ That is, a 50% drop followed by a 50% gain does not return wealth to its
 initial level. In the second period, the return has to be 100% in order
 for wealth to return to its initial level.
 
-In general, the $k$-month gross return is defined as the product of $k$
-one-month gross returns: $$
-\begin{aligned}1+R_{t}(k) & =(1+R_{t})(1+R_{t-1})\cdots(1+R_{t-k+1})\\
- & =\prod_{j=0}^{k-1}(1+R_{t-j}).\end{aligned}
+#### Multi-period returns
+
+::: {#def-multiPeriodReturn name="Multi-period return"}
+The $k$-month simple return on an investment in an asset between months $t-k$ and $t$ is defined as the percentage change in price over $k$ months:
+$$
+R_{t}(k)=\frac{P_{t}-P_{t-k}}{P_{t-k}}=\frac{P_{t}}{P_{t-k}}-1.
 $$ {#eq-k-period-return}
+Writing
+$$
+\frac{P_{t}}{P_{t-k}} = \frac{P_{t}}{P_{t-1}} \times \frac{P_{t-1}}{P_{t-2}} \times \cdots \times \frac{P_{t-k+1}}{P_{t-k}} = (1+R_{t})(1+R_{t-1})\cdots(1+R_{t-k+1}),
+$$
+the $k$-month gross return is defined as the product of $k$ one-month gross returns: 
+$$
+1+R_{t}(k)=(1+R_{t})(1+R_{t-1})\cdots(1+R_{t-k+1}) = \prod_{j=0}^{k-1}(1+R_{t-j}).
+$$ {#eq-k-period-gross-return}
+:::
 
 If all returns are close to zero then
-$$R_{t}(k) \approx \sum_{j=0}^{k-1} R_{t-j}$$
+$$R_{t}(k) \approx \sum_{j=0}^{k-1} R_{t-j},$$
+which is a useful approximation when considering returns over short horizons (e.g., daily returns). 
 
-As with the one-month return, the multi-period return can also be
-derived in the same way if multiple shares of an asset are initially
-purchased. Using $V_{t-j} = s \times P_{t-j}$ we have 
+As with the one-month return, the multi-period return can also be derived in the same way if multiple shares of an asset are initially purchased. Using $V_{t-j} = s \times P_{t-j}$ you get 
 \begin{align}
 \frac{V_{t}}{V_{t-k}} &= \frac{V_{t}}{V_{t-1}} \times \frac{V_{t-1}}{V_{t-2}} \ldots \frac{V_{t-k+1}}{V_{t-k}} \\
 &= \frac{s\times P_{t}}{s\times P_{t-1}} \times \frac{s\times P_{t-1}}{s\times P_{t-2}} \ldots \frac{s\times P_{t-k+1}}{s\times P_{t-k}} \\
@@ -594,7 +665,7 @@ and the real one-period return is: $$
 &=\frac{P_{t}}{P_{t-1}}\cdot\frac{CPI_{t-1}}{CPI_{t}}-1.\end{aligned}
 $$ {#eq-simple-real-return} The one-period gross real return return is: $$
 1+R_{t}^{\textrm{Real}}=\frac{P_{t}}{P_{t-1}}\cdot\frac{CPI_{t-1}}{CPI_{t}}.
-$$ {#eq-simple-real-gross-return} If we define inflation between periods $t-1$ and $t$ as:
+$$ {#eq-simple-real-gross-return} If you define inflation between periods $t-1$ and $t$ as:
 $$
 \pi_{t}=\frac{CPI_{t}-CPI_{t-1}}{CPI_{t-1}}=\%\Delta CPI_{t},
 $$ {#eq-inflation} then $1+\pi_{t}=CPI_{t}/CPI_{t-1}$ and
@@ -603,7 +674,7 @@ R_{t}^{\textrm{Real}}=\frac{1+R_{t}}{1+\pi_{t}}-1.
 $$ {#eq-simple-real-return-2}
 
 [^01-returncalculations-new-1]: The CPI is usually normalized to 1 or
-    100 in some base year. We assume that the CPI is normalized to 1 in
+    100 in some base year. I assume that the CPI is normalized to 1 in
     the base year for simplicity.
 
 ::: {#exm-example0110 .example name="Compute real return"}
@@ -667,6 +738,7 @@ return is
 $$R_{t}^{Atax} = (0.05)(1-0.20) = (0.05)(0.80) = 0.04.  $$
 The amount paid in taxes is $\$1000\times(0.05)\times(0.2)=\$10$, and
 the after tax profit is $\$50 - \$10 = \$40$.
+\hfill{}$\blacksquare$
 :::
 
 #### Return on foreign investment {#sec-return-on-foreign-investment}
@@ -675,10 +747,10 @@ the after tax profit is $\$50 - \$10 = \$40$.
 country to buy an asset in another country as an investment. If the two
 countries have different currencies then the exchange rate between the
 two currencies influences the return on the asset. To illustrate,
-consider an investment in a foreign stock (e.g. a stock trading on the
+consider an investment in a foreign stock (e.g., a stock trading on the
 London stock exchange) by a U.S. national (domestic investor). The
 domestic investor takes U.S. dollars, converts them to the foreign
-currency (e.g. British Pound) via the exchange rate (price of foreign
+currency (e.g., British Pound) via the exchange rate (price of foreign
 currency in U.S. dollars) and then purchases the foreign stock using the
 foreign currency. When the stock is sold, the proceeds in the foreign
 currency must then be converted back to the domestic currency.
@@ -724,43 +796,54 @@ foreign asset in the foreign currency, $1+R_{t}^{UK}:$ \begin{eqnarray*}
  & = & 0.975.
 \end{eqnarray*} In this example, the U.S. investor loses money even
 though the British investment has a positive rate of return because of
-the large drop in the exchange rate.
+the large drop in the exchange rate. This example illustrates the importance of 
+considering *exchange rate risk* when investing in foreign assets.
 
 #### Annualizing returns
 
 Very often returns over different horizons are annualized, i.e.,
 converted to an annual return, to facilitate comparisons with other
 investments. The annualization process depends on the holding period of
-the investment and an implicit assumption about compounding. We
+the investment and an implicit assumption about compounding. I
 illustrate with several examples using monthly returns. The same
 techniques work with different holding periods.
 
-To start, if our investment horizon is one year then the annual gross
-and net returns are computed directly from the 12 one-month returns:
+
+::: {#exm-example0111b .example name="Compute annualized return from 12 one-month returns"}
+Suppose you have 12 one-month returns and you want to report an annual return on the investment. 
+Then the annual gross and net returns are computed directly from the 12 one-month returns:
 \begin{align*}
 1+R_{A} & =1+R_{t}(12)=\frac{P_{t}}{P_{t-12}}=(1+R_{t})(1+R_{t-1})\cdots(1+R_{t-11}),\\
 R_{A} & =R_{t}(12).
 \end{align*} 
-In this case, no compounding is required to create an
-annual return.
+In this case, no compounding is required to create an annual return.
+\hfill{}$\blacksquare$
+:::
 
-Next, consider a one-month investment in an asset with return $R_{t}$.
-What is the annualized return on this investment? If we assume that we
-receive the same return $R=R_{t}$ every month for the year, then the
-gross annual return is:
-$$1+R_{A}=1+R_{t}(12)=(1+R)^{12}.$$
-That is, the *annual gross return* \index{Annual gross return} is
-defined as the assumed common monthly return compounded for 12 months.
-The net annual return is then:
-$$R_{A}=(1+R)^{12}-1.$$
-It is important to recognize that this annualization calculation assumes
+::: {#exm-example0111c .example name="Compute annualized return from a single one-month return"}
+Suppose you have a one-month investment in an asset with return $R_{t}$. What is the annualized 
+return on this investment? To answer this you must make an assumption about the future returns. 
+For example, if you assume that you receive the same return $R=R_{t}$ every month for the year, 
+then the gross annual return is:
+$$
+1+R_{A}=1+R_{t}(12)=(1+R)^{12}.
+$$
+That is, the *annual gross return* on the one-month investment is defined as the assumed 
+common monthly return compounded for 12 months. Accordingly, the *annual net return* is then:
+$$
+R_{A}=(1+R)^{12}-1.
+$$
+\hfill{}$\blacksquare$
+:::
+
+In the above example, it is important to recognize that this annualization calculation assumes
 the same monthly return $R$ for each of the 12 months. This can be
 highly inaccurate and misleading if the actual future monthly returns
 are much different than $R$. The following examples illustrate.
 
 ::: {#exm-example0111 .example name="Compute annualized return from one-month return"}
 In the first example, the one-month return, $R_{t}$, on Microsoft stock
-was 5.88%. If we assume that we can get this return for 12 months then
+was 5.88%. If you assume that you can get this return for 12 months then
 the annualized return is: $R_{A}=(1.0588)^{12}-1=1.9850-1=0.9850,$ 
 or 98.50% per year. Pretty good! However, this is likely to be highly
 inaccurate since getting 5\% every month for a year is highly unlikely
@@ -769,8 +852,8 @@ for a risky stock like Microsoft.
 \hfill{}$\blacksquare$
 :::
 
-Now, consider a two-month investment with return $R_{t}(2).$ If we
-assume that we receive the same two-month return $R(2)=R_{t}(2)$ for the
+Now, consider a two-month investment with return $R_{t}(2).$ If you
+assume that you receive the same two-month return $R(2)=R_{t}(2)$ for the
 next six two-month periods, then the gross and net annual returns are:
 \begin{align*}
 1+R_{A} & =(1+R(2))^{6},\\
@@ -780,7 +863,7 @@ return compounded for 6 months.
 
 ::: {#exm-example0112 .example name="Compute annualized return from two-month return"}
 Suppose the two-month return, $R_{t}(2),$ on Microsoft stock is 12.5%.
-If we assume that we can get this two-month return for the next 6
+If you assume that you can get this two-month return for the next 6
 two-month periods then the annualized return is: $R_{A}=(1.1250)^{6}-1=2.0273-1=1.0273,$ 
 or 102.73% per year. As with the previous example, this result is likely to be inaccurate 
 as it is highly unlikely to get 12.5% every two months for the rest of the
@@ -789,27 +872,33 @@ year.
 \hfill{}$\blacksquare$
 :::
 
-As the last example, suppose that our investment horizon is two years.
-That is, we start our investment at time $t-24$ and cash out at time
-$t$. The two-year gross return is then $1+R_{t}(24)=P_{t}/P_{t-24}$.
-What is the annual return on this two-year investment? The process is
-the same as computing the effective annual rate. To determine the annual
-return we solve the following relationship for $R_{A}$: 
+::: {#exm-example0112b .example name="Compute annualized return from 6 two-month returns"}
+Suppose your investment horizon is two years. That is, you start your investment 
+at month $t-24$ and cash out at month $t$. The two-year gross return is 
+then $1+R_{t}(24)=P_{t}/P_{t-24}$. What is the annual return on this two-year 
+investment? The process is the same as computing the effective annual rate. To 
+determine the annual return you solve the following relationship for $R_{A}$: 
 \begin{align*}
-(1+R_{A})^{2} & =1+R_{t}(24)\rightarrow\\
+(1+R_{A})^{2} & =1+R_{t}(24)\Rightarrow\\
 R_{A} & =\left(1+R_{t}(24)\right)^{1/2}-1.
 \end{align*} 
 In this case, the annual return is compounded twice to get
 the two-year return and the relationship is then solved for the annual
 return.
 
+\hfill{}$\blacksquare$
+:::
+
 ::: {#exm-example0113 .example name="Compute annualized return from two-year return"}
 Suppose that the price of Microsoft stock $24$ months ago is
 $P_{t-24}=\$50$ and the price today is $P_{t}=\$90$. The two-year gross
 return is $1+R_{t}(24)=\$90/\$50=1.8000$ which yields a two-year net
 return of $R_{t}(24)=0.80=80\%$. The annual return for this investment
-is defined as: $R_{A}=(1.800)^{1/2}-1=1.3416-1=0.3416$ or 34.16%
-per year.
+is defined as: 
+$$
+R_{A}=(1.800)^{1/2}-1=1.3416-1=0.3416
+$$ 
+or 34.16% per year.
 
 \hfill{}$\blacksquare$
 :::
@@ -825,14 +914,19 @@ $$R(n)=(1+R_{1})(1+R_{2})\cdots(1+R_{n})-1.$$
 What is the average monthly return? There are two possibilities. The
 first is the *arithmetic average
 return*\index{Arithmetic average return}:
-$$\bar{R}^{Arith}=\frac{1}{n}\left(R_{1}+R_{2}+\cdots+R_{n}\right).$$
-
+$$
+\bar{R}^{Arith}=\frac{1}{n}\left(R_{1}+R_{2}+\cdots+R_{n}\right).
+$$ {#eq-arithmetic-average-return}
 The second is the *geometric average
 return*\index{Geometric average return}:
-$$\bar{R}^{Geo}=\left[(1+R_{1})(1+R_{2})\cdots(1+R_{n})\right]^{1/n}-1.$$
+$$
+\bar{R}^{Geo}=\left[(1+R_{1})(1+R_{2})\cdots(1+R_{n})\right]^{1/n}-1.
+$$ {#eq-geometric-average-return}
 Notice that the geometric average return is the monthly return which
 compounded monthly for $n$ months gives the gross $n-$month return
-$$(1+\bar{R}^{Geo})^{n}=1+R(n).$$
+$$
+(1+\bar{R}^{Geo})^{n}=1+R(n).
+$$
 As a measure of average investment performance, the geometric average
 return is preferred to the arithmetic average return. To see why,
 consider a two-month investment horizon with monthly returns $R_{1}=0.5$
@@ -853,66 +947,83 @@ compound two-month return using $\bar{R}^{Geo}=-0.134$ is equal to
 $R(2)=-0.25.$
 
 While the arithmetic average return may not be the most appropriate
-measure of actual average investment performance, we shall see in the
+measure of actual average investment performance, you shall see in the
 following chapters that it is a useful estimate of expected performance.
 
 ### Continuously compounded returns
 
-\index{Continuously compounded returns} In this section we define
+\index{Continuously compounded returns} In this section I define
 continuously compounded returns from simple returns, and describe their
 properties.
 
 #### One-period returns
 
-Let $R_{t}$ denote the simple monthly return on an investment. The
+::: {#def-ccReturn name="Continuously compounded return"}
+Let $R_{t}$ denote the simple monthly return on an investment. The 
 *continuously compounded monthly return*, $r_{t}$, is defined as:
 $$
 r_{t}=\ln(1+R_{t})=\ln\left(\frac{P_{t}}{P_{t-1}}\right),
-$$ {#eq-cc-return} where $\ln(\cdot)$ is the natural log
-function[^01-returncalculations-new-2]. To see why $r_{t}$ is called the
-continuously compounded return, take the exponential of both sides of
-@eq-cc-return to give:
-$$e^{r_{t}}=1+R_{t}=\frac{P_{t}}{P_{t-1}}.$$
-Rearranging we get $P_{t}=P_{t-1}e^{r_{t}}=P_{t-t}(1+R_{t})$, so that
-$r_{t}$ is the continuously compounded growth rate in prices between
+$$ {#eq-cc-return} 
+where $\ln(\cdot)$ is the natural log function[^01-returncalculations-new-2]. 
+:::
+To see why $r_{t}$ is called the continuously compounded return, take the 
+exponential of both sides of @eq-cc-return to give:
+$$
+e^{r_{t}}=1+R_{t}=\frac{P_{t}}{P_{t-1}}.
+$$
+Rearranging and solving for $P_{t}$ gives 
+$$
+P_{t}=P_{t-1}e^{r_{t}}=P_{t-t}(1+R_{t}),
+$$
+so that $r_{t}$ is the continuously compounded growth rate in prices between
 months $t-1$ and $t$. This is to be contrasted with $R_{t}$, which is
 the simple growth rate in prices between months $t-1$ and $t$ without
 any compounding. As a result, $r_{t}$ is always smaller than $R_{t}$.
-Furthermore, since $\ln\left(x/y\right)=\ln(x)-\ln(y)$ it follows that:
-\begin{align*}
-r_{t} & =\ln\left(\frac{P_{t}}{P_{t-1}}\right)\\
-& =\ln(P_{t})-\ln(P_{t-1})\\
-& =p_{t}-p_{t-1},
-\end{align*} where $p_{t}=\ln(P_{t})$. Hence, the continuously
-compounded monthly return, $r_{t}$, can be computed simply by taking the
-first difference of the natural logarithms of monthly prices.
+
+Using the result $\ln\left(x/y\right)=\ln(x)-\ln(y)$ you can alternatively compute
+the continuously compounded return as:
+$$
+r_{t} =\ln\left(\frac{P_{t}}{P_{t-1}}\right) =\ln(P_{t})-\ln(P_{t-1}) = p_{t}-p_{t-1},
+$$ {#eq-cc-return2} 
+where $p_{t}=\ln(P_{t})$. Hence, the continuously compounded monthly return, $r_{t}$, 
+can be computed simply by taking the first difference of the natural logarithms of 
+monthly prices.
 
 [^01-returncalculations-new-2]: The continuously compounded return is
     always defined since asset prices, $P_{t}$, are always non-negative.
     Properties of logarithms and exponentials are discussed in the
     appendix to this chapter.
 
-If the simple return $R_{t}$ is close to zero ($R_{t}\approx0$) then
-$r_{t}=\mathrm{ln}(1+R_{t})\approx R_{t}$. This result can be shown
-using a first order Taylor series approximation to the function
-$f(x)=\mathrm{ln}(1+x).$ Recall, for a continuous and differentiable
-function $f(x)$ the first order Taylor series approximation of $f(x)$
+Although $r_t$ is always smaller than $R_t$, it is close to $R_t$ when $R_t$ is small. This
+is stated in the following proposition.
+::: {#prp-ccReturnApprox name="Continuously compounded return approximation"}
+Suppose the simple return $R_{t}$ is close to zero ($R_{t}\approx0$). Then
+$$
+r_{t}=\mathrm{ln}(1+R_{t})\approx R_{t}
+$$. 
+:::
+The above result can be derived using a first order Taylor series approximation 
+to the function $f(x)=\mathrm{ln}(1+x).$ Recall, for a continuous and differentiable
+function $f(x)$ the *first order Taylor series approximation* of $f(x)$
 about the point $x=x_{0}$ is
-$$f(x)=f(x_{0})+f^{\prime}(x_{0})(x-x_{0})+\mathrm{remainder},$$
+$$
+f(x)=f(x_{0})+f^{\prime}(x_{0})(x-x_{0})+\mathrm{remainder},
+$$ {#eq-taylor-series}
 where $f^{\prime}(x_{0})$ denotes the derivative of $f(x)$ evaluated at
-$x_{0}.$ Let $f(x)=\mathrm{ln}(1+x)$ and set $x_{0}=0.$ Note that
-$$f(0)=\mathrm{ln}(1)=0,\,f^{\prime}(x)=\frac{1}{1+x},\,f^{\prime}(0)=1.$$
-Then, using the first order Taylor series approximation,
-$\mathrm{ln}(1+x)\approx x$ when $x\approx0.$
+$x_{0}$. Let $f(x)=\mathrm{ln}(1+x)$ and set $x_{0}=0$. Then
+$$
+$$
+Using the first order Taylor series approximation @eq-taylor-series, the remainder 
+term is small when $x\approx0$ and $\mathrm{ln}(1+x)\approx x$ when $x\approx0.$
 
 ::: {#exm-example0114 .example name="Compute continuously compounded returns"}
-Using the price and return data from Example @exm-example0106, the
+Using the price and return data from @exm-example0106, the
 continuously compounded monthly return on Microsoft stock can be
 computed in two ways: \begin{eqnarray*}
 r_{t} & = & \mathrm{ln}(1.0588)=0.0571\\
 r_{t} & = & \mathrm{\ln}(90)-\ln(85)=4.4998-4.4427=0.0571
 \end{eqnarray*} Notice that $r_{t}$ is slightly smaller than $R_{t}$.
-Using R, the calculations are
+Using R, the calculations are:
 :::
 
 ```{r}
@@ -921,15 +1032,17 @@ Using R, the calculations are
 c(log(1 + R0), log(P0) - log(Pm1))
 ```
 
-Notice that the R function `log()` computes the natural logarithm.
+Notice that the R function `log()` computes the natural logarithm $\ln(x)$.
 
 \hfill{}$\blacksquare$
 
 Given a monthly continuously compounded return $r_{t}$, it is
 straightforward to solve back for the corresponding simple net return
-$R_{t}$: $$
+$R_{t}$: 
+$$
 R_{t}=e^{r_{t}}-1.
-$$ {#eq-simpleReturnFromCCreturn} Hence, nothing is lost by considering continuously
+$$ {#eq-simpleReturnFromCCreturn} 
+Hence, nothing is lost by considering continuously
 compounded returns instead of simple returns. Continuously compounded
 returns are very similar to simple returns as long as the return is
 relatively small, which it generally will be for monthly or daily
@@ -941,7 +1054,8 @@ actual amount of money lost is determined by the simple return
 
 ::: {#exm-example0115 .example name="Determine simple returns from continuously compounded returns"}
 In the previous example, the continuously compounded monthly return on
-Microsoft stock is $r_{t}=5.71\%$. The simple net return is then: $R_{t}=e^{.0571}-1=0.0588.$
+Microsoft stock is $r_{t}=5.71\%$. The simple net return is 
+then: $R_{t}=e^{.0571}-1=0.0588.$
 
 \hfill{}$\blacksquare$
 :::
@@ -1003,7 +1117,7 @@ c(r[1] + r[2], sum(r), p[3] - p[1], diff(p, 2))
 
 \hfill{}$\blacksquare$
 
-Previously, we saw that simple two-period returns were not symmetric.
+Previously, you saw that simple two-period returns were not symmetric.
 Continuously compounded two-period returns, however, are symmetric. To
 see this, suppose $r_{t-1}=-0.5$ and $r_{t}=0.5$. Notice that the
 implied simple returns are not symmetric: $R_{t-1}=e^{-0.5}-1=-0.3935$
@@ -1014,7 +1128,7 @@ $$\$1 \times (1-0.3935)(1+0.6487) = \$1$$
 The continuously compounded $k$-month return is defined by:
 $$r_{t}(k)=\ln(1+R_{t}(k))=\ln\left(\frac{P_{t}}{P_{t-k}}\right)=p_{t}-p_{t-k}.$$
 Using similar manipulations to the ones used for the continuously
-compounded two-month return, we can express the continuously compounded
+compounded two-month return, you can express the continuously compounded
 $k$-month return as the sum of $k$ continuously compounded monthly
 returns: $$
 r_{t}(k)=\sum_{j=0}^{k-1}r_{t-j}.
@@ -1104,10 +1218,10 @@ continuously compounded UK return.
 
 #### Annualizing continuously compounded returns
 
-Just as we annualized simple monthly returns, we can also annualize
-continuously compounded monthly returns. We illustrate using monthly
-continuously compounded returns. First, if our investment horizon is one
-year and we observe 12 monthly continuously compounded returns then the
+Just as you annualized simple monthly returns, you can also annualize
+continuously compounded monthly returns. I illustrate using monthly
+continuously compounded returns. First, if your investment horizon is one
+year and you observe 12 monthly continuously compounded returns then the
 annual continuously compounded return is just the sum of the twelve
 monthly continuously compounded returns: \begin{align*}
 r_{A} & =r_{t}(12)=r_{t}+r_{t-1}+\cdots+r_{t-11}\\
@@ -1117,23 +1231,23 @@ defined as:
 $$\overline{r}_{m}=\frac{1}{12}\sum_{j=0}^{11}r_{t-j}.$$
 Notice that:
 $$12\cdot\overline{r}_{m}=\sum_{j=0}^{11}r_{t-j}$$
-so that we may alternatively express $r_{A}$ as:
+so that you may alternatively express $r_{A}$ as:
 $$r_{A}=12\cdot\overline{r}_{m}.$$
 That is, the continuously compounded annual return is twelve times the
 average of the continuously compounded monthly returns.
 
 Next, consider a one-month investment in an asset with continuously
-compounded return $r_{t} = r$. If we assume that we receive the same
+compounded return $r_{t} = r$. If you assume that you receive the same
 return $r$ every month for the year, then the annual continuously
 compounded return is just 12 times the monthly continuously compounded
 return:
 $$r_{A}=r_{t}(12)=r + r + \ldots + r = 12\cdot r.$$
-If we have a two-month continuously compounded return of $r(2)$, and we
-assume that we get this same return every two months for the next year,
+If you have a two-month continuously compounded return of $r(2)$, and you
+assume that you get this same return every two months for the next year,
 then the annualized continuously compounded return is
 $$r_{A} = 6\cdot r(2).$$
 
-Finally, suppose we have a 2-year continuously compounded return
+Finally, suppose you have a 2-year continuously compounded return
 $r(24)$. Then the continuously compounded annual return can be defined
 using
 $$2\cdot r_{A} = r(24) \Longrightarrow  r_{A} = \frac{r(24)}{2}.$$
@@ -1143,11 +1257,13 @@ $$2\cdot r_{A} = r(24) \Longrightarrow  r_{A} = \frac{r(24)}{2}.$$
 \index{Portfolio returns} Consider an investment in two assets named
 asset $A$ and asset $B$ (e.g. Amazon and Boeing stock). Let $V_{A}$ and
 $V_{B}$ denote the dollar amounts invested in assets A and B,
-respectively. We call such an investment in multiple assets a
+respectively. you call such an investment in multiple assets a
 *portfolio*. The total dollar amount invested in the portfolio is
 $V_p = V_A + V_B$. The shares of dollars invested in assets $A$ and $B$
 are:
-$$x_A = \frac{V_A}{V_p}, \space x_B = \frac{V_B}{V_p}.$$
+$$
+x_A = \frac{V_A}{V_p}, \space x_B = \frac{V_B}{V_p}.
+$$
 Notice that $x_A + x_B = 1$ by construction ($100\%$ of all wealth is
 invested in the two assets).
 
@@ -1159,18 +1275,22 @@ $(x_{A}=0,x_{B}=1)$ (everything invested in asset B). Negative values
 for $x_{A}$ or $x_{B}$ are possible and represent short sales (to be
 discussed in later chapters). Given $x_A$, $x_B$, and $V_p$, the dollar
 amounts invested in assets $A$ and $B$ are:
-$$V_A =  x_{A} \times V_p, V_B = x_{B} \times V_{p}.$$
+$$
+V_A =  x_{A} \times V_p, V_B = x_{B} \times V_{p}.
+$$
 
 The rate of return on a portfolio can be represented as a share weighted
 average of the rates of returns on the assets in the portfolio. To see
 this, let $R_{A}$ and $R_{B}$ denote the simple one-period returns on
-assets $A$ and $B$. We wish to determine the simple one-period return on
+assets $A$ and $B$. You want to determine the simple one-period return on
 the portfolio defined by $(x_{A},x_{B})$ and initial wealth $V_p$. To do
 this, note that at the end of the holding period, the investments in
 assets $A$ and $B$ are worth $V_p \times x_{A}(1+R_{A})$ and
 $V_p\times x_{B}(1+R_{B})$, respectively. Hence, at the end of the
 holding period the portfolio is worth:
-$$V_p\times\left[x_{A}(1+R_{A})+x_{B}(1+R_{B})\right] = V_p \times (1 + R_{p}).$$
+$$
+V_p\times\left[x_{A}(1+R_{A})+x_{B}(1+R_{B})\right] = V_p \times (1 + R_{p}).
+$$
 Hence, $x_{A}(1+R_{A})+x_{B}(1+R_{B})=1+R_p$ defines the *portfolio
 gross return*. The portfolio gross return is equal to a weighted average
 of the gross returns on assets $A$ and $B$, where the weights are the
@@ -1178,10 +1298,14 @@ portfolio shares $x_{A}$ and $x_{B}$.
 
 To determine the portfolio rate of return, re-write the portfolio gross
 return as:
-$$1+R_{p}=x_{A}+x_{B}+x_{A}R_{A}+x_{B}R_{B}=1+x_{A}R_{A}+x_{B}R_{B},$$
+$$
+1+R_{p}=x_{A}+x_{B}+x_{A}R_{A}+x_{B}R_{B}=1+x_{A}R_{A}+x_{B}R_{B},
+$$
 since $x_{A}+x_{B}=1$ by construction. Then the *portfolio rate of
 return* is:
-$$R_{p}=x_{A}R_{A}+x_{B}R_{B},$$
+$$
+R_{p}=x_{A}R_{A}+x_{B}R_{B},
+$$
 which is equal to a weighted average of the simple returns on assets $A$
 and $B$, where the weights are the portfolio shares $x_{A}$ and $x_{B}$.
 
@@ -1195,16 +1319,18 @@ Consider a portfolio of Microsoft and Starbucks stock in which you
 initially purchase ten shares of each stock at the end of month $t-1$ at
 the prices $P_{\textrm{msft},t-1}=\$85$ and
 $P_{\textrm{sbux},t-1}=\$30$, respectively. The initial value of the
-portfolio is $V_{t-1}=10\times\$85+10\times30=\$1,150$. The portfolio
-shares are $x_{\textrm{msft}}=850/1150=0.7391$ and
-$x_{\textrm{sbux}}=30/1150=0.2609$. Suppose at the end of month $t$,
+portfolio is $V_{t-1}=10\times\$85+10\times\$30=\$1,150$. The portfolio
+shares are
+$$
+x_{\textrm{msft}}=\frac{\$850}{\$1,150}=0.7391, ~ x_{\textrm{sbux}}=\frac{\$300}{\$1,150}=0.2609.
+$$ 
+Suppose at the end of month $t$,
 $P_{\textrm{msft},t}=\$90$ and $P_{\textrm{sbux},t}=\$28$. Assuming that
 Microsoft and Starbucks do not pay a dividend between periods $t-1$ and
 $t$, the one-period returns on the two stocks are: 
-\begin{align*}
-R_{\textrm{msft},t} & =\frac{\$90-\$85}{\$85}=0.0588,\\
-R_{\textrm{sbux},t} & =\frac{\$28-\$30}{\$30}=-0.0667.
-\end{align*} 
+$$
+R_{\textrm{msft},t} =\frac{\$90-\$85}{\$85}=0.0588, ~ R_{\textrm{sbux},t} =\frac{\$28-\$30}{\$30}=-0.0667.
+$$ 
 The one-month rate of return on the portfolio is then: 
 $$
 R_{p,t}=(0.7391)(0.0588)+(0.2609)(-0.0667)=0.02609,
@@ -1285,11 +1411,11 @@ examples.
 
 *Prices and shares framework*
 
-We illustrate the buy-and-hold scenario 1 using a simple portfolio
+I illustrate the buy-and-hold scenario 1 using a simple portfolio
 consisting of two assets $A$ and $B$ invested for three months starting
-at time $t-3$ in a framework where we know the asset prices each period
+at time $t-3$ in a framework where I know the asset prices each period
 and the initial amounts invested in each
-asset[^01-returncalculations-new-4]. In particular, we assume that the
+asset[^01-returncalculations-new-4]. In particular, I assume that the
 initial portfolio consists of $s_A = 100$ shares of asset $A$ and
 $s_B = 50$ shares of asset $B$. The end-of-month prices and values
 ($V_{i,t} = s_i \times P_{i,t}, i=A,B$) of the assets as well as the
@@ -1313,7 +1439,7 @@ table.vals
 ```
 
 In the above table the time index $t$ represents the end-of-month $t$.
-Slightly abusing notation, we can also say that the time index $t-1$
+Slightly abusing notation, I can also say that the time index $t-1$
 represents the beginning of month $t$. This is important because for the
 portfolio calculations the end-of-month values $V_{A,t-1}$, $V_{B,t-1}$
 and $V_{p,t-1}$ are used to calculate the portfolio weights to be
@@ -1409,11 +1535,11 @@ table.ctr
 *Returns and weights framework*
 
 The above calculations are based on knowing asset prices and initial
-shares purchased for each asset. In many situations, we only have return
+shares purchased for each asset. In many situations, you only have return
 information and initial portfolio weights on each asset and the initial
 value of the portfolio. Using the above example, the initial portfolio
 weights are $x_{A,t-3}=x_{B,t-3}=0.5$ and the initial value of the
-portfolio is $V_{p,t-3}=1000$. We also know the returns, $R_{i,t}$, each
+portfolio is $V_{p,t-3}=1000$. You also know the returns, $R_{i,t}$, each
 period for the two assets:
 
 ```{r}
@@ -1421,7 +1547,7 @@ period for the two assets:
 table.returns[, c("R.A", "R.B")]
 ```
 
-We deduce the initial asset values using \begin{align}
+You can deduce the initial asset values using \begin{align}
 V_{A,t-3} &= x_{A,t-3}\times V_{p,t-3} = 0.5\times 1000 = 500, \\
 V_{B,t-3} &= x_{B,t-3}\times V_{p,t-3} = 0.5\times 1000 = 500.
 \end{align}
@@ -1505,13 +1631,13 @@ x_{B,t-2} &= \frac{V_{B,t-2}}{V_{p,t-2}} = \frac{550}{1250} = 0.44
 \end{align} The end-of-month portfolio weights are $x_{A,t-2} = 0.56$
 and $x_{B,t-2} = 0.44$, which are not equal to $0.5$. Since
 $V_{p,t-2} = 1250$, to rebalance the portfolio so that
-$x_{A,t-2} = x_{B,t-2} = 0.5$ we need
+$x_{A,t-2} = x_{B,t-2} = 0.5$ you need
 $V_{A,t-2} = V_{B,t-2} = V_{p,t-2}/2 = 625$. This requires selling
 $700 - 625 = 75$ of asset A and purchasing $75$ of asset B at the
-end-of-month $t-2$. Then, at the beginning of month $t-1$ we have
+end-of-month $t-2$. Then, at the beginning of month $t-1$ you have
 $V_{A,t-2} = V_{B,t-2} = 625$ and $x_{A,t-2} = x_{B,t-2} = 0.5$.
 
-At the end-of-month $t-1$, for the rebalanced portfolio we have
+At the end-of-month $t-1$, for the rebalanced portfolio you have
 \begin{align}
 V_{A,t-1} &= V_{A,t-2}\times (1 + R_{A,t-1}) = 625 \times (1 - 0.1429) = 535.69 \\
 V_{B,t-1} &= V_{B,t-2}\times (1 + R_{B,t-1}) = 625 \times (1 + 0.0909) = 681.81 \\
@@ -1520,12 +1646,12 @@ x_{A,t-1} &= \frac{V_{A,t-1}}{V_{p,t-1}} = \frac{535.69}{1217.50} = 0.44 \\
 x_{B,t-1} &= \frac{V_{B,t-1}}{V_{p,t-1}} = \frac{681.81}{1217.50} = 0.56 
 \end{align} The end-of-month portfolio weights are $x_{A,t-1} = 0.44$
 and $x_{B,t-1} = 0.56$. Since $V_{p,t-1} = 1217.50$, to rebalance the
-portfolio we need $V_{A,t-1} = V_{B,t-1} = 608.75$. This requires
+portfolio you need $V_{A,t-1} = V_{B,t-1} = 608.75$. This requires
 selling $73.06$ of asset B and purchasing $73.06$ of asset A and the
-end-of-month t-1. Then, at the beginning of month $t$ we have
+end-of-month t-1. Then, at the beginning of month $t$ you have
 $V_{A,t-1} = V_{B,t-1} = 608.75$ and $x_{A,t-1} = x_{B,t-1} = 0.5$.
 
-Finally, at the end-of-month $t$, for the rebalanced portfolio we have
+Finally, at the end-of-month $t$, for the rebalanced portfolio you have
 \begin{align}
 V_{A,t} &= V_{A,t-1}\times (1 + R_{A,t}) = 608.75 \times (1 + 0.1667) = 710.23 \\
 V_{B,t} &= V_{B,t-1}\times (1 + R_{B,t}) = 608.75 \times (1 - 0.3333) = 405.85 \\
@@ -1534,9 +1660,9 @@ x_{A,t} &= \frac{V_{A,t}}{V_{p,t}} = \frac{710.23}{1116.08} = 0.64 \\
 x_{B,t} &= \frac{V_{B,t}}{V_{p,t}} = \frac{405.85}{1116.08} = 0.36 
 \end{align} The end-of-month portfolio weights are $x_{A,t} = 0.64$ and
 $x_{B,t} = 0.36$. Since $V_{p,t} = 1116.08$, to rebalance the portfolio
-we need $V_{A,t} = V_{B,t} = 558.04$. This requires selling $152.19$ of
+you need $V_{A,t} = V_{B,t} = 558.04$. This requires selling $152.19$ of
 asset A and purchasing $152.19$ of asset B and the end-of-month t. Then,
-at the beginning of month $t+1$ we have $V_{A,t} = V_{B,t} = 558.04$ and
+at the beginning of month $t+1$ you have $V_{A,t} = V_{B,t} = 558.04$ and
 $x_{A,t} = x_{B,t} = 0.5$.
 
 The above calculations in R are:
@@ -1581,11 +1707,11 @@ $R_{p,t} = 0.5\times R_{A,t} + 0.5\times R_{B,t}$:
 0.5*R.A + 0.5*R.B
 ```
 
-Here, we see that the rebalanced portfolio loses less money over month
+Here, you see that the rebalanced portfolio loses less money over month
 $t-1$ than the buy-and-hold portfolio.
 
-In the above example, at each rebalancing date we sell the asset that
-has the best performance (sell high) and we buy the asset that has the
+In the above example, at each rebalancing date you sell the asset that
+has the best performance (sell high) and you buy the asset that has the
 worst performance (buy low). Hence, rebalancing forces the sage
 investing advice: "buy low and sell high".
 
@@ -1809,7 +1935,7 @@ mean(coredata(msftDailyPrices))
 #### Changing the frequency of an `xts` object
 
 Data at the daily frequency is the highest frequency of data considered
-in this book. However, in many of the examples we want to use data at
+in this book. However, in many of the examples you want to use data at
 the weekly or monthly frequency. The conversion of data at a daily
 frequency to data at a monthly frequency is easy to do with `xts`
 objects. For example, end-of-month prices can be extracted from the
@@ -1975,7 +2101,7 @@ See the help file for `autoplot.zoo()` for more examples.
 
 ### Calculating returns
 
-In this sub-section, we illustrate how to calculate a time series of
+In this sub-section, I illustrate how to calculate a time series of
 returns from a time series of prices.
 
 #### Brute force return calculations

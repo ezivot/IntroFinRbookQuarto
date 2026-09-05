@@ -9,6 +9,9 @@ book:
     - index.qmd
     - 01-ReturnCalculations-new.qmd
     - 02-probReview-new.qmd
+    - 03-matrixReview-new.qmd
+    - 04-timeSeriesConcepts-new.qmd
+    - 05-descriptiveStatistics-new.qmd
     - references.qmd
 
 bibliography: [book.bib, packages.bib]
@@ -29,6 +32,10 @@ format:
     theme: cosmo
   pdf:
     documentclass: scrreprt
+    fontsize: 11pt
+    geometry: margin=1in
+    linestretch: 1.4
+    
 
 editor: source
 
