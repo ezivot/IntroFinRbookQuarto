@@ -4,8 +4,8 @@ Updated: September 4, 2026
 
 Copyright © Eric Zivot 2026
 
-The first model of asset returns we consider is the very simple *Gaussian White Noise* (GWN) 
-model for asset returns \index{Gaussian white noise return model}. This model is 
+The first model of asset returns I consider is the very simple *Gaussian White Noise* (GWN) 
+model \index{Gaussian white noise return model}. This model is 
 motivated by the stylized facts for monthly asset returns discussed in the previous chapter. 
 The GWN model assumes that an asset's
 return (simple or continuously compounded) over time is independent
@@ -17,20 +17,19 @@ and portfolios, in mean-variance portfolio analysis, in the *Capital
 Asset Pricing Model* (CAPM), and in the *Black-Scholes* option pricing
 model. Although this model is very simple, it provides important intuition
 about the statistical behavior of asset returns and prices and serves
-as a benchmark against which more complicated models can be compared
-and evaluated. It allows us to discuss and develop several important
+as a benchmark against which more sophisticated models can be compared
+and evaluated. It allows me to discuss and develop several important
 econometric topics such as Monte Carlo simulation, estimation, bootstrapping,
 hypothesis testing, forecasting, and model evaluation that are discussed
 in later chapters.
 
-The outline of this chapter is as follows. Section @sec-GWN-Model-Assumptions
-reviews the assumptions of the GWN model and presents several equivalent
-specifications of the model. Application of the model to continuously
-compounded returns, simple returns, and portfolios is also discussed. Section @sec-GWN-Monte-Carlo-Simulation
-illustrates Monte Carlo simulation of the GWN model as a first-step reality check of the model.
+The outline of this chapter is as follows. In @sec-GWN-Model-Assumptions
+I review the assumptions of the GWN model and presents several equivalent
+specifications of the model. I also discuss the application of the model to continuously
+compounded returns, simple returns, and portfolios. In @sec-GWN-Monte-Carlo-Simulation
+I illustrate Monte Carlo simulation of the GWN model as a first-step reality check of the model.
 
-
-The R packages used in this chapter are **introcompfinr**, **mvtnorm**,
+The R packages I use in this chapter are **introcompfinr**, **mvtnorm**,
 and **PerformanceAnalytics**. Make sure these packages are installed
 and loaded before running the R examples in the chapter.
 
@@ -48,7 +47,7 @@ Sys.setenv(TZ="UTC")
 
 Let $R_{it}$ denote the simple or continuously compounded (cc) return
 on asset $i$ over the investment horizon between times $t-1$ and
-$t$ (e.g., monthly returns). We make the following assumptions regarding
+$t$ (e.g., monthly returns). I make the following assumptions regarding
 the probability distribution of $R_{it}$ for $i=1,\ldots,N$ assets
 for all times $t$. 
 
@@ -94,7 +93,7 @@ R_{it} & =\mu_{i}+\varepsilon_{it},\\
 \sigma_{ij}\\
 0
 \end{array}\right.\begin{array}{c}
-t=s\\
+~ t=s\\
 t\neq s
 \end{array}. 
 \end{aligned}
@@ -109,7 +108,7 @@ random error term $\varepsilon_{it}$ is independent of $\varepsilon_{js}$
 for all assets $i\neq j$ and all time periods $t\neq s$. 
 
 Using the basic properties of expectation, variance and covariance,
-we can derive the following properties of returns in the GWN model:
+you can derive the following properties of returns in the GWN model:
 \begin{align*}
 E[R_{it}] & =E[\mu_{i}+\varepsilon_{it}]=\mu_{i}+E[\varepsilon_{it}]=\mu_{i},\\
 \mathrm{var}(R_{it}) & =\mathrm{var}(\mu_{i}+\varepsilon_{it})=\mathrm{var}(\varepsilon_{it})=\sigma_{i}^{2},\\
@@ -174,9 +173,9 @@ news for Microsoft in February.
 Sometimes it is convenient to re-express the regression form of the
 GWN model @eq-GWN-model in *location-scale* form: 
 $$
-R_{it} =\mu_{i}+\varepsilon_{it}=\mu_{i}+\sigma_{i}\cdot Z_{it} \{Z_{it}\}_{t=1}^{T}  \sim\mathrm{GWN}(0,1),
+R_{it} =\mu_{i}+\varepsilon_{it}=\mu_{i}+\sigma_{i}\cdot Z_{it}, ~ \{Z_{it}\}_{t=1}^{T}  \sim\mathrm{GWN}(0,1),
 $$ {#eq-GWN-model2}
-where we use the decomposition $\varepsilon_{it}=\sigma_{i}\cdot Z_{it}$.
+where I use the decomposition $\varepsilon_{it}=\sigma_{i}\cdot Z_{it}$.
 In this form, the random news shock is the *i.i.d.* standard normal
 random variable $Z_{it}$ scaled by the "news" volatility
 $\sigma_{i}$. 
@@ -251,14 +250,14 @@ applied to simple returns and the portfolio results of the GWN model for simple 
 
 The GWN model for cc returns has the following nice aggregation property with respect to the 
 interpretation of $\varepsilon_{it}$ as news. For illustration purposes, suppose that $t$ represents months
-so that $R_{it}$ is the cc monthly return on asset $i$. Now, instead of the monthly return, suppose we are interested
+so that $R_{it}$ is the cc monthly return on asset $i$. Now, instead of the monthly return, suppose you are interested
 in the annual cc return $R_{it}=R_{it}(12)$. Since multi-period cc returns are additive, $R_{it}(12)$
 is the sum of $12$ monthly cc returns: 
 $$
 R_{it}=R_{it}(12)=\sum_{k=0}^{11}R_{it-k}=R_{it}+R_{it-1}+\cdots+R_{it-11}.
 $$
 Using the GWN regression model @eq-GWN-model for the monthly
-return $R_{it}$, we may express the annual return $R_{it}(12)$ as:
+return $R_{it}$, you may express the annual return $R_{it}(12)$ as:
 $$
 R_{it}(12)=\sum_{t=0}^{11}(\mu_{i}+\varepsilon_{it})=12\cdot\mu_{i}+\sum_{t=0}^{11}\varepsilon_{it}=\mu_{i}(12)+\varepsilon_{it}(12),
 $$
@@ -326,10 +325,10 @@ The GWN model for cc returns @eq-GWN-model gives rise to the so-called *random w
 (RW) model for the *logarithm* of asset prices. To see this, recall that the continuously
 compounded return, $R_{it},$ is defined from asset prices via $R_{it}=\ln\left(\frac{P_{it}}{P_{it-1}}\right)=\ln(P_{it})-\ln(P_{it-1})$.
 Letting $p_{it}=\ln(P_{it})$ and using the representation of $R_{it}$ in the GWN model 
-@eq-GWN-model, we can express the log-price as: 
+@eq-GWN-model, you can express the log-price as: 
 $$
-p_{it}=p_{it-1}+\mu_{i}+\varepsilon_{it}.{#eq-GWN-rw-model}
-$$
+p_{it}=p_{it-1}+\mu_{i}+\varepsilon_{it}.
+$$ {#eq-GWN-rw-model}
 The representation in @eq-GWN-rw-model is known as the RW
 model for log-prices.^[The model @eq-GWN-rw-model is technically a random walk with
 drift $\mu_{i}$ A pure random walk has zero drift ($\mu_{i}=0$)]. It is a representation of the GWN model in terms of log-prices.
@@ -441,9 +440,9 @@ R_{pt}=\mathbf{x}^{\prime}\mathbf{R}_{t}=\sum_{i=1}^{N}x_{i}R_{it}.
 $$
 Substituting in @eq-GWN-model gives the GWN model for the
 portfolio returns: 
-\begin{equation}
-R_{pt}=\mathbf{x}^{\prime}\left(\boldsymbol{\mu}+\boldsymbol{\varepsilon}_{t}\right)=\mathbf{x}^{\prime}\boldsymbol{\mu} + \mathbf{x}^{\prime}\boldsymbol{\varepsilon}_{t}=\mu_{p}+\varepsilon_{pt}{#eq-GWN-model-portfolio}
-\end{equation}
+$$
+R_{pt}=\mathbf{x}^{\prime}\left(\boldsymbol{\mu}+\boldsymbol{\varepsilon}_{t}\right)=\mathbf{x}^{\prime}\boldsymbol{\mu} + \mathbf{x}^{\prime}\boldsymbol{\varepsilon}_{t}=\mu_{p}+\varepsilon_{pt}
+$$ {#eq-GWN-model-portfolio}
 where $\mu_{p}=\mathbf{x}^{\prime}\boldsymbol{\mu}=\sum_{i=1}^{N}x_{i}\mu_{i}$
 is the portfolio expected return, and $\varepsilon_{pt}=\mathbf{x}^{\prime}\boldsymbol{\varepsilon}_{t}=\sum_{i=1}^{N}x_{i}\varepsilon_{it}$
 is the portfolio error. The variance of $R_{pt}$ is given by: 
@@ -530,11 +529,11 @@ and so the square-root-of-time rule holds approximately.
 
 #### Implied model for prices
 
-Since $R_{it}=(P_{it}-P_{it-1})/P_{it-1}$, we can write
+Since $R_{it}=(P_{it}-P_{it-1})/P_{it-1}$, you can write
 $$
 P_{it} = P_{it-1}(1 + R_{it})
 $$
-Starting at $t=1$ and assuming $P_{i0} > 0$ is fixed, by recursive substitution we get
+Starting at $t=1$ and assuming $P_{i0} > 0$ is fixed, by recursive substitution you get
 $$
 P_{it} = P_{i0}(1+R_{i1})(1+R_{i2})\ldots (1+R_{it-1})
 $$
@@ -585,7 +584,7 @@ for $t=1,\ldots,T$.
 
 ::: {#exm-microsoft-data-to-calibrate-univariate-monte-carlo-simulation-of-gwn-model .example name="Microsoft data to calibrate univariate Monte Carlo simulation of GWN model"}
 To motivate plausible values for $\mu$ and $\sigma$ in the simulation,
-Figure @fig-CerModelMsftRetC shows the monthly continuously
+@fig-CerModelMsftRetC shows the monthly continuously
 compounded (cc) returns on Microsoft stock over the period January 1998
 through May 2012. The data is the same as that used in Chapter @sec-Descriptive-Statistics-for-Financial-Data
 and is constructed from the **IntroCompFinR** `"xts"`
@@ -606,12 +605,12 @@ c(mu.msftRetC, sigma.msftRetC)
 
 The parameter $\mu=E[R_{t}]$ in the GWN model is the expected monthly
 return, and $\sigma$ represents the typical size of a deviation about
-$\mu$. In Figure @fig-CerModelMsftRetC, the returns seem
+$\mu$. In @fig-CerModelMsftRetC, the returns seem
 to fluctuate up and down about a central value near 0 and the typical
 size of a return deviation about 0 is roughly 0.10, or 10\% (see dashed
-lines in Figure @fig-CerModelMsftRetC). The sample mean turns
+lines in @fig-CerModelMsftRetC). The sample mean turns
 out to be $\hat{\mu}=0.004$ (0.4\%) and the sample standard deviation
-is $\hat{\sigma}=0.100$ (10\%). Figure @fig-CerModelMsft4panel
+is $\hat{\sigma}=0.100$ (10\%). @fig-CerModelMsft4panel
 shows three distribution summaries (histogram, boxplot and normal
 qq-plot) and the SACF computed from the sample returns. The returns look to have slightly fatter tails
 than the normal distribution and show little evidence of linear time
@@ -652,7 +651,7 @@ plot(dataToPlot, main="",lwd=2, col=c("blue","black","black","black"),
 #| fig-asp: 0.75
 #| fig-align: center
 
-fourPanelPlot(msftRetC)
+four_panel_plot(msftRetC)
 ```
 
 ::: {#exm-simulating-observations-from-the-gwn-model .example name="Simulating observations from the GWN model"}
@@ -665,8 +664,8 @@ The simulated returns are then computed using:^[Alternatively, the returns can b
 observations from a normal distribution with mean $0.0$ and standard
 deviation 0.10.]
 $$
-\tilde{R}_{t}=0.004+\tilde{\varepsilon}_{t},~t=1,\ldots,172{#eq-GWN-simulated-returns}
-$$
+\tilde{R}_{t}=0.004+\tilde{\varepsilon}_{t},~t=1,\ldots,172
+$$ {#eq-GWN-simulated-returns}
 To create the simulated returns from @eq-GWN-simulated-returns use:
 
 ```{r}
@@ -700,14 +699,14 @@ plot(dataToPlot, main="",lwd=2, col=c("blue","black","black","black"),
 ```
 
 The simulated returns $\{\tilde{R}_{t}\}_{t=1}^{172}$ (with the same
-time index as the Microsoft returns) are shown in Figure @fig-CerModelSimRet.
+time index as the Microsoft returns) are shown in @fig-CerModelSimRet.
 The simulated return data fluctuate randomly about $\mu=0.004$, and
 the typical size of the fluctuation is approximately equal to $\sigma=0.10$.
 The simulated return data look somewhat like the actual monthly return
 data for Microsoft. The main difference is that the return volatility
 for Microsoft appears to have decreased in the latter part of the
 sample whereas the simulated data has constant volatility over the
-entire sample. Figure @fig-CerModelSimRet4panel shows the
+entire sample. @fig-CerModelSimRet4panel shows the
 distribution summaries (histogram, boxplot and normal qq-plot) and
 the SACF for the simulated returns. The simulated returns are normally
 distributed and show thinner tails than the actual returns. The simulated
@@ -724,7 +723,7 @@ returns also show no evidence of linear time dependence (autocorrelation).
 #| fig-asp: 0.75
 #| fig-align: center
 
-fourPanelPlot(sim.ret)
+four_panel_plot(sim.ret)
 ```
 
 ::: {#exm-simulating-log-prices-and-prices-from-the-rw-model .example name="Simulating log-prices and prices from the RW model"}
@@ -748,9 +747,9 @@ sim.p = xts(sim.p, index(msftPrices))
 sim.P = xts(sim.P, index(msftPrices)) 
 ```
 
-Figure @fig-CerModelSimRW shows the simulated log prices and prices. The top
+@fig-CerModelSimRW shows the simulated log prices and prices. The top
 panel shows the simulated log price, $\tilde{p}_{t}$, and the bottom panel shows the simulated price levels
-$\tilde{P}_{t}=e^{\tilde{p}_{t}}$ For comparison, Figure @fig-CerModelMsftPrices
+$\tilde{P}_{t}=e^{\tilde{p}_{t}}$ For comparison, @fig-CerModelMsftPrices
 shows the actual log prices and price levels for Microsoft stock.
 Notice the similar behavior of the simulated random walk data and the
 actual data.
@@ -817,7 +816,7 @@ sim.ret = xts(sim.ret, index(msftRetC))
 colnames(sim.ret) = paste("sim", 1:10, sep=".")
 ```
 
-The ten simulations are shown in Figure @fig-CerModelSimRetMultiple.
+The ten simulations are shown in @fig-CerModelSimRetMultiple.
 
 ```{r}
 #| label: fig-CerModelSimRetMultiple
@@ -860,7 +859,7 @@ plot(sim.P, multi.panel=FALSE, main="Ten Simulations of Prices from GWN Model fo
      major.ticks="years", grid.ticks.on="years")  
 ```
 
-Figure @fig-CerModelSimPricesMultiple shows the same ten simulations from
+@fig-CerModelSimPricesMultiple shows the same ten simulations from
 the GWN model in terms of prices. Notice the large variability in prices at the end
 of the sample. 
 \hfill{}$\blacksquare$
@@ -886,8 +885,8 @@ a multivariate Monte Carlo simulation are:
 To motivate the parameters for a multivariate simulation of the GWN
 model, consider the monthly cc returns for Microsoft,
 Starbucks and the S\&P 500 index over the period January 1998 through
-May 2012 illustrated in Figures @fig-figCerModel3returns and
-@fig-figCerModel3returnsScatter. The data is assembled using
+May 2012 illustrated in Figures @fig-CerModel3returns and
+@fig-CerModel3returnsScatter. The data is assembled using
 the R commands:
 
 ```{r}
@@ -905,7 +904,7 @@ colnames(gwnRetC) = c("MSFT", "SBUX", "SP500")
 ```
 
 ```{r}
-#| label: figCerModel3returns
+#| label: fig-CerModel3returns
 #| echo: false
 #| fig-cap: Monthly cc returns on Microsoft, Starbucks, and the S\&P 500 Index.
 #| out-width: 80%
@@ -1006,9 +1005,9 @@ colnames(returns.sim) = colnames(gwnRetC)
 returns.sim = xts(returns.sim, index(gwnRetC))
 ```
 
-The simulated returns are shown in Figures @fig-CerModel3returnsMC
+The simulated returns are shown in @fig-CerModel3returnsMC
 and @fig-CerModel3returnsMCscatter. They look similar to
-the actual returns shown in Figures @fig-CerModel3returns
+the actual returns shown in @fig-CerModel3returns
 and @fig-CerModel3returnsScatter. The actual returns show
 periods of high and low volatility that the simulated returns do not.
 The sample statistics from the simulated returns, however, are close
@@ -1067,14 +1066,14 @@ TBD
 
 The location-scale form of the GWN model @eq-GWN-model2 is
 commonly used as a starting point for the distributional analysis
-of returns. In this chapter, and throughout most of the book, we use
+of returns. In this chapter, and throughout most of the book, I use
 the standard normal distribution for the standardized news shock.
 However, many other standardized distributions that are additive (e.g., skew-normal,
 Student's t, skewed-t, etc.) can also be used as illustrated in [@JPR-2007], [@pfaff-2013], [@carmona-2014], and [@RuppertMatteson-2015].
 
 xxx gives as comprehensive non-technical description of the RW model for stock prices. 
 
-## Problems: The GWN Return Mode
+## Exercises
 
 ::: {#exr-01 .exercise}
 Consider the GWN model for cc
@@ -1095,10 +1094,10 @@ Consider using Monte Carlo simulation to evaluate
 the GWN model for the monthly simple returns on Amazon stock and the
 S\&P 500 index over the 5 year period January 2009, through January
 2014.
-1.  Daily adjusted closing prices on Amazon stock and the S\&P 500 index are in the **IntroCompFinR** `"xts"` objects `amznDailyPrices` and `sp500DailyPrices`, respectively. Using these prices, create monthly returns over the period January 2009, through January 2014.
+1.  Daily adjusted closing prices on Amazon stock and the S\&P 500 index are in the **introcompfinr** `"xts"` objects `amznDailyPrices` and `sp500DailyPrices`, respectively. Using these prices, create monthly returns over the period January 2009, through January 2014.
 2.  Create a time plot showing the monthly returns on the two assets. Do the monthly returns from the two assets look like realizations from a covariance stationary stochastic process? Why or why not?
 3.  Compare and contrast the return characteristics of the two assets. In addition, comment on any common features, if any, of the two return series. 
-4.  Using the **IntroCompFinR** function `fourPanelPlot()`, create graphical descriptive statistics for the monthly returns. Also, create the scatterplot between the two return series. Do the returns look normally distributed? Is there any evidence for linear time dependence? Do the return appear to contemporaneously correlated?
+4.  Using the **introcompfinr** function `four_panel_plot()`, create graphical descriptive statistics for the monthly returns. Also, create the scatterplot between the two return series. Do the returns look normally distributed? Is there any evidence for linear time dependence? Do the return appear to contemporaneously correlated?
 5.  Compute sample descriptive statistics (mean, standard deviation, skewness,
 kurtosis, and correlation between Amazon and the S\&P 500 index).
 6. In the GWN model for simple returns prices do not follow a random walk but instead evolve over time

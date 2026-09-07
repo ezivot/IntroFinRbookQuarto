@@ -12,6 +12,10 @@ book:
     - 03-matrixReview-new.qmd
     - 04-timeSeriesConcepts-new.qmd
     - 05-descriptiveStatistics-new.qmd
+    - 06-GWNModel-new.qmd
+    - 07-GWNModelEstimation-new.qmd
+    - 08-bootstrap-new.qmd
+    - 09-hypothesisTestingGWNModel-new.qmd
     - references.qmd
 
 bibliography: [book.bib, packages.bib]
@@ -30,11 +34,13 @@ knitr:
 format:
   html:
     theme: cosmo
+    page-navigation: true
+    code-fold: show
   pdf:
     documentclass: scrreprt
     fontsize: 11pt
     geometry: margin=1in
-    linestretch: 1.4
+    linestretch: 1.2
     
 
 editor: source

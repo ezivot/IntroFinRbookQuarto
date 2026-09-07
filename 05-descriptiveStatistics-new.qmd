@@ -13,20 +13,20 @@ for financial time series and to document a set of stylized facts
 for monthly and daily asset returns that will be used in later chapters
 to motivate probability models for asset returns. 
 
-This chapter is organized as follows. Section @sec-Univariate-Descriptive-Statistic
-introduces the example data and reviews graphical and numerical descriptive
+This chapter is organized as follows. In @sec-Univariate-Descriptive-Statistic
+I introduce the example data and reviews graphical and numerical descriptive
 statistics for univariate data. Graphical descriptive statistics include
 time plots, histograms, QQ-plots and boxplots. Numerical statistics
 are the sample statistics associated with the analagous characteristics
 of univariate distributions reviewed in @sec-Review-of-Random-Variables. 
-Section @sec-Time-Series-Descriptive covers univariate time series descriptive 
+In @sec-Time-Series-Descriptive I cover univariate time series descriptive 
 statistics including sample autocovariances, autocorrelations and the sample 
-autocorrelation function. Section @sec-Bivariate-Descriptive-Statistics presents 
+autocorrelation function. In @sec-Bivariate-Descriptive-Statistics I present
 bivariate descriptive statistics including scatterplots, sample covariance and 
-correlation, and sample cross-lag covariances and correlations. Section @sec-Stylized-facts 
-concludes with a summary of some stylized facts for monthly and daily returns. 
+correlation, and sample cross-lag covariances and correlations. In @sec-Stylized-facts 
+I conclude with a summary of some stylized facts for monthly and daily returns. 
 
-The R packages used in this chapter are **car**, **corrplot, IntroCompFinR,
+The R packages I use in this chapter are **car**, **corrplot, IntroCompFinR,
 PerformanceAnalytics, sn, tseries, zoo** and **xts**.
 Make sure these packages are installed and loaded before running the
 R examples in the chapter.
