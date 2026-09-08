@@ -1880,7 +1880,7 @@ $$
 \end{array} \right) \right). 
 $$ {#eq-EST-joint-mu-sigma2}
 
-Here, you see that $\mathrm{cov}(\hat{\mu}, \hat{\sigma}^2)=0$, which implies that $\hat{\mu}$ and $\hat{\sigma}^2$ are independent since they are jointly normally distributed. Furthermore, since $\hat{\mu}$ and $\hat{\sigma}^2$ are independent and any function of $\hat{\mu}$ is independent of any function of $\hat{\sigma}^2$. For example, $\hat{\sigma} = \sqrt{\hat{\sigma}^2}$ is independent of $\hat{\mu}$. Using @eq-pdf-sigma you can then deduce the joint distribution of $(\hat{\mu}, \hat{\sigma}^2)'$:
+Here, you see that $\mathrm{cov}(\hat{\mu}, \hat{\sigma}^2)=0$, which implies that $\hat{\mu}$ and $\hat{\sigma}^2$ are independent since they are jointly normally distributed. Furthermore, since $\hat{\mu}$ and $\hat{\sigma}^2$ are independent any function of $\hat{\mu}$ is independent of any function of $\hat{\sigma}^2$. For example, $\hat{\sigma} = \sqrt{\hat{\sigma}^2}$ is independent of $\hat{\mu}$. Using @eq-pdf-sigma you can then deduce the joint distribution of $(\hat{\mu}, \hat{\sigma})'$:
 
 $$
 \left( \begin{array}{c} 
