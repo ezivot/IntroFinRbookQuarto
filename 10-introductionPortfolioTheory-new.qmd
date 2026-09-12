@@ -6,9 +6,9 @@ Copyright © Eric Zivot 2026
 
 Chapters @sec-Estimation-of-The-GWN-Model through @sec-Hypothesis-Testing
 focused on the development and estimation of, and the statistical
-inference for, the GWN model for asset returns. In this chapter, we
+inference for, the GWN model for asset returns. In this chapter, I
 use the GWN model for asset returns as the basis for the quantitative
-analysis of portfolios and asset allocation. Specifically, we introduce
+analysis of portfolios and asset allocation. Specifically, I introduce
 the mean-variance portfolio analysis framework originally developed
 by Harry Markowitz.^[The mean-variance frame is described in detail in [@markowitz-1959], 
 [@markowitz-1987]. Harry Markowitz was awarded the Nobel Prize in Economics in
@@ -31,32 +31,30 @@ This chapter introduces Markowitz's mean-variance portfolio theory
 in a simplified setting where there are only two risky assets and
 a single risk-free asset. This allows us to present the main results
 of mean-variance portfolio theory graphically and with simple algebra.
-However, as we shall see in the next chapter, many of the analytic
-results we derive for portfolios of two risky assets, and for portfolios
+However, as you shall see in the next chapter, many of the analytic
+results I derive for portfolios of two risky assets, and for portfolios
 of two risky assets and a single risk-free asset, can be applied to
 situations in which there are many risky assets and a single risk-free
 asset. Therefore, it is highly beneficial to study and understand
 well the portfolio theory results in the simplified framework of this
 chapter. 
 
-This chapter is organized as follows. Section @sec-Portfolios-of-Two-Risky-Assets
-reviews expected return, variance and value-at-risk calculations for
-portfolios of two risky assets. Section @sec-Efficient-portfolios-with-two-risky-assets
-introduces mean-variance portfolio analysis for portfolios of two
+This chapter is organized as follows. In @sec-Portfolios-of-Two-Risky-Assets
+I review expected return, variance and value-at-risk calculations for
+portfolios of two risky assets. In @sec-Efficient-portfolios-with-two-risky-assets
+I introduce mean-variance portfolio analysis for portfolios of two
 risky assets. The portfolio risk-return frontier is introduced, efficient
 portfolios are defined, and the global minimum variance portfolio
-is defined. Section @sec-Efficient-portfolios-with-a-risk-free-asset
-presents the analysis of portfolios with a single risky asset and
-a risk-free asset. The Sharpe ratio/slope of a risky asset is defined
-and illustrated graphically. Portfolios of two risky assets and a
-risk-free asset are discussed in Section @sec-Efficient-portfolios-with-two-risky-assets-and-a-risk-free-asset.
-The tangency portfolio is defined and the Mutual Fund Separation Theorem
-is presented. Section @sec-Application-to-Real provides a brief
-illustration of the theory to a real world two asset portfolio of
-stocks and bonds. The Appendix reviews some basic results on constrained
-optimization of functions. 
+is defined. In @sec-Efficient-portfolios-with-a-risk-free-asset I 
+present the analysis of portfolios with a single risky asset and
+a risk-free asset. I also define the Sharpe ratio/slope of a risky asset and illustrate it graphically. 
+I discuss portfolios of two risky assets and a risk-free asset, define the The tangency portfolio, 
+present the Mutual Fund Separation Theorem in @sec-Efficient-portfolios-with-two-risky-assets-and-a-risk-free-asset
+I give a brief illustration of the theory to a real world two asset portfolio of
+stocks and bonds in @sec-Application-to-Real. In the Appendix I review some basic results on constrained
+optimization of functions that I use in the chapter. 
 
-The R packages used in this chapter are **introcompfinr**, **kableExtra**, **knitr**,  
+The R packages I use in this chapter are **introcompfinr**, **kableExtra**, **knitr**,  
 and **PerformanceAnalytics**. Make sure these packages are installed
 and loaded in R before replicating the chapter examples.
 
@@ -71,7 +69,7 @@ options(digits=3)
 
 ## Assumptions About Returns and Investor Risk Preferences
 
-To develop a quantitative methodology for investment analysis, we make the following assumptions regarding the probability distribution of asset returns and the behavior of
+To develop a quantitative methodology for investment analysis, I make the following assumptions regarding the probability distribution of asset returns and the behavior of
 investors: 
 
 1.  Returns are covariance stationary and ergodic, and jointly normally distributed over the investment horizon. This implies that means, variances and covariances of returns are constant over the investment horizon and completely characterize the joint distribution of returns. 
@@ -83,18 +81,18 @@ horizons of at least a month as discussed in Chapter @sec-Descriptive-Statistics
 as assuming that investors have access to high quality information that they can use to determine expected returns, variances, and covariances. For example, investors can
 download asset price data from `finance.yahoo.com` and compute estimates of expected
 returns, variances, and covariances using sample statistics. Two points are relevant for the third assumption. First, if the distribution of assets returns is jointly normal then
-the probability distribution of returns is completely characterized by means, variances, and covariances. Second, the third assumption describes the mean-variance trade-off investors face. All else equal, investors prefer assets that have the highest expected return. However, as we have seen, assets with high expected
-returns tend to also have high variances. High variance represents more uncertainty about future return and it is assumed that investors do not like uncertainty about future return. That is, we assume that investors are *risk averse*.
+the probability distribution of returns is completely characterized by means, variances, and covariances. Second, the third assumption describes the mean-variance trade-off investors face. All else equal, investors prefer assets that have the highest expected return. However, as you have seen, assets with high expected
+returns tend to also have high variances. High variance represents more uncertainty about future return and it is assumed that investors do not like uncertainty about future return. That is, I assume that investors are *risk averse*.
 
 ## Portfolios of Two Risky Assets {#sec-Portfolios-of-Two-Risky-Assets}
 \index{Portfolio of two risky assets}
-Consider the following investment problem. We can invest in two assets
-A (Amazon stock) and B (Boeing stock) over the next year, and we want to know how much
+Consider the following investment problem. You can invest in two assets
+A (Amazon stock) and B (Boeing stock) over the next year, and you want to know how much
 to invest in each asset to make the investor most happy given the assumptions about return distributions and risk preferences from the previous sub-section. Let $R_{A}$ and $R_{B}$ denote the annual simple returns on assets A and  B, respectively.^[If the stocks pay a dividend then returns are computed as total returns.]
 These returns are to be treated as random variables because the returns
-will not be realized until the end-of-the year. We assume that the
+will not be realized until the end-of-the year. I assume that the
 returns $R_{A}$ and $R_{B}$ are jointly normally distributed, and
-that we have the following information about the means, variances,
+that I have the following information about the means, variances,
 and covariances of the probability distribution of the two returns:
 
 $$
@@ -104,15 +102,15 @@ $$
 \sigma_{AB} =\mathrm{cov}(R_{A},R_{B}),~\rho_{AB}=\mathrm{cor}(R_{A},R_{B})=\frac{\sigma_{AB}}{\sigma_{A}\sigma_{B}}.
 $$ {#eq-portfolio-inputs-2}
 
-We assume that these values are taken as given. In practice, they can be
+I assume that these values are taken as given. In practice, they can be
 estimated from historical return data for the two stocks, or they can be subjective guesses by the investor. 
 
 The expected returns, $\mu_{A}$ and $\mu_{B}$, are our best guesses
 for the annual returns on each of the assets. However, because the
-investment returns are random variables we must recognize that the
+investment returns are random variables you must recognize that the
 realized returns may be different from our expectations. The variances,
 $\sigma_{A}^{2}$ and $\sigma_{B}^{2}$, provide measures of the uncertainty
-associated with these annual returns. We can also think of the variances
+associated with these annual returns. You can also think of the variances
 as measuring the risk associated with the investments. Assets with
 high return variability (or volatility) are often thought to be risky,
 and assets with low return volatility are often thought to be safe.
@@ -139,7 +137,7 @@ bit unusual, as most stock returns are positively correlated. The
 negative correlation is assumed so that certain figures produced later
 look nice and are easy to read. ] Given the standard deviations and the correlation, the covariance
 can be determined from $\sigma_{AB}=\rho_{AB}\sigma_{A}\sigma_{B}=(-0.164)(0.0258)(0.115)=-0.004875.$
-In R, the example data is:^[We use the **kableExtra** function `kbl()` to print out nice formatted tables from a `data.frame` of information.]
+In R, the example data is:^[I use the **kableExtra** function `kbl()` to print out nice formatted tables from a `data.frame` of information.]
 
 ```{r}
 #| echo: true
@@ -239,12 +237,12 @@ depends on the values of $W_{0}$, $\mu_{p}$, and $\sigma_{p}^2$. Since $\mu_{p}$
 
 The results @eq-port-ER and @eq-port-var are so important
 to portfolio theory that it is worthwhile to review the derivations.^[See chapter @sec-Review-of-Random-Variables section @sec-Random-Variables.]
-For the first result @eq-port-ER, we have: 
+For the first result @eq-port-ER, you have: 
 $$
 E[R_{p}]=E[x_{A}R_{A}+x_{B}R_{B}]=x_{A}E[R_{A}]+x_{B}E[R_{B}]=x_{A}\mu_{A}+x_{B}\mu_{B},
 $$
 by the linearity of the expectation operator. For the second result
-@eq-port-var, we have: 
+@eq-port-var, you have: 
 \begin{align*}
 \mathrm{var}(R_{p}) & =E[(R_{p}-\mu_{p})^{2}]=E[(x_{A}(R_{A}-\mu_{A})+x_{B}(R_{B}-\mu_{B}))^{2}]\\
  & =E[x_{A}^{2}(R_{A}-\mu_{A})^{2}+x_{B}^{2}(R_{B}-\mu_{B})^{2}+2x_{A}x_{B}(R_{A}-\mu_{A})(R_{B}-\mu_{B})]\\
@@ -265,13 +263,13 @@ correlated returns can be very beneficial when forming portfolios
 because risk, as measured by portfolio standard deviation, can be
 reduced. What is perhaps surprising is that forming portfolios with
 positively correlated assets can also reduce risk as long as the correlation
-is not too large. We illustrate these results with the following examples.
+is not too large. I illustrate these results with the following examples.
 
 ::: {#exm-two-asset-portfolios .example name="Two asset portfolios"}
 
 Consider creating some portfolios using the asset information in @tbl-TableExampleData. The first portfolio is an equally weighted
 portfolio with $x_{A}=x_{B}=0.5$. Using @eq-port-ER-@eq-port-sd,
-we have: 
+you have: 
 \begin{align*}
 \mu_{p_{1}} & =(0.5)\cdot(0.175)+(0.5)\cdot(0.055)=0.115\\
 \sigma_{p_{1}}^{2} & =(0.5)^{2}\cdot(0.067)+(0.5)^{2}\cdot(0.013)\\
@@ -348,7 +346,7 @@ In the above example, the equally weighted portfolio has expected
 return half way between the expected returns on assets A and B, but
 has standard deviation (volatility) that is less than half way between
 the standard deviations of the two assets. For long-only portfolios,
-we can show that this is a general result as long as the correlation
+you can show that this is a general result as long as the correlation
 between the two assets is not perfectly positive. 
 
 ::: {#prp-01 .proposition}
@@ -588,8 +586,8 @@ normalVaR = function(mu, sigma, w0, alpha = 0.05, invert=TRUE) {
 }
 ```
 
-You create an R function using `function()`. Every R function has a set of arguments or inputs. Here, the arguments are the $n \times 1$ vectors `mu` and `sigma`, the scalars `w0` and `alpha`, and the logical value `invert`. Default values for `alpha` and `invert` are specified in the definition of the function. The body of the function is defined within the braces `{}`, and the return value of the function is specified using `return()`. Here, we first check that the inputs `mu` and `sigma` are of the same length, and that
-the tail probability $\alpha$ is between 0 and 1. Then, we compute normal VaR using @eq-portfolio-VaR. If `invert=TRUE` we multiply the result by $-1$. Finally, we return the vector of VaR values. After running the code that defines the function `normalVaR()`, it will be available in the R session for use like any other R function. 
+You create an R function using `function()`. Every R function has a set of arguments or inputs. Here, the arguments are the $n \times 1$ vectors `mu` and `sigma`, the scalars `w0` and `alpha`, and the logical value `invert`. Default values for `alpha` and `invert` are specified in the definition of the function. The body of the function is defined within the braces `{}`, and the return value of the function is specified using `return()`. Here, you first check that the inputs `mu` and `sigma` are of the same length, and that
+the tail probability $\alpha$ is between 0 and 1. Then, you compute normal VaR using @eq-portfolio-VaR. If `invert=TRUE` you multiply the result by $-1$. Finally, you return the vector of VaR values. After running the code that defines the function `normalVaR()`, it will be available in the R session for use like any other R function. 
 
 Using the `normalVaR()` function, the 5\% VaR values of asset
 A, B and equally weighted portfolio are:
@@ -608,7 +606,7 @@ normalVaR(mu=c(mu.A, mu.B, mu.p1),
 
 The collection of all *feasible* portfolios, or the *investment possibilities set*, in the case of two assets is simply all possible portfolios that can be formed
 by varying the portfolio weights $x_{A}$ and $x_{B}$ such that the
-weights sum to one ($x_{A}+x_{B}=1)$. We summarize the expected return-risk
+weights sum to one ($x_{A}+x_{B}=1)$. I summarize the expected return-risk
 (mean-volatility) properties of the feasible portfolios in a plot with
 portfolio expected return, $\mu_{p}$, on the vertical axis and portfolio
 standard deviation, $\sigma_{p}$, on the horizontal axis. The portfolio
@@ -624,7 +622,7 @@ Here the portfolio weight on asset A, $x_{A}$, is varied from -0.4
 to 1.4 in increments of 0.1 and, since $x_{B}=1-x_{A}$, the weight
 on asset B then varies from 1.4 to -0.4. This gives us 18 portfolios
 with weights $(x_{A},x_{B})=(-0.4,1.4),(-0.3,1.3),...,(1.3,-0.3),(1.4,-0.4)$.
-For each of these portfolios we use the formulas @eq-port-ER
+For each of these portfolios I use the formulas @eq-port-ER
 and @eq-port-sd to compute $\mu_{p}$ and $\sigma_{p}$. In R, the calculations are:
 
 ```{r}
@@ -671,11 +669,11 @@ parabola turned on its side (in fact, it is one side of a hyperbola). The plot i
 often referred to as the *Markowitz bullet* as it resembles the shape of a bullet speeding toward the y-axis. The black dots plus the green dot represent the long-only portfolios, and the blue dots represent long-short portfolios. The black dot labeled "Asset A" is the portfolio $(x_{A}=1, x_{B}=0)$, and the black dot labeled "Asset B" is the portfolio $(x_{A}=0, x_{B}=1)$. 
 
 The bullet shape of the feasible set shows that portfolio risk can be reduced through diversification. Risk reduction through diversification can be understood as follows. Suppose an investor is initially invested 100\% in asset B (i.e., portfolio 5). Diversification involves rebalancing the portfolio to include asset A. For example, portfolio 6 is $(x_{A}=0.1, x_{B}=0.9)$. This portfolio has both a higher expected return and a lower standard deviation than portfolio 5. This is the benefit from diversification. Portfolio expected return increases and risk decreases until portfolio 7 is reached, which is at the tip of the Markowitz bullet (green dot). This portfolio has the property that it has the smallest variance/volatility among all feasible portfolios. Accordingly,
-this portfolio is called the *global minimum variance portfolio*.\index{Global minimum variance portfolio} Continuing from portfolio 8 through portfolio 19, we see that both expected return and risk increase.
+this portfolio is called the *global minimum variance portfolio*.\index{Global minimum variance portfolio} Continuing from portfolio 8 through portfolio 19, you see that both expected return and risk increase.
 
 ### Computing the global minimum variance portfolio
 
-The global minimum variance portfolio plays a key role in mean-variance portfolio theory and it is important to know how to determine its weights. Here, we show that it is a simple exercise in calculus to find the global minimum variance portfolio weights. We solve the *constrained optimization* problem^[A review of optimization and constrained optimization is given in
+The global minimum variance portfolio plays a key role in mean-variance portfolio theory and it is important to know how to determine its weights. Here, I show that it is a simple exercise in calculus to find the global minimum variance portfolio weights. I solve the *constrained optimization* problem^[A review of optimization and constrained optimization is given in
 the appendix to this chapter.]: 
 
 \begin{align*}
@@ -735,7 +733,7 @@ gives the solution @eq-minvar-port.
 ::: {#exm-global-minimum-variance-portfolio-for-example-data .example name="Global minimum variance portfolio for example data"}
 
 Using the data in @tbl-TableExampleData and @eq-minvar-port
-we have: 
+you have: 
 $$
 x_{A}^{\min}=\frac{0.01323-(-0.004866)}{0.06656+0.01323-2(-0.004866)}=0.2021,~x_{B}^{\min}=0.7979.
 $$
@@ -777,7 +775,7 @@ cat(tbl.data)
 ### Correlation and the shape of the portfolio frontier
 
 The shape of the investment possibilities set is very sensitive to
-the correlation between assets A and B given the other parameters. We illustrate this sensitivity by computing portfolio frontiers for the example data for $\rho_{AB} = -0.9, -0.5, 0, 0.5, 0.9$. @fig-IntroPortCorShape shows these portfolio frontiers.
+the correlation between assets A and B given the other parameters. I illustrate this sensitivity by computing portfolio frontiers for the example data for $\rho_{AB} = -0.9, -0.5, 0, 0.5, 0.9$. @fig-IntroPortCorShape shows these portfolio frontiers.
 
 ```{r}
 #| label: fig-IntroPortCorShape
@@ -851,7 +849,7 @@ and zero variance! These cases are illustrated
 in @fig-IntroPortCorrelation. 
 
 To find the portfolio with $\sigma_{p}^{2}=0$
-when $\rho_{AB}=-1$ we use @eq-minvar-port and the fact that
+when $\rho_{AB}=-1$ I use @eq-minvar-port and the fact that
 $\sigma_{AB}=\rho_{AB}\sigma_{A}\sigma_{B}$ to give: 
 $$
 x_{A}^{\min}=\frac{\sigma_{B}}{\sigma_{A}+\sigma_{B}},~x_{B}^{\min}=1-x_{A}.
@@ -860,7 +858,7 @@ $$
 ## Efficient portfolios with two risky assets {#sec-Efficient-portfolios-with-two-risky-assets}
 \index{Efficient portfolios}
 
-Given the assumptions on returns and investor risk preferences, we now characterize the set of *efficient portfolios* and *inefficient portfolios*\index{Inefficient portfolios}.
+Given the assumptions on returns and investor risk preferences, I now characterize the set of *efficient portfolios* and *inefficient portfolios*\index{Inefficient portfolios}.
 
 ::: {#def-efficient-portfolios .definition name="Efficient Portfolios"}
 *Efficient portfolios* are the feasible portfolios that have the highest expected return for a given level of risk as measured by portfolio standard deviation. These are the portfolios that investors are most interested in holding. Graphically, these are the portfolios starting with the global minimum variance portfolio that are above and to the right of the global minimum variance portfolio.
@@ -920,9 +918,9 @@ asset A which may involve short-selling asset B.
 
 ## Efficient portfolios with a risk-free asset {#sec-Efficient-portfolios-with-a-risk-free-asset}
 
-In the preceding section we constructed the efficient set of portfolios
-involving two risky assets. Now we consider what happens
-when we introduce a *risk-free* asset. In the present context, a risk-free
+In the preceding section I constructed the efficient set of portfolios
+involving two risky assets. Now I consider what happens
+when you introduce a *risk-free* asset. In the present context, a risk-free
 asset is equivalent to a default-free pure discount bond that matures
 at the end of the assumed investment horizon.^[In the finance industry the risk-free asset is often referred to as
 "cash". In general, "cash" doesn't refer to holding dollars
@@ -930,26 +928,26 @@ in your pocket but rather investing dollars in a very low risk asset
 that pays a stable rate of return.] The *risk-free rate*, $r_{f}$, is then the nominal return on the bond.
 For example, if the investment horizon is one month then the risk-free
 asset is a 30-day U.S. Treasury bill (T-bill) and the risk-free rate
-is the nominal rate of return on the T-bill.^[The default-free assumption of U.S. debt is often taken for granted. However, this assumption has been questioned due to the inability of the U.S. congress to address the long-term debt problems of the U.S. government.] If our holdings of the risk-free asset is positive then we are "lending money" to the government at the risk-free rate, and if our holdings are negative then we are "borrowing" from the government at the risk-free rate.
+is the nominal rate of return on the T-bill.^[The default-free assumption of U.S. debt is often taken for granted. However, this assumption has been questioned due to the inability of the U.S. congress to address the long-term debt problems of the U.S. government.] If our holdings of the risk-free asset is positive then you are "lending money" to the government at the risk-free rate, and if our holdings are negative then you are "borrowing" from the government at the risk-free rate.
 
 The assumption that investors can borrow and lend at the same risk-free rate is unrealistic in the real world due to differing credit worthiness of investors. Investors can certainly buy T-Bills and receive the risk-free rate. However, most investors can only borrow funds at rates much higher than the T-Bill rate. 
 
 ### Portfolios with one risky asset and one risk-free asset
 
-In this sub-section, we consider portfolios of a single risky asset with random return $R \sim N(\mu, \sigma^2)$ and a risk-free asset with non-random return $r_{f}$. Since the risk-free rate is fixed over the investment horizon it is not a random variable. As a result, it has some special properties summarized in the following Proposition.
+In this sub-section, I consider portfolios of a single risky asset with random return $R \sim N(\mu, \sigma^2)$ and a risk-free asset with non-random return $r_{f}$. Since the risk-free rate is fixed over the investment horizon it is not a random variable. As a result, it has some special properties summarized in the following Proposition.
 
 ::: {#prp-properties-of-risk-free-rate .proposition name="Properties of Risk-Free Rate"}
 Let $r_{f}$ denote the fixed non-random risk-free rate, and let $R$ denote the random return on a risky asset with $E[R]=\mu$ and $\mathrm{var}(R)=\sigma^{2}$. Then
 \begin{align*}
 E[r_{f}] &= r_{f},\\
-\mathrm{var}(r_{f}) & = E[(r_{r}-E[r_{f}])^2] = 0,\\
+\mathrm{var}(r_{f}) & = E[(r_{f}-E[r_{f}])^2] = 0,\\
 \mathrm{cov}(R,r_{f}) &= E[(r_{f}-E[r_{f}])(R - E[R])] =0.
 \end{align*}
 :::
 
 Consider an investment in the risky asset and the risk-free asset (henceforth
 referred to as a T-bill). Let $x$ denote the share of wealth in the risky asset, and $x_{f}$
-denote the share of wealth in T-bills such that $x + x_{f}=1$. Using $x_f = 1 - x$, the portfolio return can we written as: 
+denote the share of wealth in T-bills such that $x + x_{f}=1$. Using $x_f = 1 - x$, the portfolio return can be written as: 
 $$
 R_{p}=x_{f}r_{f}+xR = (1-x)r_{f}+xR=r_{f}+x(R-r_{f}). 
 $$ {#eq-RBplusTbillsReturn}
@@ -963,19 +961,19 @@ $$ {#eq-muTbillsPlusRisky}
 
 where the quantity $(\mu-r_{f})$ is called the *expected excess return* or *risk premium*\index{Risk premium} on the risky asset. The risk premium is typically positive indicating that investors expect
 a higher return on the risky asset than the safe asset (otherwise,
-why would investors hold the risky asset?). We may express the risk
+why would investors hold the risky asset?). You may express the risk
 premium on the portfolio in terms of the risk premium on the risky asset:
 $$
 \mu_{p}-r_{f}=x(\mu-r_{f}).
 $$
-The more we invest in the risky asset the higher the risk premium on the portfolio of T-Bills and the risky asset. 
+The more you invest in the risky asset the higher the risk premium on the portfolio of T-Bills and the risky asset. 
 
 Because the risk-free rate is constant, the portfolio variance only depends on the variability of the risky asset and is given by: 
 $$
 \sigma_{p}^{2}= \mathrm{var(R_{p})} = \mathrm{var(xR)}= x^{2}\sigma^{2}.
 $$
 The portfolio standard deviation is therefore proportional to the
-standard deviation on the risky asset:^[Here, we can allow $x$ to be positive or negative but $\sigma$ is always positive. ]
+standard deviation on the risky asset:^[Here, you can allow $x$ to be positive or negative but $\sigma$ is always positive. ]
 
 $$
 \sigma_{p}=|x|\sigma.
@@ -1014,7 +1012,7 @@ Notice that the set of feasible portfolios lie on two straight lines, one with a
 \hfill{}$\blacksquare$
 :::
 
-If we assume that $x > 0$ (do not short the risky asset), we can use @eq-sigmaTbillsPlusRisky to solve for $x$: 
+If you assume that $x > 0$ (do not short the risky asset), you can use @eq-sigmaTbillsPlusRisky to solve for $x$: 
 $$
 x=\frac{\sigma_{p}}{\sigma}. 
 $$ {#eq-solveForx}
@@ -1029,7 +1027,7 @@ intercept $r_{f}$ and slope $(\mu-r_{f})/\sigma$. This line characterizes the li
 
 This line described by @eq-CAL is often called the *capital allocation line*\index{Capital allocation line} (CAL) as it describes how investment capital is allocated between T-Bills and the risky asset. Points on the line close to the y-axis represent portfolios mostly allocated to T-Bills, and points far away from the y-axis represent portfolios mostly allocated to the risky asset. 
 The slope of the CAL is called the *Sharpe ratio*\index{Sharpe ratio} (SR) (named after the economist William Sharpe), and it measures the risk premium on the asset per unit of risk (as measured by the
-standard deviation of the asset). From @eq-CAL we have
+standard deviation of the asset). From @eq-CAL you get
 $$
 \frac{d\mu_{p}}{d\sigma_{p}}=\frac{\mu-r_{f}}{\sigma}=SR.
 $$
@@ -1105,7 +1103,7 @@ TBD
 
 ## Efficient portfolios with two risky assets and a risk-free asset {#sec-Efficient-portfolios-with-two-risky-assets-and-a-risk-free-asset}
 
-Now we expand on the previous results by allowing our investor to
+Now I expand on the previous results by allowing our investor to
 form portfolios of assets A, B and T-bills. The efficient set of portfolios
 in this case will still be a straight line in ($\mu_{p},\sigma_{p})$-space
 with intercept $r_{f}$. The slope of the efficient set, the maximum
@@ -1162,16 +1160,16 @@ points(sig.p.tan.tbill, mu.p.tan.tbill, type="b", col="green", pch=16, cex = cex
 ```
 
 
-If we invest in only in asset B and T-bills then the Sharpe ratio
+If you invest in only in asset B and T-bills then the Sharpe ratio
 is $\mathrm{SR}_{B}=\frac{\mu_{B}-r_{f}}{\sigma_{B}}=0.217$, and the
 CAL intersects the set of risky asset portfolios at point B. This
-is clearly not the efficient set of portfolios. For example, we could
-do uniformly better if we instead invest only in asset A and T-bills.
+is clearly not the efficient set of portfolios. For example, you could
+do uniformly better if you instead invest only in asset A and T-bills.
 This gives us a Sharpe ratio of $\mathrm{SR}_{A}=\frac{\mu_{A}-r_{f}}{\sigma_{A}}=0.562$,
 and the new CAL intersects the set of risky asset portfolios at point
-A. However, we could do better still if we invest in T-bills and
+A. However, you could do better still if you invest in T-bills and
 some combination of assets A and B. Geometrically, it is easy
-to see that the best we can do is obtained for the combination of
+to see that the best you can do is obtained for the combination of
 assets A and B such that the CAL is just tangent to the set
 of risky asset portfolios. This point is labeled "Tangency"
 on the graph and represents the *tangency portfolio*\index{Tangency portfolio} of assets
@@ -1181,10 +1179,10 @@ and asset B.
 
 ### Solving for the Tangency Portfolio
 
-We can determine the proportions of each asset in the tangency portfolio
+You can determine the proportions of each asset in the tangency portfolio
 by finding the values of $x_{A}$ and $x_{B}$ that maximize the Sharpe
 ratio of a portfolio that is on the envelope of the Markowitz bullet. Formally,
-we solve the constrained maximization problem: 
+you solve the constrained maximization problem: 
 
 \begin{align*}
  & \underset{x_{A},x_{B}}{\max}~\mathrm{SR}_{p}=\frac{\mu_{p}-r_{f}}{\sigma_{p}}~s.t.\\
@@ -1209,7 +1207,7 @@ $$ {#eq-tangency-port}
 ::: {#exm-tangency-portfolio-for-example-data .example name="Tangency portfolio for example data"}
 
 For the example data in @tbl-TableExampleData using @eq-tangency-port
-with $r_{f}=0.03,$ we get $x_{A}^{tan}=0.4625$ and $x_{B}^{tan}=0.5375.$
+with $r_{f}=0.03,$ you get $x_{A}^{tan}=0.4625$ and $x_{B}^{tan}=0.5375.$
 The expected return, variance, standard deviation, and Sharpe ratio
 of the tangency portfolio are: 
 
@@ -1254,10 +1252,10 @@ and the T-bill. Accordingly, using @eq-muTbillsPlusRisky and
 @eq-sigmaTbillsPlusRisky the expected return and standard
 deviation of any efficient portfolio are given by: 
 $$
-\mu_{p}^{e} & =r_{f}+x_{T}(\mu_{tan}-r_{f}),
+\mu_{p}^{e} =r_{f}+x_{T}(\mu_{tan}-r_{f}),
 $$ {#eq-mup-efficient}
 $$
-\sigma_{p}^{e} & =x_{T}\sigma_{tan},
+\sigma_{p}^{e} =x_{T}\sigma_{tan},
 $$ {#eq-sigp-efficient}
 where $x_{T}$ represents the fraction of wealth invested in the tangency
 portfolio, $1-x_{T}$ represents the fraction of wealth invested
@@ -1353,7 +1351,7 @@ text(x=sig.risky, y=mu.risky, labels="Risky", pos=3, cex = cex.val)
 
 ### Interpreting Efficient Portfolios
 
-As we have seen, efficient portfolios are those portfolios that have
+As you have seen, efficient portfolios are those portfolios that have
 the highest expected return for a given level of risk as measured
 by portfolio standard deviation. For portfolios with expected returns
 above the T-bill rate, efficient portfolios can also be characterized
@@ -1374,13 +1372,13 @@ that is directly above $\sigma_{B}=0.115$. To find the shares in
 the tangency portfolio and T-bills in this portfolio recall from @eq-sigp-efficient
 that the standard deviation of an efficient portfolio with $x_{T}$
 invested in the tangency portfolio and $1-x_{T}$ invested in T-bills
-is $\sigma_{p}^{e}=x_{T}\sigma_{tan}$. Since we want to find the efficient
-portfolio with $\sigma_{p}^{e}=\sigma_{B}=0.115$, we solve: 
+is $\sigma_{p}^{e}=x_{T}\sigma_{tan}$. Since you want to find the efficient
+portfolio with $\sigma_{p}^{e}=\sigma_{B}=0.115$, you solve: 
 $$
 x_{T}=\frac{\sigma_{B}}{\sigma_{tan}}=\frac{0.115}{0.1251}=0.9195,~x_{f}=1-x_{T}=0.08049.
 $$
-That is, if we invest $91.95\%$ of our wealth in the tangency portfolio
-and $8.049\%$ in T-bills we will have a portfolio with the same standard
+That is, if you invest $91.95\%$ of our wealth in the tangency portfolio
+and $8.049\%$ in T-bills you will have a portfolio with the same standard
 deviation as asset B. Since this is an efficient portfolio, the expected
 return should be higher than the expected return on asset B. Indeed
 it is since: 
@@ -1388,9 +1386,9 @@ $$
 \mu_{p}^{e}=r_{f}+x_{T}(\mu_{tan}-r_{f})=0.03+0.9195(0.1105-0.03)=0.1040.
 $$
 Notice that by diversifying our holding into assets A, B and
-T-bills we can obtain a portfolio with the same risk as asset B but
+T-bills you can obtain a portfolio with the same risk as asset B but
 with almost twice the expected return! By moving from asset B into
-an efficient portfolio we raise the Sharpe ratio of the investment
+an efficient portfolio you raise the Sharpe ratio of the investment
 from $SR_{B}=0.217$ to $SR_{tan}=0.6434$. 
 
 Next, consider finding an efficient portfolio that has the same expected
@@ -1402,13 +1400,13 @@ To find the shares in the tangency portfolio and T-bills in this portfolio
 recall from @eq-mup-efficient that the expected return of
 an efficient portfolio with $x_{T}$ invested in the tangency portfolio
 and $1-x_{T}$ invested in T-bills has expected return equal to $\mu_{p}^{e}=r_{f}+x_{T}(\mu_{tan}-r_{f})$.
-Since we want to find the efficient portfolio with $\mu_{p}^{e}=\mu_{B}=0.055$
-we solve: 
+Since you want to find the efficient portfolio with $\mu_{p}^{e}=\mu_{B}=0.055$
+you solve: 
 $$
 x_{T}=\frac{\mu_{p}^{e}-r_{f}}{\mu_{tan}-r_{f}}=\frac{0.055-0.03}{0.1105-0.03}=0.3105,~x_{f}=1-x_{T}=0.6895.
 $$
-That is, if we invest $31.05\%$ of wealth in the tangency portfolio
-and $68.95\%$ of our wealth in T-bills we have a portfolio with the
+That is, if you invest $31.05\%$ of wealth in the tangency portfolio
+and $68.95\%$ of our wealth in T-bills you have a portfolio with the
 same expected return as asset B. Since this is an efficient portfolio,
 the standard deviation (risk) of this portfolio should be lower than
 the standard deviation on asset B. Indeed it is since: 
@@ -1418,19 +1416,19 @@ $$
 Notice how large the risk reduction is by forming an efficient portfolio.
 The standard deviation on the efficient portfolio is almost three
 times smaller than the standard deviation of asset B! Again, by
-moving from asset B into an efficient portfolio we raise the Sharpe
+moving from asset B into an efficient portfolio you raise the Sharpe
 ratio of the investment from $SR_{B}=0.217$ to $SR_{tan}=0.6434$
 \hfill{}$\blacksquare$
 :::
 
 The above example illustrates two ways to interpret the benefits from
 forming efficient portfolios. Starting from some benchmark portfolio,
-we can fix standard deviation (risk) at the value for the benchmark
+you can fix standard deviation (risk) at the value for the benchmark
 and then determine the gain in expected return from forming a diversified
 portfolio^[The gain in expected return by investing in an efficient portfolio
 abstracts from the costs associated with selling the benchmark portfolio
 and buying the efficient portfolio.]. The gain in expected return has concrete meaning. Alternatively,
-we can fix expected return at the value for the benchmark and then
+you can fix expected return at the value for the benchmark and then
 determine the reduction in standard deviation (risk) from forming
 a diversified portfolio. The meaning to an investor of the reduction
 in standard deviation is not as clear as the meaning to an investor
@@ -1522,17 +1520,16 @@ for retirement portfolios is a simple two asset portfolio of in which
 one risky asset is a mutual fund of stocks and the other (less) risky
 asset is a mutual fund of U.S. Treasury bonds. 
 
-In the **IntroCompFinR** package there is a data object called
+In the **introcompfinr** package there is a data object called
 `VanguardPrices` that contains monthly adjusted closing prices
 on six Vanguard mutual funds over the period January, 1995 through
 December, 2014.^[Details about these funds are available at (finance.yahoo.com). ]
 The fund VFINX is a low cost fund designed to track the performance
-of the S\&P 500 index. The S\&P 500 index is a value-weighted index of the 500 largest stocks (by market capitalization) traded on the NYSE.^[ETF alternatives to VFINX include State Street's SPY, Vanguard's VOO, and iShares IVV. See `www.eft.com`.] We will use this as our stock portfolio. The
+of the S\&P 500 index. The S\&P 500 index is a value-weighted index of the 500 largest stocks (by market capitalization) traded on the NYSE.^[ETF alternatives to VFINX include State Street's SPY, Vanguard's VOO, and iShares IVV. See `www.eft.com`.] I will use this as my stock portfolio. The
 fund VBLTX is a low cost fund constructed to track the performance
 of a portfolio of long term (maturities greater than 10 years) U.S.
-Government Bonds.^[ETF alternatives to VBLTX include iShares TLT and GOVT, and State Street SPTL. See `www.eft.com`.] We will use this as our bond portfolio. We will
-use the U.S. 3-month T-Bill rate as the risk-free asset. The following
-code creates the monthly simple return data for this example:
+Government Bonds.^[ETF alternatives to VBLTX include iShares TLT and GOVT, and State Street SPTL. See `www.eft.com`.] I will use this as my bond portfolio. I will use the U.S. 3-month T-Bill rate as the 
+risk-free asset. The following code creates the monthly simple return data for this example:
 
 ```{r}
 #| echo: true
@@ -1542,7 +1539,7 @@ stockBondPrices = VanguardPrices[, c("vfinx", "vbltx")]
 stockBondRetS = na.omit(Return.calculate(stockBondPrices, method="simple")) 
 head(stockBondRetS, n=3)
 ```
-We will construct efficient portfolios using the GWN model estimates
+I will construct efficient portfolios using the GWN model estimates
 of expected returns, variances, and covariances over four sub-periods:
 January, 1995 to January 2000; January, 2000 to January, 2005; January,
 2005 to January, 2010; January, 2010 to December, 2014. The approximate
@@ -1611,8 +1608,7 @@ table.AnnualizedReturns(stockBondRetS[smpl4], Rf = r.f[4], geometric = FALSE)
 The annualized estimates confirm the relative performance of bonds
 and stocks in the four sub-periods. In general, stock returns are about twice as volatile as bond returns. Bonds performed well in all sub-periods, with annualized mean returns between 6\% and 11\%. In contrast, stocks only performed well in sub-periods 1 and 4 and had negative annualized mean returns in periods 2 and 3. In terms of Sharpe ratios, stocks had annualized Sharpe ratios a bit over 1 in sub-periods 1 and 4 and bonds had annualized Sharpe ratios of 0.9 and 0.55 in sub-periods 2 and 3.^[Investments with annualized Sharpe ratios greater than one are typically considered good investments.] 
 
-The sample correlations between
-the monthly stock and bond returns, by sub-period, are:
+The sample correlations between the monthly stock and bond returns, by sub-period, are:
 
 ```{r}
 #| echo: true
@@ -1695,7 +1691,7 @@ gminVals[i, ] = c(gmin.port$weight_vec,gmin.port$er_port,gmin.port$sd_port,SR.gm
 # par(mfrow=c(1,1))
 ```
 
-Using the sub-period GWN model estimates, we compute risky asset only
+Using the sub-period GWN model estimates, I compute risky asset only
 efficient portfolios and efficient portfolios of T-Bills (risk-free
 asset) and the tangency portfolios. The resulting portfolios are illustrated
 in @fig-IntroPortStockBondPortfolios. In sub-periods
@@ -1751,7 +1747,7 @@ $$
 y=f(x)=x^{2}.
 $$
 Clearly the minimum of this function occurs at the point $x=0$. Using
-calculus, we find the minimum by solving: 
+calculus, you find the minimum by solving: 
 $$
 \min_{x}~y=x^{2}.
 $$
@@ -1772,7 +1768,7 @@ $$
 y=f(x,z)=x^{2}+z^{2}
 $$ {#eq-f-xz}
 This function looks like a salad bowl whose bottom is at $x=0$ and
-$z=0$. To find the minimum of @eq-f-xz, we solve: 
+$z=0$. To find the minimum of @eq-f-xz, you solve: 
 $$
 \min_{x,z}y=x^{2}+z^{2},
 $$
@@ -1783,7 +1779,7 @@ and the first order necessary conditions are,
 \end{align*}
 Solving these two linear equations gives $x=0$ and $z=0$. 
 
-Now suppose we want to minimize @eq-f-xz subject to the linear
+Now suppose you want to minimize @eq-f-xz subject to the linear
 constraint: 
 $$
 x+z=1.
@@ -1873,7 +1869,7 @@ multiplier better, consider imposing the constraint $x+z=0$. Notice
 that the unconstrained minimum achieved at $x=0,z=0$ satisfies this
 constraint. Hence, imposing $x+z=0$ does not cost anything and so
 the Lagrange multiplier associated with this constraint should be
-zero. To confirm this, we solve the problem: 
+zero. To confirm this, you solve the problem: 
 $$
 \min_{x,z,\lambda}~L(x,z,\lambda)=x^{2}+z^{2}+\lambda(x+z-0).
 $$

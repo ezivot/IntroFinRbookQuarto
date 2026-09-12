@@ -16,6 +16,8 @@ book:
     - 07-GWNModelEstimation-new.qmd
     - 08-bootstrap-new.qmd
     - 09-hypothesisTestingGWNModel-new.qmd
+    - 10-introductionPortfolioTheory-new.qmd
+    - 11-PortfolioTheoryMatrix-new.qmd
     - references.qmd
 
 bibliography: [book.bib, packages.bib]
