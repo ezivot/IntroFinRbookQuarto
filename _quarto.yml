@@ -19,6 +19,7 @@ book:
     - 10-introductionPortfolioTheory-new.qmd
     - 11-PortfolioTheoryMatrix-new.qmd
     - 12-portfolioTheoryNoShortSales-new.qmd
+    - 13-riskBudgeting-new.qmd
     - references.qmd
 
 bibliography: [book.bib, packages.bib]

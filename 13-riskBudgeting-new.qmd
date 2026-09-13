@@ -1,0 +1,1382 @@
+# Portfolio Risk Budgeting {#sec-Risk-Budgeting}
+
+Updated: September 13, 2026
+
+Copyright © Eric Zivot 2026
+
+
+The idea of portfolio risk budgeting is to decompose a measure of
+portfolio risk into risk contributions from the individual assets
+in the portfolio. In this way, an investor can see which assets are
+most responsible for portfolio risk and can then make informed decisions,
+if necessary, about re-balancing the portfolio to alter the risk. Portfolio
+risk budgeting reports, which summarize asset contributions to portfolio
+risk, are becoming standard in industry practice. In addition, it
+has become popular to consider portfolio construction using risk budgeting
+to create so-called "risk-parity" portfolios. In risk-parity portfolios,
+portfolio weights are constructed so that that each asset has equal
+risk contributions to portfolio risk.^[Two hedge funds, Bridgewater and AQR capital management have helped
+to make risk parity investing popular. ] 
+
+
+I first motivate risk budgeting using the portfolio return variance
+and standard deviation as measures of portfolio risk. I then show
+how Euler's theorem can be used to do risk budgeting for portfolio
+risk measures that are homogeneous of degree one in the portfolio weights.
+Such risk measures include portfolio return standard deviation (volatility)
+and Value-at-Risk for general return distributions.
+
+* Need to finish introduction
+
+
+The R packages I use in this chapter are **corrplot**, **introcompfinr** and
+**PerformanceAnalytics**. Make sure these packages are installed
+and loaded in R before replicating the chapter examples.
+
+```{r}
+#| include: false
+suppressPackageStartupMessages(library(corrplot))
+suppressPackageStartupMessages(library(kableExtra))
+suppressPackageStartupMessages(library(introcompfinr))
+suppressPackageStartupMessages(library(PerformanceAnalytics))
+options(digits=3)
+```
+
+## Risk Budgeting Using Portfolio Variance and Portfolio Standard Deviation
+
+I motivate portfolio risk budgeting in the simple context of a two
+risky asset portfolio. To illustrate, consider forming a portfolio
+consisting of two risky assets (asset 1 and asset 2) with portfolio
+shares $x_{1}$ and $x_{2}$ such that $x_{1}+x_{2}=1.$ I assume
+that the GWN model holds for the simple returns on each asset. The
+portfolio return is given by $R_{p}=x_{1}R_{1}+x_{2}R_{2}$, and the
+portfolio expected return and variance are given by $\mu_{p}=x_{1}\mu_{1}+x_{2}\mu_{2}$
+and $\sigma_{p}^{2}=x_{1}^{2}\sigma_{1}^{2}+x_{2}^{2}\sigma_{2}^{2}+2x_{1}x_{2}\sigma_{12}$,
+respectively. The portfolio variance, $\sigma_{p}^{2},$ and standard
+deviation, $\sigma_{p},$ are natural measures of portfolio risk.
+The advantage of using $\sigma_{p}$ is that it is in the same units
+as the portfolio return. Risk budgeting concerns the following question:
+what are the contributions of assets 1 and 2 to portfolio risk captured
+by $\sigma_{p}^{2}$ or $\sigma_{p}$?
+
+### Case 1: uncorrelated assets
+
+To answer this question, I consider first the formula for portfolio variance.
+If the asset returns are uncorrelated ($\sigma_{12}=0)$ then
+$$
+\sigma_{p}^{2}=x_{1}^{2}\sigma_{1}^{2}+x_{2}^{2}\sigma_{2}^{2}
+$$
+gives an *additive decomposition* of portfolio risk: $x_{1}^{2}\sigma_{1}^{2}$
+is the variance contribution from asset 1, and $x_{2}^{2}\sigma_{2}^{2}$
+is the variance contribution from asset 2. Clearly, asset 1 has a
+higher contribution than asset 2 if $x_{1}^{2}\sigma_{1}^{2}>x_{2}^{2}\sigma_{2}^{2}$. 
+For example, in an equally weighted portfolio asset 1's risk contribution
+is higher than asset 2's contribution if asset 1's return is more
+variable than asset 2's return. I can also define asset percent contributions
+to risk, which divide the asset contributions by portfolio variance,
+as $x_{1}^{2}\sigma_{1}^{2}/\sigma_{p}^{2}$ and $x_{2}^{2}\sigma_{2}^{2}/\sigma_{p}^{2},$
+respectively. The percent contributions have the property that they
+add to $100\%.$ Notice that an equally weighted portfolio may not have equal 
+contributions to risk. 
+
+If I measure risk by portfolio volatility, $\sigma_{p}=\sqrt{x_{1}^{2}\sigma_{1}^{2}+x_{2}^{2}\sigma_{2}^{2}}$,
+I may be tempted to define the contributions of assets 1 and 2 to
+risk as $x_{1}\sigma_{1}$ and $x_{2}\sigma_{2},$ respectively. However,
+this would not be correct because I would not get an additive decomposition
+$$
+\sigma_{p}=\sqrt{x_{1}^{2}\sigma_{1}^{2}+x_{2}^{2}\sigma_{2}^{2}}\neq x_{1}\sigma_{1}+x_{2}\sigma_{2}.
+$$
+To get an additive decomposition I have to define the risk contributions
+as $x_{1}^{2}\sigma_{1}^{2}/\sigma_{p}$ and $x_{2}^{2}\sigma_{2}^{2}/\sigma_{p},$
+respectively. Then
+$$
+\frac{x_{1}^{2}\sigma_{1}^{2}}{\sigma_{p}}+\frac{x_{2}^{2}\sigma_{2}^{2}}{\sigma_{p}}=\frac{\sigma_{p}^{2}}{\sigma_{p}}=\sigma_{p}.
+$$
+
+Notice that the percent contributions to portfolio volatility are the same as the percent contributions to portfolio variance.
+
+### Case 2: correlated assets
+
+If the asset returns are correlated ($\sigma_{12}\neq0$) then the
+risk decomposition becomes a bit more complicated because I have
+to decide what to do with the covariance contribution to portfolio
+variance. However, the formula for $\sigma_{p}^{2}$ suggests a simple
+additive decomposition:
+\begin{align*}
+\sigma_{p}^{2} & =x_{1}^{2}\sigma_{1}^{2}+x_{2}^{2}\sigma_{2}^{2}+2x_{1}x_{2}\sigma_{12}\\
+ & =\left(x_{1}^{2}\sigma_{1}^{2}+x_{1}x_{2}\sigma_{12}\right)+\left(x_{2}^{2}\sigma_{2}^{2}+x_{1}x_{2}\sigma_{12}\right)\\
+ & =\left(x_{1}^{2}\sigma_{1}^{2}+x_{1}x_{2}\rho_{12}\sigma_{1}\sigma_{2}\right)+\left(x_{2}^{2}\sigma_{2}^{2}+x_{1}x_{2}\rho_{12}\sigma_{1}\sigma_{2}\right)
+\end{align*}
+Now, $\left(x_{1}^{2}\sigma_{1}^{2}+x_{1}x_{2}\sigma_{12}\right)$
+and $\left(x_{2}^{2}\sigma_{2}^{2}+x_{1}x_{2}\sigma_{12}\right)$
+are portfolio variance contributions of assets 1 and 2, respectively.
+Here, I split the covariance contribution to portfolio variance,
+$2x_{1}x_{2}\sigma_{12}$, evenly between the two assets. Now, the
+correlation between the two asset returns also plays a role in the
+risk decomposition. The additive decomposition for $\sigma_{p}$ is
+$$
+\sigma_{p}=\frac{x_{1}^{2}\sigma_{1}^{2}+x_{1}x_{2}\sigma_{12}}{\sigma_{p}}+\frac{x_{2}^{2}\sigma_{2}^{2}+x_{1}x_{2}\sigma_{12}}{\sigma_{p}},
+$$
+which gives $\left(\frac{x_{1}^{2}\sigma_{1}^{2}+x_{1}x_{2}\sigma_{12}}{\sigma_{p}}\right)$
+and $\left(\frac{x_{2}^{2}\sigma_{2}^{2}+x_{1}x_{2}\sigma_{12}}{\sigma_{p}}\right)$
+as the asset contributions to portfolio volatility, respectively.
+
+### The general case of $N$ assets
+
+The risk budgeting decompositions I presented above for two asset portfolios
+extend naturally to general $N$ asset portfolios. In the case where
+all assets are mutually uncorrelated, asset i's contributions to portfolio
+variance and volatility are $x_{i}^{2}\sigma_{i}^{2}$ and $x_{i}^{2}\sigma_{i}^{2}/\sigma_{p}$,
+respectively. In the case of correlated asset returns, all pairwise
+covariances enter into asset i's contributions. The portfolio variance
+contribution is 
+$$
+x_{i}^{2}\sigma_{i}^{2}+\sum_{j\neq i}x_{i}x_{j}\sigma_{ij}
+$$
+and the portfolio volatility contribution is 
+$$
+\left(x_{i}^{2}\sigma_{i}^{2}+\sum_{j\neq i}x_{i}x_{j}\sigma_{ij}\right)/\sigma_{p}
+$$.
+As you might expect, these formulae can be simplified using matrix algebra.
+
+## Euler's Theorem and Risk Decompositions
+\index{Euler's Theorem}
+When I used $\sigma_{p}^{2}$ or $\sigma_{p}$ to measure portfolio
+risk, I was able to easily derive sensible risk decompositions in
+the two risky asset case. However, if I measure portfolio risk by
+value-at-risk or some other risk measure it is not so obvious how to define individual asset
+risk contributions. For portfolio risk measures that are *homogenous functions of degree one* in the portfolio weights, Euler's theorem provides a general method for decomposing risk into asset specific
+contributions.
+
+### Homogenous functions of degree one
+\index{Homogenous of degree one}
+First I define a homogenous function of degree one.
+
+::: {#def-homogenous-function-of-degree-one .definition name="homogenous function of degree one"}
+
+Let $f(x_{1},x_{2},\ldots,x_{N})$ be a continuous and differentiable
+function of the variables $x_{1},\,x_{2},\ldots,x_{N}$. The function
+$f$ is homogeneous of degree one if for any constant $c > 0,$ $f(cx_{1},cx_{2},\ldots,cx_{N})=cf(x_{1},x_{2},\ldots,x_{N}).$
+In matrix notation I have $f(x_{1},\ldots,x_{N})=f(\mathbf{x})$
+where $\mathbf{x}=(x_{1},\ldots,x_{N})^{\prime}$. Then $f$ is homogeneous
+of degree one if $f(c\cdot\mathbf{x})=c\cdot f(\mathbf{x})$.
+:::
+
+::: {#exm-homogenous-functions-of-degree-one .example name="Homogenous functions of degree one"}
+
+Consider first the function $f(x_{1},x_{2})=x_{1}+x_{2}.$ Then 
+$$
+f(cx_{1},cx_{2})=cx_{1}+cx_{2}=c(x_{1}+x_{2})=cf(x_{1},x_{2})
+$$
+so that $x_{1}+x_{2}$ is homogenous of degree one. Next, let $f(x_{1},x_{2})=x_{1}^{2}+x_{2}^{2}.$
+Then 
+$$
+f(cx_{1},cx_{2})=c^{2}x_{1}^{2}+c^{2}x_{2}^{2}=c^{2}(x_{1}^{2}+x_{2}^{2})\neq cf(x_{1},x_{2})
+$$
+so that $x_{1}^{2}+x_{2}^{2}$ is not homogenous of degree one. Finally, let
+$f(x_{1},x_{2})=\sqrt{x_{1}^{2}+x_{2}^{2}}$ Then 
+$$
+f(cx_{1},cx_{2})=\sqrt{c^{2}x_{1}^{2}+c^{2}x_{2}^{2}}=c\sqrt{(x_{1}^{2}+x_{2}^{2})}=cf(x_{1},x_{2})
+$$
+so that $\sqrt{x_{1}^{2}+x_{2}^{2}}$ is homogenous of degree one.
+
+In matrix notation, define $\mathbf{x}=(x_{1},x_{2})^{\prime}$ and
+$\mathbf{1}=(1,1)^{\prime}$. Let $f(x_{1},x_{2})=x_{1}+x_{2}=\mathbf{x}^{\prime}\mathbf{1=f(\mathbf{x})}$.
+Then 
+$$
+f(c\cdot\mathbf{x})=\left(c\cdot\mathbf{x}\right)^{\prime}\mathbf{1}=c\cdot\mathbf{(x}^{\prime}1)=c\cdot f(\mathbf{x}).
+$$
+Let $f(x_{1},x_{2})=x_{1}^{2}+x_{2}^{2}=\mathbf{x}^{\prime}\mathbf{x}=f\mathbf{(x)}$.
+Then 
+$$
+f(c\cdot\mathbf{x})=(c\cdot\mathbf{x})^{\prime}(c\cdot\mathbf{x})=c^{2}\cdot\mathbf{x}^{\prime}\mathbf{x}\neq c\cdot f(\mathbf{x}).
+$$
+Let $f(x_{1},x_{2})=\sqrt{x_{1}^{2}+x_{2}^{2}}=(\mathbf{x}^{\prime}\mathbf{x})^{1/2}=f(\mathbf{x})$.
+Then 
+$$
+f(c\cdot\mathbf{x})=\left((c\cdot\mathbf{x})^{\prime}(c\cdot\mathbf{x})\right)^{1/2}=c\cdot\left(\mathbf{x}^{\prime}\mathbf{x}\right)^{1/2}=c\cdot f(\mathbf{x}).
+$$
+\hfill{}$\blacksquare$
+:::
+
+Consider a portfolio of $N$ assets with weight vector $\mathbf{x}$,
+return vector $\mathbf{R}$, expected return vector $\boldsymbol{\mu}$
+and covariance matrix $\boldsymbol{\Sigma}$. The portfolio return, expected
+return, variance, and volatility, are functions of the portfolio weight
+vector $\mathbf{x}$: 
+$$
+\begin{aligned}
+R_{p}& =R_{p}(\mathbf{x})=\mathbf{x}^{\prime}\mathbf{R} \\
+\mu_{p} & =\mu_{p}(\mathbf{x})=\mathbf{x}^{\prime}\boldsymbol{\mu},\\
+\sigma_{p}^{2} & =\sigma_{p}^{2}(\mathbf{x})=\mathbf{x}^{\prime}\boldsymbol{\Sigma} \mathbf{x},\\
+\sigma_{p} & =\sigma_{p}(\mathbf{x})=(\mathbf{x}^{\prime}\boldsymbol{\Sigma}\mathbf{x})^{1/2}.
+\end{aligned}
+$$
+As a result, the portfolio return quantile and portfolio value-at-risk are also functions of the portfolio weight vector $\mathbf{x}$:
+$$
+\begin{aligned}
+q_{\alpha}^{R_{p}}(x) &=\mu_{p}(\mathbf{x})+\sigma_{p}(\mathbf{x})q_{\alpha}^{Z}, \\ \mathrm{VaR}_{p,\alpha}(\mathbf{x}) & = -q_{\alpha}^{R_{p}}(\mathbf{x})W_{0}. 
+\end{aligned}
+$$
+
+::: {#prp-portfolio-quantites-are-homogenous-of-degree-one-in-mathbf-x .proposition name="Portfolio quantites are homogenous of degree one in $\\mathbf{x}$"}
+The portfolio quantities $R_{p}(\mathbf{x})$, $\mu_{p}(\mathbf{x})$, $\sigma_{p}(\mathbf{x})$, the normal
+quantile $q_{\alpha}^{R_{p}}(x)$, and the normal value-at-risk $\mathrm{VaR}_{p,\alpha}(\mathbf{x})$ are homogenous functions of degree one in the portfolio weight vector $\mathbf{x}$.
+:::
+
+The result for $R_{p}(\mathbf{x})$ and $\mu_{p}(\mathbf{x})$ is trivial since they are linear functions of $\mathbf{x}$. For example, $R_{p}(c\mathbf{x})=(c\mathbf{x})^{\prime}\mathbf{R}=c\left(\mathbf{x}^{\prime}\mathbf{R}\right)=cR_{p}(\mathbf{x})$. The result for $\sigma_{p}(\mathbf{x})$ is straightforward to show:
+\begin{align*}
+\sigma_{p}(c\cdot\mathbf{x}) & =((c\cdot\mathbf{x)}^{\prime}\boldsymbol{\Sigma}\mathbf{(}c\cdot\mathbf{x)})^{1/2}\\
+ & =c\cdot(\mathbf{x}^{\prime}\boldsymbol{\Sigma} \mathbf{x})^{1/2}\\
+ & =c\cdot\sigma_{p}(\mathbf{x}).
+\end{align*}
+The result for $q_{\alpha}^{R_{p}}(\mathbf{x})$ follows because it is a linear function of $\mu_{p}(\mathbf{x})$ and $\sigma_{p}(\mathbf{x})$. The result for $\mathrm{VaR}_{p,\alpha}(\mathbf{x})$ follows from the linear homogeneity of the normal return quantile.
+
+In the proposition, I stated that $q_{\alpha}^{R_{p}}(x)$ is homogenous of degree one in $\mathbf{x}$ when returns are normally distributed. It turns out that the homogeneity of $q_{\alpha}^{R_{p}}(x)$ holds generally for continuous distributions and even for the empirical quantile. 
+
+### Euler's theorem
+\index{Euler's theorem}
+Euler's theorem gives an additive decomposition of a homogenous function
+of degree one.
+
+::: {#thm-euler-s-theorem .theorem name="Euler's theorem"}
+
+Let $f(x_{1},\ldots,x_{N})=f(\mathbf{x})$ be a continuous, differentiable
+and homogenous of degree one function of the variables $\mathbf{x}=(x_{1},\ldots,x_{N})^{\prime}$.
+Then, 
+\begin{align*}
+f(\mathbf{x}) & =x_{1}\cdot\frac{\partial f(\mathbf{x})}{\partial x_{1}}+x_{2}\cdot\frac{\partial f(\mathbf{x})}{\partial x_{2}}+\cdots+x_{N}\cdot\frac{\partial f(\mathbf{x})}{\partial x_{N}}\\
+ & =\mathbf{x}^{\prime}\frac{\partial f(\mathbf{x})}{\partial\mathbf{x}},
+\end{align*}
+where, 
+$$
+\underset{(N\times1)}{\frac{\partial f(\mathbf{x})}{\partial\mathbf{x}}}=\left(\begin{array}{c}
+\frac{\partial f(\mathbf{x})}{\partial x_{1}}\\
+\vdots\\
+\frac{\partial f(\mathbf{x})}{\partial x_{N}}
+\end{array}\right).
+$$
+:::
+
+::: {#exm-verifying-euler-s-theorem .example name="Verifying Euler's theorem"}
+
+The function $f(x_{1},x_{2})=x_{1}+x_{2}=f(\mathbf{x})=\mathbf{x}^{\prime}\mathbf{1}$
+is homogenous of degree one, and: 
+\begin{align*}
+\frac{\partial f(\mathbf{x})}{\partial x_{1}} & =\frac{\partial f(\mathbf{x})}{\partial x_{2}}=1,\\
+\frac{\partial f(\mathbf{x})}{\partial\mathbf{x}} & =\left(\begin{array}{c}
+\frac{\partial f(\mathbf{x})}{\partial x_{1}}\\
+\frac{\partial f(\mathbf{x})}{\partial x_{2}}
+\end{array}\right)=\left(\begin{array}{c}
+1\\
+1
+\end{array}\right)=\mathbf{1}.
+\end{align*}
+By Euler's theorem, 
+\begin{align*}
+f(x) & =x_{1}\cdot1+x_{2}\cdot1=x_{1}+x_{2}\\
+ & =\mathbf{x}^{\prime}\mathbf{1}.
+\end{align*}
+
+
+The function $f(x_{1},x_{2})=(x_{1}^{2}+x_{2}^{2})^{1/2}=f(\mathbf{x})=(\mathbf{x}^{\prime}\mathbf{x})^{1/2}$
+is homogenous of degree one, and: 
+\begin{align*}
+\frac{\partial f(\mathbf{x})}{\partial x_{1}} & =\frac{1}{2}\left(x_{1}^{2}+x_{2}^{2}\right)^{-1/2}2x_{1}=x_{1}\left(x_{1}^{2}+x_{2}^{2}\right)^{-1/2},\\
+\frac{\partial f(\mathbf{x})}{\partial x_{2}} & =\frac{1}{2}\left(x_{1}^{2}+x_{2}^{2}\right)^{-1/2}2x_{2}=x_{2}\left(x_{1}^{2}+x_{2}^{2}\right)^{-1/2}.
+\end{align*}
+By Euler's theorem, 
+\begin{align*}
+f(\mathbf{x}) & =x_{1}\cdot x_{1}\left(x_{1}^{2}+x_{1}^{2}\right)^{-1/2}+x_{2}\cdot x_{2}\left(x_{1}^{2}+x_{2}^{2}\right)^{-1/2}\\
+ & =\left(x_{1}^{2}+x_{2}^{2}\right)\left(x_{1}^{2}+x_{2}^{2}\right)^{-1/2}\\
+ & =\left(x_{1}^{2}+x_{2}^{2}\right)^{1/2}.
+\end{align*}
+
+Using matrix algebra, I have:
+$$
+\frac{\partial f(\mathbf{x})}{\partial\mathbf{x}}=\frac{\partial\left(\mathbf{x}^{\prime}\mathbf{x}\right)^{1/2}}{\partial\mathbf{x}}=\frac{1}{2}\left(\mathbf{x}^{\prime}\mathbf{x}\right)^{-1/2}2\mathbf{x}=\left(\mathbf{x}^{\prime}\mathbf{x}\right)^{-1/2}\mathbf{x}=\mathbf{x}\left(\mathbf{x}^{\prime}\mathbf{x}\right)^{-1/2}.
+$$
+Then by Euler's theorem:
+$$
+f(\mathbf{x})=\mathbf{x}^{\prime}\frac{\partial f(\mathbf{x})}{\partial\mathbf{x}}=\mathbf{x}^{\prime}\mathbf{x}\left(\mathbf{x}^{\prime}\mathbf{x}\right)^{-1/2}=\left(\mathbf{x}^{\prime}\mathbf{x}\right)^{1/2}.
+$$
+
+\hfill{}$\blacksquare$
+:::
+
+### Risk decomposition using Euler's theorem
+\index{Risk decomposition}
+
+::: {#prp-additive-risk-decomposition-for-homogenous-of-degree-one-portfolio-risk-measures .proposition name="Additive risk decomposition for homogenous of degree one portfolio risk measures"}
+Let $\mathrm{RM}_{p}(\mathbf{x})$ denote a portfolio risk measure that is a homogenous function of degree one in the portfolio weight vector $\mathbf{x}$. For example, $\mathrm{RM}_{p}(\mathbf{x})=\sigma_{p}(\mathbf{x})$
+or $\mathrm{RM}_{p}(\mathbf{x})=\mathrm{VaR}_{p,\alpha}(\mathbf{x}).$ Then, Euler's theorem gives the additive risk decomposition
+$$
+\begin{aligned}
+\mathrm{RM}_{p}(\mathbf{x}) & =  x_{1}\frac{\partial\mathrm{RM}_{p}(\mathbf{x})}{\partial x_{1}}+x_{2}\frac{\partial\mathrm{RM}_{p}(\mathbf{x})}{\partial x_{2}}+\cdots+x_{N}\frac{\partial\mathrm{RM}_{p}(\mathbf{x})}{\partial x_{N}}\\
+ & = \sum_{i=1}^{N}x_{i}\frac{\partial\mathrm{RM}_{p}(\mathbf{x})}{\partial x_{i}} \\
+ & = \mathbf{x}^{\prime}\frac{\partial\mathrm{RM}_{p}(\mathbf{x})}{\partial\mathbf{x}}. 
+\end{aligned}
+$$
+:::
+
+The partial derivatives in @eq-RiskBudgetRiskDecomposition are called asset *marginal contributions to risk*\index{Marginal contributions to risk} (MCRs):
+$$
+\mathrm{MCR}_{i}^{RM} =\frac{\partial\mathrm{RM}_{p}(\mathbf{x})}{\partial x_{i}}=\text{ marginal contribution of asset } i 
+$$ {#eq-RiskBudgetMCR}
+
+The asset *contributions to risk*\index{Contributions to risk} (CRs) are defined as the weighted
+marginal contributions:
+$$
+\mathrm{CR}_{i}^{RM} =x_{i}\cdot\mathrm{MCR}_{i}^{RM}=\text{ contribution of asset } i 
+$$ {#eq-RiskBudgetCR}
+Then I can re-express the decomposition @eq-RiskBudgetRiskDecomposition
+as
+$$
+\begin{aligned}
+\mathrm{RM}_{p}(\mathbf{x}) & = x_{1}\cdot\mathrm{MCR}_{1}^{RM}+x_{2}\cdot\mathrm{MCR}_{2}^{RM}+\cdots+x_{N}\cdot\mathrm{MCR}_{N}^{RM}\\
+ & =  \mathrm{CR}_{1}^{RM}+\mathrm{CR}_{2}^{RM}+\cdots+\mathrm{CR}_{N}^{RM}\nonumber 
+\end{aligned}
+$$ {#eq-RiskBudgetRiskDecomposition2}
+If I divide both sides of @eq-RiskBudgetRiskDecomposition2
+by $\mathrm{RM}_{p}(\mathbf{x})$ I get the asset *percent contributions to risk*\index{Percent contributions to risk} (PCRs)
+$$
+\begin{aligned}
+1 & = \frac{\mathrm{CR}_{1}^{RM}}{\mathrm{RM}_{p}(\mathbf{x})}+\frac{\mathrm{CR}_{2}^{RM}}{\mathrm{RM}_{p}(\mathbf{x})}+\cdots+\frac{\mathrm{CR}_{N}^{RM}}{\mathrm{RM}_{p}(\mathbf{x})}\\
+ & = \mathrm{PCR}_{1}^{RM}+\mathrm{PCR}_{2}^{RM}+\cdots+\mathrm{PCR}_{N}^{RM}
+\end{aligned}
+$$
+where 
+$$
+\mathrm{PCR}_{i}^{RM} =\frac{\mathrm{CR}_{i}^{RM}}{\mathrm{RM}_{p}(\mathbf{x})}=\text{ percent contribution of asset } i 
+$$ {#eq-RiskBudgetPCR}
+By construction the asset PCRs sum to one. 
+
+#### Risk decomposition using $\sigma_{p}(\mathbf{x})$
+
+Let $\mathrm{RM}_{p}(\mathbf{x})=\sigma_{p}(\mathbf{x})=(\mathbf{x}^{\prime}\boldsymbol{\Sigma} \mathbf{x})^{1/2}$.
+Because $\sigma_{p}(\mathbf{x})$ is homogenous of degree 1 in $\mathbf{x},$
+by Euler's theorem
+$$
+\begin{aligned}
+\sigma_{p}(\mathbf{x}) &= x_{1}\frac{\partial\sigma_{p}(\mathbf{x})}{\partial x_{1}}+x_{2}\frac{\partial\sigma_{p}(\mathbf{x})}{\partial x_{2}}+\cdots+x_{n}\frac{\partial\sigma_{p}(\mathbf{x})}{\partial x_{n}}\\
+&=\mathbf{x}^{\prime}\frac{\partial\sigma_{p}(\mathbf{x})}{\partial\mathbf{x}}. 
+\end{aligned}
+$$ {#eq-RiskBudgetVolDecomposition}
+Now,
+$$
+\begin{aligned}
+\frac{\partial\sigma_{p}(\mathbf{x})}{\partial\mathbf{x}} & =  \frac{\partial(\mathbf{x}^{\prime}\boldsymbol{\Sigma} \mathbf{x})^{1/2}}{\partial\mathbf{x}}=\frac{1}{2}(\mathbf{x}^{\prime}\boldsymbol{\Sigma} \mathbf{x})^{-1/2}2\boldsymbol{\Sigma} \mathbf{x}\nonumber \\
+ & = \frac{\boldsymbol{\Sigma} \mathbf{x}}{(\mathbf{x}^{\prime}\boldsymbol{\Sigma} \mathbf{x})^{1/2}}=\frac{\boldsymbol{\Sigma} \mathbf{x}}{\sigma_{p}(\mathbf{x})}.
+\end{aligned}
+$$ {#eq-RiskBudgeVolMCRvector}
+Then,
+$$
+\frac{\partial\sigma_{p}(\mathbf{x})}{\partial x_{i}}=\mathrm{MCR}_{i}^{\sigma}=\text{i-th row of }\frac{\boldsymbol{\Sigma} \mathbf{x}}{\sigma_{p}(\mathbf{x})}=\frac{\left(\boldsymbol{\Sigma} \mathbf{x}\right)_{i}}{\sigma_{p}(\mathbf{x})},
+$$ {#eq-RiskBudgetVolMCR}
+and 
+$$
+\mathrm{CR}_{i}^{\sigma}  =  x_{i}\times\frac{\left(\boldsymbol{\Sigma} \mathbf{x}\right)_{i}}{\sigma_{p}(\mathbf{x})},
+$$ {#eq-RiskBudgetVolCR}
+$$
+\mathrm{PCR}_{i}^{\sigma}  = x_{i}\times\frac{\left(\Sigma \mathbf{x}\right)_{i}}{\sigma_{p}^{2}(\mathbf{x})}.
+$$ {#eq-RiskBudgetVolPCR}
+ Notice that:
+$$
+\sigma_{p}(\mathbf{x})=\mathbf{x}^{\prime}\frac{\partial\sigma_{p}(\mathbf{x})}{\partial\mathbf{x}}=\mathbf{x}^{\prime}\frac{\boldsymbol{\Sigma} \mathbf{x}}{\sigma_{p}(\mathbf{x})}=\frac{\sigma_{p}^{2}(\mathbf{x})}{\sigma_{p}(\mathbf{x})}=\sigma_{p}(\mathbf{x}).
+$$
+
+::: {#exm-two-asset-example .example name="Two asset example"}
+
+For a two asset portfolio you have: 
+\begin{eqnarray*}
+\sigma_{p}(\mathbf{x})=(\mathbf{x}^{\prime}\boldsymbol{\Sigma} \mathbf{x})^{1/2} & = & \left(x_{1}^{2}\sigma_{1}^{2}+x_{2}^{2}\sigma_{2}^{2}+2x_{1}x_{2}\sigma_{12}\right)^{1/2},\\
+\boldsymbol{\Sigma} \mathbf{x} & \mathbf{=} & \left(\begin{array}{cc}
+\sigma_{1}^{2} & \sigma_{12}\\
+\sigma_{12} & \sigma_{2}^{2}
+\end{array}\right)\left(\begin{array}{c}
+x_{1}\\
+x_{2}
+\end{array}\right)=\left(\begin{array}{c}
+x_{1}\sigma_{1}^{2}+x_{2}\sigma_{12}\\
+x_{2}\sigma_{2}^{2}+x_{1}\sigma_{12}
+\end{array}\right),\\
+\frac{\boldsymbol{\Sigma} \mathbf{x}}{\sigma_{p}(\mathbf{x})} & = & \left(\begin{array}{c}
+\left(x_{1}\sigma_{1}^{2}+x_{2}\sigma_{12}\right)/\sigma_{p}(\mathbf{x})\\
+\left(x_{2}\sigma_{2}^{2}+x_{1}\sigma_{12}\right)/\sigma_{p}(\mathbf{x})
+\end{array}\right),
+\end{eqnarray*}
+so that
+\begin{eqnarray*}
+\mathrm{MCR}_{1}^{\sigma} & = & \left(x_{1}\sigma_{1}^{2}+x_{2}\sigma_{12}\right)/\sigma_{p}(\mathbf{x}),\\
+\mathrm{MCR}_{2}^{\sigma} & = & \left(x_{2}\sigma_{2}^{2}+x_{1}\sigma_{12}\right)/\sigma_{p}(\mathbf{x}).
+\end{eqnarray*}
+Then
+\begin{eqnarray*}
+\mathrm{MCR}_{1}^{\sigma} & = & \left(x_{1}\sigma_{1}^{2}+x_{2}\sigma_{12}\right)/\sigma_{p}(\mathbf{x}),\\
+\mathrm{MCR}_{2}^{\sigma} & = & \left(x_{2}\sigma_{2}^{2}+x_{1}\sigma_{12}\right)/\sigma_{p}(\mathbf{x}),\\
+\mathrm{CR}_{1}^{\sigma} & = & x_{1}\times\left(x_{1}\sigma_{1}^{2}+x_{2}\sigma_{12}\right)/\sigma_{p}(\mathbf{x})=\left(x_{1}^{2}\sigma_{1}^{2}+x_{1}x_{2}\sigma_{12}\right)/\sigma_{p}(\mathbf{x}),\\
+\mathrm{CR}_{2}^{\sigma} & = & x_{2}\times\left(x_{2}\sigma_{2}^{2}+x_{2}\sigma_{2}\right)/\sigma_{p}(\mathbf{x})=\left(x_{2}^{2}\sigma_{2}^{2}+x_{1}x_{2}\sigma_{12}\right)/\sigma_{p}(\mathbf{x}),
+\end{eqnarray*}
+
+and
+\begin{eqnarray*}
+\mathrm{PCR}_{1}^{\sigma} & = & \mathrm{CR}_{1}^{\sigma}/\sigma_{p}(\mathbf{x})=\left(x_{1}^{2}\sigma_{1}^{2}+x_{1}x_{2}\sigma_{12}\right)/\sigma_{p}^{2}(\mathbf{x}),\\
+\mathrm{PCR}_{2}^{\sigma} & = & \mathrm{CR}_{2}^{\sigma}/\sigma_{p}(\mathbf{x})=\left(x_{2}^{2}\sigma_{2}^{2}+x_{1}x_{2}\sigma_{12}\right)/\sigma_{p}^{2}(\mathbf{x}).
+\end{eqnarray*}
+Notice that risk decomposition from Euler's theorem above is the same
+decomposition we motived at the beginning of the chapter. 
+\hfill{}$\blacksquare$
+:::
+
+#### Risk decomposition using $\mathrm{VaR}_{p,\alpha}(\mathbf{x})$
+
+Let $\mathrm{RM}(\mathbf{x)}=\mathrm{VaR}_{p,\alpha}(\mathbf{x})$.
+Because $\mathrm{VaR}_{p,\alpha}(\mathbf{x})$ is homogenous of degree
+1 in $\mathbf{x},$ by Euler's theorem
+$$
+\begin{aligned}
+\mathrm{VaR}_{p,\alpha}(\mathbf{x})&=x_{1}\frac{\partial\mathrm{VaR}_{p,\alpha}(\mathbf{x})}{\partial x_{1}}+x_{2}\frac{\partial\mathrm{VaR}_{p,\alpha}(\mathbf{x})}{\partial x_{2}}+\cdots+x_{n}\frac{\partial\mathrm{VaR}_{p,\alpha}(\mathbf{x})}{\partial x_{n}}\\
+&=\mathbf{x}^{\prime}\frac{\partial\mathrm{VaR}_{p,\alpha}(\mathbf{x})}{\partial\mathbf{x}}.
+\end{aligned}
+$$ {#eq-RiskBudgetVaRDecomposition}
+Now, 
+\begin{align*}
+\mathrm{VaR}_{\alpha}(\mathbf{x}) & =W_{0}\times q_{\alpha}^{R_{p}}(\mathbf{x})=W_{0}\times\left(\mu_{p}(\mathbf{x})+\sigma_{p}(\mathbf{x})\times q_{\alpha}^{Z}\right)\\
+ & =W_{0}\times\left(\mathbf{x}^{\prime}\boldsymbol{\mu}+\left(\mathbf{x}^{\prime}\boldsymbol{\Sigma} \mathbf{x}\right)^{1/2}\times q_{\alpha}^{Z}\right), \\
+\frac{\partial\mathrm{VaR}_{\alpha}(\mathbf{x})}{\partial\mathbf{x}} & =W_{0}\times\frac{\partial}{\partial\mathbf{x}}\left(\mathbf{x}^{\prime}\boldsymbol{\mu}+\left(\mathbf{x}^{\prime}\boldsymbol{\Sigma} \mathbf{x}\right)^{1/2}\times q_{\alpha}^{Z}\right)\\
+ & =W_{0}\times\left(\boldsymbol{\mu}+\frac{\boldsymbol{\Sigma} \mathbf{x}}{\sigma_{p}(\mathbf{x)}}\times q_{\alpha}^{Z}\right).
+\end{align*}
+Then
+$$
+\mathrm{MCR}_{i}^{\mathrm{VaR}} =W_{0}\times\left(\mu_{i}+\frac{\left(\boldsymbol{\Sigma} \mathbf{x}\right)_{i}}{\sigma_{p}(\mathbf{x)}}\times q_{\alpha}^{Z}\right),
+$$ {#eq-RiskBudgetVaRMCR}
+$$
+\mathrm{CR}_{i}^{\mathrm{VaR}} =x_{i}\times W_{0}\times\left(\mu_{i}+\frac{\left(\boldsymbol{\Sigma} \mathbf{x}\right)_{i}}{\sigma_{p}(\mathbf{x)}}\times q_{\alpha}^{Z}\right),
+$$ {#eq-RiskBudgetVaRCR}
+$$
+\mathrm{PCR}_{i}^{\mathrm{VaR}}  =x_{i}\times W_{0}\times\left(\mu_{i}+\frac{\left(\boldsymbol{\Sigma} \mathbf{x}\right)_{i}}{\sigma_{p}(\mathbf{x)}}\times q_{\alpha}^{Z}\right)/\left(W_{0}\times\left(\mu_{p}(\mathbf{x})+\sigma_{p}(\mathbf{x})\times q_{\alpha}^{Z}\right)\right).
+$$ {#eq-RiskBudgetVaRPCR}
+
+It is often common practice to set $\boldsymbol{\mu}=\mathbf{0}$ when computing $\mathrm{VaR}_{p,\alpha}(\mathbf{x})$ especially for short time horizons such as a day. In this case, 
+\begin{eqnarray*}
+\mathrm{MCR}_{i}^{\mathrm{VaR}} & = & W_{0}\times\left(\frac{\left(\boldsymbol{\Sigma} \mathbf{x}\right)_{i}}{\sigma_{p}(\mathbf{x)}}\times q_{\alpha}^{Z}\right)\propto\mathrm{MCR}_{i}^{\sigma},\\
+\mathrm{CR}_{i}^{\mathrm{VaR}} & = & x_{i}\times W_{0}\times\left(\frac{\left(\boldsymbol{\Sigma} \mathbf{x}\right)_{i}}{\sigma_{p}(\mathbf{x)}}\times q_{\alpha}^{Z}\right)\propto\mathrm{CR}_{i}^{\sigma},\\
+\mathrm{PCR}_{i}^{\mathrm{VaR}} & = & x_{i}\times\frac{\left(\boldsymbol{\Sigma} \mathbf{x}\right)_{i}}{\sigma_{p}^{2}(\mathbf{x)}}=\mathrm{PCR}_{i}^{\sigma},
+\end{eqnarray*}
+
+and we see that the portfolio normal VaR risk decompositions above
+give the same information as the portfolio volatility risk decompositions
+@eq-RiskBudgetVolMCR - @eq-RiskBudgetVolPCR. 
+
+### Interpreting marginal contributions to risk
+
+The risk decomposition @eq-RiskBudgetRiskDecomposition shows
+that any risk measure that is homogenous of degree one in the portfolio
+weights can be additively decomposed into a portfolio weighted average
+of marginal contributions to risk. The marginal contributions to risk
+@eq-RiskBudgetMCR are the partial derivatives of the risk
+meausre $\mathrm{RM}_{p}(\mathbf{x})$ with respect to the portfolio
+weights, and so one may think that they can be interpreted as the
+change in the risk measure associated with a one unit change in a
+portfolio weight holding the other portfolio weights fixed:
+$$
+\mathrm{MCR}_{i}^{\sigma}=\frac{\partial\sigma_{p}(\mathbf{x})}{\partial x_{i}}\approx\frac{\Delta\sigma_{p}}{\Delta x_{i}}\Rightarrow\Delta\sigma_{p}\approx\mathrm{MCR}_{i}^{\sigma}\cdot\Delta x_{i}.
+$$
+If the portfolio weights were unconstrained this would be the correct
+interpretation. However, the portfolio weights are constrained to
+sum to one, $\sum_{i=1}^{N}x_{i}=1$, so the increase in one weight
+implies an offsetting decrease in the other weights. Hence, the formula
+$\Delta\sigma_{p}\approx\mathrm{MCR}_{i}^{\sigma}\cdot\Delta x_{i}$
+ignores this re-allocation effect. 
+
+To properly interpret the marginal contributions to risk, consider
+the total derivative of $\mathrm{RM}_{p}(\mathbf{x})$:
+$$ 
+\begin{aligned}
+d\mathrm{RM}_{p}(\mathbf{x}) & =\frac{\partial\mathrm{RM}_{p}(\mathbf{x})}{\partial x_{1}}dx_{1}+\frac{\partial\mathrm{RM}_{p}(\mathbf{x})}{\partial x_{2}}dx_{2}+\cdots+\frac{\partial\mathrm{RM}_{p}(\mathbf{x})}{\partial x_{N}}dx_{N}\\
+ & =\mathrm{MCR}_{1}^{RM}dx_{1}+\mathrm{MCR}_{2}^{RM}dx_{2}+\cdots+\mathrm{MCR}_{N}^{RM}dx_{N}.\nonumber 
+\end{aligned}
+$$ {#eq-RiskBudgetTotalDerivative}
+First, consider a small change in $x_{i}$ offset by an equal change
+in $x_{j},$ $\Delta x_{i}=-\Delta x_{j}$. That is, the small
+increase in allocation to asset $i$ is matched by a corresponding
+decrease in allocation to asset $j$. From @eq-RiskBudgetTotalDerivative,
+the approximate change in the portfolio risk measure is 
+$$
+\Delta\mathrm{RM}_{p}(\mathbf{x})\approx\left(\mathrm{MCR}_{i}^{RM}-\mathrm{MCR}_{j}^{RM}\right)\Delta x_{i}.
+$$ {#eq-RiskBudgetChangeInRisk}
+
+When rebalancing a portfolio, the reallocation does not have to be
+limited to two assets. Suppose, for example, the reallocation is spread
+across all of the other assets $j\neq i$ so that
+$$
+\Delta x_{j}=-\alpha_{j}\Delta x_{i}\text{  s.t. }\sum_{j\neq i}\alpha_{j}=1.
+$$
+Then
+$$
+\sum_{j\neq i}\Delta x_{j}=-\sum_{j\neq i}\alpha_{j}\Delta x=-\Delta x_{i}\sum_{j\neq i}\alpha_{j}=-\Delta x_{i},
+$$
+and
+$$
+\begin{aligned}
+\Delta\mathrm{RM}(\mathbf{x}) & \approx\mathrm{MCR}_{i}^{RM}\cdot\Delta x_{i}+\sum_{j\neq i}\mathrm{MCR}_{j}^{RM}\cdot\Delta x_{j}\\
+ & =\left(\mathrm{MCR}_{i}^{RM}-\sum_{j\neq i}\alpha_{j}\cdot\mathrm{MCR}_{j}^{RM}\right)\Delta x_{i}.\nonumber 
+\end{aligned}
+$$ {#eq-RiskBudgetChangeInRiskMulti}
+
+In matrix notation the result @eq-RiskBudgetChangeInRiskMulti
+be written as
+$$
+\Delta\mathrm{RM}(\mathbf{w}) \approx\left((\mathbf{MCR}^{RM})^{\prime}\boldsymbol{\alpha}\right)\Delta x_{i},
+$$ {#eq-RiskBudgetChangeInRiskMatrix}
+where
+$$
+\begin{aligned}
+\mathbf{MCR}^{RM} & =(\mathrm{MCR}_{1}^{RM},\ldots,\mathrm{MCR}_{n}^{RM})^{\prime}, \\
+\boldsymbol{\alpha} & =(-\alpha_{1},\ldots,-\alpha_{i-1},1,-\alpha_{i+1},\ldots-\alpha_{n})^{\prime}. 
+\end{aligned}
+$$
+
+## Portfolio risk reports {#sec-Portfolio-risk-reports}
+\index{portfolio risk reports}
+A *portfolio risk report* summarizes asset and portfolio risk measures
+as well as risk budgets. Table @tbl-RiskBudgetRiskReport shows
+a typical portfolio risk report. The individual asset information
+is in rows with the portfolio information at the bottom. The total
+dollar amount invested in the portfolio is $W_{0}$ and the dollar
+amounts invested in each asset are $d_{i}=x_{i}W_{0}.$ The asset
+specific (standalone) risk measures are $\mathrm{RM}_{i}$ and the
+portfolio risk measure is $\mathrm{RM}(\mathbf{x})$. 
+
+
++----------------+----------+--------+---------+---------------+--------------+---------------+
+|**Asset**       |\$d$_{i}$ |$x_{i}$ |RM$_{i}$ |MCR$_{i}^{RM}$ |CR$_{i}^{RM}$ |PCR$_{i}^{RM}$ |
++================+==========+========+=========+===============+==============+===============+
+|Asset 1         |\$d$_{1}$ |$x_{1}$ |RM$_{1}$ |MCR$_{1}^{RM}$ |CR$_{1}^{RM}$ |PCR$_{1}^{RM}$ |
++----------------+----------+--------+---------+---------------+--------------+---------------+
+|Asset 2         |\$d$_{2}$ |$x_{2}$ |RM$_{2}$ |MCR$_{2}^{RM}$ |CR$_{2}^{RM}$ |PCR$_{2}^{RM}$ |
++----------------+----------+--------+---------+---------------+--------------+---------------+
+|$\vdots$        |$\vdots$  |$\vdots$|$\vdots$ |$\vdots$       |$\vdots$      |$\vdots$       |
++----------------+----------+--------+---------+---------------+--------------+---------------+
+|Asset N         |\$d$_{N}$ |$x_{N}$ |RM$_{N}$ |MCR$_{N}^{RM}$ |CR$_{N}^{RM}$ |PCR$_{N}^{RM}$ |
++----------------+----------+--------+---------+---------------+--------------+---------------+
+|Portfolio (Sum) |$\$W_{0}$ |1       |         |               |RM(x)         |1              |
++----------------+----------+--------+---------+---------------+--------------+---------------+
+
+: Portfolio Risk Report {#tbl-RiskBudgetRiskReport}
+
+
+::: {#exm-portfolio-volatility-risk-report .example name="Portfolio volatility risk report"}
+
+Consider creating a portfolio volatility risk report from an equally
+weighted portfolio of Microsoft, Nordstrom, and Starbucks stock. The
+initial wealth invested in the portfolio is \$100,000. The expected
+return vector and covariance matrix is based on sample statistics
+computed over the five-year period January, 1995 through January,
+2000. The asset and portfolio expected return and volatility information
+is: 
+
+```{r}
+#| echo: true
+
+# asset information
+asset.names <- c("MSFT", "NORD", "SBUX") 
+mu.vec = c(0.0427, 0.0015, 0.0285) 
+sigma.mat = matrix(c(0.0100, 0.0018, 0.0011,                      
+                     0.0018, 0.0109, 0.0026,                      
+                     0.0011, 0.0026, 0.0199),                    
+                   nrow=3, ncol=3) 
+sig.vec = sqrt(diag(sigma.mat))
+names(mu.vec) = names(sig.vec) = asset.names 
+dimnames(sigma.mat) = list(asset.names, asset.names)
+# equally weighted portfolio information
+W0 = 100000
+x = rep(1/3, 3) 
+d = x*W0
+names(x) = asset.names 
+mu.px = as.numeric(crossprod(x, mu.vec)) 
+sig.px = as.numeric(sqrt(t(x)%*%sigma.mat%*%x))
+```
+
+The volatility risk budgeting calculations are:
+
+```{r}
+#| echo: true
+
+MCR.vol.x = (sigma.mat%*%x)/sig.px 
+CR.vol.x = x*MCR.vol.x 
+PCR.vol.x = CR.vol.x/sig.px
+```
+
+The volatility risk report is computed using:
+
+```{r}
+#| echo: true
+
+riskReportVol.px = cbind(d, x, sig.vec, MCR.vol.x, 
+                         CR.vol.x, PCR.vol.x) 
+PORT = c(W0, 1, NA, NA, sum(CR.vol.x), sum(PCR.vol.x)) 
+riskReportVol.px = rbind(riskReportVol.px, PORT) 
+colnames(riskReportVol.px) = c("Dollar", "Weight", "Vol", 
+                               "MCR", "CR", "PCR") 
+riskReportVol.px 
+```
+
+In the equally weighted portfolio, the risk contributions are not
+equal across assets. Predictably, the ranking of the risk contributions
+follows the ranking of the individual asset volatilities $\sigma_{i},$
+with Starbucks giving the highest contributions to portfolio volatility.
+So if the portfolio manager wants to reduce portfolio volatility the
+allocation to Starbucks should be reduced first. 
+
+To interpret the marginal contributions to risk, suppose that the
+portfolio manager wants to reduce portfolio volatility and chooses
+the rebalancing strategy: $\varDelta x_{MSFT}=-\varDelta x_{SBUX}=0.1$
+(i.e., $x_{MSFT}$ increases to $0.433$ and $x_{SBUX}$ decreases
+to $0.233).$ Then, from @eq-RiskBudgetChangeInRisk the predicted
+change in portfolio standard deviation is: 
+
+```{r}
+#| echo: true
+
+delta.vol.px = (MCR.vol.x["MSFT",] - MCR.vol.x["SBUX",])*0.1 
+delta.vol.px
+```
+
+Hence, the predicted volatility after rebalancing is:
+
+```{r}
+#| echo: true
+
+sig.px + delta.vol.px
+```
+
+The exact change in volatility from rebalancing is: 
+
+```{r}
+#| echo: true
+
+x1 = x + c(0.1, 0, -0.1) 
+sig.px1 = as.numeric(sqrt(t(x1)%*%sigma.mat%*%x1)) 
+sig.px1 
+```
+
+The difference between the approximate change in portfolio volatility computed from the risk report and the actual change is:
+
+```{r}
+sig.px1 - sig.px
+```
+
+\hfill{}$\blacksquare$
+:::
+
+::: {#exm-portfolio-normal-var-risk-report .example name="Portfolio normal VaR risk report"}
+
+Using the asset and portfolio data from the previous example, consider
+creating a normal portfolio VaR report, where VaR is computed with
+5\% probability. The R calculations are:
+
+```{r}
+#| echo: true
+
+# portfolio 5% normal VaR
+alpha = 0.05 
+# risk budget calculations
+VaR.px = abs(W0*(mu.px + sig.px*qnorm(alpha))) 
+MCR.VaR.x = abs(W0*(mu.vec + MCR.vol.x*qnorm(alpha))) 
+CR.VaR.x = x*MCR.VaR.x 
+PCR.VaR.x = CR.VaR.x/VaR.px
+# risk report
+VaR.vec = abs(W0*(mu.vec + sig.vec*qnorm(alpha))) 
+riskReportVaR.px = cbind(d, x, VaR.vec, MCR.VaR.x, 
+                         CR.VaR.x, PCR.VaR.x) 
+PORT = c(W0, 1, NA, NA, sum(CR.VaR.x), sum(PCR.VaR.x)) 
+riskReportVaR.px = rbind(riskReportVaR.px, PORT) 
+colnames(riskReportVaR.px) = c("Dollar", "Weight", "VaR", 
+                               "MCR", "CR", "PCR") 
+riskReportVaR.px 
+```
+
+The qualitative information in the portfolio normal VaR report is
+essentially the same as in the portfolio volatility report. Because
+the VaR calculation involve the asset expected returns, $\boldsymbol{\mu}$,
+the results are not exactly the same. If we set $\boldsymbol{\mu}=\mathbf{0}$
+in the VaR calculations then the two reports would give same risk
+information but on different scales (volatility is in return and VaR
+is in dollars). 
+
+
+To interpret the marginal contributions to risk, suppose that the
+portfolio manager wants to reduce portfolio VaR and chooses the rebalancing
+strategy: $\varDelta x_{MSFT}=-\varDelta x_{SBUX}=0.1$ (i.e., $x_{MSFT}$
+increases to $0.433$ and $x_{SBUX}$ decreases to $0.233).$ Then,
+from @eq-RiskBudgetChangeInRisk the predicted change in portfolio
+VaR and new portfolio VaR are:
+
+```{r}
+#| echo: true
+
+delta.VaR.px = (MCR.VaR.x["MSFT",] - MCR.VaR.x["SBUX",])*0.1 
+delta.VaR.px 
+VaR.px + delta.VaR.px
+```
+
+The exact change in portfolio VaR from rebalancing is:
+
+```{r}
+#| echo: true
+
+mu.px1 = as.numeric(crossprod(x1, mu.vec)) 
+VaR.px1 = abs(W0*(mu.px1 + sig.px1*qnorm(alpha))) 
+VaR.px1 - VaR.px
+VaR.px1
+```
+
+Here, the predicted reduction in VaR is about \$300 more than the
+actual change in VaR.
+\hfill{}$\blacksquare$
+:::
+
+## Understanding Portfolio Volatility Risk Decompositions
+
+Portfolio volatility risk reports described in the previous sub-section
+are commonly used in practice. As such, it is important to have a
+good understanding of the volatility risk decompositions and, in particular,
+the asset contributions to portfolio volatility. In the portfolio
+volatility risk decomposition @eq-RiskBudgetVolDecomposition,
+the marginal contribution from asset $i$ given by: 
+$$
+\begin{aligned}
+\mathrm{MCR}_{i}^{\sigma} & = \text{i-th row of }\frac{\boldsymbol{\Sigma} \mathbf{x}}{\sigma_{p}(\mathbf{x})}=\frac{\left(\boldsymbol{\Sigma} \mathbf{x}\right)_{i}}{\sigma_{p}(\mathbf{x})}.
+\end{aligned}
+$$ {#eq-RiskBudgetVolMCR2}
+The interpretation of this formula, however, is not particularly intuitive.
+With a little bit of algebra, we can derive two alternative representations
+of @eq-RiskBudgetVolMCR2 that are easier to interpret and
+give better intuition about the asset contributions to portfolio volatility. 
+
+### $\sigma-\rho$ decomposition for $\mathrm{MCR}_{i}^{\sigma}$
+
+::: {#prp-sigma-rho-decomposition .proposition name="$\\sigma-\\rho$ decomposition"}
+The $\sigma-\rho$ decomposition for $\mathrm{MCR}_{i}^{\sigma}$
+is
+$$
+\mathrm{MCR}_{i}^{\sigma}=\sigma_{i}\rho_{i,p}(\mathbf{x}),
+$$ {#eq-RiskBudgetMCRrho}
+where $\rho_{i,p}(\mathbf{x})=\mathrm{corr}(R,R_{p}(\mathbf{x}))$
+is the correlation between the return on asset $i$ and the return
+on the portfolio. 
+:::
+
+Remarks:
+
+1.  Equation @eq-RiskBudgetMCRrho shows that an asset's marginal contribution to portfolio volatility depends on two components: (1) the asset's return volatility, $\sigma_{i}$ (sometimes called standalone volatility); (2) the asset's correlation with the portfolio return, $\rho_{i,p}(\mathbf{x})$.
+2.  For a given standalone volatility, $\sigma_{i},$ the sign and magnitude of $\mathrm{MCR}_{i}^{\sigma}$ depends on $\rho_{i,p}(\mathbf{x})$. Because $-1\leq\rho_{i,p}(\mathbf{x})\leq1$, it follows that $\mathrm{MCR}_{i}^{\sigma}\leq\sigma_{i}$ and $\mathrm{MCR}_{i}^{\sigma}=\sigma_{i}$ only if $\rho_{i,p}(\mathbf{x})=1$. 
+3.  If an asset's return is uncorrelated with all of the returns in the portfolio then $\rho_{i,p}(\mathbf{x})=\left(x_{i}\sigma_{i}\right)/\sigma_{p}$ and $\mathrm{MCR}_{i}^{\sigma}=\left(x_{i}\sigma_{i}^{2}\right)/\sigma_{p}$. 
+
+
+::: {#prp-x-sigma-rho-decomposition .proposition name="$x-\\sigma-\\rho$ decomposition"}
+Using @eq-RiskBudgetMCRrho the $x-\sigma-\rho$
+decomposition for $\mathrm{CR}_{i}^{\sigma}=x_{i}\times\mathrm{MCR}_{i}^{\sigma}$ is:
+$$
+\begin{aligned}
+\mathrm{CR}_{i}^{\sigma} & = x_{i}\times\sigma_{i}\times\rho_{i,p}(\mathbf{x})\\
+ & = asset\,allocation\times standalone\,volatility\times correlation\,with\,portfolio
+\end{aligned}
+$$ {#eq-RiskBudgetCRrho}
+:::
+
+Remarks:
+
+1.  Equation @eq-RiskBudgetCRrho shows that an asset's contribution to portfolio volatility depends on three components: (1) the asset's allocation weight $x_{i}$; (2) the asset's standalone return volatility, $\sigma_{i}$; (3) the asset's correlation with the portfolio return, $\rho_{i,p}(\mathbf{x})$.
+2.  $x_{i}\times\sigma_{i}=$ standalone contribution to portfolio volatility, which ignores correlation effects with other assets. In the typical situation, $\rho_{i,p}\neq1$ which implies that $\mathrm{CR}_{i}^{\sigma}<w_{i}\times\sigma_{i}$. Hence, an asset's contribution to portfolio volatility will almost always be less than its standalone contribution to portfolio volatility.
+3.  $\mathrm{CR}_{i}^{\sigma}=x_{i}\times\sigma_{i}$ only when $\rho_{i,p}(\mathbf{x})=1$. That is, an asset's contribution to portfolio volatility is equal to its standalone contribution only when its return is perfectly correlated with the portfolio return.
+4.  If all assets are perfectly correlated (i.e., $\rho_{ij}=1$ for all $i$ and $j$) then all asset contributions to portfolio volatility are equal their standalone contributions, $x_{i}\times\sigma_{i}$, and $\sigma_{p}(\mathbf{x})=x_{1}\sigma_{1}+x_{2}\sigma_{2}+\cdots+x_{N}\sigma_{N}$. This is the risk decomposition that would occur if there are no diversification effects. 
+
+
+The derivation of @eq-RiskBudgetMCRrho is straightforward.
+Recall, the vector of asset marginal contributions to portfolio volatility
+is given by 
+$$
+\frac{\partial\sigma_{p}(\mathbf{x})}{\partial\mathbf{x}}=\frac{\boldsymbol{\Sigma} \mathbf{x}}{\sigma_{p}(\mathbf{x})}
+$$
+Now, 
+$$
+\boldsymbol{\Sigma} \mathbf{x}=\left(\begin{array}{cccc}
+\sigma_{1}^{2} & \sigma_{12} & \cdots & \sigma_{1n}\\
+\sigma_{12} & \sigma_{2}^{2} & \cdots & \sigma_{2n}\\
+\vdots & \vdots & \ddots & \vdots\\
+\sigma_{1n} & \sigma_{n2} & \cdots & \sigma_{n}^{2}
+\end{array}\right)\left(\begin{array}{c}
+x_{1}\\
+x_{2}\\
+\vdots\\
+x_{n}
+\end{array}\right)
+$$
+
+Without loss of generality, consider the first row of $\boldsymbol{\Sigma} \mathbf{x}$
+$$
+x_{1}\sigma_{1}^{2}+x_{2}\sigma_{12}+\cdots+x_{n}\sigma_{1n}
+$$
+This expression is the covariance between the return on asset 1, $R_{1}$,
+and the return on the portfolio, $R_{p}(\mathbf{x})$:
+\begin{eqnarray*}
+\mathrm{cov}(R_{1},R_{p}(\mathbf{x})) & = & \mathrm{cov}(R_{1},x_{1}R_{1}+x_{2}R_{2}+\cdots+x_{n}R_{n})\\
+ & = & \mathrm{cov}(R_{1},x_{1}R_{1})+\mathrm{cov}(R_{1},x_{1}R_{1})+\cdots+\mathrm{cov}(R_{1},x_{n}R_{n})\\
+ & = & x_{1}\sigma_{1}^{2}+x_{2}\sigma_{12}+\cdots+x_{n}\sigma_{1n}\\
+ & = & \sigma_{1,p}(\mathbf{x})
+\end{eqnarray*}
+Then we can re-write @eq-RiskBudgetVolMCR2 for $i=1$ as
+$$
+\mathrm{MCR}_{1}^{\sigma}=\frac{\left(\boldsymbol{\Sigma} \mathbf{x}\right)_{1}}{\sigma_{p}(\mathbf{x})}=\frac{\sigma_{1,p}(\mathbf{x})}{\sigma_{p}(\mathbf{x})}
+$$ {#eq-RiskBudgetMCR1}
+
+Define the correlation between the return on asset 1 and the return
+on the portfoio as
+$$
+\rho_{1,p}(\mathbf{x}) = \mathrm{corr}(R_{1},R_{p}(\mathbf{x}))=\frac{\mathrm{cov}(R_{1},R_{p}(\mathbf{x}))}{\sigma_{1}\sigma_{p}(\mathbf{x})}=\frac{\sigma_{1,p}(\mathbf{x})}{\sigma_{1}\sigma_{p}(\mathbf{x})}
+$$ {#eq-RiskBudgetCorrelation}
+Then we can write
+$$
+\sigma_{1,p}(\mathbf{x})=\sigma_{1}\sigma_{p}(\mathbf{x})\rho_{1,p}(\mathbf{x})
+$$ {#eq-RiskBudgetCovariance}
+Substituting @eq-RiskBudgetCovariance into @eq-RiskBudgetMCR1
+gives the $\sigma-\rho$ decomposition for $\mathrm{MCR}_{1}^{\sigma}$
+$$
+\mathrm{MCR}_{1}^{\sigma}=\frac{\sigma_{1}\sigma_{p}(\mathbf{x})\rho_{1,p}(\mathbf{x})}{\sigma_{p}(\mathbf{x})}=\sigma_{1}\rho_{1,p}(\mathbf{x})
+$$
+
+::: {#exm-adding-rho-to-the-portfolio-volatility-risk-report .example name="Adding $\\rho_{i,p}(\\mathbf{x})$ to the portfolio volatility risk report"}
+
+Once you have the volatility risk report, you can easily calculate
+$\rho_{i,p}(\mathbf{x})$ from @eq-RiskBudgetMCRrho using
+$$
+\rho_{i,p}(\mathbf{x})=\frac{\mathrm{MCR}_{i}^{\sigma}}{\sigma_{i}}
+$$
+For example, to calculate $\rho_{i,p}(\mathbf{x})$ for the volatility
+risk report for the equally weighted portfolio of Microsoft, Nordstrom,
+and Starbucks use:
+
+```{r}
+#| echo: true
+
+rho.x = MCR.vol.x/sig.vec 
+rho.x
+```
+
+Here we see that all assets are positively correlated with the portfolio,
+Microsoft has the smallest correlation (0.567), and Starbucks has
+the largest correlation (0.735). In this respect, Microsoft is most
+beneficial in terms of diversification and Starbucks is least beneficial.
+If all correlations were equal to one, then each asset MCR would be
+equal to its standalone volatility. 
+
+The expanded portfolio risk report is:
+
+```{r}
+#| echo: false
+riskReportVol.px = cbind(d, x, sig.vec, rho.x, MCR.vol.x, 
+                         CR.vol.x, PCR.vol.x) 
+PORT = c(W0, 1, NA, NA, NA, sum(CR.vol.x), sum(PCR.vol.x)) 
+riskReportVol.px = rbind(riskReportVol.px, PORT) 
+colnames(riskReportVol.px) = c("Dollar", "Weight", "Vol", "Rho",
+                               "MCR", "CR", "PCR") 
+riskReportVol.px 
+```
+
+
+\hfill{}$\blacksquare$
+:::
+
+### $\sigma-\beta$ decomposition for $\mathrm{MCR}_{i}^{\sigma}$
+
+::: {#prp-sigma-beta-decomposition .proposition name="$\\sigma-\\beta$ decomposition"}
+The $\sigma-\beta$ decomposition for $\mathrm{MCR}_{i}^{\sigma}$
+is
+$$
+\mathrm{MCR}_{i}^{\sigma}=\beta_{i,p}(\mathbf{x})\sigma_{p}(\mathbf{x})
+$$ {#eq-RiskBudgetMCbeta}
+where 
+$$ 
+\beta_{i,p}(\mathbf{x})=\frac{\mathrm{cov}(R_{i},R_{p}(\mathbf{x}))}{\mathrm{var}(R_{p}(\mathbf{x}))}=\frac{\mathrm{cov}(R_{i},R_{p}(\mathbf{x}))}{\sigma_{p}^{2}(\mathbf{x})}
+$$ {#eq-RiskBudgetBeta}
+:::
+
+Here, $\beta_{i,p}(\mathbf{x})$ is called asset $i$'s *beta to the portfolio*.^[It can be thought of as the population regression coefficient obtained by regressing the asset return, $R_{i},$on the portfolio return, $R_{p}(\mathbf{x}).$] This decomposition follows directly from the $\sigma-\rho$ decomposition @eq-RiskBudgetMCRrho since 
+$$
+\beta_{i,p}(\mathbf{x})=\frac{\mathrm{cov}(R_{i},R_{p}(\mathbf{x}))}{\sigma_{p}^{2}(\mathbf{x})}=\frac{\rho_{i,p}(\mathbf{x})\sigma_{i}\sigma_{p}(\mathbf{x})}{\sigma_{p}^{2}(\mathbf{x})}\Rightarrow\rho_{i,p}(x)=\frac{\beta_{i,p}(\mathbf{x})\sigma_{p}(\mathbf{x})}{\sigma_{i}}.
+$$
+It follows that:
+$$
+\mathrm{CR}_{i}^{\sigma} = x_{i}\times\beta_{i,p}(\mathbf{x})\times\sigma_{p}(\mathbf{x})
+$$ {#eq-RiskBudgetXBetaRho}
+$$
+\mathrm{PCR}_{i}^{\sigma} = x_{i}\times\beta_{i,p}(\mathbf{x})
+$$ {#eq-RiskBudgetXBeta}
+
+Remarks:
+
+-  By construction, the beta of the portfolio is $1$
+$$
+\beta_{p,p}(\mathbf{x})=\frac{\mathrm{cov}(R_{p}(\mathbf{x}),R_{p}(\mathbf{x}))}{\mathrm{var}(R_{p}(\mathbf{x}))}=\frac{\mathrm{var}(R_{p}(\mathbf{x}))}{\mathrm{var}(R_{p}(\mathbf{x}))}=1.
+$$
+-  When $\beta_{i,p}(\mathbf{x})=1$, $\mathrm{MCR}_{i}^{\sigma}=\sigma_{p}(\mathbf{x}),\mathrm{\,CR}_{i}^{\sigma}=x_{i}\sigma_{p}(\mathbf{x})$, and $\mathrm{PCR}_{i}^{\sigma}=x_{i}$. In this case, an asset's marginal contribution to portfolio volatility is portfolio volatility and its percent contribution to portfolio volatility is its allocation weight. Intuitively, when $\beta_{i,p}(x)=1$ the asset has the same risk, in terms of volatility contribution, as the portfolio. 
+-  When $\beta_{i,p}(\mathbf{x})>1$, $\mathrm{MCR}_{i}^{\sigma}>\sigma_{p}(\mathbf{x})$, $\mathrm{CR}_{i}^{\sigma}>w_{i}\sigma_{p}(\mathbf{x})$, and $\mathrm{PCR}_{i}^{\sigma}>x_{i}$. In this case, the asset's marginal contribution to portfolio volatility is more than portfolio volatility and its percent contribution to portfolio volatility is more than its allocation weight. Intuitively, when $\beta_{i,p}(\mathbf{x})>1$ the asset has more risk, in terms of volatility contribution, than the portfolio. That is, having the asset in the portfolio increases the portfolio volatility.
+-  When $\beta_{i,p}(\mathbf{x})<1$, $\mathrm{MCR}_{i}^{\sigma}<\sigma_{p}(\mathbf{x})$,
+$\mathrm{CR}_{i}^{\sigma}<x_{i}\sigma_{p}(\mathbf{x})$, and $\mathrm{PCR}_{i}^{\sigma}<x_{i}$. In this case, the asset's marginal contribution to portfolio volatility is less than portfolio volatility and its percent contribution to portfolio volatility is less than its allocation weight. Intuitively, when $\beta_{i,p}(\mathbf{x})<1$ the asset has less risk, in terms of volatility contribution, than the portfolio. That is, having the asset in the portfolio decreases the portfolio volatility.
+
+
+::: {#exm-adding-beta-to-the-portfolio-volatility-risk-report .example name="Adding $\\beta_{i,p}(\\mathbf{x})$ to the portfolio volatility risk report"}
+
+Once you have the volatility risk report, you can easily calculate
+$\beta_{i,p}(\mathbf{x})$ from @eq-RiskBudgetMCbeta using
+$$
+\beta_{i,p}(\mathbf{x})=\frac{\mathrm{MCR}_{i}^{\sigma}}{\sigma_{p}(\mathbf{x})}
+$$
+For example, to calculate $\beta_{i,p}(\mathbf{x})$ for the volatility
+risk report for the equally weighted portfolio of Microsoft, Nordstrom,
+and Starbucks use:
+
+```{r}
+#| echo: true
+
+beta.x = MCR.vol.x/sig.px 
+beta.x
+```
+
+Here, both $\beta_{MSFT,p}(\mathbf{x})$ and $\beta_{NORD,p}(\mathbf{x})$
+are less than one whereas $\beta_{SBUX,p}(\mathbf{x})$ is greater
+than one. We can say that Microsoft and Nordstrom are portfolio volatility
+reducers whereas Starbucks is a portfolio volatility enhancer.
+
+The expanded risk report is: 
+
+```{r}
+#| echo: false
+riskReportVol.px = cbind(d, x, sig.vec, rho.x, beta.x, MCR.vol.x, 
+                         CR.vol.x, PCR.vol.x) 
+PORT = c(W0, 1, NA, NA, NA, NA, sum(CR.vol.x), sum(PCR.vol.x)) 
+riskReportVol.px = rbind(riskReportVol.px, PORT) 
+colnames(riskReportVol.px) = c("Dollar", "Weight", "Vol", "Rho","Beta",
+                               "MCR", "CR", "PCR") 
+riskReportVol.px 
+```
+
+\hfill{}$\blacksquare$
+:::
+
+## Risk Budgeting for Optimized Portfolios
+\index{Risk budgeting}
+To be completed
+
+-  For global minimum variance portfolio, FOCs show that $MCR_{i}=MCR_{j}$. Also plugging in solution for $m$ shows that vector of MCR is the same.
+-  For an efficient portfolio with target return equal to the mean return on an asset in the portfolio, the portfolio beta is 1: $\beta_{i,p}=1$ when $\mu_{p}=\mu_{i}$. Hence, $CR_{i}=x_{i}\sigma_{p}$
+-  For the tangency portfolio, FOCs (from re-written equivalent problem) show that 
+$$
+\frac{\mu_{T}-r_{f}}{\sigma_{T}^{2}}=\frac{\mu_{i}-r_{f}}{\sigma_{i,T}}
+$$
+
+ 
+Volatility risk budgets for optimized portfolios have some interesting
+properties. For example, consider the global minimum variance portfolio
+allowing for short sales. In chapter @sec-Portfolio-Theory-with-Matrix-Algebra
+we showed that
+$$
+\mathbf{m}=\frac{\boldsymbol{\Sigma}^{-1}\mathbf{1}}{\mathbf{1}^{\prime}\boldsymbol{\Sigma}^{-1}\mathbf{1}}.
+$$
+Plugging this portfolio weight vector into @eq-RiskBudgeVolMCRvector
+gives
+$$
+\frac{\partial\sigma_{p}(\mathbf{m})}{\partial\mathbf{m}}=\frac{\boldsymbol{\Sigma} \mathbf{m}}{\sigma_{p}(\mathbf{m})}=\frac{\boldsymbol{\Sigma}\boldsymbol{\Sigma}^{-1}\mathbf{1}}{\sigma_{p}(\mathbf{m})\times\mathbf{1}^{\prime}\boldsymbol{\Sigma}^{-1}\mathbf{1}}=\left(\frac{1}{\sigma_{p}(\mathbf{m})\times\mathbf{1}^{\prime}\boldsymbol{\Sigma}^{-1}\mathbf{1}}\right)\times\mathbf{1}=c\times\mathbf{1}
+$$
+which is a constant $c$ times the one vector where 
+$$
+c=\frac{1}{\sigma_{p}(\mathbf{m})\times\mathbf{1}^{\prime}\boldsymbol{\Sigma}^{-1}\mathbf{1}}.
+$$
+As a result, for each asset $i=1,\ldots,n$ we have
+$$
+\mathrm{MCR}_{i}^{\sigma}=c.
+$$
+That is, each asset in the global minimum variance portfolio has the
+same marginal contribution to portfolio volatility. This has to be
+the case, otherwise we could rebalance the portfolio and lower the
+volatility. To see this, suppose $\mathrm{MCR}_{i}^{\sigma}>c$ for
+some asset $i$. Then we could lower portfolio volatility by reducing
+the allocation to asset $i$ and increasing the allocation to any
+other asset in the portfolio. Similarly, if $\mathrm{MCR}_{i}^{\sigma}<c$
+we could lower portfolio volatility by increasing the allocation to
+asset $i$ and decreasing the allocation to any other asset in the
+portfolio. 
+
+::: {#exm-volatility-risk-budgeting-for-the-global-minimum-variance-portfolio .example name="Volatility risk budgeting for the global minimum variance portfolio"}
+
+to be completed
+
+\hfill{}$\blacksquare$
+:::
+
+```{r}
+#| echo: false
+riskReport = function(er, cov.mat, weights, type=c("vol", "VaR")) {
+  sig.vec = sqrt(diag(cov.mat))
+  mu.p = crossprod(er, weights)
+  sig.p = as.numeric(sqrt(weights %*% cov.mat %*% weights))
+  MCR.vol = (cov.mat%*%weights)/sig.p 
+  CR.vol = weights*MCR.vol 
+  PCR.vol = CR.vol/sig.p
+  rho.p = MCR.vol/sig.vec
+  beta.p = MCR.vol/sig.p 
+  rpt = cbind(weights, sig.vec, rho.p, beta.p, MCR.vol, CR.vol, PCR.vol)
+  rownames(rpt) = c("Asset B", "Asset S")
+  colnames(rpt) = c("Weight", "Vol", "Rho.p","Beta.p","MCR", "CR", "PCR")
+  return(rpt)
+}
+```
+
+## Risk Parity Portfolios
+
+To be completed.
+
+* Use stock-bond portfolio example like the WealthFront example: https://support.wealthfront.com/hc/en-us/articles/360000117963-How-does-Risk-Parity-work-
+
+* Simple risk-parity portfolio: first equalize the risk contributions of the two asset classes and then apply leverage to achieve a target volatility
+
+* Inputs required for MV portfolio theory: expected returns, variances and covariances (covariance matrix). 
+
+    * Problem: expected returns have a lot of estimation noise. 
+    * Exception is the global minimum variance portfolio
+    * Long-only portfolios may be concentrated in only a few assets (not diverse)
+
+* Risk parity only requires variances and covariances (ignores expected returns)
+
+    * produces a long-only diverse portfolio (Q: what happens if an asset has a negative risk contribution?)
+
+* Equal share weighted portfolio ignores expected returns.
+
+    * Equal share weight does not mean equal risk contribution
+
+### Stock and Bond Portfolios
+
+Consider forming portfolios consisting of two assets: (1) bond fund, and (2) stock fund. Let $R_B$ and $R_S$ denote the simple per-period returns on the bond and stock funds, respectively, and assume returns are characterized by the GWN model:
+
+$$
+\begin{aligned}
+R_B \sim N(\mu_B, \sigma_B^2), ~ R_S \sim N(\mu_S, \sigma_S^2), \\
+\mathrm{cov}(R_B,R_S) =\sigma_{BS}, ~ \mathrm{cor}(R_B,R_S)=\rho_{BS}.
+\end{aligned}
+$$
+Let $\mathbf{R} = (R_B,R_S)'$. The GWN model in matrix form is:
+
+$$
+\begin{aligned}
+\mathbf{R} & \sim N(\mu, \Sigma) \\
+\mu & = \begin{pmatrix} \mu_B \\ \mu_S \end{pmatrix}, ~ \begin{pmatrix} \sigma_B^2 & \sigma_{BS} \\ \sigma_{BS} & \sigma_S^2 \end{pmatrix}.
+\end{aligned}
+$$
+
+### Defining Risk Parity Portfoliofolio
+
+The idea behind risk parity is to use the risk budgeting information for a portfolio to create a long only portfolio with equal risk contributions. To illustrate, consider a two asset stock and bond portfolio with return $R_p = x_B R_B + X_S R_S$. Using Euler's Theorem we can decompose portfolio volatility $\sigma_p=\sqrt{\mathbf{x}'\Sigma \mathbf{x}}$ as:
+
+$$
+\sigma_p = x_B \frac{\partial \sigma_p}{\partial x_B} + x_S \frac{\partial \sigma_p}{\partial x_B} = \mathrm{CR}_B + \mathrm{CR}_S.
+$$
+
+In the risk parity portfolio we find $x_B>0$ and $x_S>0$ such that $\mathrm{CR}_B = \mathrm{CR}_S$ and $x_B+x_S=1$. To do this we can utilize the $x-\sigma-\rho$ decomposition of $\mathrm{CR}_B$ and $\mathrm{CR}_S$:
+
+$$
+\begin{aligned}
+\mathrm{CR}_B &= x_B \times \sigma_B \times \rho_{Bp}, \\
+\mathrm{CR}_S &= x_S \times \sigma_S \times \rho_{Sp}, \\
+\rho_{Bp} &= \mathrm{cor}(R_B,R_p)= \frac{\mathrm{cov}(R_B,R_p)}{\sigma_B \sigma_p},\\
+\rho_{Sp} &= \mathrm{cor}(R_S,R_p)= \frac{\mathrm{cov}(R_S,R_p)}{\sigma_S \sigma_p}.
+\end{aligned}
+$$
+Now, 
+
+$$
+\begin{aligned}
+\mathrm{cov}(R_B,R_p) &= \mathrm{cov}(R_B,x_B R_B + x_S R_S) = \mathrm{cov}(R_B,x_B R_B) + \mathrm{cov}(R_B,x_S R_S) \\
+& = x_B \mathrm{cov}(R_B,R_B) + x_S\mathrm{cov}(R_B, R_S) \\
+& = x_B \sigma_B^2 + x_S \sigma_{BS}, \\
+\mathrm{cov}(R_S,R_p) &= x_S \sigma_S^2 + x_B \sigma_{BS},
+\end{aligned}
+$$
+so that
+
+$$
+\begin{aligned}
+\rho_{Bp} &= \frac{x_B \sigma_B^2 + x_S \sigma_{BS}}{\sigma_B \sigma_p}, \\
+\rho_{Sp} &= \frac{x_S \sigma_S^2 + x_B \sigma_{BS}}{\sigma_S \sigma_p}.
+\end{aligned}
+$$
+
+Setting $\mathrm{CR}_B = \mathrm{CR}_S$ then gives:
+$$
+\begin{aligned}
+x_B \times \sigma_B \frac{x_B \sigma_B^2 + x_S \sigma_{BS}}{\sigma_B \sigma_p} &= x_S \times \sigma_S\frac{x_S \sigma_S^2 + x_B \sigma_{BS}}{\sigma_S \sigma_p} \Rightarrow \\
+x_B^2 \sigma_B^2 + x_Bx_S \sigma_{BS} &= x_S^2 \sigma_S^2 + x_Sx_B \sigma_{BS} \Rightarrow \\
+x_B^2 \sigma_B^2 &= x_S^2 \sigma_S^2 \Rightarrow \\
+x_B \sigma_B &= x_S \sigma_S,
+\end{aligned}
+$$
+where the last line uses the assumption that $x_B>0$ and $x_S>0$. Using $x_S = 1 - x_B$ we can solve for $x_B$:
+
+$$
+\begin{aligned}
+x_B\sigma_B &= (1-x_B)\sigma_S =\sigma_S - x_B\sigma_S \Rightarrow \\
+x_B(\sigma_B + \sigma_S) &= \sigma_S \Rightarrow \\
+x_B &= \frac{\sigma_S}{\sigma_B + \sigma_S}.
+\end{aligned}
+$$
+Then
+$$
+x_S = 1 - x_B = \frac{\sigma_B + \sigma_S}{\sigma_B + \sigma_S}- \frac{\sigma_S}{\sigma_B + \sigma_S} = \frac{\sigma_B}{\sigma_B + \sigma_S}.
+$$
+Remarks:
+
+1. In the RP portfolio the amount invested in bonds is proportional to the volatility of stocks, and the amount invested in stocks is proportional to the volatility of bonds. Since stocks are generally more volatile that bonds, this means that the amount invested in bonds will be greater than the amount invested in stocks.
+2. The solution of the RP portfolio does not depend on the correlation between bonds and stocks, $\rho_{BS}$. We will see in the next section that this result only holds for a two asset portfolio. 
+3. Using a little algebra, we can show that in the RP portfolio the amount invested in bonds (stocks) is proportional to the inverse of the volatility of bonds (stocks). To see this, write:
+
+$$
+\begin{aligned}
+x_B &= \frac{\sigma_S}{\sigma_B + \sigma_S} = \frac{\frac{\sigma_S\sigma_B}{\sigma_B}}{\sigma_B+\sigma_S} \\
+&= \frac{\frac{1}{\sigma_B}}{\frac{\sigma_B+\sigma_S}{\sigma_B\sigma_S}} 
+= \frac{\frac{1}{\sigma_B}}{\frac{\sigma_B}{\sigma_B\sigma_S} + \frac{\sigma_S}{\sigma_B\sigma_S}} \\
+&= \frac{\frac{1}{\sigma_B}}{\frac{1}{\sigma_S} + \frac{1}{\sigma_B}} = \frac{\sigma_B^{-1}}{\sigma_S^{-1}+\sigma_B^{-1}}, \\ x_S &= \frac{\frac{1}{\sigma_S}}{\frac{1}{\sigma_S} + \frac{1}{\sigma_B}} = \frac{\sigma_S^{-1}}{\sigma_S^{-1}+\sigma_B^{-1}}.
+\end{aligned}
+$$
+
+
+4. With inverse volatility weighting, we see that an asset's weight is inversely related to its volatility. This means that highly volatile assets like stocks receive small weights, and mildly volatile assets like bonds receive large weights. Notice that a RP portfolio becomes an equally weighted portfolio when $\sigma_B = \sigma_S$. 
+
+5. Inverse volatility weighting of assets (and then normalized so weights sum to 1) is a common way to form a RP portfolio as it is easy to do (just need estimates of volatility). However, for a portfolio of more than two assets inverse volatility weighting to form a RP portfolio works only when all assets are uncorrelated. 
+
+6. We can also determine the RP portfolio weights using the $x-\beta-\sigma$ decomposition of $\mathrm{CR}_B$ and $\mathrm{CR}_S$: 
+
+$$
+\begin{aligned}
+\mathrm{CR}_B &= x_B \beta_{Bp} \sigma_p,\\
+\mathrm{CR}_S &= x_S \beta_{Sp} \sigma_p,\\
+\beta_{Bp} &= \frac{\mathrm{cov}(R_B,R_p)}{\mathrm{var}(R_p)} = \frac{\sigma_{Bp}}{\sigma_p^2},\\
+\beta_{Bp} &= \frac{\mathrm{cov}(R_S,R_p)}{\mathrm{var}(R_p)} = \frac{\sigma_{Sp}}{\sigma_p^2}.
+\end{aligned}
+$$
+
+Then
+
+$$
+\begin{aligned}
+\mathrm{CR}_B & = \mathrm{CR}_S \Rightarrow \\
+x_B \beta_{Bp} \sigma_p & = x_S \beta_{Sp} \sigma_p \Rightarrow \\
+x_B \beta_{Bp} &= x_S \beta_{Sp} = (1 - x_B)\beta_{Sp} \Rightarrow \\
+x_B & = \frac{\beta_{Sp}}{\beta_{Sp}+\beta_{Bp}} = \frac{\beta_{Bp}^{-1}}{\beta_{Sp}^{-1}+\beta_{Bp}^{-1}}, \\
+x_S & = \frac{\beta_{Bp}}{\beta_{Sp}+\beta_{Bp}} = \frac{\beta_{Sp}^{-1}}{\beta_{Sp}^{-1}+\beta_{Bp}^{-1}}.
+\end{aligned}
+$$
+
+Here, we see that in a RP portfolio an asset's weights is inversely related to its beta to the portfolio. This
+result holds in general for portfolios with more than two assets. The higher an asset's beta to the
+portfolio is, the higher is its contribution to portfolio risk and the smaller is its weight in the RP
+portfolio. Notice that the RP portfolio is an equally weighted portfolio when both assets have the same beta
+to the portfolio.
+
+7. For the RP portfolio, it can be shown that $\rho_{Bp} = \rho_{Sp}$. That is, both assets have the same correlation with the RP portfolio. 
+
+### Example Data
+
+The example data from WealthFront is:
+
+```{r}
+r.f = 0.0175
+mu.S = 0.0625
+sig.S = 0.1725
+sig2.S = sig.S^2
+mu.B = 0.04
+sig.B = 0.045
+sig2.B = sig.B^2
+rho.BS = 0.2
+sig.BS = rho.BS*sig.B*sig.S
+SR.B = (mu.B - r.f)/sig.B
+SR.S = (mu.S - r.f)/sig.S
+data.tbl = data.frame(t(c(mu.B, mu.S, sig.B, sig.S, r.f, SR.B, SR.S, sig.BS, rho.BS)))
+col.names = c("$\\mu_{B}$","$\\mu_{S}$","$\\sigma_{B}$","$\\sigma_{S}$", "$r_{f}$",
+              "$\\mathrm{SR}_{B}$","$\\mathrm{SR}_{S}$","$\\sigma_{BS}$","$\\rho_{BS}$")
+kbl(data.tbl, col.names=col.names, caption = "Example data for two asset portfolio",
+    label = "TableExampleData") %>%
+   kable_styling(full_width=FALSE)
+```
+
+The matrix input are:
+
+```{r}
+mu.vec = c(mu.B, mu.S)
+cov.mat = matrix(c(sig2.B, sig.BS, sig.BS, sig2.S), 2,2, byrow=TRUE)
+```
+
+Portfolios of B and S
+
+```{r}
+x.B = seq(from=-0.4, to=1.4, by=0.1)
+x.S = 1 - x.B
+mu.p = x.B*mu.B + x.S*mu.S
+sig2.p = x.B^2 * sig2.B + x.S^2 * sig2.S + 2*x.B*x.S*sig.BS
+sig.p = sqrt(sig2.p)
+```
+
+Compute equal weight, 60-40, global minimum variance, and tangency portfolios:
+
+```{r}
+# equal weight
+mu.ew = 0.5*mu.B + 0.5*mu.S
+x.ew = c(0.5, 0.5)
+sig2.ew = 0.5^2 * sig2.B + 0.5^2 * sig2.S + 2*0.5*0.5*sig.BS
+sig.ew = sqrt(sig2.ew)
+# 60-40 
+mu.64 = 0.4*mu.B + 0.6*mu.S
+x.64 = c(0.4, 0.6)
+sig2.64 = 0.4^2 * sig2.B + 0.6^2 * sig2.S + 2*0.4*0.6*sig.BS
+sig.64 = sqrt(sig2.64)
+# global minimum variance
+xB.min = (sig2.S - sig.BS)/(sig2.B + sig2.S - 2*sig.BS)
+xS.min = 1 - xB.min
+x.min = c(xB.min, xS.min)
+mu.min = xB.min*mu.B + xS.min*mu.S
+sig2.min = xB.min^2 * sig2.B + xS.min^2 * sig2.S + 2*xB.min*xS.min*sig.BS
+sig.min = sqrt(sig2.min)
+# tangency 
+top = (mu.B - r.f)*sig2.S - (mu.S - r.f)*sig.BS
+bot = (mu.B - r.f)*sig2.S + (mu.S - r.f)*sig2.B - (mu.B - r.f + mu.S - r.f)*sig.BS
+x.B.tan = top/bot
+x.S.tan = 1 - x.B.tan
+x.tan = c(x.B.tan, x.S.tan)
+mu.tan = x.B.tan*mu.B + x.S.tan*mu.S
+sig2.tan = x.B.tan^2 * sig2.B + x.S.tan^2 * sig2.S + 2*x.B.tan*x.S.tan*sig.BS
+sig.tan = sqrt(sig2.tan)
+```
+
+Compute risk parity portfolio:
+
+```{r}
+xB.rp = sig.S/(sig.B + sig.S)
+xS.rp = 1 - xB.rp
+x.rp = c(xB.rp, xS.rp)
+mu.rp = xB.rp*mu.B + xS.rp*mu.S
+sig2.rp = xB.rp^2 * sig2.B + xS.rp^2 * sig2.S + 2*xB.rp*xS.rp*sig.BS
+sig.rp = sqrt(sig2.rp)
+```
+
+Compute risk contributions for portfolios:
+
+```{r}
+# risk parity portfolio
+riskReport(mu.vec, cov.mat, x.rp)
+```
+```{r}
+# equal weight portfolio
+riskReport(mu.vec, cov.mat, x.ew)
+```
+```{r}
+# 60-40 portfolio
+riskReport(mu.vec, cov.mat, x.64)
+```
+
+```{r}
+# global minimum variance portfolio
+riskReport(mu.vec, cov.mat, x.min)
+```
+```{r}
+# tangency portfolio
+riskReport(mu.vec, cov.mat, x.tan)
+```
+
+
+Plot of portfolios
+
+```{r}
+#| echo: false
+cex.val = 1.5
+plot(sig.p, mu.p, type="l", lwd=2, col="blue",
+     ylim=c(0.015, max(mu.p)), xlim=c(0, max(sig.p)), 
+     xlab=expression(sigma[p]), ylab=expression(mu[p]),
+     cex.lab=1.5)
+points(x=0, y=r.f, pch=16, cex = cex.val)
+points(x=sig.B, y=mu.B, pch=16, cex = cex.val)
+points(x=sig.S, y=mu.S, pch=16, cex = cex.val)
+points(x=sig.ew, y=mu.ew, pch=16, cex = cex.val)
+points(x=sig.64, y=mu.64, pch=16, cex = cex.val)
+points(x=sig.min, y=mu.min, pch=16, cex = cex.val)
+points(x=sig.rp, y=mu.rp, pch=16, cex = cex.val)
+points(x=sig.tan, y=mu.tan, pch=16, cex = cex.val)
+text(x=0, y=r.f, labels="rf", pos=4)
+text(x=sig.B, y=mu.B, labels="Asset B", pos=4)
+text(x=sig.S, y=mu.S, labels="Asset S", pos=4)
+text(x=sig.ew, y=mu.ew, labels="EW", pos=4)
+text(x=sig.64, y=mu.64, labels="60-40", pos=4)
+text(x=sig.min, y=mu.min, labels="GMIN", pos=2)
+text(x=sig.rp, y=mu.rp, labels="RP", pos=4)
+text(x=sig.tan, y=mu.tan, labels="TAN", pos=2)
+```
+
+Leverage RP portfolio to have the same volatility as EW:
+
+```{r}
+y = sig.ew/sig.rp
+mu.y = r.f + y*(mu.rp - r.f)
+sig.y = y*sig.rp
+c(mu.y, sig.y)
+```
+Compute SR
+
+```{r}
+SR.rp = (mu.rp - r.f)/sig.rp
+SR.64 = (mu.64-r.f)/sig.64
+c(SR.rp, SR.64)
+```
+
+
+```{r}
+#| echo: false
+cex.val = 1.5
+plot(sig.p, mu.p, type="l", lwd=2, col="blue",
+     ylim=c(0.015, max(mu.p)), xlim=c(0, max(sig.p)), 
+     xlab=expression(sigma[p]), ylab=expression(mu[p]),
+     cex.lab=1.5)
+points(x=0, y=r.f, pch=16, cex = cex.val)
+points(x=sig.B, y=mu.B, pch=16, cex = cex.val)
+points(x=sig.S, y=mu.S, pch=16, cex = cex.val)
+#points(x=sig.ew, y=mu.ew, pch=16, cex = cex.val)
+points(x=sig.64, y=mu.64, pch=16, cex = cex.val)
+points(x=sig.min, y=mu.min, pch=16, cex = cex.val)
+points(x=sig.rp, y=mu.rp, pch=16, cex = cex.val)
+#points(x=sig.tan, y=mu.tan, pch=16, cex = cex.val)
+text(x=0, y=r.f, labels="rf", pos=4)
+text(x=sig.B, y=mu.B, labels="Asset B", pos=4)
+text(x=sig.S, y=mu.S, labels="Asset S", pos=4)
+#text(x=sig.ew, y=mu.ew, labels="EW", pos=4)
+text(x=sig.64, y=mu.64, labels="60-40", pos=4)
+text(x=sig.min, y=mu.min, labels="GMIN", pos=2)
+text(x=sig.rp, y=mu.rp, labels="RP", pos=4)
+#text(x=sig.tan, y=mu.tan, labels="TAN", pos=2)
+abline(a=r.f, b=SR.rp, col="green")
+```
+
+
+### Further Reading: Portfolio Risk Budgeting
+
+To be completed
+
+* Roncalli's book on risk budgeting and risk parity
+* Qin's books on risk parity
+
+## Exercises
+
+::: {#exm-risk-report-for-equally-weighted-portfolio-of-vanguard-mutual-funds .example name="Risk report for equally weighted portfolio of Vanguard Mutual Funds"}
+
+* To be completed
+
+:::
+
+
