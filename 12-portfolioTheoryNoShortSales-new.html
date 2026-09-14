@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Introduction to Computational Finance and Financial Econometrics with R - 12&nbsp; Portfolio Theory with Short Sales Constraints</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./13-riskBudgeting-new.html" rel="next">
+<link href="./11-PortfolioTheoryMatrix-new.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./12-portfolioTheoryNoShortSales-new.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Portfolio Theory with Short Sales Constraints</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Introduction to Computational Finance and Financial Econometrics with R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-ReturnCalculations-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Return Calculations</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-probReview-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Review of Random Variables</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-matrixReview-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Algebra Review</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-timeSeriesConcepts-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Time Series Concepts</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-descriptiveStatistics-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Descriptive Statistics for Financial Data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-GWNModel-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">The Gaussian White Noise Return Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-GWNModelEstimation-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Estimation of The GWN Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-bootstrap-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Estimating Functions of GWN Model Parameters</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-hypothesisTestingGWNModel-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Hypothesis Testing in the GWN Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-introductionPortfolioTheory-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introduction to Portfolio Theory</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-PortfolioTheoryMatrix-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Portfolio Theory with Matrix Algebra</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-portfolioTheoryNoShortSales-new.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Portfolio Theory with Short Sales Constraints</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-riskBudgeting-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Portfolio Risk Budgeting</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#overview-of-short-selling" id="toc-overview-of-short-selling" class="nav-link active" data-scroll-target="#overview-of-short-selling"><span class="header-section-number">12.1</span> Overview of Short Selling</a></li>
+  <li><a href="#sec-Portfolio-Theory-with" id="toc-sec-Portfolio-Theory-with" class="nav-link" data-scroll-target="#sec-Portfolio-Theory-with"><span class="header-section-number">12.2</span> Portfolio Theory with Short Sales Constraints in a Simplified Setting</a>
+  <ul class="collapse">
+  <li><a href="#two-risky-assets" id="toc-two-risky-assets" class="nav-link" data-scroll-target="#two-risky-assets"><span class="header-section-number">12.2.1</span> Two Risky Assets</a></li>
+  <li><a href="#one-risky-asset-and-a-risk-free-asset" id="toc-one-risky-asset-and-a-risk-free-asset" class="nav-link" data-scroll-target="#one-risky-asset-and-a-risk-free-asset"><span class="header-section-number">12.2.2</span> One risky asset and a risk-free asset</a></li>
+  <li><a href="#two-risky-assets-and-risk-free-asset" id="toc-two-risky-assets-and-risk-free-asset" class="nav-link" data-scroll-target="#two-risky-assets-and-risk-free-asset"><span class="header-section-number">12.2.3</span> Two risky assets and risk-free asset</a></li>
+  </ul></li>
+  <li><a href="#sec-Portfolio-Theory-with-1" id="toc-sec-Portfolio-Theory-with-1" class="nav-link" data-scroll-target="#sec-Portfolio-Theory-with-1"><span class="header-section-number">12.3</span> Portfolio Theory with Short Sales Constraints in a General Setting</a>
+  <ul class="collapse">
+  <li><a href="#multiple-risky-assets" id="toc-multiple-risky-assets" class="nav-link" data-scroll-target="#multiple-risky-assets"><span class="header-section-number">12.3.1</span> Multiple risky assets</a></li>
+  <li><a href="#portfolio-optimization-imposing-no-short-sales-constraints" id="toc-portfolio-optimization-imposing-no-short-sales-constraints" class="nav-link" data-scroll-target="#portfolio-optimization-imposing-no-short-sales-constraints"><span class="header-section-number">12.3.2</span> Portfolio optimization imposing no-short sales constraints</a></li>
+  </ul></li>
+  <li><a href="#sec-Quadradic-programming" id="toc-sec-Quadradic-programming" class="nav-link" data-scroll-target="#sec-Quadradic-programming"><span class="header-section-number">12.4</span> Quadratic Programming Problems</a>
+  <ul class="collapse">
+  <li><a href="#no-short-sales-global-minimum-variance-portfolio" id="toc-no-short-sales-global-minimum-variance-portfolio" class="nav-link" data-scroll-target="#no-short-sales-global-minimum-variance-portfolio"><span class="header-section-number">12.4.1</span> No short sales global minimum variance portfolio</a></li>
+  <li><a href="#no-short-sales-minimum-variance-portfolio-with-target-expected-return" id="toc-no-short-sales-minimum-variance-portfolio-with-target-expected-return" class="nav-link" data-scroll-target="#no-short-sales-minimum-variance-portfolio-with-target-expected-return"><span class="header-section-number">12.4.2</span> No short sales minimum variance portfolio with target expected return</a></li>
+  <li><a href="#no-short-sales-tangency-portfolio" id="toc-no-short-sales-tangency-portfolio" class="nav-link" data-scroll-target="#no-short-sales-tangency-portfolio"><span class="header-section-number">12.4.3</span> No short sales tangency portfolio</a></li>
+  </ul></li>
+  <li><a href="#sec-Application-to-Vanguard-Mutual-Funds" id="toc-sec-Application-to-Vanguard-Mutual-Funds" class="nav-link" data-scroll-target="#sec-Application-to-Vanguard-Mutual-Funds"><span class="header-section-number">12.5</span> Application to Vanguard Mutual Funds</a></li>
+  <li><a href="#further-reading-portfolio-theory-with-short-sales-constraints" id="toc-further-reading-portfolio-theory-with-short-sales-constraints" class="nav-link" data-scroll-target="#further-reading-portfolio-theory-with-short-sales-constraints"><span class="header-section-number">12.6</span> Further Reading: Portfolio Theory with Short Sales Constraints</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">12.7</span> Exercises</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-Portfolio-Theory-No-Shorts" class="quarto-section-identifier"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Portfolio Theory with Short Sales Constraints</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Updated: September 12, 2026</p>
+<p>Copyright © Eric Zivot 2026</p>
+<p>The portfolio theory I described in Chapters <a href="10-introductionPortfolioTheory-new.html"><span>Chapter&nbsp;10</span></a> and <a href="11-PortfolioTheoryMatrix-new.html"><span>Chapter&nbsp;11</span></a> assumed that investors can freely short sell all assets. In many situation, however, investors may not be allowed to short sell some or all assets and/or there may be restrictions on when short sales may occur. In particular, certain types of assets (e.g., mutual funds) cannot be sold short. This has implications for asset allocation in individual retirement accounts. Some institutions, such as pension funds, are prevented from directly short selling assets. Government regulations may prevent certain assets from being sold short, or prevent short sales from occurring at certain times. For example, during the 2008 financial crisis the Securities and Exchange Commission temporarily blocked the short sale of financial stocks. Because of these practical limitations on short sales, it is important to be able to incorporate short sales restrictions into mean-variance portfolio theory in practice and in this chapter I describe how to do it.</p>
+<p>This chapter is organized as follows. In <a href="#sec-Portfolio-Theory-with"><span>Section&nbsp;12.2</span></a> I describe the impact of short sales constraints, on the investment in risky assets, on efficient portfolios in the simplified two risky asset setting presented in <a href="10-introductionPortfolioTheory-new.html"><span>Chapter&nbsp;10</span></a>. In <a href="#sec-Portfolio-Theory-with-1"><span>Section&nbsp;12.3</span></a> I discuss the computation of mean-variance efficient portfolios when there are short sales constraints in the general case of <span class="math inline">\(N\)</span> risky assets, as described in <a href="11-PortfolioTheoryMatrix-new.html"><span>Chapter&nbsp;11</span></a>, using quadratic programming. In <a href="#sec-Application-to-Vanguard-Mutual-Funds"><span>Section&nbsp;12.5</span></a> I give a real-world application of the theory to asset allocation among Vanguard mutual funds.</p>
+<p>The examples I cover in this chapter use the <strong>introcompfinr, PerformanceAnalytics</strong>, and <strong>quadprog</strong> packages. Make sure these packages are installed and loaded in R before replicating the chapter examples.</p>
+<section id="overview-of-short-selling" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="overview-of-short-selling"><span class="header-section-number">12.1</span> Overview of Short Selling</h2>
+<p>Most investments involve purchases of assets that you believe will increase in value over time. When you buy an asset you establish a <em>long</em> position in the asset. You profit from the long position by selling the asset in the future at a price higher than the original purchase price. However, sometimes you may believe that an asset will decrease in value over time. To profit on an investment in which the asset price is lower in the future requires <em>short selling</em> the asset. In general, short selling involves selling an asset you borrow from someone else today and repurchasing the asset in the future and returning it to its owner. You profit on the short sale if you repurchase the asset for a lower price than you initially sold it. Because short selling involves borrowing it is a type of leveraged investment and so risk increases with the size of the short position.</p>
+<p>In practice, a short sale of an asset works as follows. Suppose you have an investment account at some brokerage firm and you are interested in short selling one share of an individual stock, such as Microsoft, that you do not currently own. Because the brokerage firm has so many clients, one of the clients will own Microsoft. The brokerage firm will allow you to borrow Microsoft, sell it and add the proceeds of the short sale to your investment account. Doing so establishes a <em>short position</em> in Microsoft which is a liability to return the borrowed share sometime in the future. You close the short position in the future by repurchasing one share of Microsoft through the brokerage firm who returns the share to the original owner. However, borrowing is not free. You will have to pay interest on the amount borrowed. You will also need sufficient capital in your account to cover any potential losses from the short sale. In addition, if the price of the short sold asset rises substantially during the short sale period then the brokerage firm may require you to add additional margin capital to your account. If you cannot do this then the brokerage firm will force you to close the short position immediately.</p>
+</section>
+<section id="sec-Portfolio-Theory-with" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="sec-Portfolio-Theory-with"><span class="header-section-number">12.2</span> Portfolio Theory with Short Sales Constraints in a Simplified Setting</h2>
+<p></p>
+<p>In this section, we illustrate the impact of short sales constraints on risky assets on portfolios in the simplified setting described in Chapter <a href="10-introductionPortfolioTheory-new.html"><span>Chapter&nbsp;10</span></a>. We first look at simple portfolios of two risky assets, then consider portfolios of a risky asset plus a risk-free asset, and finish with portfolios of two risky assets plus a risk-free asset.</p>
+<section id="two-risky-assets" class="level3" data-number="12.2.1">
+<h3 data-number="12.2.1" class="anchored" data-anchor-id="two-risky-assets"><span class="header-section-number">12.2.1</span> Two Risky Assets</h3>
+<p> Consider the two risky asset example data from Chapter <a href="10-introductionPortfolioTheory-new.html"><span>Chapter&nbsp;10</span></a>:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>mu.A <span class="ot">=</span> <span class="fl">0.175</span> </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>sig.A <span class="ot">=</span> <span class="fl">0.258</span> </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>sig2.A <span class="ot">=</span> sig.A<span class="sc">^</span><span class="dv">2</span> </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>mu.B <span class="ot">=</span> <span class="fl">0.055</span> </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>sig.B <span class="ot">=</span> <span class="fl">0.115</span> </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>sig2.B <span class="ot">=</span> sig.B<span class="sc">^</span><span class="dv">2</span> </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>rho.AB <span class="ot">=</span> <span class="sc">-</span><span class="fl">0.164</span> </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>sig.AB <span class="ot">=</span> rho.AB<span class="sc">*</span>sig.A<span class="sc">*</span>sig.B</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>assetNames <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Asset A"</span>, <span class="st">"Asset B"</span>) </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>mu.vals <span class="ot">=</span> <span class="fu">c</span>(mu.A, mu.B) </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(mu.vals) <span class="ot">=</span> assetNames </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>Sigma <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(sig2.A, sig.AB, sig.AB, sig2.B), <span class="dv">2</span>, <span class="dv">2</span>) </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(Sigma) <span class="ot">=</span> <span class="fu">rownames</span>(Sigma) <span class="ot">=</span> assetNames</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Asset A is the high average return and high risk asset, and asset B is the low average return and low risk asset. Consider the following set of 19 portfolios:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>x.A <span class="ot">=</span> <span class="fu">seq</span>(<span class="at">from=</span><span class="sc">-</span><span class="fl">0.4</span>, <span class="at">to=</span><span class="fl">1.4</span>, <span class="at">by=</span><span class="fl">0.1</span>) </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>x.B <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> x.A </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>n.port <span class="ot">=</span> <span class="fu">length</span>(x.A) </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(x.A) <span class="ot">=</span> <span class="fu">names</span>(x.B) <span class="ot">=</span> <span class="fu">paste</span>(<span class="st">"p"</span>, <span class="dv">1</span><span class="sc">:</span>n.port, <span class="at">sep=</span><span class="st">"."</span>) </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>mu.p <span class="ot">=</span> x.A<span class="sc">*</span>mu.A <span class="sc">+</span> x.B<span class="sc">*</span>mu.B </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>sig2.p <span class="ot">=</span> x.A<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.A <span class="sc">+</span> x.B<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.B <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x.A<span class="sc">*</span>x.B<span class="sc">*</span>sig.AB </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>sig.p <span class="ot">=</span> <span class="fu">sqrt</span>(sig2.p)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Figure <a href="#fig-NoShorts2assetFrontier">Figure&nbsp;<span>12.1</span></a> shows the risky asset only portfolio frontier created using:</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>cex.val <span class="ot">=</span> <span class="fl">1.5</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sig.p, mu.p, <span class="at">type=</span><span class="st">"b"</span>, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">cex =</span> cex.val,      </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(mu.p)), <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(sig.p)),      </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="at">xlab=</span><span class="fu">expression</span>(sigma[p]), <span class="at">ylab=</span><span class="fu">expression</span>(mu[p]), <span class="at">cex.lab=</span>cex.val,      </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="at">col=</span><span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"lightblue"</span>, <span class="dv">4</span>), <span class="fu">rep</span>(<span class="st">"black"</span>, <span class="dv">11</span>), <span class="fu">rep</span>(<span class="st">"lightblue"</span>, <span class="dv">4</span>))) </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span>sig.A, <span class="at">y=</span>mu.A, <span class="at">labels=</span><span class="st">"Asset A"</span>, <span class="at">pos=</span><span class="dv">4</span>, <span class="at">cex =</span> cex.val) </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span>sig.B, <span class="at">y=</span>mu.B, <span class="at">labels=</span><span class="st">"Asset B"</span>, <span class="at">pos=</span><span class="dv">4</span>, <span class="at">cex =</span> cex.val)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-NoShorts2assetFrontier" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="12-portfolioTheoryNoShortSales-new_files/figure-html/fig-NoShorts2assetFrontier-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;12.1: Two-risky asset portfolio frontier. Long-only portfolios are in black (between Asset B and Asset A), and long-short portfolios are in blue (below Asset B and above Asset A).</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The long only (no short sale) portfolios, shown in black dots between the points labeled “Asset B” and “Asset A”, are portfolios 5 to 15. The asset weights on these portfolios are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>longOnly <span class="ot">=</span> <span class="fu">rbind</span>(x.A[<span class="dv">5</span><span class="sc">:</span><span class="dv">15</span>], x.B[<span class="dv">5</span><span class="sc">:</span><span class="dv">15</span>]) </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(longOnly) <span class="ot">=</span> assetNames </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>longOnly</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         p.5 p.6 p.7 p.8 p.9 p.10 p.11 p.12 p.13 p.14 p.15</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset A   0 0.1 0.2 0.3 0.4  0.5  0.6  0.7  0.8  0.9    1</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset B   1 0.9 0.8 0.7 0.6  0.5  0.4  0.3  0.2  0.1    0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The long-short portfolios, shown in blue dots below the point labeled “Asset B” and above the point labeled “Asset A”, are portfolios 1 to 4 and portfolios 16 to 19:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>longShort <span class="ot">=</span> <span class="fu">rbind</span>(x.A[<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">16</span><span class="sc">:</span><span class="dv">19</span>)], x.B[<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">16</span><span class="sc">:</span><span class="dv">19</span>)]) </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(longShort) <span class="ot">=</span> assetNames </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>longShort</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          p.1  p.2  p.3  p.4 p.16 p.17 p.18 p.19</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset A -0.4 -0.3 -0.2 -0.1  1.1  1.2  1.3  1.4</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset B  1.4  1.3  1.2  1.1 -0.1 -0.2 -0.3 -0.4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Not allowing short sales for asset A eliminates the inefficient portfolios 1 to 4 (blue dots below the label “Asset B” ), and not allowing short sales for asset B eliminates the efficient portfolios 16 to 19 (blue dots above the label “Asset A” ). We make the following remarks:</p>
+<ul>
+<li>Not allowing short sales in both assets limits the set of feasible portfolios.</li>
+<li>It is not possible to invest in a portfolio with a higher expected return than asset A.</li>
+<li>It is not possible to invest in a portfolio with a lower expected return than asset B.</li>
+</ul>
+<section id="short-sales-constraints-and-the-global-minimum-variance-portfolio" class="level4" data-number="12.2.1.1">
+<h4 data-number="12.2.1.1" class="anchored" data-anchor-id="short-sales-constraints-and-the-global-minimum-variance-portfolio"><span class="header-section-number">12.2.1.1</span> Short sales constraints and the global minimum variance portfolio</h4>
+<p>Recall, the two risky asset global minimum variance portfolio solves the unconstrained optimization problem: <span class="math display">\[\begin{align*}
+&amp;\underset{m_{A},m_{B}}{\min}\sigma_{p}^{2}  =m_{A}^{2}\sigma_{A}^{2}+m_{B}^{2}\sigma_{B}^{2}+2m_{A}m_{B}\sigma_{AB}\\
+&amp;s.t.~m_{A}+m_{B} =1.
+\end{align*}\]</span></p>
+<p>From Chapter <a href="10-introductionPortfolioTheory-new.html"><span>Chapter&nbsp;10</span></a>, the two risky asset unconstrained global minimum variance portfolio weights are:</p>
+<p><span id="eq-NoShortsMinVarPort"><span class="math display">\[
+m_{A}=\frac{\sigma_{B}^{2}-\sigma_{AB}}{\sigma_{A}^{2}+\sigma_{B}^{2}-2\sigma_{AB}},~m_{B}=1-m_{A}.
+\tag{12.1}\]</span></span></p>
+<p>For the example data, the unconstrained global minimum variance portfolio weights are both positive:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>gmin.port <span class="ot">=</span> <span class="fu">globalmin_portfolio</span>(mu.vals, Sigma) </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>gmin.port</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; get_portfolio(er_vec = er_vec, cov_mat = cov_mat, weight_vec = w_gmin)</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio expected return:     0.0793 </span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio standard deviation:  0.0978 </span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio weights:</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset A Asset B </span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   0.202   0.798</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>This means that if we disallow short-sales in both assets we still get the same global minimum variance portfolio weights. In this case, we say that the no short sales constraints are <em>not binding</em> (have no effect) on the solution for the unconstrained optimization problem <a href="#eq-NoShortsMinVarPort">Equation&nbsp;<span>12.1</span></a>. However, it is possible for one of the weights in the global minimum variance portfolio to be negative if correlation between the returns on assets A and B is sufficiently positive. To see this, the numerator in the formula for the global minimum variance weight for asset A can be re-written as:<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p><span class="math display">\[
+\sigma_{B}^{2}-\sigma_{AB}=\sigma_{B}^{2}-\rho_{AB}\sigma_{A}\sigma_{B}=\sigma_{B}^{2}\left(1-\rho_{AB}\frac{\sigma_{A}}{\sigma_{B}}\right).
+\]</span></p>
+<p>Hence, the weight in asset A in the global minimum variance portfolio will be negative if:</p>
+<p><span class="math display">\[\begin{eqnarray*}
+1-\rho_{AB}\frac{\sigma_{A}}{\sigma_{B}} &amp; &lt;0 &amp; \Rightarrow\rho_{AB}&gt;\frac{\sigma_{B}}{\sigma_{A}}.
+\end{eqnarray*}\]</span></p>
+<p>For the example data, this cut-off value for the correlation is:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>sig.B<span class="sc">/</span>sig.A</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.446</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Figure <a href="#fig-NoShorts2assetFrontier2">Figure&nbsp;<span>12.2</span></a> shows the two risky asset portfolio frontier computed with <span class="math inline">\(\rho_{AB}=0.8\)</span>. Here, the global minimum variance portfolio is:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>rho.AB <span class="ot">=</span> <span class="fl">0.8</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>sig.AB <span class="ot">=</span> rho.AB<span class="sc">*</span>sig.A<span class="sc">*</span>sig.B </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>Sigma <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(sig2.A, sig.AB, sig.AB, sig2.B), <span class="dv">2</span>, <span class="dv">2</span>) </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>gmin.port <span class="ot">=</span> <span class="fu">globalmin_portfolio</span>(mu.vals, Sigma) </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>gmin.port</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; get_portfolio(er_vec = er_vec, cov_mat = cov_mat, weight_vec = w_gmin)</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio expected return:     0.016 </span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio standard deviation:  0.099 </span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio weights:</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset A Asset B </span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  -0.325   1.325</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>and contains a negative weight in asset A. This portfolio is shown as the green dot in Figure <a href="#fig-NoShorts2assetFrontier2">Figure&nbsp;<span>12.2</span></a>, and plots below the point labeled “Asset B” . Here, the no-short sales constraint on asset A is a <em>binding constraint</em>: it is not possible to invest in the global minimum variance portfolio without shorting asset A. Visually, we can see that the feasible long-only portfolio with the smallest variance is 100% invested in asset B. This is the <em>no short sales constrained</em> global minimum variance portfolio. Notice that the variance of this portfolio is larger than the variance of the global minimum variance portfolio. This is the cost, in terms of variance, of imposing the no-short sales constraint.</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-NoShorts2assetFrontier2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="12-portfolioTheoryNoShortSales-new_files/figure-html/fig-NoShorts2assetFrontier2-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;12.2: Two risky asset portfolio frontier with short sale in Asset A in the global minimum variance portfolio.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="one-risky-asset-and-a-risk-free-asset" class="level3" data-number="12.2.2">
+<h3 data-number="12.2.2" class="anchored" data-anchor-id="one-risky-asset-and-a-risk-free-asset"><span class="header-section-number">12.2.2</span> One risky asset and a risk-free asset</h3>
+<p>Now consider portfolios of a risky asset (e.g., asset A) and a risk-free asset (e.g., U.S. T-Bill) with risk-free rate <span class="math inline">\(r_{f}&gt;0\)</span>. Let <span class="math inline">\(x\)</span> denote the portfolio weight in the risky asset. Then <span class="math inline">\(1-x\)</span> gives the weight in the risk-free asset. From Chapter <a href="10-introductionPortfolioTheory-new.html"><span>Chapter&nbsp;10</span></a>, the expected return and volatility of portfolios of one risky asset and one risk-free asset are: <span class="math display">\[\begin{eqnarray*}
+\mu_{p} &amp; = &amp; r_{f}+x(\mu-r_{f}),\\
+\sigma_{p} &amp; = &amp; |x|\sigma,
+\end{eqnarray*}\]</span> where <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span> are the expected return and volatility of the risky asset, respectively. For example, Figure <a href="#fig-NoShortsRiskyTbill">Figure&nbsp;<span>12.3</span></a> shows 29 portfolios of asset A and the risk-free asset with <span class="math inline">\(r_{f}=0.03\)</span> created with:</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>r.f <span class="ot">=</span> <span class="fl">0.03</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>x.A <span class="ot">=</span> <span class="fu">seq</span>(<span class="at">from=</span><span class="sc">-</span><span class="fl">1.4</span>, <span class="at">to=</span><span class="fl">1.4</span>, <span class="at">by=</span><span class="fl">0.1</span>) </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>mu.p.A <span class="ot">=</span> r.f <span class="sc">+</span> x.A<span class="sc">*</span>(mu.A <span class="sc">-</span> r.f) </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>sig.p.A <span class="ot">=</span> <span class="fu">abs</span>(x.A)<span class="sc">*</span>sig.A </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sig.p.A, mu.p.A, <span class="at">type=</span><span class="st">"b"</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="fu">min</span>(mu.p.A), <span class="fu">max</span>(mu.p.A)),      </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.01</span>, <span class="fu">max</span>(sig.p.A)), <span class="at">pch=</span><span class="dv">16</span>, <span class="at">cex =</span> cex.val,      </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="at">xlab=</span><span class="fu">expression</span>(sigma[p]), <span class="at">ylab=</span><span class="fu">expression</span>(mu[p]), <span class="at">cex.lab =</span> cex.val,      </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="at">col=</span><span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"lightblue"</span>, <span class="dv">14</span>), <span class="fu">rep</span>(<span class="st">"black"</span>, <span class="dv">11</span>), <span class="fu">rep</span>(<span class="st">"lightblue"</span>, <span class="dv">4</span>))) </span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">0</span>) </span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span>sig.A, <span class="at">y=</span>mu.A, <span class="at">labels=</span><span class="st">"Asset A"</span>, <span class="at">pos=</span><span class="dv">4</span>, <span class="at">cex =</span> cex.val) </span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span><span class="dv">0</span>, <span class="at">y=</span>r.f, <span class="at">labels=</span><span class="fu">expression</span>(r[f]), <span class="at">pos=</span><span class="dv">2</span>, <span class="at">cex =</span> cex.val)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-NoShortsRiskyTbill" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="12-portfolioTheoryNoShortSales-new_files/figure-html/fig-NoShortsRiskyTbill-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;12.3: Return-risk characteristics of portfolios of asset A and a risk-free asset with <span class="math inline">\(r_{f}=0.03\)</span>. Long-only portfolios are in black (between <span class="math inline">\(\mathrm{r}_{f}\)</span> and Asset A), and long-short portfolios are in blue (below <span class="math inline">\(\mathrm{r}_{f}\)</span> and above Asset A).</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The portfolios (blue dots) above the point labeled “Asset A” are short the risk-free asset and long more than 100% of asset A. The portfolios (blue dots) below <span class="math inline">\(r_{f}=0.03\)</span> are short the risky asset and long more than 100% in the risk-free asset.</p>
+<p>Here, we assume that the short sales constraint only applies to the risky asset and not the risk-free asset. That is, we assume that we can borrow and lend at the risk-free rate <span class="math inline">\(r_{f}\)</span> without constraints. In this situation, the no short sales constraint on the risky asset eliminates the inefficient portfolios (blue dots) below the risk-free rate <span class="math inline">\(r_{f}\)</span>.</p>
+</section>
+<section id="two-risky-assets-and-risk-free-asset" class="level3" data-number="12.2.3">
+<h3 data-number="12.2.3" class="anchored" data-anchor-id="two-risky-assets-and-risk-free-asset"><span class="header-section-number">12.2.3</span> Two risky assets and risk-free asset</h3>
+<p>As discussed in Chapter <a href="10-introductionPortfolioTheory-new.html"><span>Chapter&nbsp;10</span></a>, in the case of two risky assets (with no short sales restrictions) plus a risk-free asset the set of efficient portfolios is a combination of the tangency portfolio (i.e., the maximum Sharpe ratio portfolio of two risky assets) and the risk-free asset. For the example data with <span class="math inline">\(\rho_{AB}=-0.164\)</span> and <span class="math inline">\(r_{f}=0.03\)</span>, the tangency portfolio is:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>rho.AB <span class="ot">=</span> <span class="sc">-</span><span class="fl">0.164</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>sig.AB <span class="ot">=</span> rho.AB<span class="sc">*</span>sig.A<span class="sc">*</span>sig.B </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>Sigma <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(sig2.A, sig.AB, sig.AB, sig2.B), <span class="dv">2</span>, <span class="dv">2</span>) </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>r.f <span class="ot">=</span> <span class="fl">0.03</span> </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>tan.port <span class="ot">=</span> <span class="fu">tangency_portfolio</span>(mu.vals, Sigma, r.f) </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(tan.port, r.f)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; get_portfolio(er_vec = er_vec, cov_mat = cov_mat, weight_vec = w_t)</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio expected return:     0.111 </span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio standard deviation:  0.125 </span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio Sharpe Ratio:        0.644 </span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio weights:</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset_1 Asset_2 </span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   0.463   0.537</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>No asset is sold short in the unconstrained tangency portfolio, and so this is also the short-sales constrained tangency portfolio. The set of efficient portfolios is illustrated in Figure <a href="#fig-NoShortsTangency">Figure&nbsp;<span>12.4</span></a>, created with:</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># risky asset only portfolios</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>x.A <span class="ot">=</span> <span class="fu">seq</span>(<span class="at">from=</span><span class="dv">0</span>, <span class="at">to=</span><span class="dv">1</span>, <span class="at">by=</span><span class="fl">0.1</span>) </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>x.B <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> x.A </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>mu.p <span class="ot">=</span> x.A<span class="sc">*</span>mu.A <span class="sc">+</span> x.B<span class="sc">*</span>mu.B </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>sig2.p <span class="ot">=</span> x.A<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.A <span class="sc">+</span> x.B<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.B <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x.A<span class="sc">*</span>x.B<span class="sc">*</span>sig.AB </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>sig.p <span class="ot">=</span> <span class="fu">sqrt</span>(sig2.p) </span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># T-bills plus tangency </span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>x.tan <span class="ot">=</span> <span class="fu">seq</span>(<span class="at">from=</span><span class="dv">0</span>, <span class="at">to=</span><span class="fl">2.4</span>, <span class="at">by=</span><span class="fl">0.1</span>) </span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>mu.p.tan.tbill <span class="ot">=</span> r.f <span class="sc">+</span> x.tan<span class="sc">*</span>(tan.port<span class="sc">$</span>er_port <span class="sc">-</span> r.f) </span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>sig.p.tan.tbill <span class="ot">=</span> x.tan<span class="sc">*</span>tan.port<span class="sc">$</span>sd_port</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co"># global minimum variance portfolio</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>gmin.port <span class="ot">=</span> <span class="fu">globalmin_portfolio</span>(mu.vals, Sigma)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co"># plot efficient portfolios </span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sig.p, mu.p, <span class="at">type=</span><span class="st">"b"</span>, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">cex =</span> cex.val,      </span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.20</span>), <span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.01</span>, <span class="fl">0.35</span>),      </span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="fu">expression</span>(sigma[p]), <span class="at">ylab=</span><span class="fu">expression</span>(mu[p]), <span class="at">cex.lab =</span> cex.val) </span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span>sig.A, <span class="at">y=</span>mu.A, <span class="at">labels=</span><span class="st">"Asset A"</span>, <span class="at">pos=</span><span class="dv">4</span>, <span class="at">cex =</span> cex.val) </span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span>sig.B, <span class="at">y=</span>mu.B, <span class="at">labels=</span><span class="st">"Asset B"</span>, <span class="at">pos=</span><span class="dv">4</span>, <span class="at">cex =</span> cex.val) </span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span><span class="dv">0</span>, <span class="at">y=</span>r.f, <span class="at">labels=</span><span class="fu">expression</span>(r[f]), <span class="at">pos=</span><span class="dv">2</span>, <span class="at">cex =</span> cex.val) </span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span>tan.port<span class="sc">$</span>sd_port, <span class="at">y=</span>tan.port<span class="sc">$</span>er_port, <span class="at">labels=</span><span class="st">"Tangency"</span>, <span class="at">pos=</span><span class="dv">2</span>, <span class="at">cex =</span> cex.val) </span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(gmin.port<span class="sc">$</span>sd_port, gmin.port<span class="sc">$</span>er_port, <span class="at">labels=</span><span class="st">"Global Min"</span>, <span class="at">pos =</span> <span class="dv">4</span>,       </span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>     <span class="at">cex =</span> cex.val)</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(sig.p.tan.tbill, mu.p.tan.tbill, <span class="at">type=</span><span class="st">"l"</span>, <span class="at">col=</span><span class="st">"green"</span>,         </span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>       <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">cex =</span> cex.val)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-NoShortsTangency" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="12-portfolioTheoryNoShortSales-new_files/figure-html/fig-NoShortsTangency-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;12.4: Efficient portfolios of two risky assets plus a risk-free asset: <span class="math inline">\(\rho_{AB}=-0.164\)</span> and <span class="math inline">\(r_{f}=0.03\)</span>. No short sales in unconstrained tangency portfolio.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Figure <a href="#fig-NoShortsTangency">Figure&nbsp;<span>12.4</span></a> shows that when the tangency portfolio is located between the global minimum variance portfolio (tip of the Markowitz bullet) and asset A, there will be no short sales in the tangency portfolio. However, if the correlation between assets A and B is sufficiently positive (and the risk-free rate is adjusted so that it is less than the expected return on the global minimum variance portfolio) then asset B can be sold short in the unconstrained tangency portfolio. For example, if <span class="math inline">\(\rho_{AB}=0.7\)</span> and <span class="math inline">\(r_{f}=0.01\)</span> the unconstrained tangency portfolio becomes:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>rho.AB <span class="ot">=</span> <span class="fl">0.7</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>sig.AB <span class="ot">=</span> rho.AB<span class="sc">*</span>sig.A<span class="sc">*</span>sig.B </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>Sigma <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(sig2.A, sig.AB, sig.AB, sig2.B), <span class="dv">2</span>, <span class="dv">2</span>) </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>r.f <span class="ot">=</span> <span class="fl">0.01</span> </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>tan.port <span class="ot">=</span> <span class="fu">tangency_portfolio</span>(mu.vals, Sigma, r.f) </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(tan.port, r.f)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; get_portfolio(er_vec = er_vec, cov_mat = cov_mat, weight_vec = w_t)</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio expected return:     0.238 </span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio standard deviation:  0.355 </span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio Sharpe Ratio:        0.644 </span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio weights:</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset_1 Asset_2 </span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   1.529  -0.529</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Now, asset B is sold short in the tangency portfolio. The set of efficient portfolios in this case is illustrated in Figure <a href="#fig-NoShortsTangency2">Figure&nbsp;<span>12.5</span></a>. Notice that the tangency portfolio is located on the set of risky asset only portfolios above the point labeled “Asset A”, which indicates that asset B is sold short and more than 100% is invested in asset A.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-NoShortsTangency2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="12-portfolioTheoryNoShortSales-new_files/figure-html/fig-NoShortsTangency2-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;12.5: Efficient portfolios of two risky assets plus a risk free asset: <span class="math inline">\(\rho_{AB}=0.7\)</span> and <span class="math inline">\(r_{f}=0.01\)</span>. Asset B sold short in unconstrained tangency portfolio. The short sale constrained tangency portfolio is the point labeled “Asset A”.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>When shorts sales of risky assets are not allowed, the unconstrained tangency portfolio is infeasible. In this case, the constrained tangency portfolio is not the tangency portfolio but is 100% invested in asset A. This portfolio is located at the tangency point of a straight line drawn from the risk-free rate to the long-only risky asset frontier. Here, the cost of the no-short sales constraint is the reduction in the Sharpe ratio of the tangency portfolio. The Sharpe ratio of the constrained tangency portfolio is the Sharpe ratio of asset A:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(mu.A <span class="sc">-</span> r.f)<span class="sc">/</span>sig.A</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.64</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Hence, the cost of the no short sales constraint in this example is very small.</p>
+</section>
+</section>
+<section id="sec-Portfolio-Theory-with-1" class="level2" data-number="12.3">
+<h2 data-number="12.3" class="anchored" data-anchor-id="sec-Portfolio-Theory-with-1"><span class="header-section-number">12.3</span> Portfolio Theory with Short Sales Constraints in a General Setting</h2>
+<p> In this section we extend the analysis of the previous section to the more general setting of <span class="math inline">\(N\)</span> risky assets plus a risk free asset.</p>
+<section id="multiple-risky-assets" class="level3" data-number="12.3.1">
+<h3 data-number="12.3.1" class="anchored" data-anchor-id="multiple-risky-assets"><span class="header-section-number">12.3.1</span> Multiple risky assets</h3>
+<p></p>
+<div id="exm-random-portfolios-of-microsoft-nordstrom-and-starbucks-with-no-short-sales" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 12.1 (Random portfolios of Microsoft Nordstrom and Starbucks with no-short sales) </strong></span>The example data on Microsoft, Nordstrom and Starbucks from Chapter <a href="11-PortfolioTheoryMatrix-new.html"><span>Chapter&nbsp;11</span></a> is used to illustrate the computation of mean-variance efficient portfolios with short sales constraints. These data are created using:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>asset.names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"MSFT"</span>, <span class="st">"NORD"</span>, <span class="st">"SBUX"</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>mu.vec <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">0.0427</span>, <span class="fl">0.0015</span>, <span class="fl">0.0285</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(mu.vec) <span class="ot">=</span> asset.names</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>sigma.mat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fl">0.0100</span>, <span class="fl">0.0018</span>, <span class="fl">0.0011</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>           <span class="fl">0.0018</span>, <span class="fl">0.0109</span>, <span class="fl">0.0026</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>           <span class="fl">0.0011</span>, <span class="fl">0.0026</span>, <span class="fl">0.0199</span>),</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">nrow=</span><span class="dv">3</span>, <span class="at">ncol=</span><span class="dv">3</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="fu">dimnames</span>(sigma.mat) <span class="ot">=</span> <span class="fu">list</span>(asset.names, asset.names)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>sd.vec <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(sigma.mat))</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>r.f<span class="ot">=</span><span class="fl">0.005</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The impact of the no short sales restrictions on the risk-return characteristics of feasible portfolios is nicely illustrated by constructing random long-only portfolios of these three assets:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>x.msft <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">400</span>, <span class="at">min=</span><span class="dv">0</span>, <span class="at">max=</span><span class="dv">1</span>) </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>x.nord <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">400</span>, <span class="at">min=</span><span class="dv">0</span>, <span class="at">max=</span><span class="dv">1</span>) </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>x.sbux <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> x.msft <span class="sc">-</span> x.nord </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>long.only <span class="ot">=</span> <span class="fu">which</span>(x.sbux <span class="sc">&gt;</span> <span class="dv">0</span>) </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>x.msft <span class="ot">=</span> x.msft[long.only] </span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>x.nord <span class="ot">=</span> x.nord[long.only] </span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>x.sbux <span class="ot">=</span> x.sbux[long.only]</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(long.only)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 191</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Here we first create 400 random weights for Microsoft and Nordstrom that lie between zero and one, respectively. Then, we determine the weight on Starbucks and throw out portfolios for which the weight on Starbucks is negative. The remaining 191 portfolios are then long-only portfolios. To be sure, these weights are illustrated in Figure <a href="#fig-NoShortsRandomWeights">Figure&nbsp;<span>12.6</span></a> created using:</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chart.StackedBar</span>(<span class="fu">cbind</span>(x.msft, x.nord, x.sbux),                   </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">main=</span><span class="st">"Random long-only portfolio weight vectors"</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">xlab =</span> <span class="st">"portfolio"</span>, <span class="at">ylab =</span> <span class="st">"weights"</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">xaxis.labels=</span><span class="fu">as.character</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(long.only)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-NoShortsRandomWeights" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="12-portfolioTheoryNoShortSales-new_files/figure-html/fig-NoShortsRandomWeights-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;12.6: Weights on 191 random long-only portfolios of Microsoft, Nordstrom and Starbucks.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sd.vec, mu.vec,  <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.05</span>), <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.2</span>), </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span><span class="fu">expression</span>(mu[p]),</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="fu">expression</span>(sigma[p]), <span class="at">type=</span><span class="st">"n"</span>, <span class="at">cex.lab=</span><span class="fl">1.5</span>)      </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(long.only)) {   </span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>   z.vec <span class="ot">=</span> <span class="fu">c</span>(x.msft[i], x.nord[i], x.sbux[i])   </span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>   mu.p <span class="ot">=</span> <span class="fu">crossprod</span>(z.vec,mu.vec)   </span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>   sig.p <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="fu">t</span>(z.vec)<span class="sc">%*%</span>sigma.mat<span class="sc">%*%</span>z.vec)   </span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>   <span class="fu">points</span>(sig.p, mu.p, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="st">"grey"</span>, <span class="at">cex=</span><span class="fl">1.5</span>) </span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>} </span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(sd.vec, mu.vec, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="st">"black"</span>, <span class="at">cex=</span><span class="fl">2.5</span>, <span class="at">cex.lab=</span><span class="fl">1.75</span>) </span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(sd.vec, mu.vec, <span class="at">labels=</span>asset.names, <span class="at">pos=</span><span class="dv">4</span>, <span class="at">cex =</span> cex.val)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-NoShortsRandomPortfolios" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="12-portfolioTheoryNoShortSales-new_files/figure-html/fig-NoShortsRandomPortfolios-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;12.7: Risk-return characteristics of 191 random long-only portfolios of Microsoft, Nordstrom and Starbucks.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The shape of the risk-return scatter is revealing. No random long-only portfolio has an expected return higher than the expected return on Microsoft, which is the asset with the highest expected return. Similarly, no random portfolio has an expected return lower than the expected return on Nordstrom - which is the asset with the lowest expected return. Finally, no random portfolio has a volatility higher than the volatility on Starbucks, the asset with the highest volatility. The scatter of points has a convex (to the origin) parabolic-shaped outer boundary with endpoints at Microsoft and Nordstrom, respectively. The points inside the boundary taper outward from Starbucks towards the outer boundary. The entire risk-return scatter resembles an umbrella tipped on its side with spires extending from the outer boundary to the individual assets. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+<section id="portfolio-optimization-imposing-no-short-sales-constraints" class="level3" data-number="12.3.2">
+<h3 data-number="12.3.2" class="anchored" data-anchor-id="portfolio-optimization-imposing-no-short-sales-constraints"><span class="header-section-number">12.3.2</span> Portfolio optimization imposing no-short sales constraints</h3>
+<p> Consider an investment universe with <span class="math inline">\(N\)</span> risky assets whose simple returns are described by the GWN model with expected return vector <span class="math inline">\(\boldsymbol{\mu}\)</span> and covariance matrix <span class="math inline">\(\boldsymbol{\Sigma}\)</span>. The optimization problem to solve for the global minimum variance portfolio <span class="math inline">\(\mathbf{m}\)</span> with no-short sales constraints on all assets is a straightforward extension of the problem that allows short sales. We simply add the <span class="math inline">\(N\)</span> no-short sales inequality constraints <span class="math inline">\(m_{i}\geq0\,(i=1,\ldots,N)\)</span>. The optimization problem is: <span id="eq-NoShortsGlobalMin"><span class="math display">\[
+\begin{aligned}
+\min_{\mathbf{m}}\sigma_{p,m}^{2} &amp; =\mathbf{m}^{\prime}\boldsymbol{\Sigma} \mathbf{m}\\
+\text{s.t. } \mathbf{m}^{\prime}\mathbf{1} &amp; =1,\nonumber \\
+m_{i} &amp; \geq0\text{ }(i=1,\ldots,N).\nonumber
+\end{aligned}
+\tag{12.2}\]</span></span> Here, there is one equality constraint, <span class="math inline">\(\mathbf{m}^{\prime}\mathbf{1}=1\)</span>, and <span class="math inline">\(N\)</span> inequality constraints, <span class="math inline">\(m_{i}\geq0\text{ }(i=1,\ldots,N)\)</span>.</p>
+<p>Similarly, the optimization problem to solve for a minimum variance portfolio <span class="math inline">\(\mathbf{x}\)</span> with target expected return <span class="math inline">\(\mu_{p}^{0}\)</span> and no short sales allowed for any asset becomes: <span id="eq-NoShortsTargetReturn"><span class="math display">\[
+\begin{aligned}
+\min_{\mathbf{x}}\sigma_{p,x}^{2} &amp; =\mathbf{x}^{\prime}\boldsymbol{\Sigma} \mathbf{x} \\
+\text{s.t. }\mu_{p,x} &amp; =\mathbf{x}^{\prime}\boldsymbol{\mu}=\mu_{p}^{0}, \\
+\mathbf{x}^{\prime}\mathbf{1} &amp; =1, \\
+x_{i} &amp; \geq0\text{ }(i=1,\ldots,N).
+\end{aligned}
+\tag{12.3}\]</span></span> Here there are two equality constraints, <span class="math inline">\(\mathbf{x}^{\prime}\boldsymbol{\mu}=\mu_{p}^{0}\)</span> and <span class="math inline">\(\mathbf{x}^{\prime}\mathbf{1}=1\)</span>, and <span class="math inline">\(N\)</span> inequality constraints, <span class="math inline">\(x_{i}\geq0\text{ }(i=1,\ldots,N)\)</span></p>
+<p>Remarks:</p>
+<ol type="1">
+<li>The optimization problems <a href="#eq-NoShortsGlobalMin">Equation&nbsp;<span>12.2</span></a> and <a href="#eq-NoShortsTargetReturn">Equation&nbsp;<span>12.3</span></a>, unfortunately, cannot be analytically solved using the method of Lagrange multipliers due to the inequality constraints. They must be solved numerically using an optimization algorithm. Fortunately, the optimization problems <a href="#eq-NoShortsGlobalMin">Equation&nbsp;<span>12.2</span></a> and <a href="#eq-NoShortsTargetReturn">Equation&nbsp;<span>12.3</span></a> are special cases of a more general <em>quadratic programming</em> problem for which there is a specialized optimization algorithm that is fast and efficient and available in R in the package <strong>quadprog</strong>.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></li>
+<li>There may not be a feasible solution to <a href="#eq-NoShortsTargetReturn">Equation&nbsp;<span>12.3</span></a>. That is, there may not exist a no-short sale portfolio <span class="math inline">\(\mathbf{x}\)</span> that reaches the target return <span class="math inline">\(\mu_{p}^{0}.\)</span> For example, in Figure <a href="#fig-NoShortsRandomPortfolios">Figure&nbsp;<span>12.7</span></a> there is no efficient portfolio that has target expected return higher than the expected return on Microsoft. In general, with <span class="math inline">\(N\)</span> assets there is no feasible solution to <a href="#eq-NoShortsTargetReturn">Equation&nbsp;<span>12.3</span></a> for target expected returns higher than the maximum expected return among the <span class="math inline">\(N\)</span> assets. If you try to solve <a href="#eq-NoShortsTargetReturn">Equation&nbsp;<span>12.3</span></a> for an infeasible target expected return, the numerical optimizer will return an error message that indicates no solution is found.</li>
+<li>The portfolio variances associated with the solutions to <a href="#eq-NoShortsGlobalMin">Equation&nbsp;<span>12.2</span></a> and <a href="#eq-NoShortsTargetReturn">Equation&nbsp;<span>12.3</span></a>, respectively, must be at least as large as the variances associated with the solutions that do not impose the short sales restrictions. Intuitively this makes sense. Adding additional constraints to a minimization problem will lead to a higher minimum at the solution if the additional constraints are binding. If the constraints are not binding, then the solution with and without the additional constraints are the same.</li>
+<li>The entire frontier of minimum variance portfolios without short sales exists only for target expected returns between the expected return on the global minimum variance portfolio with no short sales that solves <a href="#eq-NoShortsGlobalMin">Equation&nbsp;<span>12.2</span></a> and the target expected return equal to the maximum expected return among the <span class="math inline">\(N\)</span> assets. For these target returns, the no-short sales frontier will lie inside and to the right of the frontier that allows short sales if the no-short sales restrictions are binding for some asset.<br>
+</li>
+<li>The entire frontier of minimum variance portfolios without short sales can no longer be constructed from any two frontier portfolios. It has to be computed by brute force for each portfolio solving <a href="#eq-NoShortsTargetReturn">Equation&nbsp;<span>12.3</span></a> with target expected return <span class="math inline">\(\mu_{p}^{0}\)</span> above the expected return on the the global minimum variance portfolio that solves <a href="#eq-NoShortsGlobalMin">Equation&nbsp;<span>12.2</span></a> and below the target return equal to the maximum expected return among the <span class="math inline">\(N\)</span> assets.</li>
+</ol>
+</section>
+</section>
+<section id="sec-Quadradic-programming" class="level2" data-number="12.4">
+<h2 data-number="12.4" class="anchored" data-anchor-id="sec-Quadradic-programming"><span class="header-section-number">12.4</span> Quadratic Programming Problems</h2>
+<p> In this Section, we show that the inequality constrained portfolio optimization problems <a href="#eq-NoShortsGlobalMin">Equation&nbsp;<span>12.2</span></a> and <a href="#eq-NoShortsTargetReturn">Equation&nbsp;<span>12.3</span></a> are special cases of more general quadratic programming problems and we show how to use the function <code>solve.QP()</code> from the R package <strong>quadprog</strong> to numerically solve these problems.</p>
+<p><em>Quadratic programming</em> (QP) problems are of the form: <span id="eq-NoShortsQPobjective"><span class="math display">\[
+\min_{\mathbf{x}} ~ \frac{1}{2}\mathbf{x}^{\prime}\mathbf{Dx}-\mathbf{d}^{\prime}\mathbf{x}, ~ \text{s.t. }
+\tag{12.4}\]</span></span> <span id="eq-NoShortsQPequality"><span class="math display">\[
+\mathbf{A}_{eq}^{\prime}\mathbf{x}  \geq\mathbf{b}_{eq}\text{ for }l\text{ equality constraints,}
+\tag{12.5}\]</span></span> <span id="eq-NoShortsQPinequality"><span class="math display">\[
+\mathbf{A}_{neq}^{\prime}\mathbf{x} =\mathbf{b}_{neq}\text{ for }m\text{ inequality constraints},
+\tag{12.6}\]</span></span></p>
+<p>where <span class="math inline">\(\mathbf{D}\)</span> is an <span class="math inline">\(N\times N\)</span> matrix, <span class="math inline">\(\mathbf{x}\)</span> and <span class="math inline">\(\mathbf{d}\)</span> are <span class="math inline">\(N\times1\)</span> vectors, <span class="math inline">\(\mathbf{A}_{neq}^{\prime}\)</span> is an <span class="math inline">\(m\times N\)</span> matrix, <span class="math inline">\(\mathbf{b}_{neq}\)</span> is an <span class="math inline">\(m\times1\)</span> vector, <span class="math inline">\(\mathbf{A}_{eq}^{\prime}\)</span> is an <span class="math inline">\(l\times N\)</span> matrix, and <span class="math inline">\(\mathbf{b}_{eq}\)</span> is an <span class="math inline">\(l\times1\)</span> vector.</p>
+<p>The <code>solve.QP()</code> function from the R package <strong>quadprog</strong> can be used to solve QP functions of the form <a href="#eq-NoShortsQPobjective">Equation&nbsp;<span>12.4</span></a> - <a href="#eq-NoShortsQPinequality">Equation&nbsp;<span>12.6</span></a>. The function <code>solve.QP()</code> takes as input the matrices and vectors <span class="math inline">\(\mathbf{D}\)</span>, <span class="math inline">\(\mathbf{d}\)</span>, <span class="math inline">\(\mathbf{A}_{eq}\)</span>, <span class="math inline">\(\mathbf{b}_{eq},\)</span> <span class="math inline">\(\mathbf{A}_{neq}\)</span> and <span class="math inline">\(\mathbf{b}_{neq}\)</span>:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quadprog)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">args</span>(solve.QP)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; function (Dmat, dvec, Amat, bvec, meq = 0, factorized = FALSE) </span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; NULL</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>where the arguments <code>Dmat</code> and <code>dvec</code> correspond to the matrix <span class="math inline">\(\mathbf{D}\)</span> and the vector <span class="math inline">\(\mathbf{d}\)</span>, respectively. The function <code>solve.QP()</code>, however, assumes that the equality and inequality matrices (<span class="math inline">\(\mathbf{A}_{eq},\,\mathbf{A}_{neq}\)</span>) and vectors (<span class="math inline">\(\mathbf{b}_{eq},\,\mathbf{b}_{neq}\)</span>) are combined into a single <span class="math inline">\((l+m)\times N\)</span> matrix <span class="math inline">\(\mathbf{A}^{\prime}\)</span> and a single <span class="math inline">\((l+m)\)</span><span class="math inline">\(\times1\)</span> vector <span class="math inline">\(\mathbf{b}\)</span> of the form: <span class="math display">\[
+\mathbf{A}^{\prime}=\left[\begin{array}{c}
+\mathbf{A}_{eq}^{\prime}\\
+\mathbf{A}_{neq}^{\prime}
+\end{array}\right],\,\mathbf{b}=\left(\begin{array}{c}
+\mathbf{b}_{eq}\\
+\mathbf{b}_{neq}
+\end{array}\right).
+\]</span> In <code>solve.QP()</code>, the argument <code>Amat</code> represents the matrix <span class="math inline">\(\mathbf{A}\)</span> (not <span class="math inline">\(\mathbf{A}^{\prime})\)</span> and the argument <code>bmat</code> represents the vector <span class="math inline">\(\mathbf{b}\)</span>. The argument <code>meq</code> determines the number of linear equality constraints (i.e., the number of rows <span class="math inline">\(l\)</span> of <span class="math inline">\(\mathbf{A}_{eq}^{\prime}\)</span>) so that <span class="math inline">\(\mathbf{A}^{\prime}\)</span> can be separated into <span class="math inline">\(\mathbf{A}_{eq}^{\prime}\)</span> and <span class="math inline">\(\mathbf{A}_{neq}^{\prime}\)</span>, respectively.</p>
+<section id="no-short-sales-global-minimum-variance-portfolio" class="level3" data-number="12.4.1">
+<h3 data-number="12.4.1" class="anchored" data-anchor-id="no-short-sales-global-minimum-variance-portfolio"><span class="header-section-number">12.4.1</span> No short sales global minimum variance portfolio</h3>
+<p>The portfolio optimization problems <a href="#eq-NoShortsGlobalMin">Equation&nbsp;<span>12.2</span></a> and <a href="#eq-NoShortsTargetReturn">Equation&nbsp;<span>12.3</span></a> are special cases of the general QP problem <a href="#eq-NoShortsQPobjective">Equation&nbsp;<span>12.4</span></a> - <a href="#eq-NoShortsQPinequality">Equation&nbsp;<span>12.6</span></a>. Consider first the problem to find the global minimum variance portfolio <a href="#eq-NoShortsGlobalMin">Equation&nbsp;<span>12.2</span></a>. The objective function <span class="math inline">\(\sigma_{p,m}^{2}=\mathbf{m}^{\prime}\boldsymbol{\Sigma} \mathbf{m}\)</span> can be recovered from <a href="#eq-NoShortsQPobjective">Equation&nbsp;<span>12.4</span></a> by setting <span class="math inline">\(\mathbf{x}=\mathbf{m}\)</span>, <span class="math inline">\(\mathbf{D}=2\times\boldsymbol{\Sigma}\)</span> and <span class="math inline">\(\mathbf{d}=(0,\ldots,0)^{\prime}.\)</span> Then, <span class="math display">\[
+\frac{1}{2}\mathbf{x}^{\prime}\mathbf{Dx}-\mathbf{d}^{\prime}\mathbf{x}=\mathbf{m}^{\prime}\boldsymbol{\Sigma} \mathbf{m}=\sigma_{p,m}^{2}.
+\]</span> Here, there is one equality constraint, <span class="math inline">\(\mathbf{m}^{\prime}\mathbf{1}=1\)</span>, and <span class="math inline">\(N\)</span> inequality constraints, <span class="math inline">\(m_{i}\geq0\text{ }(i=1,\ldots,N)\)</span>, which can be expressed compactly as <span class="math inline">\(\mathbf{m}\geq\mathbf{0}\)</span>. These constraints can be expressed in the form <a href="#eq-NoShortsQPequality">Equation&nbsp;<span>12.5</span></a> and <a href="#eq-NoShortsQPinequality">Equation&nbsp;<span>12.6</span></a> by defining the restriction matrices: <span class="math display">\[\begin{align*}
+\underset{(1\times N)}{\mathbf{A}_{eq}^{\prime}} &amp; =\mathbf{1}^{\prime},\text{ }\underset{(1\times1)}{\mathbf{b}_{eq}}=1\\
+\underset{(N\times N)}{\mathbf{A}_{neq}^{\prime}} &amp; =\mathbf{I}_{N},\underset{(N\times1)}{\mathbf{b}_{neq}}=(0,\ldots,0)^{\prime}=\mathbf{0},
+\end{align*}\]</span> so that <span class="math display">\[
+\mathbf{A}^{\prime}=\left[\begin{array}{c}
+\mathbf{1}^{\prime}\\
+\mathbf{I}_{N}
+\end{array}\right],\,\mathbf{b}=\left(\begin{array}{c}
+1\\
+\mathbf{0}
+\end{array}\right).
+\]</span> Here, <span class="math display">\[\begin{eqnarray*}
+\mathbf{A}_{eq}^{\prime}\mathbf{m} &amp; = &amp; \mathbf{1^{\prime}m}=1=b_{eq},\\
+\mathbf{A}_{neq}^{\prime}\mathbf{m} &amp; = &amp; \mathbf{I}_{N}\mathbf{m}=\mathbf{m}\geq\mathbf{0}=\mathbf{b}_{neq}.
+\end{eqnarray*}\]</span></p>
+<div id="exm-global-minimum-variance-portfolio-with-no-short-sales-for-three-asset-example-data" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 12.2 (Global minimum variance portfolio with no short sales for three asset example data) </strong></span>The unconstrained global minimum variance portfolio of Microsoft, Nordstrom and Starbucks is:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>gmin.port <span class="ot">=</span> <span class="fu">globalmin_portfolio</span>(mu.vec, sigma.mat) </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>gmin.port</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; get_portfolio(er_vec = er_vec, cov_mat = cov_mat, weight_vec = w_gmin)</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio expected return:     0.0249 </span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio standard deviation:  0.0727 </span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio weights:</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  MSFT  NORD  SBUX </span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.441 0.366 0.193</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>This portfolio does not have any negative weights and so the no-short sales restriction is not binding. Hence, the short sales constrained global minimum variance is the same as the unconstrained global minimum variance portfolio.</p>
+<p>The restriction matrices and vectors required by <code>solve.QP()</code> to compute the short sales constrained global minimum variance portfolio are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>D.mat <span class="ot">=</span> <span class="dv">2</span><span class="sc">*</span>sigma.mat </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>d.vec <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">3</span>) </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>A.mat <span class="ot">=</span> <span class="fu">cbind</span>(<span class="fu">rep</span>(<span class="dv">1</span>,<span class="dv">3</span>), <span class="fu">diag</span>(<span class="dv">3</span>)) </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>b.vec <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fu">rep</span>(<span class="dv">0</span>,<span class="dv">3</span>))</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>D.mat</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        MSFT   NORD   SBUX</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; MSFT 0.0200 0.0036 0.0022</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; NORD 0.0036 0.0218 0.0052</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SBUX 0.0022 0.0052 0.0398</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>d.vec</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0 0 0</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="fu">t</span>(A.mat)</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2] [,3]</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]    1    1    1</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]    1    0    0</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [3,]    0    1    0</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4,]    0    0    1</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>b.vec</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1 0 0 0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>To find the short sales constrained global minimum variance portfolio, call <code>solve.QP()</code> with the above inputs and set <code>meq=1</code> to indicate one equality constraint:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>qp.out <span class="ot">=</span> <span class="fu">solve.QP</span>(<span class="at">Dmat=</span>D.mat, <span class="at">dvec=</span>d.vec,                   </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">Amat=</span>A.mat, <span class="at">bvec=</span>b.vec, <span class="at">meq=</span><span class="dv">1</span>) </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(qp.out)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "list"</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(qp.out)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "solution"               "value"                  "unconstrained.solution"</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4] "iterations"             "Lagrangian"             "iact"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The returned object, <code>qp.out</code>, is a list with the following components:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>qp.out</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $solution</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.441 0.366 0.193</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $value</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.00528</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $unconstrained.solution</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0 0 0</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $iterations</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 2 0</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $Lagrangian</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.0106 0.0000 0.0000 0.0000</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $iact</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The portfolio weights are in the <code>solution</code> component, which match the global minimum variance weights allowing short sales, and satisfy the required constraints (weights sum to one and all weights are positive). The minimized value of the objective function (portfolio variance) is in the <code>value</code> component. See the help file for <code>solve.QP()</code> for explanations of the other components.</p>
+<p>You can also use the <strong>introcompfinr</strong> function <code>globalmin_portfolio()</code> to compute the global minimum variance portfolio subject to short-sales constraints by specifying the optional argument <code>shorts=FALSE</code>:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>gmin.port <span class="ot">=</span> <span class="fu">globalmin_portfolio</span>(mu.vec, sigma.mat,                                 </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>                                <span class="at">shorts=</span><span class="cn">FALSE</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>gmin.port</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; get_portfolio(er_vec = er_vec, cov_mat = cov_mat, weight_vec = w_gmin)</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio expected return:     0.0249 </span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio standard deviation:  0.0727 </span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio weights:</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  MSFT  NORD  SBUX </span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.441 0.366 0.193</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>When <code>shorts=FALSE</code>, <code>globalmin_portfolio()</code> uses <code>solve.QP()</code> as described above to do the optimization. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+<section id="no-short-sales-minimum-variance-portfolio-with-target-expected-return" class="level3" data-number="12.4.2">
+<h3 data-number="12.4.2" class="anchored" data-anchor-id="no-short-sales-minimum-variance-portfolio-with-target-expected-return"><span class="header-section-number">12.4.2</span> No short sales minimum variance portfolio with target expected return</h3>
+<p>Next, consider the problem <a href="#eq-NoShortsTargetReturn">Equation&nbsp;<span>12.3</span></a> to find a minimum variance portfolio with a given target expected return. The objective function <a href="#eq-NoShortsQPobjective">Equation&nbsp;<span>12.4</span></a> has <span class="math inline">\(\mathbf{D}=2\times\boldsymbol{\Sigma}\)</span> and <span class="math inline">\(\mathbf{d}=(0,\ldots,0)^{\prime}.\)</span> The two linear equality constraints, <span class="math inline">\(\mathbf{x}^{\prime}\boldsymbol{\mu}=\mu_{p}^{0}\)</span> and <span class="math inline">\(\mathbf{x}^{\prime}\mathbf{1}=1\)</span>, and <span class="math inline">\(N\)</span> inequality constraints <span class="math inline">\(\mathbf{x}\geq\mathbf{0}\)</span> have restriction matrices and vectors: <span class="math display">\[\begin{align*}
+\underset{(2\times N)}{\mathbf{A}_{eq}^{\prime}} &amp; =\left(\begin{array}{c}
+\boldsymbol{\mu}^{\prime}\\
+\mathbf{1}^{\prime}
+\end{array}\right),\,\underset{(2\times1)}{\mathbf{b}_{eq}}=\left(\begin{array}{c}
+\mu_{p}^{0}\\
+1
+\end{array}\right).\text{ }\\
+\underset{(N\times N)}{\mathbf{A}_{neq}^{\prime}} &amp; =\mathbf{I}_{N},\,\underset{(N\times1)}{\mathbf{b}_{neq}}=(0,\ldots,0)^{\prime}.
+\end{align*}\]</span> so that <span class="math display">\[
+\mathbf{A}^{\prime}=\left(\begin{array}{c}
+\boldsymbol{\mu}^{\prime}\\
+\mathbf{1}^{\prime}\\
+\mathbf{I}_{N}
+\end{array}\right),\text{ }\mathbf{b}=\left(\begin{array}{c}
+\mu_{p}^{0}\\
+1\\
+\mathbf{0}
+\end{array}\right).
+\]</span> Here, <span class="math display">\[\begin{eqnarray*}
+\mathbf{A}_{eq}^{\prime}\mathbf{x} &amp; = &amp; \left(\begin{array}{c}
+\boldsymbol{\mu}^{\prime}\\
+\mathbf{1}^{\prime}
+\end{array}\right)\mathbf{x=}\left(\begin{array}{c}
+\boldsymbol{\mu}^{\prime}\mathbf{x}\\
+\mathbf{1}^{\prime}\mathbf{x}
+\end{array}\right)=\left(\begin{array}{c}
+\mu_{p}^{0}\\
+1
+\end{array}\right)=\mathbf{b}_{eq},\\
+\mathbf{A}_{neq}^{\prime}\mathbf{x} &amp; = &amp; \mathbf{I}_{N}\mathbf{x}=\mathbf{x}\geq0.
+\end{eqnarray*}\]</span></p>
+<div id="exm-minimum-variance-portfolio-with-target-expected-return-and-no-short-sales-for-three-asset-example-data" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 12.3 (Minimum variance portfolio with target expected return and no short sales for three asset example data) </strong></span>Now, we consider finding the minimum variance portfolio that has the same mean as Microsoft but does not allow short sales. First, we find the minimum variance portfolio allowing for short sales using the <strong>introcompfinr</strong> function <code>efficient_portfolio()</code>:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>eMsft.port <span class="ot">=</span> <span class="fu">efficient_portfolio</span>(mu.vec, sigma.mat, </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">target_return =</span> mu.vec[<span class="st">"MSFT"</span>])</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>eMsft.port</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; get_portfolio(er_vec = er_vec, cov_mat = cov_mat, weight_vec = w)</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio expected return:     0.0427 </span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio standard deviation:  0.0917 </span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio weights:</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    MSFT    NORD    SBUX </span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  0.8275 -0.0907  0.2633</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>This portfolio has a short sale (negative weight) in Nordstrom. Hence, when the short sales restriction is imposed it will be binding. Next, we set up the restriction matrices and vectors required by <code>solve.QP()</code> to compute the minimum variance portfolio with no-short sales:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>D.mat <span class="ot">=</span> <span class="dv">2</span><span class="sc">*</span>sigma.mat </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>d.vec <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">3</span>) </span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>A.mat <span class="ot">=</span> <span class="fu">cbind</span>(mu.vec, <span class="fu">rep</span>(<span class="dv">1</span>,<span class="dv">3</span>), <span class="fu">diag</span>(<span class="dv">3</span>)) </span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>b.vec <span class="ot">=</span> <span class="fu">c</span>(mu.vec[<span class="st">"MSFT"</span>], <span class="dv">1</span>, <span class="fu">rep</span>(<span class="dv">0</span>,<span class="dv">3</span>))</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="fu">t</span>(A.mat)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          MSFT   NORD   SBUX</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; mu.vec 0.0427 0.0015 0.0285</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        1.0000 1.0000 1.0000</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        1.0000 0.0000 0.0000</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        0.0000 1.0000 0.0000</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        0.0000 0.0000 1.0000</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>b.vec</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   MSFT                             </span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.0427 1.0000 0.0000 0.0000 0.0000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Then we call <code>solve.QP()</code> with <code>meq=2</code> to indicate two equality constraints:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>qp.out <span class="ot">=</span> <span class="fu">solve.QP</span>(<span class="at">Dmat=</span>D.mat, <span class="at">dvec=</span>d.vec,                   </span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">Amat=</span>A.mat, <span class="at">bvec=</span>b.vec, <span class="at">meq=</span><span class="dv">2</span>) </span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(qp.out<span class="sc">$</span>solution) <span class="ot">=</span> <span class="fu">names</span>(mu.vec)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(qp.out<span class="sc">$</span>solution, <span class="at">digits=</span><span class="dv">3</span>)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; MSFT NORD SBUX </span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    1    0    0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>With short sales not allowed, the minimum variance portfolio with the same mean as Microsoft is 100% invested in Microsoft. This is consistent with what we see in Figure <a href="#fig-NoShortsRandomPortfolios">Figure&nbsp;<span>12.7</span></a>. The volatility of this portfolio is slightly higher than the volatility of the portfolio that allows short sales:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(qp.out<span class="sc">$</span>value)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.1</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>eMsft.port<span class="sc">$</span>sd</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.0917</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>You can also use the <strong>introcompfinr</strong> function <code>efficient_portfolio()</code> to compute a minimum variance portfolio with target expected return subject to short-sales constraints by specifying the optional argument <code>shorts=FALSE</code>:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">efficient_portfolio</span>(mu.vec, sigma.mat, </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">target_return =</span> mu.vec[<span class="st">"MSFT"</span>], <span class="at">shorts =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; get_portfolio(er_vec = er_vec, cov_mat = cov_mat, weight_vec = w)</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio expected return:     0.0427 </span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio standard deviation:  0.1 </span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio weights:</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; MSFT NORD SBUX </span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    1    0    0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Suppose you try to find a minimum variance portfolio with target return higher than the mean of Microsoft while imposing no short sales:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># efficient_portfolio(mu.vec, sigma.mat, </span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co">#                     target_return = mu.vec["MSFT"]+0.01, </span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                     shorts = FALSE) </span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co"># uncomment this line to see the results</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Here, <code>solve.QP()</code> reports the error “constraints are inconsistent, no solution!” This agrees with what we see in Figure <a href="#fig-NoShortsRandomPortfolios">Figure&nbsp;<span>12.7</span></a>. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div id="exm-compute-efficient-frontier-portfolios-from-three-asset-example-data" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 12.4 (Compute efficient frontier portfolios from three asset example data) </strong></span>In this example we compare the efficient frontier portfolios computed with and without short sales. This can be easily done using the <strong>IntroCompFinR</strong> function <code>efficient.frontier()</code>. First, we compute the efficient frontier allowing short sales for target returns between the mean of the global minimum variance portfolio and the mean of Microsoft:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>ef <span class="ot">=</span> <span class="fu">efficient_frontier</span>(mu.vec, sigma.mat, <span class="at">alpha_min=</span><span class="dv">0</span>,                           </span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">alpha_max=</span><span class="dv">1</span>, <span class="at">nport=</span><span class="dv">10</span>) </span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>ef<span class="sc">$</span>weight_mat</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          MSFT    NORD  SBUX</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; port 1  0.441  0.3656 0.193</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; port 2  0.484  0.3149 0.201</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; port 3  0.527  0.2642 0.209</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; port 4  0.570  0.2135 0.217</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; port 5  0.613  0.1628 0.224</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; port 6  0.656  0.1121 0.232</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; port 7  0.699  0.0614 0.240</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; port 8  0.742  0.0107 0.248</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; port 9  0.785 -0.0400 0.256</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; port 10 0.827 -0.0907 0.263</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Here, portfolio 1 is the global minimum variance portfolio and portfolio 10 is the efficient portfolio with the same mean as Microsoft. Notice that portfolios 9 and 10 have negative weights in Nordstrom. Next, we compute the efficient frontier not allowing short sales for the same range of target returns:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>ef.ns <span class="ot">=</span> <span class="fu">efficient_frontier</span>(mu.vec, sigma.mat, <span class="at">alpha_min=</span><span class="dv">0</span>,                           </span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>                           <span class="at">alpha_max=</span><span class="dv">1</span>, <span class="at">nport=</span><span class="dv">10</span>, <span class="at">shorts=</span><span class="cn">FALSE</span>) </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>ef.ns<span class="sc">$</span>weight_mat</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          MSFT   NORD  SBUX</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; port 1  0.441 0.3656 0.193</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; port 2  0.484 0.3149 0.201</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; port 3  0.527 0.2642 0.209</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; port 4  0.570 0.2135 0.217</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; port 5  0.613 0.1628 0.224</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; port 6  0.656 0.1121 0.232</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; port 7  0.699 0.0614 0.240</span></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; port 8  0.742 0.0107 0.248</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; port 9  0.861 0.0000 0.139</span></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; port 10 1.000 0.0000 0.000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Portfolios 1 - 8 have all positive weights and are the same as portfolios 1 - 8 when short sales are allowed. However, for portfolios 9 and 10 the short sales constraint is binding. For portfolio 9, the weight in Nordstrom is forced to zero and the weight in Starbucks is reduced. For portfolio 10, the weights on Nordstrom and Starbucks are forced to zero. The two frontiers are illustrated in Figure <a href="#fig-NoShortsCompareFrontiers">Figure&nbsp;<span>12.8</span></a>. For portfolios 1-8, the two frontiers coincide. For portfolios 9 and 10, the no-shorts frontier lies inside and to the right of the short-sales frontier. The cost of the short sales constraint is the increase in the volatility of minimum variance portfolios for target returns near the expected return on Microsoft.</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-NoShortsCompareFrontiers" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="12-portfolioTheoryNoShortSales-new_files/figure-html/fig-NoShortsCompareFrontiers-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;12.8: Efficient frontier portfolios with and without short sales. The unconstrained efficient frontier portfolios are in blue, and the short sales constrained efficient portfolios are in red. The unconstrained portfolios labeled port 9 and port 10 have short sales in Nordstrom. The constrained portfolio labeled port 9 has zero weight in Nordstrom, and the constrained portfolio labeled port 10 has zero weights in Nordstrom and Starbucks.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+<section id="no-short-sales-tangency-portfolio" class="level3" data-number="12.4.3">
+<h3 data-number="12.4.3" class="anchored" data-anchor-id="no-short-sales-tangency-portfolio"><span class="header-section-number">12.4.3</span> No short sales tangency portfolio</h3>
+<p>Consider an investment universe with <span class="math inline">\(N\)</span> risky assets and a single risk-free asset. We assume that short sales constraints only apply to the <span class="math inline">\(N\)</span> risky assets, and that investors can borrow and lend at the risk-free rate <span class="math inline">\(r_{f}\)</span>. As shown in Chapter <a href="11-PortfolioTheoryMatrix-new.html"><span>Chapter&nbsp;11</span></a>, with short sales allowed, mean-variance efficient portfolios are combinations of the risk-free asset and the tangency portfolio. The tangency portfolio is the maximum Sharpe ratio portfolio of risky assets and is the solution to the maximization problem: <span class="math display">\[\begin{eqnarray*}
+\underset{\mathbf{t}}{\max}\,\frac{\mu_{t}-r_{f}}{\sigma_{t}} &amp; = &amp; \frac{\mathbf{t}^{\prime}\boldsymbol{\mu}-r_{f}}{(\mathbf{t}^{\prime}\boldsymbol{\Sigma}\mathbf{t})^{1/2}}\,s.t.\\
+\mathbf{t}^{\prime}\mathbf{1} &amp; = &amp; 1.
+\end{eqnarray*}\]</span></p>
+<div id="exm-compute-efficient-portfolios-allowing-short-sales-from-three-asset-example-data-when-there-is-a-risk-free-asset" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 12.5 (Compute efficient portfolios allowing short sales from three asset example data when there is a risk-free asset) </strong></span>Assuming a risk-free rate <span class="math inline">\(r_{f}=0.005\)</span>, we can compute the unconstrained tangency portfolio for the three asset example data using the <strong>IntroCompFinR</strong> function <code>tangency.portfolio()</code>:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>r.f <span class="ot">=</span> <span class="fl">0.005</span> </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>tan.port <span class="ot">=</span> <span class="fu">tangency_portfolio</span>(mu.vec, sigma.mat, r.f) </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(tan.port, r.f)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; get_portfolio(er_vec = er_vec, cov_mat = cov_mat, weight_vec = w_t)</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio expected return:     0.0519 </span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio standard deviation:  0.112 </span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio Sharpe Ratio:        0.42 </span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio weights:</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset_1 Asset_2 Asset_3 </span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   1.027  -0.326   0.299</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Here, the unconstrained tangency portfolio has a negative weight in Nordstrom so that the short sales constraint on the risky assets will be binding. The unconstrained set of efficient portfolios, that are combinations of the risk-free asset and the unconstrained tangency portfolio, is illustrated in Figure <a href="#fig-Noshorts-Tangency3">Figure&nbsp;<span>12.9</span></a>.</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-Noshorts-Tangency3" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="12-portfolioTheoryNoShortSales-new_files/figure-html/fig-Noshorts-Tangency3-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;12.9: Efficient portfolios of three risky assets and a risk-free asset allowing short sales. Nordstrom is sold short in the unconstrained tangency portfolio.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Here, we see that the unconstrained tangency portfolio is located on the frontier of risky asset portfolios above the point labeled “MSFT”. The green line represents portfolios of the risk-free asset and the unconstrained tangency portfolio. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<p>Under short sales constraints on the risky assets, the maximum Sharpe ratio portfolio solves: <span class="math display">\[\begin{eqnarray*}
+\max_{\mathbf{t}}\,\frac{\mu_{t}-r_{f}}{\sigma_{t}} &amp; = &amp; \frac{\mathbf{t}^{\prime}\boldsymbol{\mu}-r_{f}}{(\mathbf{t}^{\prime}\boldsymbol{\Sigma}\mathbf{t})^{1/2}}\,s.t.\\
+\mathbf{t}^{\prime}\mathbf{1} &amp; = &amp; 1,\\
+t_{i} &amp; \geq &amp; 0,\,i=1,\ldots,N.
+\end{eqnarray*}\]</span> This optimization problem <em>cannot</em> be written as a QP optimization as expressed in <a href="#eq-NoShortsQPobjective">Equation&nbsp;<span>12.4</span></a> - <a href="#eq-NoShortsQPinequality">Equation&nbsp;<span>12.6</span></a>. Hence, it looks like we cannot use the function <code>solve.QP()</code> to find the short sales constrained tangency portfolio. However, it turns out we can use <code>solve.QP()</code> to find the short sales constrained tangency portfolio. To do this we utilize the alternative derivation of the tangency portfolio presented in Chapter <a href="11-PortfolioTheoryMatrix-new.html"><span>Chapter&nbsp;11</span></a>. The alternative way to compute the tangency portfolio is to first find a minimum variance portfolio of risky assets and a risk-free asset whose excess expected return, <span class="math inline">\(\tilde{\mu}_{p,x}=\boldsymbol{\mu}^{\prime}\mathbf{x}-r_{f}\mathbf{1}\)</span>, achieves a target excess return <span class="math inline">\(\tilde{\mu}_{p,0}=\mu_{p,0}-r_{f}&gt;0\)</span>. This portfolio solves the minimization problem: <span class="math display">\[
+\min_{\mathbf{x}}~\sigma_{p,x}^{2}=\mathbf{x}^{\prime}\boldsymbol{\Sigma} \mathbf{x}\textrm{ s.t. }\tilde{\mu}_{p,x}=\tilde{\mu}_{p,0},
+\]</span> where the weight vector <span class="math inline">\(\mathbf{x}\)</span> is not constrained to satisfy <span class="math inline">\(\mathbf{x}^{\prime}\mathbf{1}=\mathbf{1}\)</span>. The tangency portfolio is then determined by normalizing the weight vector <span class="math inline">\(\mathbf{x}\)</span> so that its elements sum to one:<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> <span class="math display">\[
+\mathbf{t}=\frac{\mathbf{x}}{\mathbf{x}^{\prime}\mathbf{1}}=\frac{\boldsymbol{\Sigma}^{-1}(\boldsymbol{\mu}-r_{f}\cdot\mathbf{1})}{\mathbf{1}^{\prime}\boldsymbol{\Sigma}^{-1}(\boldsymbol{\mu}-r_{f}\cdot\mathbf{1})}.
+\]</span> An interesting feature of this result is that it does not depend on the value of the target excess return value <span class="math inline">\(\tilde{\mu}_{p,0}=\mu_{p,0}-r_{f}&gt;0\)</span>. That is, every value of <span class="math inline">\(\tilde{\mu}_{p,0}=\mu_{p,0}-r_{f}&gt;0\)</span> gives the same value for the tangency portfolio.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> We can utilize this alternative derivation of the tangency portfolio to find the tangency portfolio subject to short-sales restrictions on risky assets. First we solve the short-sales constrained minimization problem: <span id="eq-NoshortsTan1"><span class="math display">\[
+\min_{\mathbf{x}}~\sigma_{p,x}^{2} = \mathbf{x}^{\prime}\boldsymbol{\Sigma} \mathbf{x}\textrm{ s.t. }
+\tag{12.7}\]</span></span> <span id="eq-NoShortsTan2"><span class="math display">\[
+\tilde{\mu}_{p,x} = \tilde{\mu}_{p,0},
+\tag{12.8}\]</span></span> <span id="eq-NoShortsTan3"><span class="math display">\[
+x_{i}  \geq  0,\,i=1,\ldots,N.
+\tag{12.9}\]</span></span> Here we can use any value for <span class="math inline">\(\tilde{\mu}_{p,0}\)</span> so for convenience we use <span class="math inline">\(\tilde{\mu}_{p,0}=1\)</span>. This is a QP problem with <span class="math inline">\(\mathbf{D}=2\times\boldsymbol{\Sigma}\)</span> and <span class="math inline">\(\mathbf{d}=(0,\ldots,0)^{\prime}\)</span>, one linear equality constraint, <span class="math inline">\(\tilde{\mu}_{p,x}=\tilde{\mu}_{p,0},\)</span> and <span class="math inline">\(N\)</span> inequality constraints <span class="math inline">\(\mathbf{x}\geq\mathbf{0}\)</span>. The restriction matrices and vectors are: <span class="math display">\[\begin{align*}
+\underset{(1\times N)}{\mathbf{A}_{eq}^{\prime}} &amp; =(\boldsymbol{\mu}-r_{f}\mathbf{1})^{\prime},\,\underset{(1\times1)}{\mathbf{b}_{eq}}=1,\text{ }\\
+\underset{(N\times N)}{\mathbf{A}_{neq}^{\prime}} &amp; =\mathbf{I}_{N},\,\underset{(N\times1)}{\mathbf{b}_{neq}}=(0,\ldots,0)^{\prime}.
+\end{align*}\]</span> so that <span class="math display">\[
+\mathbf{A}^{\prime}=\left(\begin{array}{c}
+(\boldsymbol{\mu}-r_{f}\mathbf{1})^{\prime}\\
+\mathbf{I}_{N}
+\end{array}\right),\text{ }\mathbf{b}=\left(\begin{array}{c}
+1\\
+\mathbf{0}
+\end{array}\right).
+\]</span> Here, <span class="math display">\[\begin{eqnarray*}
+\mathbf{A}_{eq}^{\prime}\mathbf{x} &amp; = &amp; (\boldsymbol{\mu}-r_{f}\mathbf{1})^{\prime}\mathbf{x=\tilde{\mu}_{p,x}}=1,\\
+\mathbf{A}_{neq}^{\prime}\mathbf{x} &amp; = &amp; \mathbf{I}_{N}\mathbf{x}=\mathbf{x}\geq0.
+\end{eqnarray*}\]</span> After solving the QP problem for <span class="math inline">\(\mathbf{x}\)</span>, we then determine the short-sales constrained tangency portfolio by normalizing the weight vector <span class="math inline">\(\mathbf{x}\)</span> so that its elements sum to one: <span class="math display">\[
+\mathbf{t}=\frac{\mathbf{x}}{\mathbf{x}^{\prime}\mathbf{1}}.
+\]</span></p>
+<div id="exm-compute-efficient-portfolios-not-allowing-short-sales-from-three-asset-example-data-when-there-is-a-risk-free-asset" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 12.6 (Compute efficient portfolios not allowing short sales from three asset example data when there is a risk-free asset) </strong></span>First, we use <code>solve.QP()</code> to find the short sales restricted tangency portfolio. The restriction matrices for the short sales constrained optimization <a href="#eq-NoshortsTan1">Equation&nbsp;<span>12.7</span></a> - <a href="#eq-NoShortsTan3">Equation&nbsp;<span>12.9</span></a> are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>D.mat <span class="ot">=</span> <span class="dv">2</span><span class="sc">*</span>sigma.mat </span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>d.vec <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">3</span>) </span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>A.mat <span class="ot">=</span> <span class="fu">cbind</span>(mu.vec <span class="sc">-</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">3</span>)<span class="sc">*</span>r.f, <span class="fu">diag</span>(<span class="dv">3</span>)) </span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>b.vec <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fu">rep</span>(<span class="dv">0</span>,<span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The un-normalized portfolio <span class="math inline">\(\mathbf{x}\)</span> is found using:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>qp.out <span class="ot">=</span> <span class="fu">solve.QP</span>(<span class="at">Dmat=</span>D.mat, <span class="at">dvec=</span>d.vec,                   </span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">Amat=</span>A.mat, <span class="at">bvec=</span>b.vec, <span class="at">meq=</span><span class="dv">1</span>) </span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>x.ns <span class="ot">=</span> qp.out<span class="sc">$</span>solution </span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(x.ns) <span class="ot">=</span> <span class="fu">names</span>(mu.vec) </span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(x.ns, <span class="at">digits=</span><span class="dv">3</span>)</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  MSFT  NORD  SBUX </span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 22.74  0.00  6.08</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The short sales constrained tangency portfolio is then:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>t.ns <span class="ot">=</span> x.ns<span class="sc">/</span><span class="fu">sum</span>(x.ns) </span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(t.ns, <span class="at">digits=</span><span class="dv">3</span>)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  MSFT  NORD  SBUX </span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.789 0.000 0.211</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>In this portfolio, the allocation to Nordstrom, which was negative in the unconstrained tangency portfolio, is set to zero.</p>
+<p>To verify that the derivation of the short sales constrained tangency portfolio does not depend on <span class="math inline">\(\tilde{\mu}_{p,0}=\mu_{p,0}-r_{f}&gt;0\)</span>, we repeat the calculations with <span class="math inline">\(\tilde{\mu}_{p,0}=0.5\)</span> instead of <span class="math inline">\(\tilde{\mu}_{p,0}=1\)</span>:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>b.vec <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fu">rep</span>(<span class="dv">0</span>,<span class="dv">3</span>)) </span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>qp.out <span class="ot">=</span> <span class="fu">solve.QP</span>(<span class="at">Dmat=</span>D.mat, <span class="at">dvec=</span>d.vec,                   </span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">Amat=</span>A.mat, <span class="at">bvec=</span>b.vec, <span class="at">meq=</span><span class="dv">1</span>) </span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>x.ns <span class="ot">=</span> qp.out<span class="sc">$</span>solution </span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(x.ns) <span class="ot">=</span> <span class="fu">names</span>(mu.vec) </span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>t.ns <span class="ot">=</span> x.ns<span class="sc">/</span><span class="fu">sum</span>(x.ns) </span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(t.ns, <span class="at">digits=</span><span class="dv">3</span>)</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  MSFT  NORD  SBUX </span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.789 0.000 0.211</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>You can compute the short sales restricted tangency portfolio using the <strong>introcompfinr</strong> function <code>tangency_portfolio()</code> with the optional argument <code>shorts=FALSE</code>:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>tan.port.ns <span class="ot">=</span> <span class="fu">tangency_portfolio</span>(mu.vec, sigma.mat, r.f, <span class="at">shorts=</span><span class="cn">FALSE</span>) </span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(tan.port.ns, r.f)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; get_portfolio(er_vec = er_vec, cov_mat = cov_mat, weight_vec = w_t)</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio expected return:     0.0397 </span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio standard deviation:  0.0865 </span></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio Sharpe Ratio:        0.401 </span></span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio weights:</span></span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset_1 Asset_2 Asset_3 </span></span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   0.789   0.000   0.211</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Notice that the Sharpe ratio on the short sales restricted tangency portfolio is slightly smaller than the Sharpe ratio on the unrestricted tangency portfolio.</p>
+<p>The set of efficient portfolios are combinations of the risk-free asset and the short sales restricted tangency portfolio. These portfolios are illustrated in Figure <a href="#fig-NoShorts-Tangency4">Figure&nbsp;<span>12.10</span></a>, created using:</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>ef.ns <span class="ot">=</span> <span class="fu">efficient_frontier</span>(mu.vec, sigma.mat, <span class="at">alpha_min=</span><span class="dv">0</span>,</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">alpha_max=</span><span class="dv">1</span>, <span class="at">nport=</span><span class="dv">10</span>, <span class="at">shorts=</span><span class="cn">FALSE</span>) </span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ef.ns, <span class="at">plot.assets=</span><span class="cn">TRUE</span>, <span class="at">pch=</span><span class="dv">16</span>) </span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(tan.port.ns<span class="sc">$</span>sd_port, tan.port.ns<span class="sc">$</span>er_port, <span class="at">col=</span><span class="st">"red"</span>, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">cex=</span><span class="dv">2</span>) </span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>sr.tan.ns <span class="ot">=</span> (tan.port.ns<span class="sc">$</span>er_port <span class="sc">-</span> r.f)<span class="sc">/</span>tan.port.ns<span class="sc">$</span>sd_port </span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">a=</span>r.f, <span class="at">b=</span>sr.tan.ns, <span class="at">col=</span><span class="st">"green"</span>, <span class="at">lwd=</span><span class="dv">2</span>) </span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(tan.port<span class="sc">$</span>sd_port, tan.port<span class="sc">$</span>er_port, <span class="at">labels=</span><span class="st">"Tangency"</span>, <span class="at">pos =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-NoShorts-Tangency4" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="12-portfolioTheoryNoShortSales-new_files/figure-html/fig-NoShorts-Tangency4-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;12.10: Efficient frontier portfolios of three risky assets and a risk-free asset not allowing short sales</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+</section>
+<section id="sec-Application-to-Vanguard-Mutual-Funds" class="level2" data-number="12.5">
+<h2 data-number="12.5" class="anchored" data-anchor-id="sec-Application-to-Vanguard-Mutual-Funds"><span class="header-section-number">12.5</span> Application to Vanguard Mutual Funds</h2>
+<p>In this section, we revisit the application of mean-variance portfolio theory to the problem of asset allocation among six Vanguard mutual funds that was discussed at the end of Chapter <a href="11-PortfolioTheoryMatrix-new.html"><span>Chapter&nbsp;11</span></a>. For the sub-sample January, 2010 through December, 2014 it was shown that estimated mean-variance efficient portfolios had short sales in many of the Vanguard funds. Since it is not possible to short mutual funds, we re-estimate the efficient portfolios with the additional constraints that all portfolio weights must be positive. The monthly returns and annualized GWN model estimates for the Vanguard funds are created using:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>VanguardPrices <span class="ot">=</span> <span class="fu">as.xts</span>(VanguardPrices) </span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>VanguardRetS <span class="ot">=</span> <span class="fu">na.omit</span>(<span class="fu">Return.calculate</span>(VanguardPrices, <span class="at">method=</span><span class="st">"simple"</span>)) </span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>smpl <span class="ot">=</span> <span class="st">"2010-1::2014-12"</span> </span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>r.f <span class="ot">=</span> <span class="fl">0.001</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>muhat <span class="ot">=</span> <span class="dv">12</span><span class="sc">*</span><span class="fu">colMeans</span>(VanguardRetS[smpl]) </span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>covhat <span class="ot">=</span> <span class="dv">12</span><span class="sc">*</span><span class="fu">cov</span>(VanguardRetS[smpl])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>We use the <strong>introcompfinr</strong> portfolio functions to compute unrestricted and short-sales restricted estimates of the global minimum variance portfolio, the tangency portfolio, and the efficient frontier of risky assets:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># unrestricted (short sales allowed) portfolios</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>gmin.port <span class="ot">=</span> <span class="fu">globalmin_portfolio</span>(muhat, covhat) </span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>tan.port <span class="ot">=</span> <span class="fu">tangency_portfolio</span>(muhat, covhat, r.f) </span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>ef <span class="ot">=</span> <span class="fu">efficient_frontier</span>(muhat, covhat, <span class="at">alpha_min=</span><span class="dv">0</span>,                                                   </span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">alpha_max=</span><span class="fl">1.5</span>, <span class="at">nport=</span><span class="dv">20</span>)</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="co"># short sales restricted portfolios</span></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>gmin.port.ns <span class="ot">=</span> <span class="fu">globalmin_portfolio</span>(muhat, covhat, <span class="at">shorts=</span><span class="cn">FALSE</span>) </span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>tan.port.ns <span class="ot">=</span> <span class="fu">tangency_portfolio</span>(muhat, covhat, r.f, <span class="at">shorts=</span><span class="cn">FALSE</span>) </span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>ef.ns <span class="ot">=</span> <span class="fu">efficient_frontier</span>(muhat, covhat, <span class="at">alpha_min=</span><span class="dv">0</span>,                                                   </span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>                           <span class="at">alpha_max=</span><span class="dv">1</span>, <span class="at">nport=</span><span class="dv">20</span>, <span class="at">shorts=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The global minimum variance portfolios are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># short sales allowed</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>gmin.port</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; get_portfolio(er_vec = er_vec, cov_mat = cov_mat, weight_vec = w_gmin)</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio expected return:     0.0197 </span></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio standard deviation:  0.0114 </span></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio weights:</span></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   vfinx   veurx   veiex   vbltx   vbisx   vpacx </span></span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  0.0581 -0.0347 -0.0214 -0.0736  1.0647  0.0069</span></span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a><span class="co"># short sales restricted</span></span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>gmin.port.ns</span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; get_portfolio(er_vec = er_vec, cov_mat = cov_mat, weight_vec = w_gmin)</span></span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio expected return:     0.0218 </span></span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio standard deviation:  0.0135 </span></span>
+<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio weights:</span></span>
+<span id="cb41-19"><a href="#cb41-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  vfinx  veurx  veiex  vbltx  vbisx  vpacx </span></span>
+<span id="cb41-20"><a href="#cb41-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.0171 0.0000 0.0000 0.0000 0.9829 0.0000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>In the short sales restricted global minimum variance portfolio there is 98% weight on vbisx (low volatility US short-term bond fund) and 2% weight on vfinx (S&amp;P 500 fund). The weights on other funds are pushed to zero. The volatility of the short sales restricted portfolio is slightly higher than the volatility of the unrestricted portfolio and so the cost of the short sales restrictions is small.</p>
+<p>The estimated tangency portfolios are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># short sales allowed</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(tan.port, r.f)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; get_portfolio(er_vec = er_vec, cov_mat = cov_mat, weight_vec = w_t)</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio expected return:     0.0642 </span></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio standard deviation:  0.0209 </span></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio Sharpe Ratio:        3.02 </span></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio weights:</span></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset_1 Asset_2 Asset_3 Asset_4 Asset_5 Asset_6 </span></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  0.3152 -0.0907 -0.0874  0.1159  0.7387  0.0083</span></span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a><span class="co"># short sales restricted</span></span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(tan.port.ns, r.f)</span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; get_portfolio(er_vec = er_vec, cov_mat = cov_mat, weight_vec = w_t)</span></span>
+<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio expected return:     0.0637 </span></span>
+<span id="cb42-18"><a href="#cb42-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio standard deviation:  0.0287 </span></span>
+<span id="cb42-19"><a href="#cb42-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio Sharpe Ratio:        2.18 </span></span>
+<span id="cb42-20"><a href="#cb42-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Portfolio weights:</span></span>
+<span id="cb42-21"><a href="#cb42-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset_1 Asset_2 Asset_3 Asset_4 Asset_5 Asset_6 </span></span>
+<span id="cb42-22"><a href="#cb42-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   0.192   0.000   0.000   0.245   0.563   0.000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The short sales restricted tangency portfolio has positive weights on vfinx, vbltx, and vbisx and zero weights for the remaining assets. The Sharpe ratio of the short sales restricted tangency portfolio, however, is substantially smaller than the Sharpe ratio of the unrestricted portfolio.</p>
+<p>Figure <a href="#fig-NoShortsVanguardEfficientPortfolios">Figure&nbsp;<span>12.11</span></a> shows the short sales restricted and unrestricted efficient portfolio frontiers, created using:</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># unrestricted efficient frontiers </span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ef, <span class="at">plot.assets=</span><span class="cn">TRUE</span>, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">pch=</span><span class="dv">16</span>) </span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(tan.port<span class="sc">$</span>sd_port, tan.port<span class="sc">$</span>er_port,<span class="at">labels =</span> <span class="st">"tan"</span>, <span class="at">pos =</span> <span class="dv">2</span>) </span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>sr.tan <span class="ot">=</span> (tan.port<span class="sc">$</span>er_port <span class="sc">-</span> r.f)<span class="sc">/</span>tan.port<span class="sc">$</span>sd_port </span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="dv">0</span>, r.f, <span class="at">labels=</span><span class="fu">expression</span>(r[f]), <span class="at">pos =</span> <span class="dv">4</span>) </span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">a=</span>r.f, <span class="at">b=</span>sr.tan, <span class="at">col=</span><span class="st">"green"</span>, <span class="at">lwd=</span><span class="dv">2</span>) </span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">0</span>, <span class="at">v=</span><span class="dv">0</span>) </span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a><span class="co"># short sales restricted frontiers </span></span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>sr.tan.ns <span class="ot">=</span> (tan.port.ns<span class="sc">$</span>er_port <span class="sc">-</span> r.f)<span class="sc">/</span>tan.port.ns<span class="sc">$</span>sd_port</span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(ef.ns<span class="sc">$</span>sd_vec, ef.ns<span class="sc">$</span>er_vec, <span class="at">type=</span><span class="st">"b"</span>, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="st">"red"</span>) </span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">a=</span>r.f, <span class="at">b=</span>sr.tan.ns, <span class="at">col=</span><span class="st">"green"</span>, <span class="at">lwd=</span><span class="dv">2</span>) </span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(tan.port.ns<span class="sc">$</span>sd_port, tan.port.ns<span class="sc">$</span>er_port,<span class="at">labels =</span> <span class="st">"tan (no shorts)"</span>, <span class="at">pos =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-NoShortsVanguardEfficientPortfolios" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="12-portfolioTheoryNoShortSales-new_files/figure-html/fig-NoShortsVanguardEfficientPortfolios-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;12.11: Unrestricted and short sales restricted efficient portfolio frontiers.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The short sales restricted risky asset only frontier, shown in red, lies underneath and to the right of the unrestricted risky asset frontier, shown in blue. The short sales restricted tangency portfolio has a similar expected return as the unrestricted tangency portfolio but has a higher volatility and a lower Sharpe ratio.</p>
+</section>
+<section id="further-reading-portfolio-theory-with-short-sales-constraints" class="level2" data-number="12.6">
+<h2 data-number="12.6" class="anchored" data-anchor-id="further-reading-portfolio-theory-with-short-sales-constraints"><span class="header-section-number">12.6</span> Further Reading: Portfolio Theory with Short Sales Constraints</h2>
+<ul>
+<li>Mention other quadratic programming packages: ROI etc. See Doug’s book</li>
+<li>Mention Pfaff’s R book <span class="citation" data-cites="pfaff-2013">(<a href="references.html#ref-pfaff-2013" role="doc-biblioref">Pfaff 2013</a>)</span> ??</li>
+<li>Mention Grilli’s book etc.</li>
+</ul>
+<p>To be completed…</p>
+</section>
+<section id="exercises" class="level2" data-number="12.7">
+<h2 data-number="12.7" class="anchored" data-anchor-id="exercises"><span class="header-section-number">12.7</span> Exercises</h2>
+<p>To be completed</p>
+<p>{MartinSchererYollin} Martin, R.D., Scherer, B., and Yollin, G. (2016).</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-pfaff-2013" class="csl-entry" role="listitem">
+Pfaff, B. 2013. <em>Financial Risk Modelling and Portfolio Optimization with r</em>. Chichester, UK.: Wiley.
+</div>
+</div>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>By the Cauchy-Schwarz inequality the denominator for <span class="math inline">\(m_{A}\)</span> in <a href="#eq-NoShortsMinVarPort">Equation&nbsp;<span>12.1</span></a> is always positive. <a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Also notice that when <span class="math inline">\(\rho_{AB}=0.7\)</span> the expected return on the global minimum variance drops (frontier of risky assets is shifted down) below <span class="math inline">\(0.03\)</span> so we need to reduce <span class="math inline">\(r_{f}\)</span> to <span class="math inline">\(0.01\)</span> to ensure that the tangency portfolio has a positive slope. <a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>See the CRAN Optimization Task View for additional R packages that can be used to solve QP problems.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>This normalization ensures that the tangency portfolio is 100% invested in the risky assets.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>If <span class="math inline">\(\tilde{\mu}_{p,0}=0\)</span> then the portfolio of risky assets and the risk-free asset has expected return equal to <span class="math inline">\(r_{f}\)</span>. In this case, <span class="math inline">\(\mathbf{x}=\mathbf{0}\)</span> and <span class="math inline">\(x_{f}=1\)</span>. <a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./11-PortfolioTheoryMatrix-new.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Portfolio Theory with Matrix Algebra</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./13-riskBudgeting-new.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Portfolio Risk Budgeting</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

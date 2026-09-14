@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Introduction to Computational Finance and Financial Econometrics with R - 6&nbsp; The Gaussian White Noise Return Model</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./07-GWNModelEstimation-new.html" rel="next">
+<link href="./05-descriptiveStatistics-new.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06-GWNModel-new.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">The Gaussian White Noise Return Model</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Introduction to Computational Finance and Financial Econometrics with R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-ReturnCalculations-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Return Calculations</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-probReview-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Review of Random Variables</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-matrixReview-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Algebra Review</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-timeSeriesConcepts-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Time Series Concepts</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-descriptiveStatistics-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Descriptive Statistics for Financial Data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-GWNModel-new.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">The Gaussian White Noise Return Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-GWNModelEstimation-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Estimation of The GWN Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-bootstrap-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Estimating Functions of GWN Model Parameters</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-hypothesisTestingGWNModel-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Hypothesis Testing in the GWN Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-introductionPortfolioTheory-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introduction to Portfolio Theory</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-PortfolioTheoryMatrix-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Portfolio Theory with Matrix Algebra</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-portfolioTheoryNoShortSales-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Portfolio Theory with Short Sales Constraints</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-riskBudgeting-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Portfolio Risk Budgeting</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-GWN-Model-Assumptions" id="toc-sec-GWN-Model-Assumptions" class="nav-link active" data-scroll-target="#sec-GWN-Model-Assumptions"><span class="header-section-number">6.1</span> GWN Model Assumptions</a>
+  <ul class="collapse">
+  <li><a href="#regression-model-representation" id="toc-regression-model-representation" class="nav-link" data-scroll-target="#regression-model-representation"><span class="header-section-number">6.1.1</span> Regression model representation</a></li>
+  <li><a href="#location-scale-model-representation" id="toc-location-scale-model-representation" class="nav-link" data-scroll-target="#location-scale-model-representation"><span class="header-section-number">6.1.2</span> Location-Scale model representation</a></li>
+  <li><a href="#the-gwn-model-in-matrix-notation" id="toc-the-gwn-model-in-matrix-notation" class="nav-link" data-scroll-target="#the-gwn-model-in-matrix-notation"><span class="header-section-number">6.1.3</span> The GWN model in matrix notation</a></li>
+  <li><a href="#the-gwn-model-for-continuously-compounded-returns" id="toc-the-gwn-model-for-continuously-compounded-returns" class="nav-link" data-scroll-target="#the-gwn-model-for-continuously-compounded-returns"><span class="header-section-number">6.1.4</span> The GWN model for continuously compounded returns</a></li>
+  <li><a href="#gwn-model-for-simple-returns" id="toc-gwn-model-for-simple-returns" class="nav-link" data-scroll-target="#gwn-model-for-simple-returns"><span class="header-section-number">6.1.5</span> GWN model for simple returns</a></li>
+  </ul></li>
+  <li><a href="#sec-GWN-Monte-Carlo-Simulation" id="toc-sec-GWN-Monte-Carlo-Simulation" class="nav-link" data-scroll-target="#sec-GWN-Monte-Carlo-Simulation"><span class="header-section-number">6.2</span> Monte Carlo Simulation of the GWN Model</a>
+  <ul class="collapse">
+  <li><a href="#simulating-returns-on-more-than-one-asset" id="toc-simulating-returns-on-more-than-one-asset" class="nav-link" data-scroll-target="#simulating-returns-on-more-than-one-asset"><span class="header-section-number">6.2.1</span> Simulating returns on more than one asset</a></li>
+  </ul></li>
+  <li><a href="#scenario-analysis" id="toc-scenario-analysis" class="nav-link" data-scroll-target="#scenario-analysis"><span class="header-section-number">6.3</span> Scenario Analysis</a></li>
+  <li><a href="#further-reading-the-gwn-return-model" id="toc-further-reading-the-gwn-return-model" class="nav-link" data-scroll-target="#further-reading-the-gwn-return-model"><span class="header-section-number">6.4</span> Further Reading: The GWN Return Model</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">6.5</span> Exercises</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-The-Gaussian-White-Noise-Model" class="quarto-section-identifier"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">The Gaussian White Noise Return Model</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Updated: September 4, 2026</p>
+<p>Copyright © Eric Zivot 2026</p>
+<p>The first model of asset returns I consider is the very simple <em>Gaussian White Noise</em> (GWN) model . This model is motivated by the stylized facts for monthly asset returns discussed in the previous chapter. The GWN model assumes that an asset’s return (simple or continuously compounded) over time is independent and identically normally distributed. The model allows for the returns on different assets to be contemporaneously correlated but does not allow for any lead-lag cross correlations. The GWN model is widely used in finance. For example, it is used in risk analysis (e.g., for computing Value-at-Risk) for assets and portfolios, in mean-variance portfolio analysis, in the <em>Capital Asset Pricing Model</em> (CAPM), and in the <em>Black-Scholes</em> option pricing model. Although this model is very simple, it provides important intuition about the statistical behavior of asset returns and prices and serves as a benchmark against which more sophisticated models can be compared and evaluated. It allows me to discuss and develop several important econometric topics such as Monte Carlo simulation, estimation, bootstrapping, hypothesis testing, forecasting, and model evaluation that are discussed in later chapters.</p>
+<p>The outline of this chapter is as follows. In <a href="#sec-GWN-Model-Assumptions"><span>Section&nbsp;6.1</span></a> I review the assumptions of the GWN model and presents several equivalent specifications of the model. I also discuss the application of the model to continuously compounded returns, simple returns, and portfolios. In <a href="#sec-GWN-Monte-Carlo-Simulation"><span>Section&nbsp;6.2</span></a> I illustrate Monte Carlo simulation of the GWN model as a first-step reality check of the model.</p>
+<p>The R packages I use in this chapter are <strong>introcompfinr</strong>, <strong>mvtnorm</strong>, and <strong>PerformanceAnalytics</strong>. Make sure these packages are installed and loaded before running the R examples in the chapter.</p>
+<section id="sec-GWN-Model-Assumptions" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="sec-GWN-Model-Assumptions"><span class="header-section-number">6.1</span> GWN Model Assumptions</h2>
+<p>Let <span class="math inline">\(R_{it}\)</span> denote the simple or continuously compounded (cc) return on asset <span class="math inline">\(i\)</span> over the investment horizon between times <span class="math inline">\(t-1\)</span> and <span class="math inline">\(t\)</span> (e.g., monthly returns). I make the following assumptions regarding the probability distribution of <span class="math inline">\(R_{it}\)</span> for <span class="math inline">\(i=1,\ldots,N\)</span> assets for all times <span class="math inline">\(t\)</span>.</p>
+<p><strong>Assumption GWN</strong></p>
+<ol type="1">
+<li><em>Covariance stationarity and ergodicity</em>: <span class="math inline">\(\{R_{i1},\ldots,R_{iT}\}=\{R_{it}\}_{t=1}^{T}\)</span> is a covariance stationary and ergodic stochastic process with <span class="math inline">\(E[R_{it}]=\mu_{i},\)</span> <span class="math inline">\(\mathrm{var}(R_{it})=\sigma_{i}^{2}\)</span>, <span class="math inline">\(\mathrm{cov}(R_{it},R_{jt})=\sigma_{ij}\)</span> and <span class="math inline">\(\mathrm{cor}(R_{it},R_{jt})=\rho_{ij}\)</span>.</li>
+<li><em>Normality</em>: <span class="math inline">\(R_{it}\sim N(\mu_{i},\sigma_{i}^{2})\)</span> for all <span class="math inline">\(i\)</span> and <span class="math inline">\(t\)</span>, and all joint distributions are normal.<br>
+</li>
+<li><em>No serial correlation</em>: <span class="math inline">\(\mathrm{cov}(R_{it},R_{js})=\mathrm{cor}(R_{it},R_{is})=0\)</span> for <span class="math inline">\(t\neq s\)</span> and <span class="math inline">\(i,j=1,\ldots,N\)</span>.</li>
+</ol>
+<p>Assumption GWN states that in every time period asset returns are jointly (multivariate) normally distributed, that the means and the variances of all asset returns, and all of the pairwise contemporaneous covariances and correlations between assets are constant over time. In addition, all of the asset returns are <em>serially uncorrelated</em>: <span class="math display">\[
+\mathrm{cor}(R_{it},R_{is})=\mathrm{cov}(R_{it},R_{is})=0\textrm{ for all }i\textrm{ and }t\neq s,
+\]</span> and the returns on all possible pairs of assets <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> are <em>cross lead-lag uncorrelated</em>: <span class="math display">\[
+\mathrm{cor}(R_{it},R_{js})=\mathrm{cov}(R_{it},R_{js})=0\textrm{ for all }i\neq j\textrm{ and }t\neq s.
+\]</span> In addition, under the normal distribution assumption lack of serial and cross lead-lag correlation implies time independence of returns. Clearly, these are very strong assumptions. However, they allow us to develop a straightforward probabilistic model for asset returns as well as statistical tools for estimating the parameters of the model, testing hypotheses about the parameter values and assumptions.</p>
+<section id="regression-model-representation" class="level3" data-number="6.1.1">
+<h3 data-number="6.1.1" class="anchored" data-anchor-id="regression-model-representation"><span class="header-section-number">6.1.1</span> Regression model representation</h3>
+<p>A convenient mathematical representation or <em>model</em> of asset returns can be given based on Assumption GWN. This is the <em>GWN regression model</em>.</p>
+<div id="def-gwn-regression-model" class="definition theorem definition">
+<p><span class="theorem-title"><strong>Definition 6.1 (GWN Regression Model) </strong></span>For assets <span class="math inline">\(i=1,\ldots,N\)</span> and time periods <span class="math inline">\(t=1,\ldots,T\)</span>, the GWN regression model is: <span id="eq-GWN-model"><span class="math display">\[
+\begin{aligned}
+R_{it} &amp; =\mu_{i}+\varepsilon_{it},\\
+\{\varepsilon_{it}\}_{t=1}^{T} &amp; \sim\mathrm{GWN}(0,\sigma_{i}^{2}), \\
+\mathrm{cov}(\varepsilon_{it},\varepsilon_{js}) &amp; =\left\{ \begin{array}{c}
+\sigma_{ij}\\
+0
+\end{array}\right.\begin{array}{c}
+~ t=s\\
+t\neq s
+\end{array}.
+\end{aligned}
+\tag{6.1}\]</span></span></p>
+</div>
+<p>The notation <span class="math inline">\(\varepsilon_{it}\sim\mathrm{GWN}(0,\sigma_{i}^{2})\)</span> stipulates that the stochastic process <span class="math inline">\(\{\varepsilon_{it}\}_{t=1}^{T}\)</span> is a GWN process with <span class="math inline">\(E[\varepsilon_{it}]=0\)</span> and <span class="math inline">\(\mathrm{var}(\varepsilon_{it})=\sigma_{i}^{2}\)</span>. In addition, the random error term <span class="math inline">\(\varepsilon_{it}\)</span> is independent of <span class="math inline">\(\varepsilon_{js}\)</span> for all assets <span class="math inline">\(i\neq j\)</span> and all time periods <span class="math inline">\(t\neq s\)</span>.</p>
+<p>Using the basic properties of expectation, variance and covariance, you can derive the following properties of returns in the GWN model: <span class="math display">\[\begin{align*}
+E[R_{it}] &amp; =E[\mu_{i}+\varepsilon_{it}]=\mu_{i}+E[\varepsilon_{it}]=\mu_{i},\\
+\mathrm{var}(R_{it}) &amp; =\mathrm{var}(\mu_{i}+\varepsilon_{it})=\mathrm{var}(\varepsilon_{it})=\sigma_{i}^{2},\\
+\mathrm{cov}(R_{it},R_{jt}) &amp; =\mathrm{cov}(\mu_{i}+\varepsilon_{it},\mu_{j}+\varepsilon_{jt})=\mathrm{cov}(\varepsilon_{it},\varepsilon_{jt})=\sigma_{ij},\\
+\mathrm{cov}(R_{it},R_{js}) &amp; =\mathrm{cov}(\mu_{i}+\varepsilon_{it},\mu_{j}+\varepsilon_{js})=\mathrm{cov}(\varepsilon_{it},\varepsilon_{js})=0,~t\neq s.
+\end{align*}\]</span> Given that covariances and variances of returns are constant over time implies that the correlations between returns over time are also constant: <span class="math display">\[\begin{align*}
+\mathrm{cor}(R_{it},R_{jt}) &amp; =\frac{\mathrm{cov}(R_{it},R_{jt})}{\sqrt{\mathrm{var}(R_{it})\mathrm{var}(R_{jt})}}=\frac{\sigma_{ij}}{\sigma_{i}\sigma_{j}}=\rho_{ij},\\
+\mathrm{cor}(R_{it},R_{js}) &amp; =\frac{\mathrm{cov}(R_{it},R_{js})}{\sqrt{\mathrm{var}(R_{it})\mathrm{var}(R_{js})}}=\frac{0}{\sigma_{i}\sigma_{j}}=0,~i\neq j,t\neq s.
+\end{align*}\]</span> Finally, since <span class="math inline">\(\{\varepsilon_{it}\}_{t=1}^{T}\sim\mathrm{GWN}(0,\sigma_{i}^{2})\)</span> it follows that <span class="math inline">\(\{R_{it}\}_{t=1}^{T}\sim iid~N(\mu_{i},\sigma_{i}^{2})\)</span>. Hence, the GWN regression model <a href="#eq-GWN-model">Equation&nbsp;<span>6.1</span></a> for <span class="math inline">\(R_{it}\)</span> is equivalent to the model implied by Assumption GWN.</p>
+<section id="interpretation-of-the-gwn-regression-model" class="level4" data-number="6.1.1.1">
+<h4 data-number="6.1.1.1" class="anchored" data-anchor-id="interpretation-of-the-gwn-regression-model"><span class="header-section-number">6.1.1.1</span> Interpretation of the GWN regression model</h4>
+<p>The GWN model has a very simple form and is identical to the <em>measurement error model</em> in the statistics literature.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> In words, the model states that each asset return is equal to a constant <span class="math inline">\(\mu_{i}\)</span> (the expected return) plus an <em>i.i.d.</em> normally distributed random variable <span class="math inline">\(\varepsilon_{it}\)</span> with mean zero and constant variance. The random variable <span class="math inline">\(\varepsilon_{it}\)</span> can be interpreted as representing the <em>unexpected news</em> concerning the value of the asset that arrives between time <span class="math inline">\(t-1\)</span> and time <span class="math inline">\(t.\)</span> To see this, <a href="#eq-GWN-model">Equation&nbsp;<span>6.1</span></a> implies that: <span class="math display">\[
+\varepsilon_{it}=R_{it}-\mu_{i}=R_{it}-E[R_{it}],
+\]</span> so that <span class="math inline">\(\varepsilon_{it}\)</span> is defined as the deviation of the random return from its expected value. If the news between times <span class="math inline">\(t-1\)</span> and <span class="math inline">\(t\)</span> is good, then the realized value of <span class="math inline">\(\varepsilon_{it}\)</span> is positive and the observed return is above its expected value <span class="math inline">\(\mu_{i}.\)</span> If the news is bad, then <span class="math inline">\(\varepsilon_{it}\)</span> is negative and the observed return is less than expected. The assumption <span class="math inline">\(E[\varepsilon_{it}]=0\)</span> means that news, on average, is neutral; neither good nor bad. The assumption that <span class="math inline">\(\mathrm{sd}(\varepsilon_{it})=\sigma_{i}\)</span> can be interpreted as saying that the volatility, or typical magnitude, of news arrival is constant over time. The random news variable affecting asset <span class="math inline">\(i\)</span>, <span class="math inline">\(\varepsilon_{it}\)</span>, is allowed to be contemporaneously correlated with the random news variable affecting asset <span class="math inline">\(j,\)</span> <span class="math inline">\(\varepsilon_{jt}\)</span>, to capture the idea that news about one asset may spill over and affect another asset. For example, if asset <span class="math inline">\(i\)</span> is Microsoft stock and asset <span class="math inline">\(j\)</span> is Apple Computer stock, then one interpretation of news in this context is general news about the computer industry and technology. Good news should lead to positive values of both <span class="math inline">\(\varepsilon_{it}\)</span> and <span class="math inline">\(\varepsilon_{jt}.\)</span> Hence these variables will be positively correlated due to a positive reaction to a common news component. Finally, the news on asset <span class="math inline">\(j\)</span> at time <span class="math inline">\(s\)</span> is unrelated to the news on asset <span class="math inline">\(i\)</span> at time <span class="math inline">\(t\)</span> for all times <span class="math inline">\(t\neq s\)</span>. For example, this means that the news for Apple in January is not related to the news for Microsoft in February.</p>
+</section>
+</section>
+<section id="location-scale-model-representation" class="level3" data-number="6.1.2">
+<h3 data-number="6.1.2" class="anchored" data-anchor-id="location-scale-model-representation"><span class="header-section-number">6.1.2</span> Location-Scale model representation</h3>
+<p>Sometimes it is convenient to re-express the regression form of the GWN model <a href="#eq-GWN-model">Equation&nbsp;<span>6.1</span></a> in <em>location-scale</em> form: <span id="eq-GWN-model2"><span class="math display">\[
+R_{it} =\mu_{i}+\varepsilon_{it}=\mu_{i}+\sigma_{i}\cdot Z_{it}, ~ \{Z_{it}\}_{t=1}^{T}  \sim\mathrm{GWN}(0,1),
+\tag{6.2}\]</span></span> where I use the decomposition <span class="math inline">\(\varepsilon_{it}=\sigma_{i}\cdot Z_{it}\)</span>. In this form, the random news shock is the <em>i.i.d.</em> standard normal random variable <span class="math inline">\(Z_{it}\)</span> scaled by the “news” volatility <span class="math inline">\(\sigma_{i}\)</span>.</p>
+<p>This form is particularly convenient for Value-at-Risk calculations because the <span class="math inline">\(\alpha\times100\%\)</span> quantile of the return distribution has the simple form: <span class="math display">\[
+q_{\alpha}^{R_{i}}=\mu_{i}+\sigma_{i}\times q_{\alpha}^{Z},
+\]</span> where <span class="math inline">\(q_{\alpha}^{Z}\)</span> is the <span class="math inline">\(\alpha\times100\%\)</span> quantile of the standard normal random distribution. Let <span class="math inline">\(W_{0}\)</span> be the initial amount of wealth to be invested from time <span class="math inline">\(t-1\)</span> to <span class="math inline">\(t\)</span>. If <span class="math inline">\(R_{it}\)</span> is the simple return then, <span class="math display">\[
+\mathrm{VaR}_{\alpha}=W_{0}\times q_{\alpha}^{R_{i}} = W_{0}\times \left( \mu_{i}+\sigma_{i}\times q_{\alpha}^{Z} \right),
+\]</span> whereas if <span class="math inline">\(R_{it}\)</span> is the continuously compounded return then, <span class="math display">\[
+\mathrm{VaR}_{\alpha}=W_{0}\times\left(e^{q_{\alpha}^{R_{i}}}-1\right) = W_{0}\times\left(e^{\mu_{i}+\sigma_{i}\times q_{\alpha}^{Z}}-1\right).
+\]</span></p>
+</section>
+<section id="the-gwn-model-in-matrix-notation" class="level3" data-number="6.1.3">
+<h3 data-number="6.1.3" class="anchored" data-anchor-id="the-gwn-model-in-matrix-notation"><span class="header-section-number">6.1.3</span> The GWN model in matrix notation</h3>
+<p>Define the <span class="math inline">\(N\times1\)</span> vectors <span class="math inline">\(\mathbf{R}_{t}=(R_{1t},\ldots,R_{Nt})^{\prime}\)</span>, <span class="math inline">\(\boldsymbol{\mu}=(\mu_{1},\ldots,\mu_{N})^{\prime}\)</span>, <span class="math inline">\(\boldsymbol{\varepsilon}_{t}=(\varepsilon_{1t},\ldots,\varepsilon_{Nt})^{\prime}\)</span> and the <span class="math inline">\(N\times N\)</span> symmetric covariance matrix: <span class="math display">\[
+\mathrm{var}(\boldsymbol{\varepsilon}_{t})=\boldsymbol{\Sigma}=\left(\begin{array}{cccc}
+\sigma_{1}^{2} &amp; \sigma_{12} &amp; \cdots &amp; \sigma_{1N}\\
+\sigma_{12} &amp; \sigma_{2}^{2} &amp; \cdots &amp; \sigma_{2N}\\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots\\
+\sigma_{1N} &amp; \sigma_{2N} &amp; \cdots &amp; \sigma_{N}^{2}
+\end{array}\right).
+\]</span></p>
+<div id="def-gwn-regression-model-in-matrix-form" class="definition theorem definition">
+<p><span class="theorem-title"><strong>Definition 6.2 (GWN Regression Model in Matrix Form) </strong></span>The regression form of the GWN model in matrix notation is: <span id="eq-GWN-matrix"><span class="math display">\[
+\begin{aligned}
+\mathbf{R}_{t}=\boldsymbol{\mu}+\boldsymbol{\varepsilon}_{t},
+\boldsymbol{\varepsilon}_{t}\sim\mathrm{iid}~N(\mathbf{0},\boldsymbol{\Sigma}),
+\end{aligned}
+\tag{6.3}\]</span></span> which implies that <span class="math inline">\(\mathbf{R}_{t}\sim iid~N(\boldsymbol{\mu},\boldsymbol{\Sigma})\)</span>.</p>
+</div>
+<p>The location-scale form of the GWN model in matrix notation makes use of the matrix square root factorization <span class="math inline">\(\boldsymbol{\Sigma}=\boldsymbol{\Sigma}^{1/2}\boldsymbol{\Sigma}^{1/2\prime}\)</span> where <span class="math inline">\(\boldsymbol{\Sigma}^{1/2}\)</span> is the lower-triangular matrix square root (usually the Cholesky factorization). Then <a href="#eq-GWN-matrix">Equation&nbsp;<span>6.3</span></a> can be rewritten as: <span id="eq-GWN-location-scale-matrix"><span class="math display">\[
+\mathbf{R}_{t}=\boldsymbol{\mu}+\boldsymbol{\Sigma}^{1/2}\mathbf{Z}_{t}, \mathbf{Z}_{t}\sim \mathrm{GWN}(\mathbf{0},\mathbf{I}_{N}),
+\tag{6.4}\]</span></span> where <span class="math inline">\(\mathbf{I}_{N}\)</span> denotes the <span class="math inline">\(N\)</span>-dimensional identity matrix.</p>
+</section>
+<section id="the-gwn-model-for-continuously-compounded-returns" class="level3" data-number="6.1.4">
+<h3 data-number="6.1.4" class="anchored" data-anchor-id="the-gwn-model-for-continuously-compounded-returns"><span class="header-section-number">6.1.4</span> The GWN model for continuously compounded returns</h3>
+<p>The GWN model is often used to describe continuously compounded (cc) returns defined as <span class="math inline">\(R_{it}=\ln(P_{it}/P_{it-1})\)</span> where <span class="math inline">\(P_{it}\)</span> is the price of asset <span class="math inline">\(i\)</span> at time <span class="math inline">\(t\)</span>. An advantage of the GWN model for cc returns is that the model aggregates to any time horizon because multi-period cc returns are additive. This is particularly convenient for investment risk analysis. The GWN model for cc returns also gives rise to the <em>random walk model</em> for the logarithm of asset prices. The normal distribution assumption of the GWN model for cc returns implies that single-period simple returns are log-normally distributed.</p>
+<p>A disadvantage of the GWN model for cc returns is that the model has some limitations for the analysis of portfolios because the cc return on a portfolio of assets is not a weighted average of the cc returns on the individual assets. As a result, for portfolio analysis the GWN model is typically applied to simple returns. However, if the investment horizon is short (e.g.&nbsp;daily, weekly or monthly) then simple returns are typically close to zero on average and there is little difference between simple and cc returns. Hence, the time aggregation results of the GWN model for cc returns can be applied to simple returns and the portfolio results of the GWN model for simple returns can be applied to cc returns.</p>
+<section id="time-aggregation-and-the-gwn-model" class="level4" data-number="6.1.4.1">
+<h4 data-number="6.1.4.1" class="anchored" data-anchor-id="time-aggregation-and-the-gwn-model"><span class="header-section-number">6.1.4.1</span> Time Aggregation and the GWN Model</h4>
+<p>The GWN model for cc returns has the following nice aggregation property with respect to the interpretation of <span class="math inline">\(\varepsilon_{it}\)</span> as news. For illustration purposes, suppose that <span class="math inline">\(t\)</span> represents months so that <span class="math inline">\(R_{it}\)</span> is the cc monthly return on asset <span class="math inline">\(i\)</span>. Now, instead of the monthly return, suppose you are interested in the annual cc return <span class="math inline">\(R_{it}=R_{it}(12)\)</span>. Since multi-period cc returns are additive, <span class="math inline">\(R_{it}(12)\)</span> is the sum of <span class="math inline">\(12\)</span> monthly cc returns: <span class="math display">\[
+R_{it}=R_{it}(12)=\sum_{k=0}^{11}R_{it-k}=R_{it}+R_{it-1}+\cdots+R_{it-11}.
+\]</span> Using the GWN regression model <a href="#eq-GWN-model">Equation&nbsp;<span>6.1</span></a> for the monthly return <span class="math inline">\(R_{it}\)</span>, you may express the annual return <span class="math inline">\(R_{it}(12)\)</span> as: <span class="math display">\[
+R_{it}(12)=\sum_{t=0}^{11}(\mu_{i}+\varepsilon_{it})=12\cdot\mu_{i}+\sum_{t=0}^{11}\varepsilon_{it}=\mu_{i}(12)+\varepsilon_{it}(12),
+\]</span> where <span class="math inline">\(\mu_{i}(12)=12\cdot\mu_{i}\)</span> is the annual expected return on asset <span class="math inline">\(i\)</span>, and <span class="math inline">\(\varepsilon_{it}(12)=\sum_{k=0}^{11}\varepsilon_{it-k}\)</span> is the annual random news component. The annual expected return, <span class="math inline">\(\mu_{i}(12)\)</span>, is simply <span class="math inline">\(12\)</span> times the monthly expected return, <span class="math inline">\(\mu_{i}\)</span>. The annual random news component, <span class="math inline">\(\varepsilon_{it}(12)\)</span>, is the accumulation of news over the year. As a result, the variance of the annual news component, <span class="math inline">\(\sigma_{i}^{2}(12)\)</span>, is <span class="math inline">\(12\)</span> times the variance of the monthly news component: <span class="math display">\[\begin{align*}
+\mathrm{var}(\varepsilon_{it}(12)) &amp; =\mathrm{var}\left(\sum_{k=0}^{11}\varepsilon_{it-k}\right)\\
+&amp; =\sum_{k=0}^{11}\mathrm{var}(\varepsilon_{it-k})\textrm{ since }\varepsilon_{it}\textrm{ is uncorrelated over time}\\
+&amp; =\sum_{k=0}^{11}\sigma_{i}^{2}\textrm{ since }\mathrm{var}(\varepsilon_{it})\textrm{ is constant over time}\\
+&amp; =12\cdot\sigma_{i}^{2}=\sigma_{i}^{2}(12).
+\end{align*}\]</span> It follows that the standard deviation of the annual news is equal to <span class="math inline">\(\sqrt{12}\)</span> times the standard deviation of monthly news: <span class="math display">\[
+\mathrm{sd}(\varepsilon_{it}(12))=\sqrt{12}\times\mathrm{sd}(\varepsilon_{it})=\sqrt{12}\times\sigma_{i}.
+\]</span> Similarly, due to the additivity of covariances, the covariance between <span class="math inline">\(\varepsilon_{it}(12)\)</span> and <span class="math inline">\(\varepsilon_{jt}(12)\)</span> is 12 times the monthly covariance: <span class="math display">\[\begin{align*}
+\mathrm{cov}(\varepsilon_{it}(12),\varepsilon_{jt}(12)) &amp; =\mathrm{cov}\left(\sum_{k=0}^{11}\varepsilon_{it-k},\sum_{k=0}^{11}\varepsilon_{jt-k}\right)\\
+&amp; =\sum_{k=0}^{11}\mathrm{cov}(\varepsilon_{it-k},\varepsilon_{jt-k})\textrm{ since }\varepsilon_{it}\textrm{ and }\varepsilon_{jt}\textrm{ are uncorrelated over time}\\
+&amp; =\sum_{k=0}^{11}\sigma_{ij}\textrm{ since }\mathrm{cov}(\varepsilon_{it},\varepsilon_{jt})\textrm{ is constant over time}\\
+&amp; =12\cdot\sigma_{ij}=\sigma_{ij}(12).
+\end{align*}\]</span> The above results imply that the correlation between the annual errors <span class="math inline">\(\varepsilon_{it}(12)\)</span> and <span class="math inline">\(\varepsilon_{jt}(12)\)</span> is the same as the correlation between the monthly errors <span class="math inline">\(\varepsilon_{it}\)</span> and <span class="math inline">\(\varepsilon_{jt}\)</span>: <span class="math display">\[\begin{align*}
+\mathrm{cor}(\varepsilon_{it}(12),\varepsilon_{jt}(12)) &amp; =\frac{\mathrm{cov}(\varepsilon_{it}(12),\varepsilon_{jt}(12))}{\sqrt{\mathrm{var}(\varepsilon_{it}(12))\cdot\mathrm{var}(\varepsilon_{jt}(12))}}\\
+&amp; =\frac{12\cdot\sigma_{ij}}{\sqrt{12\sigma_{i}^{2}\cdot12\sigma_{j}^{2}}}\\
+&amp; =\frac{\sigma_{ij}}{\sigma_{i}\sigma_{j}}=\rho_{ij}=\mathrm{cor}(\varepsilon_{it},\varepsilon_{jt}).
+\end{align*}\]</span> The above results generalize to aggregating returns to arbitrary time horizons as summarized in the following Proposition.</p>
+<div id="prp-square-root-of-time-rule" class="proposition theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 6.1 (Square Root of Time Rule) </strong></span>Let <span class="math inline">\(R_{it}\)</span> denote the cc return on asset <span class="math inline">\(i\)</span> between times <span class="math inline">\(t-1\)</span> and <span class="math inline">\(t\)</span>, where <span class="math inline">\(t\)</span> represents the general investment horizon, and let <span class="math inline">\(R_{it}(k)=\sum_{j=0}^{k-1}R_{it-j}\)</span> denote the <span class="math inline">\(k\)</span>-period cc return. Then the GWN model for <span class="math inline">\(R_{it}(k)\)</span> has the form:</p>
+<p><span id="eq-GWN-time-aggregation"><span class="math display">\[
+R_{it}(k)=\mu_{i}(k)+\varepsilon_{it}(k), \varepsilon_{it}(k)\sim \mathrm{GWN}(0,\sigma_{i}^{2}(k)),
+\tag{6.5}\]</span></span></p>
+<p>where <span class="math inline">\(\mu_{i}(k)=k\times\mu_{i}\)</span> is the <span class="math inline">\(k\)</span>-period expected return, <span class="math inline">\(\varepsilon_{it}(k)=\sum_{j=0}^{k-1}\varepsilon_{it-j}\)</span> is the <span class="math inline">\(k\)</span>-period error term, and <span class="math inline">\(\sigma_{i}^{2}(k)=k\times\sigma_{i}^{2}\)</span> is the <span class="math inline">\(k\)</span>-period variance. The <span class="math inline">\(k\)</span>-period volatility follows the <em>square-root-of-time rule</em>: <span class="math inline">\(\sigma_{i}(k)=\sqrt{k}\times\sigma_{i}.\)</span> The <span class="math inline">\(k\)</span>-period covariance between asset <span class="math inline">\(i\)</span> and asset <span class="math inline">\(j\)</span> is <span class="math inline">\(\sigma_{ij}(k) = k\times \sigma_{ij}\)</span>, and the <span class="math inline">\(k\)</span>-period correlation is <span class="math inline">\(\rho_{ij}(k) = \rho_{ij}\)</span>. This aggregation result is exact for cc returns but it is often used as an approximation for simple returns.</p>
+</div>
+</section>
+<section id="the-random-walk-model-of-asset-prices" class="level4" data-number="6.1.4.2">
+<h4 data-number="6.1.4.2" class="anchored" data-anchor-id="the-random-walk-model-of-asset-prices"><span class="header-section-number">6.1.4.2</span> The random walk model of asset prices</h4>
+<p>The GWN model for cc returns <a href="#eq-GWN-model">Equation&nbsp;<span>6.1</span></a> gives rise to the so-called <em>random walk</em> (RW) model for the <em>logarithm</em> of asset prices. To see this, recall that the continuously compounded return, <span class="math inline">\(R_{it},\)</span> is defined from asset prices via <span class="math inline">\(R_{it}=\ln\left(\frac{P_{it}}{P_{it-1}}\right)=\ln(P_{it})-\ln(P_{it-1})\)</span>. Letting <span class="math inline">\(p_{it}=\ln(P_{it})\)</span> and using the representation of <span class="math inline">\(R_{it}\)</span> in the GWN model <a href="#eq-GWN-model">Equation&nbsp;<span>6.1</span></a>, you can express the log-price as: <span id="eq-GWN-rw-model"><span class="math display">\[
+p_{it}=p_{it-1}+\mu_{i}+\varepsilon_{it}.
+\tag{6.6}\]</span></span> The representation in <a href="#eq-GWN-rw-model">Equation&nbsp;<span>6.6</span></a> is known as the RW model for log-prices.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. It is a representation of the GWN model in terms of log-prices.</p>
+<p>In the RW model <a href="#eq-GWN-rw-model">Equation&nbsp;<span>6.6</span></a>, <span class="math inline">\(\mu_{i}\)</span> represents the expected change in the log-price (cc return) between months <span class="math inline">\(t-1\)</span> and <span class="math inline">\(t\)</span>, and <span class="math inline">\(\varepsilon_{it}\)</span> represents the unexpected change in the log-price. That is, <span class="math display">\[\begin{align*}
+E[\Delta p_{it}] &amp; =E[R_{it}]=\mu_{i},\\
+\varepsilon_{it} &amp; =\Delta p_{it}-E[\Delta p_{it}].
+\end{align*}\]</span> where <span class="math inline">\(\Delta p_{it}=p_{it}-p_{it-1}\)</span>. Further, in the RW model, the unexpected changes in the log-price, <span class="math inline">\(\{\varepsilon_{it}\}\)</span>, are uncorrelated over time (<span class="math inline">\(\mathrm{cov}(\varepsilon_{it},\varepsilon_{is})=0\)</span> for <span class="math inline">\(t\neq s)\)</span> so that future changes in the log-price cannot be predicted from past changes in the log-price.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+<p>The RW model gives the following interpretation for the evolution of log prices. Let <span class="math inline">\(p_{i0}\)</span> denote the initial log price of asset <span class="math inline">\(i\)</span>. The RW model says that the log-price at time <span class="math inline">\(t=1\)</span> is: <span class="math display">\[
+p_{i1}=p_{i0}+\mu_{i}+\varepsilon_{i1},
+\]</span> where <span class="math inline">\(\varepsilon_{i1}\)</span> is the value of random news that arrives between times <span class="math inline">\(0\)</span> and <span class="math inline">\(1.\)</span> The expected log-price at time <span class="math inline">\(t=1\)</span> is: <span class="math display">\[
+E[p_{i1}]=p_{i0}+\mu_{i}+E[\varepsilon_{i1}]=p_{i0}+\mu_{i},
+\]</span> which is the initial price plus the expected return between times 0 and 1. Similarly, by recursive substitution the log-price at time <span class="math inline">\(t=2\)</span> is: <span class="math display">\[\begin{align*}
+p_{i2} &amp; =p_{i1}+\mu_{i}+\varepsilon_{i2}\\
+&amp; =p_{i0}+\mu_{i}+\mu_{i}+\varepsilon_{i1}+\varepsilon_{i2}\\
+&amp; =p_{i0}+2\cdot\mu_{i}+\sum_{t=1}^{2}\varepsilon_{it} \\
+&amp; =p_{i0}+2\cdot\mu_{i}+\varepsilon_{it}(2),
+\end{align*}\]</span> which is equal to the initial log-price, <span class="math inline">\(p_{i0},\)</span> plus the two period expected return, <span class="math inline">\(2\cdot\mu_{i}\)</span>, plus the accumulated random news over the two periods, <span class="math inline">\(\sum_{t=1}^{2}\varepsilon_{it} = \varepsilon_{it}(2)\)</span>. By repeated recursive substitution, the log price at time <span class="math inline">\(t=T\)</span> is, <span class="math display">\[
+p_{iT}=p_{i0}+T\cdot\mu_{i}+\sum_{t=1}^{T}\varepsilon_{it} = p_{i0}+T\cdot\mu_{i}+\varepsilon_{it}(T).
+\]</span> At time <span class="math inline">\(t=0,\)</span> the expected log-price at time <span class="math inline">\(t=T\)</span> is, <span class="math display">\[
+E[p_{iT}]=p_{i0}+T\cdot\mu_{i},
+\]</span> which is the initial price plus the expected growth in prices over <span class="math inline">\(T\)</span> periods. The actual price, <span class="math inline">\(p_{iT},\)</span> deviates from the expected price by the accumulated random news: <span class="math display">\[
+p_{iT}-E[p_{iT}]=\sum_{t=1}^{T}\varepsilon_{it} = \varepsilon_{it}(T).
+\]</span> At time <span class="math inline">\(t=0,\)</span> the variance of the log-price at time <span class="math inline">\(T\)</span> is, <span class="math display">\[
+\mathrm{var}(p_{iT})=\mathrm{var}\left(\sum_{t=1}^{T}\varepsilon_{it}\right)=T\cdot\sigma_{i}^{2}
+\]</span> Hence, the RW model implies that the stochastic process of log-prices <span class="math inline">\(\{p_{it}\}\)</span> is non-stationary because the variance of <span class="math inline">\(p_{it}\)</span> increases with <span class="math inline">\(t.\)</span> Finally, because <span class="math inline">\(\varepsilon_{it}\sim \mathrm{}(0,\sigma_{i}^{2})\)</span> it follows that (conditional on <span class="math inline">\(p_{i0})\)</span> <span class="math inline">\(p_{iT}\sim N(p_{i0}+T\mu_{i},T\sigma_{i}^{2})\)</span>.</p>
+<p>The term <em>random walk</em> was originally used to describe the unpredictable movements of a drunken sailor staggering down the street. The sailor starts at an initial position, <span class="math inline">\(p_{0}\)</span>, outside the bar. The sailor generally moves in the direction described by <span class="math inline">\(\mu\)</span> but randomly deviates from this direction after each step <span class="math inline">\(t\)</span> by an amount equal to <span class="math inline">\(\varepsilon_{t}\)</span>. After <span class="math inline">\(T\)</span> steps the sailor ends up at position <span class="math inline">\(p_{T}=p_{0}+\mu\cdot T+\sum_{t=1}^{T}\varepsilon_{t}\)</span>. The sailor is expected to be at location <span class="math inline">\(\mu T\)</span>, but where he actually ends up depends on the accumulation of the random changes in direction <span class="math inline">\(\sum_{t=1}^{T}\varepsilon_{t}\)</span>. Because <span class="math inline">\(\mathrm{var}(p_{T})=\sigma^{2}T\)</span>, the uncertainty about where the sailor will be increases with each step.</p>
+<p>The RW model for log-prices implies the following model for prices: <span class="math display">\[
+P_{it}=e^{p_{it}}=P_{i0}e^{\mu_{i}\cdot t+\sum_{s=1}^{t}\varepsilon_{is}}=P_{i0}e^{\mu_{i}t}e^{\sum_{s=1}^{t}\varepsilon_{is}},
+\]</span> where <span class="math inline">\(p_{it}=p_{i0}+\mu_{i}t+\)</span> <span class="math inline">\(\sum_{s=1}^{t}\varepsilon_{s}.\)</span> Since <span class="math inline">\(P_{it}=e^{p_{it}}\)</span>, <span class="math inline">\(P_{it} &gt; 0\)</span>. The term <span class="math inline">\(e^{\mu_{i}t}\)</span> represents the expected exponential growth rate in prices between times <span class="math inline">\(0\)</span> and time <span class="math inline">\(t,\)</span> and the term <span class="math inline">\(e^{\sum_{s=1}^{t}\varepsilon_{is}}\)</span> represents the unexpected exponential growth in prices. Here, conditional on <span class="math inline">\(P_{i0},\)</span> <span class="math inline">\(P_{it}\)</span> is log-normally distributed because <span class="math inline">\(p_{it}=\ln P_{it}\)</span> is normally distributed.</p>
+</section>
+</section>
+<section id="gwn-model-for-simple-returns" class="level3" data-number="6.1.5">
+<h3 data-number="6.1.5" class="anchored" data-anchor-id="gwn-model-for-simple-returns"><span class="header-section-number">6.1.5</span> GWN model for simple returns</h3>
+<p>For simple returns, defined as <span class="math inline">\(R_{it}=(P_{it}-P_{it-1})/P_{it-1}\)</span>, the GWN model is often used for the analysis of portfolios as discussed in chapters <a href="10-introductionPortfolioTheory-new.html"><span>Chapter&nbsp;10</span></a> - <span class="quarto-unresolved-ref">?sec-Statistical-Analysis-of-Portfolios</span>. The reason is that the simple return on a portfolio of <span class="math inline">\(N\)</span> assets is weighted average of the simple returns on the individual assets. Hence, the GWN model for simple returns extends naturally to portfolios of assets.</p>
+<section id="gwn-model-and-portfolios" class="level4" data-number="6.1.5.1">
+<h4 data-number="6.1.5.1" class="anchored" data-anchor-id="gwn-model-and-portfolios"><span class="header-section-number">6.1.5.1</span> GWN Model and Portfolios</h4>
+<p>Consider the GWN model in matrix form <a href="#eq-GWN-matrix">Equation&nbsp;<span>6.3</span></a> for the <span class="math inline">\(N\times1\)</span> vector of simple returns <span class="math inline">\(\mathbf{R}_{t}=(R_{1t},\ldots,R_{Nt})^{\prime}\)</span>. For a vector of portfolio weights <span class="math inline">\(\mathbf{x}=(x_{1},\ldots,x_{N})\)</span> such that <span class="math inline">\(\mathbf{x}^{\prime}\mathbf{1}=\sum_{i=1}^{N}x_{i}=1,\)</span> the simple return on the portfolio is: <span class="math display">\[
+R_{pt}=\mathbf{x}^{\prime}\mathbf{R}_{t}=\sum_{i=1}^{N}x_{i}R_{it}.
+\]</span> Substituting in <a href="#eq-GWN-model">Equation&nbsp;<span>6.1</span></a> gives the GWN model for the portfolio returns: <span id="eq-GWN-model-portfolio"><span class="math display">\[
+R_{pt}=\mathbf{x}^{\prime}\left(\boldsymbol{\mu}+\boldsymbol{\varepsilon}_{t}\right)=\mathbf{x}^{\prime}\boldsymbol{\mu} + \mathbf{x}^{\prime}\boldsymbol{\varepsilon}_{t}=\mu_{p}+\varepsilon_{pt}
+\tag{6.7}\]</span></span> where <span class="math inline">\(\mu_{p}=\mathbf{x}^{\prime}\boldsymbol{\mu}=\sum_{i=1}^{N}x_{i}\mu_{i}\)</span> is the portfolio expected return, and <span class="math inline">\(\varepsilon_{pt}=\mathbf{x}^{\prime}\boldsymbol{\varepsilon}_{t}=\sum_{i=1}^{N}x_{i}\varepsilon_{it}\)</span> is the portfolio error. The variance of <span class="math inline">\(R_{pt}\)</span> is given by: <span class="math display">\[
+\mathrm{var}(R_{pt})=\mathrm{var}(\mathbf{x}^{\prime}\mathbf{R}_{t})=\mathbf{x}^{\prime}\boldsymbol{\Sigma}\mathbf{ x}=\sigma_{p}^{2}.
+\]</span> Therefore, the distribution of portfolio returns is normal, <span class="math display">\[
+R_{pt}\sim N(\mu_{p},\sigma_{p}^{2}).
+\]</span> This result is exact for simple returns but is often used as an approximation for cc returns.</p>
+</section>
+<section id="gwn-model-for-multi-period-simple-returns" class="level4" data-number="6.1.5.2">
+<h4 data-number="6.1.5.2" class="anchored" data-anchor-id="gwn-model-for-multi-period-simple-returns"><span class="header-section-number">6.1.5.2</span> GWN Model for Multi-Period Simple Returns</h4>
+<p>The GWN model for single period simple returns does not extend exactly to multi-period simple returns because multi-period simple returns are not additive. Recall, the <span class="math inline">\(k\)</span>-period simple return has a multiplicative relationship to single period returns: <span class="math display">\[\begin{align*}
+R_{t}(k) &amp; =(1+R_{t})(1+R_{t-1})\times\cdots\times(1+R_{t-k+1})-1\\
+&amp; =R_{t}+R_{t-1}+\cdots+R_{t-k+1}\\
+&amp; +R_{t}R_{t-1}+R_{t}R_{t-2}+\cdots+R_{t-k+2}R_{t-k+1}.
+\end{align*}\]</span> Even though single period returns are normally distributed in the GWN model, multi-period returns are not normally distributed because the product of two normally distributed random variables (e.g., <span class="math inline">\(R_{t}R_{t-1}\)</span>) is not normally distributed. Hence, the GWN model does not exactly generalize to multi-period simple returns. However, if single period returns are small then all of the cross products of returns are approximately zero (<span class="math inline">\(R_{t}R_{t-1}\approx\cdots\approx R_{t-k+2}R_{t-k+1}\approx0\)</span>) and, <span class="math display">\[\begin{align*}
+R_{t}(k) &amp; \approx R_{t}+R_{t-1}+\cdots+R_{t-k+1}\\
+&amp; \approx\mu(k)+\varepsilon_{t}(k).
+\end{align*}\]</span> where <span class="math inline">\(\mu(k)=k\mu\)</span> and <span class="math inline">\(\varepsilon_{t}(k)=\sum_{j=0}^{k-1}\varepsilon_{t-j}\)</span>. Hence, the GWN model is approximately true for multi-period simple returns when single period simple returns are not too big.</p>
+<p>Some exact returns can be derived for the mean and variance of multi-period simple returns. For simplicity, let <span class="math inline">\(k=2\)</span> so that, <span class="math display">\[
+R_{t}(2)=(1+R_{t})(1+R_{t-1})-1=R_{t}+R_{t-1}+R_{t}R_{t-1}.
+\]</span> Substituting in <a href="#eq-GWN-model">Equation&nbsp;<span>6.1</span></a> then gives, <span class="math display">\[\begin{align*}
+R_{t}(2) &amp; =\left(\mu+\varepsilon_{t}\right)+(\mu+\varepsilon_{t-1})+\left(\mu+\varepsilon_{t}\right)(\mu+\varepsilon_{t-1})\\
+&amp; =2\mu+\varepsilon_{t}+\varepsilon_{t-1}+\mu^{2}+\mu\varepsilon_{t}+\mu\varepsilon_{t-1}+\varepsilon_{t}\varepsilon_{t-1}\\
+&amp; =2\mu+\mu^{2}+\varepsilon_{t}(1+\mu)+\varepsilon_{t-1}(1+\mu)+\varepsilon_{t}\varepsilon_{t-1}.
+\end{align*}\]</span> The result for the expected return is easy, <span class="math display">\[\begin{align*}
+E[R_{t}(2)] &amp; =2\mu+\mu^{2}+(1+\mu)E[\varepsilon_{t}]+(1+\mu)E[\varepsilon_{t-1}]+E[\varepsilon_{t}\varepsilon_{t-1}]\\
+&amp; =2\mu+\mu^{2}=(1+\mu)^{2}-1,
+\end{align*}\]</span> The result uses the independence of <span class="math inline">\(\varepsilon_{t}\)</span> and <span class="math inline">\(\varepsilon_{t-1}\)</span> to get <span class="math inline">\(E[\varepsilon_{t}\varepsilon_{t-1}]=E[\varepsilon_{t}]E[\varepsilon_{t-1}]=0.\)</span> The result for the variance, however, is more work: <span class="math display">\[\begin{align*}
+\mathrm{var}(R_{t}(2)) &amp; =\mathrm{var}(\varepsilon_{t}(1+\mu)+\varepsilon_{t-1}(1+\mu)+\varepsilon_{t}\varepsilon_{t-1})\\
+&amp; =(1+\mu)^{2}\mathrm{var}(\varepsilon_{t})+(1+\mu)^{2}\mathrm{var}(\varepsilon_{t-1})+\mathrm{var}(\varepsilon_{t}\varepsilon_{t-1})\\
+&amp; +2(1+\mu)^{2}\mathrm{cov}(\varepsilon_{t},\varepsilon_{t-1})+2(1+\mu)\mathrm{cov}(\varepsilon_{t},\varepsilon_{t}\varepsilon_{t-1})\\
+&amp; +2(1+\mu)\mathrm{cov}(\varepsilon_{t-1},\varepsilon_{t}\varepsilon_{t-1})
+\end{align*}\]</span> Now, <span class="math inline">\(\mathrm{var}(\varepsilon_{t})=\mathrm{var}(\varepsilon_{t-1})=\sigma^{2}\)</span> and <span class="math inline">\(\mathrm{cov}(\varepsilon_{t},\varepsilon_{t-1})=0.\)</span> Next, note that, <span class="math display">\[
+\mathrm{var}(\varepsilon_{t}\varepsilon_{t-1})=E[\varepsilon_{t}^{2}\varepsilon_{t-1}^{2}]-\left(E[\varepsilon_{t}\varepsilon_{t-1}]\right)^{2}=E[\varepsilon_{t}^{2}]E[\varepsilon_{t-1}^{2}]-\left(E[\varepsilon_{t}]E[\varepsilon_{t-1}]\right)^{2}=2\sigma^{2}.
+\]</span> Finally, <span class="math display">\[\begin{align*}
+\mathrm{cov}(\varepsilon_{t},\varepsilon_{t}\varepsilon_{t-1}) &amp; =E[\varepsilon_{t}(\varepsilon_{t}\varepsilon_{t-1})]-E[\varepsilon_{t}]E[\varepsilon_{t}\varepsilon_{t-1}]\\
+&amp; =E[\varepsilon_{t}^{2}]E[\varepsilon_{t-1}]-E[\varepsilon_{t}]E[\varepsilon_{t}]E[\varepsilon_{t-1}]\\
+&amp; =0.
+\end{align*}\]</span> Then, <span class="math display">\[\begin{align*}
+\mathrm{var}(R_{t}(2)) &amp; =(1+\mu)^{2}\sigma^{2}+(1+\mu)^{2}\sigma^{2}+2\sigma^{2}\\
+&amp; =2\sigma^{2}[(1+\mu)^{2}+1].
+\end{align*}\]</span> If <span class="math inline">\(\mu\)</span> is close to zero then <span class="math inline">\(E[R_{t}(2)]\approx2\mu\)</span> and <span class="math inline">\(\mathrm{var}(R_{t}(2))\approx2\sigma^{2}\)</span> and so the square-root-of-time rule holds approximately.</p>
+</section>
+<section id="implied-model-for-prices" class="level4" data-number="6.1.5.3">
+<h4 data-number="6.1.5.3" class="anchored" data-anchor-id="implied-model-for-prices"><span class="header-section-number">6.1.5.3</span> Implied model for prices</h4>
+<p>Since <span class="math inline">\(R_{it}=(P_{it}-P_{it-1})/P_{it-1}\)</span>, you can write <span class="math display">\[
+P_{it} = P_{it-1}(1 + R_{it})
+\]</span> Starting at <span class="math inline">\(t=1\)</span> and assuming <span class="math inline">\(P_{i0} &gt; 0\)</span> is fixed, by recursive substitution you get <span class="math display">\[
+P_{it} = P_{i0}(1+R_{i1})(1+R_{i2})\ldots (1+R_{it-1})
+\]</span> Prices will be positive provided all returns are greater than <span class="math inline">\(-1\)</span>. This model for prices is not a RW model but behaves similarly to the RW model if all simple returns are close to zero.</p>
+</section>
+</section>
+</section>
+<section id="sec-GWN-Monte-Carlo-Simulation" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="sec-GWN-Monte-Carlo-Simulation"><span class="header-section-number">6.2</span> Monte Carlo Simulation of the GWN Model</h2>
+<p>A simple technique that can be used to understand the probabilistic behavior of a model involves using computer simulation methods to create pseudo data from the model. The process of creating such pseudo data is called <em>Monte Carlo simulation</em>.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> Monte Carlo simulation of a model can be used as a <em>first step reality check</em> of the model. If simulated data from the model do not look like the data that the model is supposed to describe, then serious doubt is cast on the model. However, if simulated data look reasonably close to the actual data then the first step reality check is passed. Ideally, one should consider many simulated samples from the model because it is possible for a given simulated sample to look strange simply because of an unusual set of random numbers.</p>
+<p>Monte Carlo simulations can be used to reveal properties of a model that are hard to derive analytically.</p>
+<p>Monte Carlo simulation can also be used to create “what if?” type <em>scenarios</em> for a model. Different scenarios typically correspond with different model parameter values.</p>
+<p>Finally, Monte Carlo simulation can be used to study properties of statistics computed from the pseudo data from the model. For example, Monte Carlo simulation can be used to illustrate the concepts of estimator bias and confidence interval coverage probabilities (see Chapter <a href="09-hypothesisTestingGWNModel-new.html"><span>Chapter&nbsp;9</span></a>).</p>
+<p>To illustrate the use of Monte Carlo simulation, consider creating pseudo return data from the GWN model <a href="#eq-GWN-model">Equation&nbsp;<span>6.1</span></a> for a single asset. The steps to create a Monte Carlo simulation from the GWN model are:</p>
+<p><strong>Monte Carlo Steps: Single Asset</strong></p>
+<ol type="1">
+<li>Fix values for the GWN model parameters <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>.</li>
+<li>Determine the number of simulated values, <span class="math inline">\(T\)</span>, to create.</li>
+<li>Use a computer random number generator to simulate <span class="math inline">\(T\)</span> <span class="math inline">\(iid\)</span> values of <span class="math inline">\(\varepsilon_{t}\)</span> from a <span class="math inline">\(N(0,\sigma^{2})\)</span> distribution. Denote these simulated values as <span class="math inline">\(\tilde{\varepsilon}_{1},\ldots,\tilde{\varepsilon}_{T}\)</span>.</li>
+<li>Create the simulated return data <span class="math inline">\(\tilde{R}_{t}=\mu+\tilde{\varepsilon}_{t}\)</span> for <span class="math inline">\(t=1,\ldots,T\)</span>.</li>
+</ol>
+<div id="exm-microsoft-data-to-calibrate-univariate-monte-carlo-simulation-of-gwn-model" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 6.1 (Microsoft data to calibrate univariate Monte Carlo simulation of GWN model) </strong></span>To motivate plausible values for <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span> in the simulation, <a href="#fig-CerModelMsftRetC">Figure&nbsp;<span>6.1</span></a> shows the monthly continuously compounded (cc) returns on Microsoft stock over the period January 1998 through May 2012. The data is the same as that used in Chapter <a href="05-descriptiveStatistics-new.html"><span>Chapter&nbsp;5</span></a> and is constructed from the <strong>IntroCompFinR</strong> <code>"xts"</code> object <code>msftDailyPrices</code> as follows:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(msftDailyPrices) </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>msftPrices <span class="ot">=</span> <span class="fu">to.monthly</span>(msftDailyPrices, <span class="at">OHLC=</span><span class="cn">FALSE</span>) </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>smpl <span class="ot">=</span> <span class="st">"1998-01::2012-05"</span> </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>msftPrices <span class="ot">=</span> msftPrices[smpl] </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>msftRetC <span class="ot">=</span> <span class="fu">na.omit</span>(<span class="fu">Return.calculate</span>(msftPrices, <span class="at">method=</span><span class="st">"log"</span>))</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>mu.msftRetC <span class="ot">=</span> <span class="fu">mean</span>(msftRetC)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>sigma.msftRetC <span class="ot">=</span> <span class="fu">sd</span>(msftRetC)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(mu.msftRetC, sigma.msftRetC)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.00413 0.10021</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The parameter <span class="math inline">\(\mu=E[R_{t}]\)</span> in the GWN model is the expected monthly return, and <span class="math inline">\(\sigma\)</span> represents the typical size of a deviation about <span class="math inline">\(\mu\)</span>. In <a href="#fig-CerModelMsftRetC">Figure&nbsp;<span>6.1</span></a>, the returns seem to fluctuate up and down about a central value near 0 and the typical size of a return deviation about 0 is roughly 0.10, or 10% (see dashed lines in <a href="#fig-CerModelMsftRetC">Figure&nbsp;<span>6.1</span></a>). The sample mean turns out to be <span class="math inline">\(\hat{\mu}=0.004\)</span> (0.4%) and the sample standard deviation is <span class="math inline">\(\hat{\sigma}=0.100\)</span> (10%). <a href="#fig-CerModelMsft4panel">Figure&nbsp;<span>6.2</span></a> shows three distribution summaries (histogram, boxplot and normal qq-plot) and the SACF computed from the sample returns. The returns look to have slightly fatter tails than the normal distribution and show little evidence of linear time dependence (autocorrelation).</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-CerModelMsftRetC" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="06-GWNModel-new_files/figure-html/fig-CerModelMsftRetC-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;6.1: Monthly cc returns on Microsoft. Dashed lines indicate <span class="math inline">\(\hat{\mu}\pm\hat{\sigma}\)</span>.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-CerModelMsft4panel" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="06-GWNModel-new_files/figure-html/fig-CerModelMsft4panel-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;6.2: Graphical descriptive statistics for the monthly cc returns on Microsoft.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="exm-simulating-observations-from-the-gwn-model" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 6.2 (Simulating observations from the GWN model) </strong></span>To mimic the monthly return data on Microsoft in the Monte Carlo simulation, the values <span class="math inline">\(\mu=0.004\)</span> and <span class="math inline">\(\sigma=0.10\)</span> are used as the model’s true parameters and <span class="math inline">\(T=172\)</span> is the number of simulated values (sample size of actual data). Let <span class="math inline">\(\{\tilde{\varepsilon}_{1},\ldots,\tilde{\varepsilon}_{172}\}\)</span> denote the <span class="math inline">\(172\)</span> simulated values of the random news variable <span class="math inline">\(\varepsilon_{t}\sim\mathrm{GWN}(0,(0.10)^{2})\)</span>. The simulated returns are then computed using:<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> <span id="eq-GWN-simulated-returns"><span class="math display">\[
+\tilde{R}_{t}=0.004+\tilde{\varepsilon}_{t},~t=1,\ldots,172
+\tag{6.8}\]</span></span> To create the simulated returns from <a href="#eq-GWN-simulated-returns">Equation&nbsp;<span>6.8</span></a> use:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">=</span> <span class="fl">0.004</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>sd.e <span class="ot">=</span> <span class="fl">0.10</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>n.obs <span class="ot">=</span> <span class="fu">length</span>(msftRetC)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">111</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>sim.e <span class="ot">=</span> <span class="fu">rnorm</span>(n.obs, <span class="at">mean=</span><span class="dv">0</span>, <span class="at">sd=</span>sd.e)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>sim.ret <span class="ot">=</span> mu <span class="sc">+</span> sim.e</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>sim.ret <span class="ot">=</span> <span class="fu">xts</span>(sim.ret, <span class="fu">index</span>(msftRetC))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-CerModelSimRet" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="06-GWNModel-new_files/figure-html/fig-CerModelSimRet-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;6.3: Monte Carlo simulated cc returns from the GWN model for Microsoft.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The simulated returns <span class="math inline">\(\{\tilde{R}_{t}\}_{t=1}^{172}\)</span> (with the same time index as the Microsoft returns) are shown in <a href="#fig-CerModelSimRet">Figure&nbsp;<span>6.3</span></a>. The simulated return data fluctuate randomly about <span class="math inline">\(\mu=0.004\)</span>, and the typical size of the fluctuation is approximately equal to <span class="math inline">\(\sigma=0.10\)</span>. The simulated return data look somewhat like the actual monthly return data for Microsoft. The main difference is that the return volatility for Microsoft appears to have decreased in the latter part of the sample whereas the simulated data has constant volatility over the entire sample. <a href="#fig-CerModelSimRet4panel">Figure&nbsp;<span>6.4</span></a> shows the distribution summaries (histogram, boxplot and normal qq-plot) and the SACF for the simulated returns. The simulated returns are normally distributed and show thinner tails than the actual returns. The simulated returns also show no evidence of linear time dependence (autocorrelation). <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-CerModelSimRet4panel" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="06-GWNModel-new_files/figure-html/fig-CerModelSimRet4panel-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;6.4: Graphical descriptive statistics for the Monte Carlo simulated returns on Microsoft.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="exm-simulating-log-prices-and-prices-from-the-rw-model" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 6.3 (Simulating log-prices and prices from the RW model) </strong></span>The RW model for log-price based on the GWN model <a href="#eq-GWN-simulated-returns">Equation&nbsp;<span>6.8</span></a> calibrated to Microsoft log prices is: <span class="math display">\[
+p_{t}=2.592+0.004\cdot t+\sum_{j=1}^{t}\varepsilon_{j},\varepsilon_{j}\sim\mathrm{GWN}(0,(0.10)^{2}).
+\]</span> where <span class="math inline">\(p_{0}=2.586=\ln(13.27)\)</span> is the log of Microsoft Price at the end of January 1998. Given <span class="math inline">\(p_{t}\)</span>, the price level is determined using <span class="math inline">\(P_{t} = e^{p_{t}}\)</span>. A Monte Carlo simulation of this RW model with drift can be created in R using:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>p0 <span class="ot">=</span> <span class="fl">2.58</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>sim.p <span class="ot">=</span> p0 <span class="sc">+</span> mu<span class="sc">*</span><span class="fu">seq</span>(n.obs) <span class="sc">+</span> <span class="fu">cumsum</span>(sim.e)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>sim.p <span class="ot">=</span> <span class="fu">c</span>(p0, sim.p)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>sim.P <span class="ot">=</span> <span class="fu">exp</span>(sim.p)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>sim.p <span class="ot">=</span> <span class="fu">xts</span>(sim.p, <span class="fu">index</span>(msftPrices)) </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>sim.P <span class="ot">=</span> <span class="fu">xts</span>(sim.P, <span class="fu">index</span>(msftPrices)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><a href="#fig-CerModelSimRW">Figure&nbsp;<span>6.5</span></a> shows the simulated log prices and prices. The top panel shows the simulated log price, <span class="math inline">\(\tilde{p}_{t}\)</span>, and the bottom panel shows the simulated price levels <span class="math inline">\(\tilde{P}_{t}=e^{\tilde{p}_{t}}\)</span> For comparison, <a href="#fig-CerModelMsftPrices">Figure&nbsp;<span>6.6</span></a> shows the actual log prices and price levels for Microsoft stock. Notice the similar behavior of the simulated random walk data and the actual data. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-CerModelSimRW" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="06-GWNModel-new_files/figure-html/fig-CerModelSimRW-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;6.5: Top panel: Simulated log monthly prices of Microsoft from RW model. Bottom panel: Simulated monthly prices of Micorosft stock from RW model.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-CerModelMsftPrices" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="06-GWNModel-new_files/figure-html/fig-CerModelMsftPrices-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;6.6: Top panel: Actual log monthly prices of Microsoft. Bottom panel: Actual monthly prices of Microsoft stock.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The previous examples show one Monte Carlo simulation from the GWN model for cc returns. The simulated returns were compared to the actual returns to do the first stage reality check. Here, the simulated returns looked similar to actual returns so the GWN model passed the first stage reality check. However, keep in mind that the simulated returns represent only <em>one random draw</em> of size <span class="math inline">\(T\)</span> from the GWN model for cc returns. It is possible that you can, by chance, get a strange set of simulated returns which would lead you to reject the first stage reality check even if the GWN model is a good model for actual returns. To guard against this possibility, you should always create many Monte Carlo simulations from the proposed model and use the typical behavior from the simulations to do the first step reality check.</p>
+<div id="exm-creating-many-simulations-from-the-gwn-model" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 6.4 (Creating many simulations from the GWN model) </strong></span>To create ten simulated samples of size <span class="math inline">\(T=132\)</span> from the GWN model for Microsoft cc returns use:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>sim.e <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, n.obs, <span class="dv">10</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">111</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>) {</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>sim.e[,i] <span class="ot">=</span> <span class="fu">rnorm</span>(n.obs, <span class="at">mean=</span><span class="dv">0</span>, <span class="at">sd=</span>sd.e)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>sim.ret <span class="ot">=</span> mu <span class="sc">+</span> sim.e</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>sim.ret <span class="ot">=</span> <span class="fu">xts</span>(sim.ret, <span class="fu">index</span>(msftRetC))</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(sim.ret) <span class="ot">=</span> <span class="fu">paste</span>(<span class="st">"sim"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">sep=</span><span class="st">"."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The ten simulations are shown in <a href="#fig-CerModelSimRetMultiple">Figure&nbsp;<span>6.7</span></a>.</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-CerModelSimRetMultiple" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="06-GWNModel-new_files/figure-html/fig-CerModelSimRetMultiple-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;6.7: Ten Simulations from GWN Model for Microsoft CC Returns.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Each panel shows an <em>alternative reality</em> for returns over the period February 1998 through May 2012. Each one of these alternative realities is equally likely to happen, and the typical behavior of the simulated returns is similar to actual returns.</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-CerModelSimPricesMultiple" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="06-GWNModel-new_files/figure-html/fig-CerModelSimPricesMultiple-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;6.8: Ten Price Simulations from GWN Model for Microsoft CC Returns.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><a href="#fig-CerModelSimPricesMultiple">Figure&nbsp;<span>6.8</span></a> shows the same ten simulations from the GWN model in terms of prices. Notice the large variability in prices at the end of the sample. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<section id="simulating-returns-on-more-than-one-asset" class="level3" data-number="6.2.1">
+<h3 data-number="6.2.1" class="anchored" data-anchor-id="simulating-returns-on-more-than-one-asset"><span class="header-section-number">6.2.1</span> Simulating returns on more than one asset</h3>
+<p>Creating a Monte Carlo simulation of more than one return from the GWN model requires simulating observations from a multivariate normal distribution. This follows from the matrix representation of the GWN model given in <a href="#eq-GWN-matrix">Equation&nbsp;<span>6.3</span></a>. The steps required to create a multivariate Monte Carlo simulation are:</p>
+<p><strong>Monte Carlo Steps: Multiple Assets</strong></p>
+<ol type="1">
+<li>Fix values for the <span class="math inline">\(N\times 1\)</span> mean vector <span class="math inline">\(\boldsymbol{\mu}\)</span> and the <span class="math inline">\(N\times N\)</span> covariance matrix <span class="math inline">\(\boldsymbol{\Sigma}\)</span>.</li>
+<li>Determine the number of simulated values, <span class="math inline">\(T,\)</span> to create.<br>
+</li>
+<li>Use a computer random number generator to simulate <span class="math inline">\(T\)</span> <span class="math inline">\(iid\)</span> values of the <span class="math inline">\(N\times 1\)</span> random vector <span class="math inline">\(\boldsymbol{\varepsilon}_{t}\)</span> from the multivariate normal distribution <span class="math inline">\(N(\mathbf{0},\boldsymbol{\Sigma})\)</span>. Denote these simulated vectors as <span class="math inline">\(\tilde{\varepsilon}_{1},\ldots,\tilde{\varepsilon}_{T}\)</span>.</li>
+<li>Create the <span class="math inline">\(N\times 1\)</span> simulated return vector <span class="math inline">\(\mathbf{\tilde{R}}_{t}=\boldsymbol{\mu}+\tilde{\boldsymbol{\varepsilon}}_{t}\)</span> for <span class="math inline">\(t=1,\ldots,T\)</span>.</li>
+<li>Repeat steps 1-4 to create multiple simulations (alternative realities).</li>
+</ol>
+<div id="exm-microsoft-starbucks-and-s-p-500-data-to-calibrate-multivariate-monte-carlo-simulation-of-gwn-model" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 6.5 (Microsoft Starbucks and S&amp;P 500 data to calibrate multivariate Monte Carlo simulation of GWN model) </strong></span>To motivate the parameters for a multivariate simulation of the GWN model, consider the monthly cc returns for Microsoft, Starbucks and the S&amp;P 500 index over the period January 1998 through May 2012 illustrated in Figures <a href="#fig-CerModel3returns">Figure&nbsp;<span>6.9</span></a> and <a href="#fig-CerModel3returnsScatter">Figure&nbsp;<span>6.10</span></a>. The data is assembled using the R commands:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(sp500DailyPrices, sbuxDailyPrices) </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>sp500Prices <span class="ot">=</span> <span class="fu">to.monthly</span>(sp500DailyPrices, <span class="at">OHLC=</span><span class="cn">FALSE</span>) </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>sbuxPrices <span class="ot">=</span> <span class="fu">to.monthly</span>(sbuxDailyPrices, <span class="at">OHLC=</span><span class="cn">FALSE</span>) </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>sp500Prices <span class="ot">=</span> sp500Prices[smpl] </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>sbuxPrices <span class="ot">=</span> sbuxPrices[smpl] </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>sp500RetC <span class="ot">=</span> <span class="fu">na.omit</span>(<span class="fu">Return.calculate</span>(sp500Prices, <span class="at">method=</span><span class="st">"log"</span>))</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>sbuxRetC <span class="ot">=</span> <span class="fu">na.omit</span>(<span class="fu">Return.calculate</span>(sbuxPrices, <span class="at">method=</span><span class="st">"log"</span>))</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>gwnRetC <span class="ot">=</span> <span class="fu">merge</span>(msftRetC, sbuxRetC, sp500RetC) </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(gwnRetC) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"MSFT"</span>, <span class="st">"SBUX"</span>, <span class="st">"SP500"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-CerModel3returns" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="06-GWNModel-new_files/figure-html/fig-CerModel3returns-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;6.9: Monthly cc returns on Microsoft, Starbucks, and the S&amp;P 500 Index.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The multivariate sample descriptive statistics (mean vector, standard deviation vector, covariance matrix and correlation matrix) are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>mean.vals <span class="ot">=</span> <span class="fu">apply</span>(gwnRetC, <span class="dv">2</span>, mean)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>sd.vals <span class="ot">=</span> <span class="fu">apply</span>(gwnRetC, <span class="dv">2</span>, sd)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(mean.vals, sd.vals)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;              MSFT   SBUX   SP500</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; mean.vals 0.00413 0.0147 0.00169</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; sd.vals   0.10021 0.1116 0.04847</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cov</span>(gwnRetC)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          MSFT    SBUX   SP500</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; MSFT  0.01004 0.00381 0.00300</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SBUX  0.00381 0.01246 0.00248</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SP500 0.00300 0.00248 0.00235</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(gwnRetC)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        MSFT  SBUX SP500</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; MSFT  1.000 0.341 0.617</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SBUX  0.341 1.000 0.457</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SP500 0.617 0.457 1.000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>All returns fluctuate around mean values close to zero. The volatilities of Microsoft and Starbucks are similar with typical magnitudes around 0.10, or 10%. The volatility of the S&amp;P 500 index is considerably smaller at about 0.05, or 5%. The pairwise scatterplots show that all returns are positively related. The pairs (MSFT, SP500) and (SBUX, SP500) are the most correlated with sample correlation values around 0.5. The pair (MSFT, SBUX) has a moderate positive correlation around 0.3. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-CerModel3returnsScatter" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="06-GWNModel-new_files/figure-html/fig-CerModel3returnsScatter-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;6.10: Pairwise scatterplots of the monthly returns on Microsoft, Starbucks, and the S&amp;P 500 Index.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="exm-monte-carlo-simulation-of-gwn-model-for-three-assets" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 6.6 (Monte Carlo simulation of GWN model for three assets) </strong></span>Simulating values from the multivariate GWN model <a href="#eq-GWN-matrix">Equation&nbsp;<span>6.3</span></a> requires simulating multivariate normal random variables. In R, this can be done using the function <code>rmvnorm()</code> from the package <strong>mvtnorm</strong>. The function <code>rmvnorm()</code> requires a vector of mean values and a covariance matrix. Define: <span class="math display">\[
+\mathbf{R}_{t}=\left(\begin{array}{c}
+R_{\textrm{msft},t}\\
+R_{\textrm{sbux},t}\\
+R_{\textrm{sp500},t}
+\end{array}\right),~\boldsymbol{\mu}=\left(\begin{array}{c}
+\mu_{\textrm{msft},t}\\
+\mu_{\textrm{sbux},t}\\
+\mu_{\textrm{sp500},t}
+\end{array}\right),\boldsymbol{\Sigma}=\left(\begin{array}{ccc}
+\sigma_{\textrm{msft}}^{2} &amp; \sigma_{\textrm{msft},\textrm{sbux}} &amp; \sigma_{\textrm{msft},\textrm{sp500}}\\
+\sigma_{\textrm{msft},\textrm{sbux}} &amp; \sigma_{\textrm{sbux}}^{2} &amp; \sigma_{\textrm{sbux},\textrm{sp500}}\\
+\sigma_{\textrm{msft},\textrm{sp500}} &amp; \sigma_{\textrm{sbux},\textrm{sp500}} &amp; \sigma_{\textrm{sp500}}^{2}
+\end{array}\right)
+\]</span> The parameters <span class="math inline">\(\boldsymbol{\mu}\)</span> and <span class="math inline">\(\boldsymbol{\Sigma}\)</span> of the multivariate GWN model are set equal to the sample mean vector <span class="math inline">\(\boldsymbol{\mu}\)</span> and sample covariance matrix <span class="math inline">\(\boldsymbol{\Sigma}\)</span>:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>muVec <span class="ot">=</span> <span class="fu">apply</span>(gwnRetC, <span class="dv">2</span>, mean)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>covMat <span class="ot">=</span> <span class="fu">cov</span>(gwnRetC)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>To create a Monte Carlo simulation from the GWN model calibrated to the month continuously returns on Microsoft, Starbucks and the S&amp;P 500 index use:<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>e.sim <span class="ot">=</span> <span class="fu">rmvnorm</span>(n.obs, <span class="at">sigma=</span>covMat)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>returns.sim <span class="ot">=</span> muVec <span class="sc">+</span> <span class="fu">t</span>(e.sim)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>returns.sim <span class="ot">=</span> <span class="fu">t</span>(returns.sim)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(returns.sim) <span class="ot">=</span> <span class="fu">colnames</span>(gwnRetC)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>returns.sim <span class="ot">=</span> <span class="fu">xts</span>(returns.sim, <span class="fu">index</span>(gwnRetC))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The simulated returns are shown in <a href="#fig-CerModel3returnsMC">Figure&nbsp;<span>6.11</span></a> and <a href="#fig-CerModel3returnsMCscatter">Figure&nbsp;<span>6.12</span></a>. They look similar to the actual returns shown in <a href="#fig-CerModel3returns">Figure&nbsp;<span>6.9</span></a> and <a href="#fig-CerModel3returnsScatter">Figure&nbsp;<span>6.10</span></a>. The actual returns show periods of high and low volatility that the simulated returns do not. The sample statistics from the simulated returns, however, are close to the sample statistics of the actual data:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>mean.vals <span class="ot">=</span> <span class="fu">apply</span>(returns.sim, <span class="dv">2</span>, mean)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>sd.vals <span class="ot">=</span> <span class="fu">apply</span>(returns.sim, <span class="dv">2</span>, sd)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(mean.vals, sd.vals)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;              MSFT   SBUX   SP500</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; mean.vals 0.00671 0.0138 0.00508</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; sd.vals   0.09509 0.1051 0.04601</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cov</span>(returns.sim)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          MSFT    SBUX   SP500</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; MSFT  0.00904 0.00353 0.00246</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SBUX  0.00353 0.01105 0.00194</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SP500 0.00246 0.00194 0.00212</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(returns.sim)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        MSFT  SBUX SP500</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; MSFT  1.000 0.354 0.563</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SBUX  0.354 1.000 0.402</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SP500 0.563 0.402 1.000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-CerModel3returnsMC" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="06-GWNModel-new_files/figure-html/fig-CerModel3returnsMC-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;6.11: Simulated GWN model returns on Microsoft, Starbucks and the S&amp;P 500 Index.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-CerModel3returnsMCscatter" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="06-GWNModel-new_files/figure-html/fig-CerModel3returnsMCscatter-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;6.12: Pairwise scatterplot of simulated returns</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="exm-multiple-monte-carlo-simulations-of-gwn-model-for-three-assets" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 6.7 (Multiple Monte Carlo simulations of GWN model for three assets) </strong></span>TBD <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+</section>
+<section id="scenario-analysis" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="scenario-analysis"><span class="header-section-number">6.3</span> Scenario Analysis</h2>
+<p>TBD</p>
+</section>
+<section id="further-reading-the-gwn-return-model" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="further-reading-the-gwn-return-model"><span class="header-section-number">6.4</span> Further Reading: The GWN Return Model</h2>
+<p>The location-scale form of the GWN model <a href="#eq-GWN-model2">Equation&nbsp;<span>6.2</span></a> is commonly used as a starting point for the distributional analysis of returns. In this chapter, and throughout most of the book, I use the standard normal distribution for the standardized news shock. However, many other standardized distributions that are additive (e.g., skew-normal, Student’s t, skewed-t, etc.) can also be used as illustrated in <span class="citation" data-cites="JPR-2007">(<a href="references.html#ref-JPR-2007" role="doc-biblioref">Jondeau, Poon, and Rockinger 2007</a>)</span>, <span class="citation" data-cites="pfaff-2013">(<a href="references.html#ref-pfaff-2013" role="doc-biblioref">Pfaff 2013</a>)</span>, <span class="citation" data-cites="carmona-2014">(<a href="references.html#ref-carmona-2014" role="doc-biblioref">Carmona 2014</a>)</span>, and <span class="citation" data-cites="RuppertMatteson-2015">(<a href="references.html#ref-RuppertMatteson-2015" role="doc-biblioref">Ruppert and Matteson 2015</a>)</span>.</p>
+<p>xxx gives as comprehensive non-technical description of the RW model for stock prices.</p>
+</section>
+<section id="exercises" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="exercises"><span class="header-section-number">6.5</span> Exercises</h2>
+<div id="exr-01" class="exercise theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 6.1 </strong></span>Consider the GWN model for cc returns: <span class="math display">\[
+r_{t}=\mu+\epsilon_{t},\,\epsilon_{t}\sim\mathrm{GWN}(0,\sigma^{2}).
+\]</span> It implies that the log price follows a random walk with drift: <span class="math display">\[
+\ln P_{t}=\ln P_{t-1}+r_{t}=\ln P_{0}+\mu t+\sum_{s=1}^{t}\epsilon_{s}.
+\]</span> Show that <span class="math inline">\(E[\ln P_{t}]\)</span> and <span class="math inline">\(\mathrm{var}[\ln P_{t}]\)</span> depend on <span class="math inline">\(t\)</span> so that <span class="math inline">\(\ln P_{t}\)</span> is non-stationary.</p>
+</div>
+<div id="exr-02" class="exercise theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 6.2 </strong></span>Consider using Monte Carlo simulation to evaluate the GWN model for the monthly simple returns on Amazon stock and the S&amp;P 500 index over the 5 year period January 2009, through January 2014. 1. Daily adjusted closing prices on Amazon stock and the S&amp;P 500 index are in the <strong>introcompfinr</strong> <code>"xts"</code> objects <code>amznDailyPrices</code> and <code>sp500DailyPrices</code>, respectively. Using these prices, create monthly returns over the period January 2009, through January 2014. 2. Create a time plot showing the monthly returns on the two assets. Do the monthly returns from the two assets look like realizations from a covariance stationary stochastic process? Why or why not? 3. Compare and contrast the return characteristics of the two assets. In addition, comment on any common features, if any, of the two return series. 4. Using the <strong>introcompfinr</strong> function <code>four_panel_plot()</code>, create graphical descriptive statistics for the monthly returns. Also, create the scatterplot between the two return series. Do the returns look normally distributed? Is there any evidence for linear time dependence? Do the return appear to contemporaneously correlated? 5. Compute sample descriptive statistics (mean, standard deviation, skewness, kurtosis, and correlation between Amazon and the S&amp;P 500 index). 6. In the GWN model for simple returns prices do not follow a random walk but instead evolve over time according to <span class="math display">\[
+P_{t} = P_{t-1}(1 + R_{t})
+\]</span></p>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-carmona-2014" class="csl-entry" role="listitem">
+Carmona, R. 2014. <em>Statistical Analysis of Financial Data in r, Second Edition</em>. New York: Springer.
+</div>
+<div id="ref-JPR-2007" class="csl-entry" role="listitem">
+Jondeau, E., S.-H. Poon, and M. Rockinger. 2007. <em>Financial Modeling Under Non-Gaussian Distributions</em>. New York: Springer.
+</div>
+<div id="ref-pfaff-2013" class="csl-entry" role="listitem">
+Pfaff, B. 2013. <em>Financial Risk Modelling and Portfolio Optimization with r</em>. Chichester, UK.: Wiley.
+</div>
+<div id="ref-RuppertMatteson-2015" class="csl-entry" role="listitem">
+Ruppert, D., and D. S. Matteson. 2015. <em>Statistics and Data Analysis for Financial Engineering with r Examples</em>. New York: Springer.
+</div>
+</div>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>In the measurement error model, <span class="math inline">\(r_{it}\)</span> represents the <span class="math inline">\(t^{th}\)</span> measurement of some physical quantity <span class="math inline">\(\mu_{i}\)</span> and <span class="math inline">\(\varepsilon_{it}\)</span> represents the random measurement error associated with the measurement device. The value <span class="math inline">\(\sigma_{i}\)</span> represents the typical size of a measurement error.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>The model <a href="#eq-GWN-rw-model">Equation&nbsp;<span>6.6</span></a> is technically a random walk with drift <span class="math inline">\(\mu_{i}\)</span> A pure random walk has zero drift (<span class="math inline">\(\mu_{i}=0\)</span>)<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>The notion that future changes in asset prices cannot be predicted from past changes in asset prices is often referred to as the weak form of the efficient markets hypothesis.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Monte Carlo refers to the famous city in Monaco where gambling is legal.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Alternatively, the returns can be simulated directly by simulating observations from a normal distribution with mean <span class="math inline">\(0.0\)</span> and standard deviation 0.10.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p><code>rmvnorm</code> returns a matrix of dimension <code>n.obs</code> by 3. The simulated news shocks for each asset are in the columns of <code>e.sim</code>. Transposing <code>e.sim</code> allows the mean vector to be added row-wise. Transposing again creates a column vector of simulated returns.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./05-descriptiveStatistics-new.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Descriptive Statistics for Financial Data</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./07-GWNModelEstimation-new.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Estimation of The GWN Model</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

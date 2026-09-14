@@ -1,0 +1,1756 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Introduction to Computational Finance and Financial Econometrics with R - 9&nbsp; Hypothesis Testing in the GWN Model</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./10-introductionPortfolioTheory-new.html" rel="next">
+<link href="./08-bootstrap-new.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./09-hypothesisTestingGWNModel-new.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Hypothesis Testing in the GWN Model</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Introduction to Computational Finance and Financial Econometrics with R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-ReturnCalculations-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Return Calculations</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-probReview-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Review of Random Variables</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-matrixReview-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Algebra Review</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-timeSeriesConcepts-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Time Series Concepts</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-descriptiveStatistics-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Descriptive Statistics for Financial Data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-GWNModel-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">The Gaussian White Noise Return Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-GWNModelEstimation-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Estimation of The GWN Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-bootstrap-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Estimating Functions of GWN Model Parameters</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-hypothesisTestingGWNModel-new.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Hypothesis Testing in the GWN Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-introductionPortfolioTheory-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introduction to Portfolio Theory</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-PortfolioTheoryMatrix-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Portfolio Theory with Matrix Algebra</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-portfolioTheoryNoShortSales-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Portfolio Theory with Short Sales Constraints</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-riskBudgeting-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Portfolio Risk Budgeting</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-Review-of-General-Principles" id="toc-sec-Review-of-General-Principles" class="nav-link active" data-scroll-target="#sec-Review-of-General-Principles"><span class="header-section-number">9.1</span> Review of General Principles</a>
+  <ul class="collapse">
+  <li><a href="#steps-for-hypothesis-testing" id="toc-steps-for-hypothesis-testing" class="nav-link" data-scroll-target="#steps-for-hypothesis-testing"><span class="header-section-number">9.1.1</span> Steps for hypothesis testing</a></li>
+  <li><a href="#hypothesis-tests-and-decisions" id="toc-hypothesis-tests-and-decisions" class="nav-link" data-scroll-target="#hypothesis-tests-and-decisions"><span class="header-section-number">9.1.2</span> Hypothesis tests and decisions</a></li>
+  <li><a href="#significance-level-and-power" id="toc-significance-level-and-power" class="nav-link" data-scroll-target="#significance-level-and-power"><span class="header-section-number">9.1.3</span> Significance level and power</a></li>
+  </ul></li>
+  <li><a href="#hypothesis-testing-in-the-gwn-model" id="toc-hypothesis-testing-in-the-gwn-model" class="nav-link" data-scroll-target="#hypothesis-testing-in-the-gwn-model"><span class="header-section-number">9.2</span> Hypothesis Testing in the GWN Model</a>
+  <ul class="collapse">
+  <li><a href="#coefficient-tests" id="toc-coefficient-tests" class="nav-link" data-scroll-target="#coefficient-tests"><span class="header-section-number">9.2.1</span> Coefficient tests</a></li>
+  <li><a href="#model-specification-tests" id="toc-model-specification-tests" class="nav-link" data-scroll-target="#model-specification-tests"><span class="header-section-number">9.2.2</span> Model specification tests</a></li>
+  <li><a href="#data-for-hypothesis-testing-examples" id="toc-data-for-hypothesis-testing-examples" class="nav-link" data-scroll-target="#data-for-hypothesis-testing-examples"><span class="header-section-number">9.2.3</span> Data for hypothesis testing examples</a></li>
+  </ul></li>
+  <li><a href="#tests-for-individual-parameters-t-tests-and-z-scores" id="toc-tests-for-individual-parameters-t-tests-and-z-scores" class="nav-link" data-scroll-target="#tests-for-individual-parameters-t-tests-and-z-scores"><span class="header-section-number">9.3</span> Tests for Individual Parameters: t-tests and z-scores</a>
+  <ul class="collapse">
+  <li><a href="#exact-tests-under-normality-of-data" id="toc-exact-tests-under-normality-of-data" class="nav-link" data-scroll-target="#exact-tests-under-normality-of-data"><span class="header-section-number">9.3.1</span> Exact tests under normality of data</a></li>
+  <li><a href="#exact-tests-with-sigma-unknown" id="toc-exact-tests-with-sigma-unknown" class="nav-link" data-scroll-target="#exact-tests-with-sigma-unknown"><span class="header-section-number">9.3.2</span> Exact tests with <span class="math inline">\(\sigma\)</span> unknown</a></li>
+  <li><a href="#z-scores-under-asymptotic-normality-of-estimators" id="toc-z-scores-under-asymptotic-normality-of-estimators" class="nav-link" data-scroll-target="#z-scores-under-asymptotic-normality-of-estimators"><span class="header-section-number">9.3.3</span> Z-scores under asymptotic normality of estimators</a></li>
+  <li><a href="#relationship-between-hypothesis-tests-and-confidence-intervals" id="toc-relationship-between-hypothesis-tests-and-confidence-intervals" class="nav-link" data-scroll-target="#relationship-between-hypothesis-tests-and-confidence-intervals"><span class="header-section-number">9.3.4</span> Relationship between hypothesis tests and confidence intervals</a></li>
+  </ul></li>
+  <li><a href="#coefficient-tests-between-model-coefficients-for-two-assets" id="toc-coefficient-tests-between-model-coefficients-for-two-assets" class="nav-link" data-scroll-target="#coefficient-tests-between-model-coefficients-for-two-assets"><span class="header-section-number">9.4</span> Coefficient tests between model coefficients for two assets</a>
+  <ul class="collapse">
+  <li><a href="#test-for-equal-means-between-two-assets" id="toc-test-for-equal-means-between-two-assets" class="nav-link" data-scroll-target="#test-for-equal-means-between-two-assets"><span class="header-section-number">9.4.1</span> Test for equal means between two assets</a></li>
+  <li><a href="#test-for-equal-sharpe-ratios-between-two-assets" id="toc-test-for-equal-sharpe-ratios-between-two-assets" class="nav-link" data-scroll-target="#test-for-equal-sharpe-ratios-between-two-assets"><span class="header-section-number">9.4.2</span> Test for equal Sharpe ratios between two assets</a></li>
+  </ul></li>
+  <li><a href="#wald-tests-for-general-linear-hypotheses-advanced" id="toc-wald-tests-for-general-linear-hypotheses-advanced" class="nav-link" data-scroll-target="#wald-tests-for-general-linear-hypotheses-advanced"><span class="header-section-number">9.5</span> Wald tests for general linear hypotheses (advanced)</a></li>
+  <li><a href="#model-specification-tests-1" id="toc-model-specification-tests-1" class="nav-link" data-scroll-target="#model-specification-tests-1"><span class="header-section-number">9.6</span> Model Specification Tests</a>
+  <ul class="collapse">
+  <li><a href="#tests-for-normality" id="toc-tests-for-normality" class="nav-link" data-scroll-target="#tests-for-normality"><span class="header-section-number">9.6.1</span> Tests for normality</a></li>
+  <li><a href="#tests-for-no-autocorrelation" id="toc-tests-for-no-autocorrelation" class="nav-link" data-scroll-target="#tests-for-no-autocorrelation"><span class="header-section-number">9.6.2</span> Tests for no autocorrelation</a></li>
+  <li><a href="#tests-for-constant-parameters" id="toc-tests-for-constant-parameters" class="nav-link" data-scroll-target="#tests-for-constant-parameters"><span class="header-section-number">9.6.3</span> Tests for constant parameters</a></li>
+  <li><a href="#tests-for-constant-parameters-based-on-rolling-estimators" id="toc-tests-for-constant-parameters-based-on-rolling-estimators" class="nav-link" data-scroll-target="#tests-for-constant-parameters-based-on-rolling-estimators"><span class="header-section-number">9.6.4</span> Tests for constant parameters based on rolling estimators</a></li>
+  </ul></li>
+  <li><a href="#using-monte-carlo-simulation-to-understand-hypothesis-testing" id="toc-using-monte-carlo-simulation-to-understand-hypothesis-testing" class="nav-link" data-scroll-target="#using-monte-carlo-simulation-to-understand-hypothesis-testing"><span class="header-section-number">9.7</span> Using Monte Carlo Simulation to Understand Hypothesis Testing</a></li>
+  <li><a href="#using-the-bootstrap-for-hypothesis-testing" id="toc-using-the-bootstrap-for-hypothesis-testing" class="nav-link" data-scroll-target="#using-the-bootstrap-for-hypothesis-testing"><span class="header-section-number">9.8</span> Using the Bootstrap for Hypothesis Testing</a></li>
+  <li><a href="#further-reading-hypothesis-testing-in-the-gwn-model" id="toc-further-reading-hypothesis-testing-in-the-gwn-model" class="nav-link" data-scroll-target="#further-reading-hypothesis-testing-in-the-gwn-model"><span class="header-section-number">9.9</span> Further Reading: Hypothesis Testing in the GWN Model</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">9.10</span> Exercises</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-Hypothesis-Testing" class="quarto-section-identifier"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Hypothesis Testing in the GWN Model</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Updated: September 7, 2026</p>
+<p>Copyright © Eric Zivot 2026</p>
+<p>The core of statistical analysis involves estimation and inference. The previous chapters considered estimation of the GWN model parameters, and the computation of standard error estimates and confidence intervals. In this chapter I discuss issues of statistical inference within the GWN model. Statistical inference is about asking questions about a model and using statistical procedures to obtain answers to these questions with a given level of confidence. For example, you might find that our estimate of the monthly mean of an asset return is positive but due to large estimation error we might ask the question: is the true monthly mean return positive? As another example, you might find that a normal qq-plot of returns shows some evidence of non-normality and you ask the question: are returns normally distributed? As a third example, you might find that rolling estimates of the mean and volatility show some evidence of non-constant behavior and you might ask the question: are returns covariance stationary? Statistical hypothesis testing gives us a rigorous framework for answering such questions with a given level of confidence.</p>
+<p>The R packages used in this chapter are <strong>introcompfinr</strong>, <strong>PerformanceAnalytics</strong>, <strong>tseries</strong>, and <strong>zoo</strong>. Make sure this packages are installed and loaded before replicating the examples.</p>
+<ol type="1">
+<li>Hypothesis Testing in the GWN Model
+<ol type="a">
+<li>Specification tests
+<ol type="i">
+<li>Normal distribution
+<ol type="A">
+<li>Tests for skewness and kurtosis</li>
+<li>JB test</li>
+<li>What to do if returns are not normally distributed?</li>
+</ol></li>
+<li>No autocorrelation A. individual and joint tests</li>
+<li>Constant parameters (covariance stationarity) A. Formal tests: testing same mean, volatility in sub-samples B. Informal diagnostics - standard error bands on rolling estimators</li>
+</ol></li>
+<li>Using Monte Carlo Simulation to Understand Hypothesis tests
+<ol type="i">
+<li>Size</li>
+<li>Power</li>
+</ol></li>
+<li>Using the bootstrap for hypothesis tests
+<ol type="a">
+<li>exploit duality between hypothesis tests and confidence intervals</li>
+</ol></li>
+</ol></li>
+<li>Appendix: Distributions for test statistics
+<ol type="a">
+<li>Student’s t distribution</li>
+<li>Chi-square distribution</li>
+</ol></li>
+</ol>
+<section id="sec-Review-of-General-Principles" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="sec-Review-of-General-Principles"><span class="header-section-number">9.1</span> Review of General Principles</h2>
+<p>Classical hypothesis testing is discussed in almost all introductory textbooks on statistics, and the reader is assumed be familiar with the basic concepts.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> In this section I provide a brief and concise review of the general principles of classical hypothesis testing. In the following sections I apply these principles to answer questions about the GWN model parameters and assumptions.</p>
+<section id="steps-for-hypothesis-testing" class="level3" data-number="9.1.1">
+<h3 data-number="9.1.1" class="anchored" data-anchor-id="steps-for-hypothesis-testing"><span class="header-section-number">9.1.1</span> Steps for hypothesis testing</h3>
+<p>The main steps for conducting a classical hypothesis test are as follows: </p>
+<ol type="1">
+<li><p>Specify the hypotheses to be tested: <span class="math display">\[
+H_{0}:\textrm{null hypothesis vs. }H_{1}:\textrm{alternative hypothesis.}
+\]</span> The <em>null hypothesis</em> is the maintained hypothesis (what is assumed to be true) and is the hypothesis to be tested against the data. The <em>alternative hypothesis</em> specifies what is assumed to be true if the null hypothesis is false. This can be specific or vague depending on the context.</p></li>
+<li><p>Specify the significance level of the test: <span class="math display">\[
+\alpha=\textrm{significance level}=\Pr(\textrm{Reject }H_{0}|H_{0}\,\textrm{is true}).
+\]</span> The <em>significance level</em> of a test specifies the probability of making a certain type of decision error: rejecting the null hypothesis when the null hypothesis is, in fact, true. In practice, the significance level <span class="math inline">\(\alpha\)</span> is chosen to be a small number like <span class="math inline">\(0.01\)</span> or <span class="math inline">\(0.05\)</span>.</p></li>
+<li><p>Construct a <em>test statistic</em>, <span class="math inline">\(S\)</span>, from the observed data whose probability distribution is known when <span class="math inline">\(H_{0}\)</span> is true.</p></li>
+<li><p>Use the test statistic <span class="math inline">\(S\)</span> to evaluate the data evidence regarding the validity of <span class="math inline">\(H_{0}\)</span>. Typically, if <span class="math inline">\(S\)</span> is a big number then there is strong data evidence against <span class="math inline">\(H_{0}\)</span> and <span class="math inline">\(H_{0}\)</span> should be rejected; otherwise, there is not strong data evidence against <span class="math inline">\(H_{0}\)</span> and <span class="math inline">\(H_{0}\)</span> should not be rejected.</p>
+<ul>
+<li><p>Decide to reject <span class="math inline">\(H_{0}\)</span> at the specified significance level <span class="math inline">\(\alpha\)</span> if the value of the test statistic <span class="math inline">\(S\)</span> falls in the <em>rejection region</em> of the test. Usually, the rejection region for <span class="math inline">\(S\)</span> is determined by a critical value <span class="math inline">\(cv_{\alpha}\)</span> such that: <span class="math display">\[\begin{eqnarray*}
+S &amp; &gt; &amp; cv_{\alpha}\Rightarrow\mathrm{reject}\,H_{0},\\
+S &amp; \leq &amp; cv_{\alpha}\Rightarrow\mathrm{do\,not\,reject}\,H_{0}.
+\end{eqnarray*}\]</span> Smaller values of <span class="math inline">\(\alpha\)</span> typically make <span class="math inline">\(cv_{\alpha}\)</span> larger and require more data evidence (i.e., larger <span class="math inline">\(S\)</span>) to reject <span class="math inline">\(H_{0}.\)</span></p></li>
+<li><p>Alternatively, decide to reject <span class="math inline">\(H_{0}\)</span> at the specified significance level <span class="math inline">\(\alpha\)</span> if the p-value of the test statistic <span class="math inline">\(S\)</span> is less than <span class="math inline">\(\alpha\)</span>. The <em>p-value</em> of the statistic <span class="math inline">\(S\)</span> is defined as the significance level at which the test is just rejected.</p></li>
+</ul></li>
+</ol>
+</section>
+<section id="hypothesis-tests-and-decisions" class="level3" data-number="9.1.2">
+<h3 data-number="9.1.2" class="anchored" data-anchor-id="hypothesis-tests-and-decisions"><span class="header-section-number">9.1.2</span> Hypothesis tests and decisions</h3>
+<p>Hypothesis testing involves making a decision: reject <span class="math inline">\(H_{0}\)</span> or do not reject <span class="math inline">\(H_{0}.\)</span> Notice that if the data evidence strongly favors <span class="math inline">\(H_{0}\)</span> then you say “I do not reject <span class="math inline">\(H_{0}\)</span>” instead of “accept <span class="math inline">\(H_{0}\)</span>”. You can rarely know the truth with absolute certainty with a finite amount of data so it is more appropriate to say “do not reject <span class="math inline">\(H_{0}\)</span>” than to say “accept <span class="math inline">\(H_{0}\)</span>”.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<div id="tbl-HTdecisionTable" class="anchored">
+<table class="table">
+<caption>Table&nbsp;9.1: Decision table for hypothesis testing</caption>
+<colgroup>
+<col style="width: 12%">
+<col style="width: 30%">
+<col style="width: 27%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th></th>
+<th colspan="2">Reality</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td></td>
+<td><strong><span class="math inline">\(H_{0}\)</span> is true</strong></td>
+<td><strong><span class="math inline">\(H_{0}\)</span> is false</strong></td>
+</tr>
+<tr class="even">
+<td>Decision</td>
+<td><strong>Reject <span class="math inline">\(H_{0}\)</span></strong></td>
+<td>Type I error</td>
+<td>No error</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td><strong>Do not reject <span class="math inline">\(H_{0}\)</span></strong></td>
+<td>No error</td>
+<td>Type II error</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Table <a href="#tbl-HTdecisionTable">Table&nbsp;<span>9.1</span></a> shows the <span class="math inline">\(2\times2\)</span> decision table associated with hypothesis testing. In reality there are two states of the world: either <span class="math inline">\(H_{0}\)</span> is true or it is not.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> There are two decisions to make: reject <span class="math inline">\(H_{0}\)</span> or don’t reject <span class="math inline">\(H_{0}.\)</span> If the decision corresponds with reality then the correct decision is made and there is no decision error. This occurs in the off-diagonal elements of the table. If the decision and reality disagree then there is a decision error. These errors are in the diagonal elements of the table. Type I error results when the decision to reject <span class="math inline">\(H_{0}\)</span> occurs when, in fact, <span class="math inline">\(H_{0}\)</span> is true. Type II error happens when the decision not to reject <span class="math inline">\(H_{0}\)</span> occurs when <span class="math inline">\(H_{0}\)</span> is false. To put these types of errors in context, consider a jury in a capital murder trial in the US.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> In the US, a defendant is considered innocent until proven guilty. Here, the null hypothesis to be tested is: <span class="math display">\[
+H_{0}:\textrm{defendant is innocent}.
+\]</span> The alternative is: <span class="math display">\[
+H_{1}:\textrm{defendant is guilty}.
+\]</span></p>
+<p>There is a true state of the world here: the defendant is either innocent or guilty. The jury must decide what the state of the world is based on evidence presented to them. The decision table for the jury is shown in Table <a href="#tbl-HTdecisionTableJury">Table&nbsp;<span>9.2</span></a>. Type I error occurs when the jury convicts an innocent defendant and puts that person on “death row”. Clearly, this is a terrible mistake. To avoid this type of mistake the jury should have a very small (close to zero) significance level for evaluating evidence so that Type I error very rarely occurs. This is why typical jury instructions are to convict only if evidence of guilt is presented beyond reasonable doubt. Type II error happens when the jury does not convict (acquits) a guilty defendant and sets that person free. This is also a terrible mistake, but perhaps it is not as terrible as convicting the innocent person. Notice that there is a conflict between Type I error and Type II error. In order to completely eliminate Type I error, you can never reject <span class="math inline">\(H_{0}\)</span>. That is, to avoid ever sending innocent people to “death row” you must never convict anyone. But if you never convict anyone then you never convict guilty people either and this increases the occurrences of Type II errors.</p>
+</section>
+<section id="significance-level-and-power" class="level3" data-number="9.1.3">
+<h3 data-number="9.1.3" class="anchored" data-anchor-id="significance-level-and-power"><span class="header-section-number">9.1.3</span> Significance level and power</h3>
+<p>The <em>significance level</em> of a test is the probability of Type I error: <span class="math display">\[
+\alpha=\Pr(\textrm{Type I error})=\Pr(\textrm{Reject}\,H_{0}|H_{0}\,\textrm{is true}).
+\]</span> The <em>power</em> of a test is one minus the probability of Type II error: <span class="math display">\[
+\pi=1-\Pr(\textrm{Type II error})=\Pr(\textrm{Reject }H_{0}|H_{0}\,\textrm{is false}).
+\]</span> In classical hypothesis tests, the goal is to construct a test that has a small significance level (<span class="math inline">\(\alpha\)</span> close to zero) that you can control and has high power (<span class="math inline">\(\pi\)</span> close to one). That is, a good test is one that has a small and controllable probability of rejecting the null when it is true and, at the same time, has a very high probability of rejecting the null when it is false. In general, an <em>optimal test</em> is one that has the highest possible power for a given significance level. In the jury example, an optimal test would be the one in which the jury has the highest probability of convicting a guilty defendant while at the same time has a very low probability of convicting an innocent defendant. A difficult problem indeed!</p>
+<div id="tbl-HTdecisionTableJury" class="anchored">
+<table class="table">
+<caption>Table&nbsp;9.2: Decision table for jury on capital murder trial</caption>
+<colgroup>
+<col style="width: 13%">
+<col style="width: 19%">
+<col style="width: 33%">
+<col style="width: 31%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th></th>
+<th colspan="2">Reality</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td></td>
+<td><strong>Defendant is innocent</strong></td>
+<td><strong>Defendant is guilty</strong></td>
+</tr>
+<tr class="even">
+<td>Decision</td>
+<td><strong>Convict</strong></td>
+<td>Type I error</td>
+<td>No error</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td><strong>Acquit</strong></td>
+<td>No error</td>
+<td>Type II error</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="hypothesis-testing-in-the-gwn-model" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="hypothesis-testing-in-the-gwn-model"><span class="header-section-number">9.2</span> Hypothesis Testing in the GWN Model</h2>
+<p>In this section, I discuss hypothesis testing in the context of the GWN model for asset returns:</p>
+<p><span id="eq-HTcermodel"><span class="math display">\[
+\begin{aligned}
+R_{it} &amp; =\mu_{i}+\varepsilon_{it},\,i=1\ldots,N;\,t=1,\ldots,T\\
+\{\varepsilon_{it}\}_{t=1}^{T} &amp; \sim\mathrm{GWN}(0,\sigma_{i}^{2}), \\
+\mathrm{cov}(\varepsilon_{it},\varepsilon_{js}) &amp; =\left\{\begin{array}{c}
+\sigma_{ij}\\
+0
+\end{array}\right.\begin{array}{c}
+~ t=s\\
+t\neq s
+\end{array}.
+\end{aligned}
+\tag{9.1}\]</span></span></p>
+<p>In <a href="#eq-HTcermodel">Equation&nbsp;<span>9.1</span></a>, <span class="math inline">\(R_{it}\)</span> is the monthly return (continuously compounded or simple) on asset <span class="math inline">\(i\)</span> in month <span class="math inline">\(t\)</span>. Define <span class="math inline">\(\mathbf{R}_{t}=(R_{1t},\ldots,R_{Nt})^{\prime}\)</span>. The GWN model in matrix form is:</p>
+<p><span id="eq-HTcermatrix"><span class="math display">\[
+\begin{aligned}
+\mathbf{R}_{t}=\mu+\varepsilon_{t},\\
+\varepsilon_{t}\sim\mathrm{iid}~N(\mathbf{0},\Sigma).
+\end{aligned}
+\tag{9.2}\]</span></span></p>
+<p>I consider two types of hypothesis tests: (1) tests for model coefficients or functions of model coefficients; and (2) tests for model assumptions.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> These tests can be specified for the GWN model for a single asset using <a href="#eq-HTcermodel">Equation&nbsp;<span>9.1</span></a>, or they can be specified for the GWN model for all assets using <a href="#eq-HTcermatrix">Equation&nbsp;<span>9.2</span></a>.</p>
+<section id="coefficient-tests" class="level3" data-number="9.2.1">
+<h3 data-number="9.2.1" class="anchored" data-anchor-id="coefficient-tests"><span class="header-section-number">9.2.1</span> Coefficient tests</h3>
+<p>Here, I assume that the GWM is the true model for our observed return data and I are interested in asking questions about the parameters of the model. The most common tests for model coefficients and functions of model coefficients for a single asset are tests for a specific value. Some typical hypotheses to be tested are:</p>
+<p><span class="math display">\[\begin{align*}
+H_{0} &amp; :\mu_{i}=\mu_{i}^{0}\text{ vs. }H_{1}:\mu_{i}\neq\mu_{i}^{0},\\
+H_{0} &amp; :\sigma_{i}=\sigma_{i}^{0}\text{ vs. }H_{1}:\sigma_{i}\neq\sigma_{i}^{0},\\
+H_{0} &amp; :\rho_{ij}=\rho_{ij}^{0}\text{ vs. }H_{1}:\rho_{ij}\neq\rho_{ij}^{0}, \\
+H_{0} &amp; :\mathrm{SR}_{i}=\mathrm{SR}_{i}^{0}\text{ vs. }H_{1}:\mathrm{SR}_{i}\neq\mathrm{SR}_{i}^{0},
+\end{align*}\]</span></p>
+<p>where <span class="math inline">\(\mathrm{SR}_{i} = \frac{\mu_i - r_f}{\sigma_i}\)</span> is the Sharpe ratio of asset <span class="math inline">\(i\)</span> and <span class="math inline">\(r_f\)</span> is the risk-free rate of interest. A hypothesis about the Sharpe ratio is a hypothesis about the ratio of two GWN model parameters. In the above hypotheses, the alternative hypotheses are <em>two-sided</em>. That is, under <span class="math inline">\(H_{1}\)</span> the model parameters are either larger or smaller than what is specified under <span class="math inline">\(H_{0}\)</span>.</p>
+<p>Also common are tests for specific sign. For example:</p>
+<p><span class="math display">\[\begin{align*}
+H_{0} &amp; :\mu_{i}=0\text{ vs. }H_{1}:\mu_{i}&gt;0\text{ or }H_{1}:\mu_{i}&lt;0,\\
+H_{0} &amp; :\rho_{ij}=0\text{ vs. }H_{1}:\rho_{ij}&gt;0\text{ or }H_{1}:\rho_{ij}&lt;0, \\
+H_{0} &amp; :\mathrm{SR}_{i}=0\text{ vs. }H_{1}:\mathrm{SR}_{i}&gt;0\text{ or }H_{1}:\mathrm{SR}_{i}&lt;0,
+\end{align*}\]</span></p>
+<p>Here, the alternative hypotheses are <em>one-sided</em>. That is, under <span class="math inline">\(H_{1}\)</span> the model parameter is either greater than zero or less than zero.</p>
+<p>Sometimes you are interested in testing hypotheses about the relationship between model coefficients for two or more assets. For example:</p>
+<p><span class="math display">\[\begin{align*}
+H_{0} &amp; :\mu_{1}=\mu_{2}\,\textrm{vs. } H_{1}:\mu_{1}\neq\mu_{2}, \\
+H_{0} &amp; :\mathrm{SR}_{1}=\mathrm{SR}_{2}\,\textrm{vs. } H_{1}:\mathrm{SR}_{1}\neq\ \mathrm{SR}_{2}.
+\end{align*}\]</span></p>
+<p>It is often convenient to re-express these hypotheses in terms of differences of coefficients under the null and alternative hypotheses:</p>
+<p><span class="math display">\[\begin{align*}
+H_{0} &amp; :\mu_{1}-\mu_{2}=0 \,\textrm{vs. } H_{1}:\mu_{1}-\mu_{2} \neq 0, \\
+H_{0} &amp; :\mathrm{SR}_{1}-\mathrm{SR}_{2}=0 \,\textrm{vs. } H_{1}:\mathrm{SR}_{1}- \mathrm{SR}_{2} \neq 0.
+\end{align*}\]</span></p>
+</section>
+<section id="model-specification-tests" class="level3" data-number="9.2.2">
+<h3 data-number="9.2.2" class="anchored" data-anchor-id="model-specification-tests"><span class="header-section-number">9.2.2</span> Model specification tests</h3>
+<p>In the GWN model <a href="#eq-HTcermodel">Equation&nbsp;<span>9.1</span></a>, asset returns are assumed to be normally distributed. The hypotheses to be tested for this assumption are:</p>
+<p><span class="math display">\[\begin{align*}
+H_{0}: &amp; R_{it}\sim N(\mu_{i},\sigma_{i}^{2})\,\textrm{vs. }H_{1}:R_{it}\sim\textrm{ not normal.}
+\end{align*}\]</span></p>
+<p>Notice that the distribution of <span class="math inline">\(R_{t}\)</span> under <span class="math inline">\(H_{1}\)</span> is not specified (e.g., Student’s t with 5 degrees of freedom).</p>
+<p>In addition, it is assumed that asset returns are uncorrelated over time. One can test the hypothesis that each autocorrelation (up to some maximum lag <span class="math inline">\(J\)</span>) is zero:</p>
+<p><span class="math display">\[\begin{align*}
+H_{0} &amp; :\rho_{j}=\mathrm{cor}(r_{it},r_{i,t-j})=0\text{, }j=1,\ldots,J\,\mathrm{vs}.\\
+H_{1} &amp; :\rho_{j}=\mathrm{cor}(r_{it},r_{i,t-j})\neq0,
+\end{align*}\]</span></p>
+<p>or one can test the joint hypothesis that all autocorrelation coefficients (up to some maximum lag <span class="math inline">\(J\)</span>) are zero:</p>
+<p><span class="math display">\[\begin{eqnarray*}
+H_{0}:\rho_{1} &amp; = &amp; \rho_{2}=\cdots=\rho_{J}=0\,vs.\\
+H_{1}:\rho_{j} &amp; \neq &amp; 0\,\textrm{for some }j\leq J
+\end{eqnarray*}\]</span></p>
+<p>Lastly, it is assumed that asset returns are covariance stationary. This assumption implies that all model parameters are constant over time. The hypotheses of interest are then:</p>
+<p><span class="math display">\[\begin{align*}
+H_{0} &amp; :\mu_{i},\sigma_{i}\text{ and }\rho_{ij}\text{ are constant over entire sample, vs.}\\
+H_{1} &amp; :\mu_{i}\text{ }\sigma_{i}\text{ or }\rho_{ij}\text{ changes in some sub-sample.}
+\end{align*}\]</span></p>
+<p>The following sections describe test statistics for the above listed hypotheses.</p>
+</section>
+<section id="data-for-hypothesis-testing-examples" class="level3" data-number="9.2.3">
+<h3 data-number="9.2.3" class="anchored" data-anchor-id="data-for-hypothesis-testing-examples"><span class="header-section-number">9.2.3</span> Data for hypothesis testing examples</h3>
+<p>The examples in this chapter use the monthly continuously compounded returns on Microsoft, Starbucks and the S&amp;P 500 index over the period January 1998 through May 2012 created using:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>gwnDailyPrices <span class="ot">=</span> <span class="fu">merge</span>(msftDailyPrices, sbuxDailyPrices, sp500DailyPrices)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>gwnMonthlyPrices <span class="ot">=</span> <span class="fu">to.monthly</span>(gwnDailyPrices, <span class="at">OHLC=</span><span class="cn">FALSE</span>) </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>smpl <span class="ot">=</span> <span class="st">"1998-01::2012-05"</span> </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>gwnMonthlyPrices <span class="ot">=</span> gwnMonthlyPrices[smpl] </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>gwnMonthlyRetC <span class="ot">=</span> <span class="fu">na.omit</span>(<span class="fu">Return.calculate</span>(gwnMonthlyPrices, <span class="at">method=</span><span class="st">"log"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The monthly continuously compounded returns, with a common y-axis, are illustrated in Figure <a href="#fig-HypothesisExampleReturns">Figure&nbsp;<span>9.1</span></a> created using:</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(gwnMonthlyRetC, <span class="at">multi.panel=</span><span class="cn">TRUE</span>, <span class="at">main=</span><span class="st">""</span>,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">yaxis.same=</span><span class="cn">TRUE</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">major.ticks=</span><span class="st">"years"</span>, <span class="at">grid.ticks.on=</span><span class="st">"years"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-HypothesisExampleReturns" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="09-hypothesisTestingGWNModel-new_files/figure-html/fig-HypothesisExampleReturns-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;9.1: Monthly cc returns on Microsoft, Starbucks and the S&amp;P 500 Index.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="tests-for-individual-parameters-t-tests-and-z-scores" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="tests-for-individual-parameters-t-tests-and-z-scores"><span class="header-section-number">9.3</span> Tests for Individual Parameters: t-tests and z-scores</h2>
+<p>In this section, I present test statistics for testing hypotheses that certain model coefficients equal specific values. In some cases, I can derive <em>exact tests</em>. For an exact test, the pdf of the test statistic assuming the null hypothesis is true is known exactly for a finite sample size <span class="math inline">\(T\)</span>. More generally, however, I rely on <em>asymptotic tests</em>. For an asymptotic test, the pdf of the test statistic assuming the null hypothesis is true is not known exactly for a finite sample size <span class="math inline">\(T\)</span>, but can be approximated by a known pdf. The approximation is justified by the Central Limit Theorem (CLT) and the approximation becomes exact as the sample size becomes infinitely large.</p>
+<section id="exact-tests-under-normality-of-data" class="level3" data-number="9.3.1">
+<h3 data-number="9.3.1" class="anchored" data-anchor-id="exact-tests-under-normality-of-data"><span class="header-section-number">9.3.1</span> Exact tests under normality of data</h3>
+<p>In the GWN model <a href="#eq-HTcermodel">Equation&nbsp;<span>9.1</span></a>, consider testing the hypothesis that the mean return, <span class="math inline">\(\mu_{i}\)</span>, is equal to a specific value <span class="math inline">\(\mu_{i}^{0}\)</span>:</p>
+<p><span id="eq-HT-H0mean"><span class="math display">\[
+H_{0}:\mu_{i}=\mu_{i}^{0}.
+\tag{9.3}\]</span></span></p>
+<p>For example, an investment analyst may have provided an expected return forecast of <span class="math inline">\(\mu_{i}^{0}\)</span> and you would like to see if past data was consistent with such a forecast.</p>
+<p>The alternative hypothesis can be either two-sided or one-sided. The two-sided alternative is: <span id="eq-HT-H1mean2sided"><span class="math display">\[
+H_{1}:\mu_{i}\neq\mu_{i}^{0}.
+\tag{9.4}\]</span></span> Two-sided alternatives are used when you don’t care about the sign of <span class="math inline">\(\mu_{i}-\mu_{i}^{0}\)</span> under the alternative. With one-sided alternatives, you care about the sign of <span class="math inline">\(\mu_{i}-\mu_{i}^{0}\)</span> under the alternative: <span id="eq-HT-H1mean1sided"><span class="math display">\[
+H_{1}:\mu_{i}&gt;\mu_{i}^{0}\,\textrm{ or }\,H_{1}:\mu_{i}&lt;\mu_{i}^{0}.
+\tag{9.5}\]</span></span></p>
+<p>How do you come up with a test statistic <span class="math inline">\(S\)</span> for testing <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a> against <a href="#eq-HT-H1mean2sided">Equation&nbsp;<span>9.4</span></a> or <a href="#eq-HT-H1mean1sided">Equation&nbsp;<span>9.5</span></a>? You generally use two criteria: (1) you know the pdf of <span class="math inline">\(S\)</span> assuming <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a> is true; and (2) the value of <span class="math inline">\(S\)</span> should be big if the alternative hypotheses <a href="#eq-HT-H1mean2sided">Equation&nbsp;<span>9.4</span></a> or <a href="#eq-HT-H1mean1sided">Equation&nbsp;<span>9.5</span></a> are true.</p>
+<section id="two-sided-test" class="level4" data-number="9.3.1.1">
+<h4 data-number="9.3.1.1" class="anchored" data-anchor-id="two-sided-test"><span class="header-section-number">9.3.1.1</span> Two-sided test</h4>
+<p>To simplify matters, let’s assume that the value of <span class="math inline">\(\sigma_{i}\)</span> in <a href="#eq-HTcermodel">Equation&nbsp;<span>9.1</span></a> is known and does not need to be estimated. This assumption is unrealistic and will be relaxed later. Consider testing <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a> against the two-sided alternative <a href="#eq-HT-H1mean2sided">Equation&nbsp;<span>9.4</span></a> using a 5% significance level. Two-sided alternatives are typically more commonly used than one-sided alternatives. Let <span class="math inline">\(\{R_{t}\}_{t=1}^{T}\)</span> denote a random sample from the GWN model. You estimate <span class="math inline">\(\mu_{i}\)</span> using the sample mean:</p>
+<p><span id="eq-HT-muhat"><span class="math display">\[
+\hat{\mu}_{i}=\frac{1}{T}\sum_{t=1}^{T}R_{it}.
+\tag{9.6}\]</span></span></p>
+<p>Under the null hypothesis <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a>, it is assumed that <span class="math inline">\(\mu_{i}=\mu_{i}^{0}\)</span>. Hence, if the null hypothesis is true then <span class="math inline">\(\hat{\mu}_{i}\)</span> computed from data should be close to <span class="math inline">\(\mu_{i}^{0}\)</span>. If <span class="math inline">\(\hat{\mu}_{i}\)</span> is far from <span class="math inline">\(\mu_{i}^{0}\)</span> (either above or below <span class="math inline">\(\mu_{i}^{0}\)</span>) then this evidence casts doubt on the validity of the null hypothesis. Now, there is estimation error in <a href="#eq-HT-muhat">Equation&nbsp;<span>9.6</span></a> which is measured by:</p>
+<p><span id="eq-HT-semuhat"><span class="math display">\[
+\mathrm{se}(\hat{\mu}_{i})=\frac{\sigma_{i}}{\sqrt{T}}.
+\tag{9.7}\]</span></span></p>
+<p>Because you assume <span class="math inline">\(\sigma_{i}\)</span> is known, you also know <span class="math inline">\(\mathrm{se}(\hat{\mu}_{i})\)</span>. Because of estimation error, you don’t expect <span class="math inline">\(\hat{\mu}_{i}\)</span> to equal <span class="math inline">\(\mu_{i}^{0}\)</span> even if the null hypothesis <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a> is true. How far from <span class="math inline">\(\mu_{i}^{0}\)</span> can <span class="math inline">\(\hat{\mu}_{i}\)</span> be if the null hypothesis is true? To answer this question, recall from Chapter <a href="07-GWNModelEstimation-new.html"><span>Chapter&nbsp;7</span></a> that the exact (finite sample) pdf of <span class="math inline">\(\hat{\mu}_{i}\)</span> is the normal distribution:</p>
+<p><span id="eq-HT-pdfmuhat"><span class="math display">\[
+\hat{\mu}_{i}\sim N(\mu_{i},\mathrm{se}(\hat{\mu}_{i})^{2})=N\left(\mu_{i},\frac{\sigma_{i}^{2}}{T}\right).
+\tag{9.8}\]</span></span></p>
+<p>Under the null hypothesis <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a>, the normal distribution for <span class="math inline">\(\hat{\mu}_{i}\)</span> is centered at <span class="math inline">\(\mu_{i}^{0}\)</span>:</p>
+<p><span id="eq-HT-pdfmuhatH0"><span class="math display">\[
+\hat{\mu}_{i}\sim N(\mu_{i}^{0},\mathrm{se}(\hat{\mu}_{i})^{2})=N\left(\mu_{i}^{0},\frac{\sigma_{i}^{2}}{T}\right).
+\tag{9.9}\]</span></span></p>
+<p>From properties of the normal distribution you have:</p>
+<p><span id="eq-HT-probH0"><span class="math display">\[
+\Pr\left(\mu_{i}^{0}-1.96\times\mathrm{se}(\hat{\mu}_{i})\leq\hat{\mu}_{i}\leq\mu_{i}^{0}+1.96\times\mathrm{se}(\hat{\mu}_{i})\right)=0.95.
+\tag{9.10}\]</span></span></p>
+<p>Hence, if the null hypothesis <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a> is true you only expect to see <span class="math inline">\(\hat{\mu}_{i}\)</span> more than <span class="math inline">\(1.96\)</span> values of <span class="math inline">\(\mathrm{se}(\hat{\mu}_{i})\)</span> away from <span class="math inline">\(\mu_{i}^{0}\)</span> with probability 0.05.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> Therefore, it makes intuitive sense to base a test statistic for testing <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a> on a measure of distance between <span class="math inline">\(\hat{\mu}_{i}\)</span> and <span class="math inline">\(\mu_{i}^{0}\)</span> relative to <span class="math inline">\(\mathrm{se}(\hat{\mu}_{i})\)</span>. Such a statistic is the <em>z-score</em>:</p>
+<p><span id="eq-HT-zscore"><span class="math display">\[
+z_{\mu=\mu^{0}}=\frac{\hat{\mu}_{i}-\mu_{i}^{0}}{\mathrm{se}(\hat{\mu}_{i})}=\frac{\hat{\mu}_{i}-\mu_{i}^{0}}{\sigma/\sqrt{T}}.
+\tag{9.11}\]</span></span></p>
+<p>Assuming the null hypothesis <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a> is true, from <a href="#eq-HT-pdfmuhatH0">Equation&nbsp;<span>9.9</span></a> it follows that: <span class="math display">\[
+z_{\mu=\mu^{0}}\sim N(0,1).
+\]</span></p>
+<p>The intuition for using the z-score <a href="#eq-HT-zscore">Equation&nbsp;<span>9.11</span></a> to test <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a> is straightforward. If <span class="math inline">\(z_{\mu=\mu^{0}}\approx0\)</span> then <span class="math inline">\(\hat{\mu}_{i}\approx\mu_{i}^{0}\)</span> and <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a> should not be rejected. In contrast, if <span class="math inline">\(z_{\mu=\mu^{0}}&gt;1.96\)</span> or <span class="math inline">\(z_{\mu=\mu^{0}}&lt;-1.96\)</span> then <span class="math inline">\(\hat{\mu}_{i}\)</span> is more than <span class="math inline">\(1.96\)</span> values of <span class="math inline">\(\mathrm{se}(\hat{\mu}_{i})\)</span> away from <span class="math inline">\(\mu_{i}^{0}\)</span>. From <a href="#eq-HT-probH0">Equation&nbsp;<span>9.10</span></a>, this is very unlikely (less than 5% probability) if <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a> is true. In this case, there is strong data evidence against <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a> and you should reject it. Notice that the condition <span class="math inline">\(z_{\mu=\mu^{0}}&gt;1.96\textrm{ or }z_{\mu=\mu^{0}}&lt;-1.96\)</span> can be simplified as the condition <span class="math inline">\(\left|z_{\mu=\mu^{0}}\right|&gt;1.96\)</span>. When <span class="math inline">\(\left|z_{\mu=\mu^{0}}\right|\)</span> is big, larger than 1.96, you have data evidence against <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a>. Using the value <span class="math inline">\(1.96\)</span> to determine the rejection region for the test ensures that the significance level (probability of Type I error) of the test is exactly 5%:</p>
+<p><span class="math display">\[\begin{align*}
+\Pr(\textrm{Reject } H_{0}|H_{0}\,\textrm{is true}) &amp;= \Pr(S&gt;1.96|\mu_{i}=\mu_{i}^{0}) \\
+&amp;=\Pr\left(\left|z_{\mu=\mu^{0}}\right|&gt;1.96|\mu_{i}=\mu_{i}^{0}\right)=.05
+\end{align*}\]</span></p>
+<p>Hence, our formal test statistic for testing <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a> against <a href="#eq-HT-H1mean2sided">Equation&nbsp;<span>9.4</span></a> is</p>
+<p><span id="eq-testStatZscore"><span class="math display">\[
+S=\left|z_{\mu=\mu^{0}}\right|.
+\tag{9.12}\]</span></span></p>
+<p>The 5% critical value is <span class="math inline">\(cv_{.05}=1.96\)</span>, and you reject <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a> at the 5% significance level if <span class="math inline">\(S&gt;1.96\)</span>.</p>
+<p>In summary, the steps for using <span class="math inline">\(S=\left|z_{\mu=\mu^{0}}\right|\)</span> to test the <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a> against <a href="#eq-HT-H1mean2sided">Equation&nbsp;<span>9.4</span></a> are:</p>
+<ol type="1">
+<li>Set the significance level <span class="math inline">\(\alpha=\Pr(\textrm{Reject } H_{0}|H_{0}\,\textrm{is true})\)</span> and determine the critical value <span class="math inline">\(cv_{\alpha}\)</span> such that <span class="math inline">\(\Pr(S&gt;cv_{\alpha})=\alpha\)</span>. Now,</li>
+</ol>
+<p><span class="math display">\[\begin{align*}
+\Pr(S&gt;cv_{\alpha}) &amp;= \Pr\left(\left|z_{\mu=\mu^{0}}\right|&gt;cv_{\alpha}\right) \\
+&amp;= \Pr\left(z_{\mu=\mu^{0}}&gt;cv_{\alpha}\right)+\Pr\left(z_{\mu=\mu^{0}}&lt;-cv_{\alpha}\right)=\alpha
+\end{align*}\]</span></p>
+<p>which implies that <span class="math inline">\(cv_{\alpha}=-q_{\alpha/2}^{Z}=q_{1-\alpha/2}^{Z}\)</span>, where <span class="math inline">\(q_{\alpha/2}^{Z}\)</span> denotes the <span class="math inline">\(\frac{\alpha}{2}-\)</span>quantile of <span class="math inline">\(Z\sim N(0,1)\)</span>. For example, if <span class="math inline">\(\alpha=.05\)</span> then <span class="math inline">\(cv_{.05}=-q_{.025}^{Z}=1.96.\)</span></p>
+<ol start="2" type="1">
+<li><p>Reject <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a> at the <span class="math inline">\(\alpha\times100\%\)</span> significance level if <span class="math inline">\(S&gt;cv_{\alpha}\)</span>. For example, if <span class="math inline">\(\alpha=.05\)</span> then reject <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a> at the 5% level if <span class="math inline">\(S&gt;1.96\)</span>.</p></li>
+<li><p>Equivalently, reject <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a> at the <span class="math inline">\(\alpha\times100\%\)</span> significance level if the p-value for <span class="math inline">\(S\)</span> is less than <span class="math inline">\(\alpha\)</span>. Here, the <em>p-value</em> is defined as the significance level at which the test is just rejected. Let <span class="math inline">\(Z\sim N(0,1)\)</span>. The p-value is computed as: <span id="eq-HT-pvalue2sided"><span class="math display">\[
+\textrm{p-value} = \Pr(|Z|&gt;S)=\Pr(Z&gt;S)+\Pr(Z&lt;-S) = 2\times \Pr(Z&gt;S)=2\times(1-\Pr(Z&lt;S)).
+\tag{9.13}\]</span></span></p></li>
+</ol>
+<div id="exm-testing-hypothesis-with-the-z-score-using-simulated-data-two-sided-tests" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 9.1 (Testing hypothesis with the z-score using simulated data: two-sided tests) </strong></span>Assume returns follow the GWN model</p>
+<p><span class="math display">\[\begin{eqnarray*}
+R_{t} &amp; = &amp; 0.05+\epsilon_{t},\,t=1,\ldots60,\\
+\epsilon_{t} &amp; \sim &amp; GWN(0,0.10).
+\end{eqnarray*}\]</span></p>
+<p>and you are interested in testing the following hypotheses <span class="math display">\[\begin{align*}
+H_{0}:\mu=0.05\,\,vs.\,\,H_{1}:\mu\neq.05 \\
+H_{0}:\mu=0.06\,\,vs.\,\,H_{1}:\mu\neq.06 \\
+H_{0}:\mu=0.10\,\,vs.\,\,H_{1}:\mu\neq.10 \\
+\end{align*}\]</span></p>
+<p>using the test statistic <a href="#eq-testStatZscore">Equation&nbsp;<span>9.12</span></a> with a 5% significance level. The 5% critical value is <span class="math inline">\(cv_{.05}=1.96\)</span>. One hypothetical sample from the hypothesized model is simulated using:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>n.obs <span class="ot">=</span> <span class="dv">60</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">=</span> <span class="fl">0.05</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">=</span> <span class="fl">0.10</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>ret.sim <span class="ot">=</span> mu <span class="sc">+</span> <span class="fu">rnorm</span>(n.obs, <span class="at">sd =</span> sigma)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The estimate of <span class="math inline">\(\mu\)</span> and the value of <span class="math inline">\(\mathrm{se}(\hat{\mu})\)</span> are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>muhat <span class="ot">=</span> <span class="fu">mean</span>(ret.sim)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>se.muhat <span class="ot">=</span> sigma<span class="sc">/</span><span class="fu">sqrt</span>(n.obs)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(muhat, se.muhat)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.0566 0.0129</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The test statistic <a href="#eq-testStatZscore">Equation&nbsp;<span>9.12</span></a> for testing <span class="math inline">\(H_0:\mu=0.05\)</span> computed from this sample is:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>z.score<span class="fl">.05</span> <span class="ot">=</span> (muhat <span class="sc">-</span> <span class="fl">0.05</span>)<span class="sc">/</span>se.muhat</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>S <span class="ot">=</span> <span class="fu">abs</span>(z.score<span class="fl">.05</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>S</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.508</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The z-score tells us that the estimated mean, <span class="math inline">\(\hat{\mu}=0.0566\)</span>, is 0.58 values of <span class="math inline">\(\mathrm{se}(\hat{\mu})\)</span> away from the hypothesized value <span class="math inline">\(\mu^0=0.05\)</span>. This evidence does not contradict <span class="math inline">\(H_0:\mu=0.05\)</span>. Since <span class="math inline">\(S=0.508 &lt; 1.96\)</span>, you do not reject <span class="math inline">\(H_0:\mu=0.05\)</span> at the 5% significance level. The p-value of the test using <a href="#eq-HT-pvalue2sided">Equation&nbsp;<span>9.13</span></a> is:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>p.value <span class="ot">=</span> <span class="dv">2</span><span class="sc">*</span>(<span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(S))</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>p.value</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.611</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Here, the p-value of 0.611 is less than the significance level <span class="math inline">\(\alpha = 0.05\)</span> so you do not reject the null at the 5% significance level. The p-value tells us that you would reject <span class="math inline">\(H0:\mu=0.05\)</span> at the 61.1% significance level.</p>
+<p>The z-score information for testing <span class="math inline">\(H_0:\mu=0.06\)</span> is:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>z.score<span class="fl">.06</span> <span class="ot">=</span> (muhat <span class="sc">-</span> <span class="fl">0.06</span>)<span class="sc">/</span>se.muhat</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>S <span class="ot">=</span> <span class="fu">abs</span>(z.score<span class="fl">.06</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>S</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.266</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Here, the z-score indicates that <span class="math inline">\(\hat{\mu}=0.0566\)</span> is just 0.266 values of <span class="math inline">\(\mathrm{se}(\hat{\mu})\)</span> away from the hypothesized value <span class="math inline">\(\mu^0=0.06\)</span>. This evidence also does not contradict <span class="math inline">\(H_0:\mu=0.06\)</span>. Since <span class="math inline">\(S=0.226 &lt; 1.96\)</span>, you do not reject <span class="math inline">\(H_0:\mu=0.06\)</span> at the 5% significance level. The p-value of the test is:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>p.value <span class="ot">=</span> <span class="dv">2</span><span class="sc">*</span>(<span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(S))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>p.value</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.79</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The large p-value shows that there is insufficient data to reject <span class="math inline">\(H_0:\mu=0.06\)</span>.</p>
+<p>Last, the z-score information for testing <span class="math inline">\(H_0:\mu=0.10\)</span> is:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>z.score<span class="fl">.10</span> <span class="ot">=</span> (muhat <span class="sc">-</span> <span class="fl">0.10</span>)<span class="sc">/</span>se.muhat</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>S <span class="ot">=</span> <span class="fu">abs</span>(z.score<span class="fl">.10</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>S</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 3.36</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Now, the z-score indicates that <span class="math inline">\(\hat{\mu}=0.0566\)</span> is 3.36 values of <span class="math inline">\(\mathrm{se}(\hat{\mu})\)</span> away from the hypothesized value <span class="math inline">\(\mu^0=0.10\)</span>. This evidence is not in support of <span class="math inline">\(H_0:\mu=0.10\)</span>. Since <span class="math inline">\(S=3.36 &gt; 1.96\)</span>, you reject <span class="math inline">\(H_0:\mu=0.06\)</span> at the 5% significance level. The p-value of the test is:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>p.value <span class="ot">=</span> <span class="dv">2</span><span class="sc">*</span>(<span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(S))</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>p.value</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.000766</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Here, the p-value is much less 5% supporting the rejection of <span class="math inline">\(H_0:\mu=0.06\)</span>.<br>
+<span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+<section id="one-sided-test" class="level4" data-number="9.3.1.2">
+<h4 data-number="9.3.1.2" class="anchored" data-anchor-id="one-sided-test"><span class="header-section-number">9.3.1.2</span> One-sided test</h4>
+<p>Here, I consider testing the null <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a> against the one-sided alternative <a href="#eq-HT-H1mean1sided">Equation&nbsp;<span>9.5</span></a>. For expositional purposes, consider <span class="math inline">\(H_{1}:\mu_{i} &gt; \mu_{i}^{0}\)</span>. This alternative can be equivalently represented as <span class="math inline">\(H_{1}:\mu_{i} - \mu_{i}^{0} &gt; 0\)</span>. That is, under the alternative hypothesis the sign of the difference <span class="math inline">\(\mu_{i} - \mu_{i}^{0}\)</span> is positive. This is why a test against a one-sided alternative is sometimes called a <em>test for sign</em>. As in the previous sub-section, assume that <span class="math inline">\(\sigma_i\)</span> is known and let the significance level be <span class="math inline">\(5\%\)</span>.</p>
+<p>The natural test statistic is the z-score <a href="#eq-HT-zscore">Equation&nbsp;<span>9.11</span></a>. The intuition is straightforward. If <span class="math inline">\(z_{\mu=\mu^0} \approx 0\)</span> then <span class="math inline">\(\hat{\mu}_i \approx \mu_i^0\)</span> and the null should not be rejected. However, if the one-sided alternative is true then you would expect to see <span class="math inline">\(\hat{\mu}_i &gt; \mu_i^0\)</span> and <span class="math inline">\(z_{\mu=\mu^0} &gt; 0\)</span>. How big <span class="math inline">\(z_{\mu=\mu^0}\)</span> needs to be for us to reject the null depends on the significance level. Since under the null <span class="math inline">\(z_{\mu=\mu^0} \sim N(0,1) = Z\)</span>, with a <span class="math inline">\(5\%\)</span> significance level</p>
+<p><span class="math display">\[
+\Pr(\text{Reject } H_0 | H_0 \text{ is true}) = \Pr(z_{\mu=\mu^0} &gt; 1.645) = \Pr(Z &gt; 1.645) = 0.05.
+\]</span> Hence, our <span class="math inline">\(5\%\)</span> one-sided critical value is <span class="math inline">\(cv_{.05}=q_{.95}^Z = 1.645\)</span>, and you reject the null at the <span class="math inline">\(5\%\)</span> significance level if <span class="math inline">\(z_{\mu=\mu^0} &gt;1.645\)</span>.</p>
+<p>In general, the steps for using <span class="math inline">\(z_{\mu=\mu^0}\)</span> to test <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a> against the one-sided alternative <span class="math inline">\(H_{1}:\mu_{i} &gt; \mu_{i}^{0}\)</span> are:</p>
+<ol type="1">
+<li><p>Set the significance level <span class="math inline">\(\alpha=\Pr(\textrm{Reject } H_{0}|H_{0}\,\textrm{is true})\)</span> and determine the critical value <span class="math inline">\(cv_{\alpha}\)</span> such that <span class="math inline">\(\Pr(z_{\mu=\mu^0}&gt;cv_{\alpha})=\alpha\)</span>. Since under the null <span class="math inline">\(z_{\mu=\mu^0} \sim N(0,1) = Z\)</span>, <span class="math inline">\(cv_{\alpha} = q_{1-\alpha}^Z\)</span>.</p></li>
+<li><p>Reject the null hypothesis <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a> at the <span class="math inline">\(\alpha \times 100\%\)</span> significance level if <span class="math inline">\(z_{\mu=\mu^0} &gt; cv_{\alpha}\)</span>.</p></li>
+<li><p>Equivalently, reject <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a> at the <span class="math inline">\(\alpha \times 100\%\)</span> significance level if the one-sided p-value is less than <span class="math inline">\(\alpha\)</span>, where</p></li>
+</ol>
+<p><span class="math display">\[
+\text{p-value} = \Pr(Z &gt; z_{\mu=\mu^0}) = 1 - \Pr(Z \le z_{\mu=\mu^0})
+\]</span></p>
+<div id="exm-testing-hypothesis-with-the-z-score-using-simulated-data-one-sided-tests" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 9.2 (Testing hypothesis with the z-score using simulated data: one-sided tests) </strong></span>Here, I use the simulated GWN return data from the previous example to test <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a> against the one-sided alternative <span class="math inline">\(H_{1}:\mu_{i} &gt; \mu_{i}^{0}\)</span> using a 5% significance level.</p>
+<p>The z-scores and one-sided p-values for testing <span class="math inline">\(H_0:\mu=0.05\)</span>, <span class="math inline">\(H_0:\mu=0.06\)</span>, and <span class="math inline">\(H_0:\mu=0.10\)</span>, computed from the simulated sample are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>z.score<span class="fl">.05</span> <span class="ot">=</span> (muhat <span class="sc">-</span> <span class="fl">0.05</span>)<span class="sc">/</span>se.muhat</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>p.value<span class="fl">.05</span> <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(z.score<span class="fl">.05</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>z.score<span class="fl">.06</span> <span class="ot">=</span> (muhat <span class="sc">-</span> <span class="fl">0.06</span>)<span class="sc">/</span>se.muhat</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>p.value<span class="fl">.06</span> <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(z.score<span class="fl">.06</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>z.score<span class="fl">.10</span> <span class="ot">=</span> (muhat <span class="sc">-</span> <span class="fl">0.10</span>)<span class="sc">/</span>se.muhat</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>p.value<span class="fl">.10</span> <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(z.score<span class="fl">.10</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>ans <span class="ot">=</span> <span class="fu">rbind</span>(<span class="fu">c</span>(z.score<span class="fl">.05</span>, p.value<span class="fl">.05</span>),</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>            <span class="fu">c</span>(z.score<span class="fl">.06</span>, p.value<span class="fl">.06</span>),</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>            <span class="fu">c</span>(z.score<span class="fl">.10</span>, p.value<span class="fl">.10</span>))</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(ans) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Z-score"</span>, <span class="st">"P-value"</span>)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(ans) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"H0:mu=0.05"</span>, <span class="st">"H0:mu=0.06"</span>,<span class="st">"H0:mu=0.10"</span>)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>ans</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;            Z-score P-value</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; H0:mu=0.05   0.508   0.306</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; H0:mu=0.06  -0.266   0.605</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; H0:mu=0.10  -3.365   1.000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Here, you do not reject any of the null hypotheses in favor of the one-sided alternative at the 5% significance level. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+</section>
+<section id="exact-tests-with-sigma-unknown" class="level3" data-number="9.3.2">
+<h3 data-number="9.3.2" class="anchored" data-anchor-id="exact-tests-with-sigma-unknown"><span class="header-section-number">9.3.2</span> Exact tests with <span class="math inline">\(\sigma\)</span> unknown</h3>
+<p>In practice, <span class="math inline">\(\sigma^2\)</span> is unknown and is estimated with <span class="math inline">\(\hat{\sigma}^2\)</span>, and so the exact tests described above are not feasible. Fortunately, an exact test is still available. Instead of using the z-score <a href="#eq-HT-zscore">Equation&nbsp;<span>9.11</span></a>, we use the t-ratio (or t-score)</p>
+<p><span id="eq-HT-t-ratio"><span class="math display">\[
+t_{\mu=\mu^0}=\frac{\hat{\mu}_{i}-\mu_{i}^0}{\widehat{\mathrm{se}}(\hat{\mu}_{i})}=\frac{\hat{\mu}_{i}-\mu_{i}^0}{\hat{\sigma}/\sqrt{T}}.
+\tag{9.14}\]</span></span></p>
+<p>Assuming the null hypothesis <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a> is true, Proposition 7.7 tells us that <a href="#eq-HT-t-ratio">Equation&nbsp;<span>9.14</span></a> is distributed Student’s t with <span class="math inline">\(T-1\)</span> degrees of freedom and is denoted by the random variable <span class="math inline">\(t_{T-1}\)</span>. The steps for using the z-score and the t-ratio are the same for evaluating <a href="#eq-HT-H0mean">Equation&nbsp;<span>9.3</span></a>, but now we use critical values and p-values from <span class="math inline">\(t_{T-1}\)</span>. Our test statistic for the two-sided alternative <span class="math inline">\(H_0:\mu_i \ne \mu_i^0\)</span> is: <span id="eq-HT-testStat-abs-tratio"><span class="math display">\[
+S = \left|t_{\mu=\mu^{0}}\right|,
+\tag{9.15}\]</span></span></p>
+<p>and our test statistic for the one-sided alternative <span class="math inline">\(H_0:\mu_i &gt; \mu_i^0\)</span> is</p>
+<p><span id="eq-HT-testStat-tratio"><span class="math display">\[
+S = t_{\mu=\mu^{0}},
+\tag{9.16}\]</span></span></p>
+<p>Our critical values are determined from the quantiles of the Student’s t with <span class="math inline">\(T-1\)</span> degrees of freedom, <span class="math inline">\(t_{T-1}(1-\alpha/2)\)</span>. For example, if <span class="math inline">\(\alpha=0.05\)</span> and <span class="math inline">\(T-1=60\)</span> then the two-sided critical value is <span class="math inline">\(cv_{.05} = t_{60}(0.975)=2\)</span> (which can be verified using the R function <code>qt()</code>). The two-sided p-value is computed as:</p>
+<p><span class="math display">\[\begin{eqnarray*}
+\textrm{p-value} &amp; = &amp; \Pr(|t_{T-1}|&gt;S)=\Pr(t_{T-1}&gt;S)+\Pr(t_{T-1}&lt;-S)\\
+&amp; = &amp; 2\times \Pr(t_{T-1}&gt;S)=2\times(1-\Pr(t_{T-1}&lt;S)).
+\end{eqnarray*}\]</span></p>
+<p>The one-sided critical value is <span class="math inline">\(cv_{.05} = t_{60}(0.95)=1.67\)</span>, and the one-sided p-value is computed as:</p>
+<p><span class="math display">\[
+\text{p-value} = \Pr(t_{T-1} &gt; S) = 1 - \Pr(t_{T-1} \le S).
+\]</span></p>
+<p>As the sample size gets larger <span class="math inline">\(\hat{\sigma}_{i}\)</span> gets closer to <span class="math inline">\(\sigma_{i}\)</span> and the Student’s t distribution gets closer to the normal distribution. Decisions using the t-ratio and the z-score are almost the same for <span class="math inline">\(T \ge 60\)</span>.</p>
+<div id="exm-testing-hypothesis-with-the-t-ratio-using-simulated-data" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 9.3 (Testing hypothesis with the t-ratio using simulated data) </strong></span>I repeat the hypothesis testing from the previous example this time use the t-ratio <a href="#eq-HT-t-ratio">Equation&nbsp;<span>9.14</span></a> instead of the z-score. Using <span class="math inline">\(T-1=59\)</span> the 5% critical value for the two-sided test is</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qt</span>(<span class="fl">0.975</span>, <span class="at">df=</span><span class="dv">59</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>To compute the t-ratios we first estimate <span class="math inline">\(\mathrm{se}(\hat{\mu})\)</span>:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>sigmahat <span class="ot">=</span> <span class="fu">sd</span>(ret.sim)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>sehat.muhat <span class="ot">=</span> sigmahat<span class="sc">/</span><span class="fu">sqrt</span>(n.obs)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(sehat.muhat, se.muhat)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.0118 0.0129</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Here, <span class="math inline">\(\widehat{\mathrm{se}}(\hat{\mu}) = 0.0118 &lt; 0.0129 = \mathrm{se}(\hat{\mu})\)</span> and so the t-ratios will be slightly larger than the z-scores. The t-ratios and test statistics for the three hypotheses are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>t.ratio<span class="fl">.05</span> <span class="ot">=</span> (muhat <span class="sc">-</span> <span class="fl">0.05</span>)<span class="sc">/</span>sehat.muhat</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>t.ratio<span class="fl">.06</span> <span class="ot">=</span> (muhat <span class="sc">-</span> <span class="fl">0.06</span>)<span class="sc">/</span>sehat.muhat</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>t.ratio<span class="fl">.10</span> <span class="ot">=</span> (muhat <span class="sc">-</span> <span class="fl">0.10</span>)<span class="sc">/</span>sehat.muhat</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>S<span class="fl">.05</span> <span class="ot">=</span> <span class="fu">abs</span>(t.ratio<span class="fl">.05</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>S<span class="fl">.06</span> <span class="ot">=</span> <span class="fu">abs</span>(t.ratio<span class="fl">.06</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>S<span class="fl">.10</span> <span class="ot">=</span> <span class="fu">abs</span>(t.ratio<span class="fl">.10</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>ans <span class="ot">=</span> <span class="fu">c</span>(S<span class="fl">.05</span>, S<span class="fl">.06</span>, S<span class="fl">.10</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(ans) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"S.05"</span>, <span class="st">"S.06"</span>, <span class="st">"S.07"</span>)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>ans</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  S.05  S.06  S.07 </span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.558 0.293 3.696</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>As expected the test statistics computed from the t-ratios are slightly larger than the tests computed from the z-scores. The first two statistics are less than 2, and the third statistic is bigger than 2 and so we reach the same decisions as before. The p-values of the three tests are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>S.vals <span class="ot">=</span> <span class="fu">c</span>(S<span class="fl">.05</span>, S<span class="fl">.06</span>, S<span class="fl">.10</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>p.values <span class="ot">=</span> <span class="dv">2</span><span class="sc">*</span>(<span class="dv">1</span> <span class="sc">-</span> <span class="fu">pt</span>(S.vals, <span class="at">df=</span><span class="dv">59</span>))</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>p.values</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.578747 0.770895 0.000482</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Here, the p-values computed from <span class="math inline">\(t_{59}\)</span> are very similar to those computed from <span class="math inline">\(Z\sim N(0,1)\)</span>. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<p>You can derive an exact test for testing hypothesis about the value of <span class="math inline">\(\mu_{i}\)</span> based on the z-score or the t-ratio, but you cannot derive exact tests for the values of <span class="math inline">\(\sigma_{i}\)</span> or for the values of <span class="math inline">\(\rho_{ij}\)</span> based on z-scores. Exact tests for these parameters are much more complicated. While t-ratios for the values of <span class="math inline">\(\sigma_{i}\)</span> or for the values of <span class="math inline">\(\rho_{ij}\)</span> do not have exact t-distributions in finite samples, as the sample size gets large the distributions of the t-ratios get closer and closer to the normal distribution due to the CLT. This motivates the use of so-called asymptotic z-scores discussed in the next sub-section.</p>
+</section>
+<section id="z-scores-under-asymptotic-normality-of-estimators" class="level3" data-number="9.3.3">
+<h3 data-number="9.3.3" class="anchored" data-anchor-id="z-scores-under-asymptotic-normality-of-estimators"><span class="header-section-number">9.3.3</span> Z-scores under asymptotic normality of estimators</h3>
+<p>Let <span class="math inline">\(\hat{\theta}\)</span> denote an estimator for <span class="math inline">\(\theta\)</span>. Here, I allow <span class="math inline">\(\theta\)</span> to be a GWN model parameter or a function of GWN model parameters. For example, in the GWN model <span class="math inline">\(\theta\)</span> could be <span class="math inline">\(\mu_{i}\)</span>, <span class="math inline">\(\sigma_{i},\)</span>, <span class="math inline">\(\rho_{ij}\)</span>, <span class="math inline">\(q_{\alpha}^R\)</span>, <span class="math inline">\(\mathrm{VaR}_{\alpha}\)</span> or <span class="math inline">\(\mathrm{SR}_i\)</span>. As you have seen, the CLT (and the delta method if needed) justifies the asymptotic normal distribution:</p>
+<p><span id="eq-HypothesisAsymptoticNormality"><span class="math display">\[
+\hat{\theta}\sim N(\theta,\widehat{\mathrm{se}}(\hat{\theta})^{2}),
+\tag{9.17}\]</span></span></p>
+<p>for large enough sample size <span class="math inline">\(T\)</span>, where <span class="math inline">\(\widehat{\mathrm{se}}(\hat{\theta})\)</span> is the estimated standard error for <span class="math inline">\(\hat{\theta}\)</span>. Consider testing:</p>
+<p><span id="eq-HypothesisTwoSided"><span class="math display">\[
+H_{0}:\theta=\theta_{0}\text{ vs. }H_{1}:\theta\neq\theta_{0}.
+\tag{9.18}\]</span></span></p>
+<p>Under <span class="math inline">\(H_{0},\)</span> the asymptotic normality result <a href="#eq-HypothesisAsymptoticNormality">Equation&nbsp;<span>9.17</span></a> implies that the z-score for testing <a href="#eq-HypothesisTwoSided">Equation&nbsp;<span>9.18</span></a> has a standard normal distribution for large enough sample size <span class="math inline">\(T\)</span>:</p>
+<p><span id="eq-HypothesisTstatisticZ"><span class="math display">\[
+z_{\theta=\theta_{0}}=\frac{\hat{\theta}-\theta_{0}}{\widehat{\mathrm{se}}(\hat{\theta})}\sim N(0,1)=Z.
+\tag{9.19}\]</span></span></p>
+<p>The intuition for using the z-score <a href="#eq-HypothesisTstatisticZ">Equation&nbsp;<span>9.19</span></a> is straightforward. If <span class="math inline">\(z_{\theta=\theta_{0}}\approx0\)</span> then <span class="math inline">\(\hat{\theta}\approx\theta_{0},\)</span> and <span class="math inline">\(H_{0}:\theta=\theta_{0}\)</span> should not be rejected. On the other hand, if <span class="math inline">\(|z_{\theta=\theta_{0}}|&gt;2\)</span>, say, then <span class="math inline">\(\hat{\theta}\)</span> is more than <span class="math inline">\(2\)</span> values of <span class="math inline">\(\widehat{\mathrm{se}}(\hat{\theta})\)</span> away from <span class="math inline">\(\theta_{0}.\)</span> This is very unlikely if <span class="math inline">\(\theta=\theta_{0}\)</span> because <span class="math inline">\(\hat{\theta}\sim N(\theta_{0},\mathrm{\widehat{se}}(\hat{\theta})^{2}),\)</span> so <span class="math inline">\(H_{0}:\theta\neq\theta_{0}\)</span> should be rejected. Therefore, the test statistic for testing <a href="#eq-HypothesisTstatisticZ">Equation&nbsp;<span>9.19</span></a> is <span class="math inline">\(S = |z_{\theta=\theta_{0}}|\)</span>.</p>
+<p>The steps for using the z-score <a href="#eq-HypothesisTstatisticZ">Equation&nbsp;<span>9.19</span></a> with its critical value to test the hypotheses <a href="#eq-HypothesisTwoSided">Equation&nbsp;<span>9.18</span></a> are:</p>
+<ol type="1">
+<li><p>Set the significance level <span class="math inline">\(\alpha\)</span> of the test and determine the two-sided critical value <span class="math inline">\(cv_{\alpha/2}\)</span>. Using <a href="#eq-HypothesisAsymptoticNormality">Equation&nbsp;<span>9.17</span></a>, the critical value, <span class="math inline">\(cv_{\alpha/2},\)</span> is determined using: <span class="math display">\[\begin{align*}
+\Pr(|Z| &amp; \geq cv_{\alpha/2})=\alpha\\
+&amp; \Rightarrow cv_{\alpha/2}=-q_{\alpha/2}^{Z}=q_{1-\alpha/2}^{Z},
+\end{align*}\]</span> where <span class="math inline">\(q_{\alpha/2}^{Z}\)</span> denotes the <span class="math inline">\(\frac{\alpha}{2}-\)</span>quantile of <span class="math inline">\(N(0,1)\)</span>. A commonly used significance level is <span class="math inline">\(\alpha=0.05\)</span> and the corresponding critical value is <span class="math inline">\(cv_{.025}=-q_{.025}^{Z}=q_{.975}^{Z}=1.96\approx2\)</span>.</p></li>
+<li><p>Reject <a href="#eq-HypothesisTwoSided">Equation&nbsp;<span>9.18</span></a> at the <span class="math inline">\(100\times\alpha\)</span>% significance level if: <span class="math display">\[
+S = |z_{\theta=\theta_{0}}|=\left\vert \frac{\hat{\theta}-\theta^{0}}{\widehat{\mathrm{se}}(\hat{\theta})}\right\vert &gt;cv_{\alpha/2}.
+\]</span> If the significance level is <span class="math inline">\(\alpha=0.05\)</span>, then reject <a href="#eq-HypothesisTwoSided">Equation&nbsp;<span>9.18</span></a> at the 5% level using the rule-of-thumb: <span class="math display">\[
+S=|z_{\theta=\theta_{0}}|&gt;2.
+\]</span></p></li>
+</ol>
+<p>The steps for using the z-score <a href="#eq-HypothesisTstatisticZ">Equation&nbsp;<span>9.19</span></a> with its p-value to test the hypotheses <a href="#eq-HypothesisTwoSided">Equation&nbsp;<span>9.18</span></a> are:</p>
+<ol type="1">
+<li><p>Determine the two-sided p-value. The p-value of the two-sided test is the significance level at which the test is just rejected. From <a href="#eq-HypothesisAsymptoticNormality">Equation&nbsp;<span>9.17</span></a>, the two-sided p-value is defined by <span id="eq-HypothesisPvalue2sided"><span class="math display">\[
+\textrm{p-value}=\Pr\left(|Z|&gt;|z_{\theta=\theta_{0}}|\right)=2\times(1-\Pr\left(Z\leq|z_{\theta=\theta_{0}}|\right).
+\tag{9.20}\]</span></span></p></li>
+<li><p>Reject <a href="#eq-HypothesisTwoSided">Equation&nbsp;<span>9.18</span></a> at the <span class="math inline">\(100\times\alpha\)</span>% significance level if the p-value <a href="#eq-HypothesisPvalue2sided">Equation&nbsp;<span>9.20</span></a> is less than <span class="math inline">\(\alpha\)</span>.</p></li>
+</ol>
+<div id="exm-using-the-z-score-to-test-hypothesis-about-mu-in-the-gwn-model" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 9.4 (Using the z-score to test hypothesis about () in the GWN model) </strong></span>Consider using the z-score <a href="#eq-HypothesisTstatisticZ">Equation&nbsp;<span>9.19</span></a> to test <span class="math inline">\(H_{0}:\,\mu_{i}=0\,vs.\,H_{1}:\mu_{i}\neq0\)</span> (<span class="math inline">\(i=\)</span>Microsoft, Starbucks, S&amp;P 500) using a 5% significance level. First, calculate the GWN model estimates for <span class="math inline">\(\mu_{i}\)</span>:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>n.obs <span class="ot">=</span> <span class="fu">nrow</span>(gwnMonthlyRetC) </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>muhat.vals <span class="ot">=</span> <span class="fu">apply</span>(gwnMonthlyRetC, <span class="dv">2</span>, mean) </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>muhat.vals</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    MSFT    SBUX   SP500 </span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.00413 0.01466 0.00169</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Next, calculate the estimated standard errors:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>sigmahat.vals <span class="ot">=</span> <span class="fu">apply</span>(gwnMonthlyRetC, <span class="dv">2</span>, sd) </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>se.muhat <span class="ot">=</span> sigmahat.vals<span class="sc">/</span><span class="fu">sqrt</span>(n.obs) </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>se.muhat</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    MSFT    SBUX   SP500 </span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.00764 0.00851 0.00370</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Then calculate the z-scores and test statistics:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>z.scores <span class="ot">=</span> muhat.vals<span class="sc">/</span>se.muhat </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>S.vals <span class="ot">=</span> <span class="fu">abs</span>(z.scores)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>S.vals</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  MSFT  SBUX SP500 </span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.540 1.722 0.457</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Since the absolute value of all of the z-scores are less than two, you do not reject <span class="math inline">\(H_{0}:\,\mu_{i}=0\)</span> at the 5% level for all assets.</p>
+<p>The p-values for all of the test statistics are computed using:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span><span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span><span class="fu">pnorm</span>(S.vals))</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   MSFT   SBUX  SP500 </span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.5893 0.0851 0.6480</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Since all p-values are greater than <span class="math inline">\(\alpha=0.05\)</span>, you reject <span class="math inline">\(H_{0}:\,\mu_{i}=0\)</span> at the 5% level for all assets. The p-value for Starbucks is the smallest at 0.0851. Here, you can reject <span class="math inline">\(H_{0}:\,\mu_{SBUX}=0\)</span> at the 8.51% level. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div id="exm-using-the-z-score-to-test-hypothesis-about-rho-in-the-gwn-model" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 9.5 (Using the z-score to test hypothesis about <span class="math inline">\(\rho\)</span> in the GWN model) </strong></span>Consider using the z-score <a href="#eq-HypothesisTstatisticZ">Equation&nbsp;<span>9.19</span></a> to test the hypotheses:</p>
+<p><span id="eq-HT-H0Rho"><span class="math display">\[
+H_{0}:\,\rho_{ij}=0.5\,vs.\,H_{1}:\rho_{ij}\neq0.5.
+\tag{9.21}\]</span></span></p>
+<p>using a 5% significance level. Here, you use the result from the GWN model that for large enough <span class="math inline">\(T\)</span>: <span class="math display">\[
+\hat{\rho}_{ij}\sim N\left(\rho_{ij},\,\widehat{\mathrm{se}}(\hat{\rho}_{ij})^2\right),\,\widehat{\mathrm{se}}(\hat{\rho}_{ij})=\frac{1-\hat{\rho}_{ij}^{2}}{\sqrt{T}}.
+\]</span> Then the z-score for testing <a href="#eq-HT-H0Rho">Equation&nbsp;<span>9.21</span></a> has the form: <span id="eq-HT-RhoStat"><span class="math display">\[
+z_{\rho_{ij}=0.5}=\frac{\hat{\rho}_{ij}-0.5}{\widehat{\mathrm{se}}(\hat{\rho}_{ij})}=\frac{\hat{\rho}_{ij}-0.5}{\left(1-\hat{\rho}_{ij}^{2}\right)/\sqrt{T}}.
+\tag{9.22}\]</span></span> To compute the z-scores, first, calculate the GWN model estimates for <span class="math inline">\(\rho_{ij}\)</span>:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>corhat.mat <span class="ot">=</span> <span class="fu">cor</span>(gwnMonthlyRetC) </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>rhohat.vals <span class="ot">=</span> corhat.mat[<span class="fu">lower.tri</span>(corhat.mat)] </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(rhohat.vals) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"MSFT.SBUX"</span>, <span class="st">"MSFT.SP500"</span>, <span class="st">"SBUX.SP500"</span>) </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>rhohat.vals</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  MSFT.SBUX MSFT.SP500 SBUX.SP500 </span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      0.341      0.617      0.457</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Next, calculate estimated standard errors:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>se.rhohat <span class="ot">=</span> (<span class="dv">1</span> <span class="sc">-</span> rhohat.vals<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="fu">sqrt</span>(n.obs) </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>se.rhohat</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  MSFT.SBUX MSFT.SP500 SBUX.SP500 </span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     0.0674     0.0472     0.0603</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Then calculate the z-scores <a href="#eq-HT-RhoStat">Equation&nbsp;<span>9.22</span></a> and test statistics:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>z.scores <span class="ot">=</span> (rhohat.vals <span class="sc">-</span> <span class="fl">0.5</span>)<span class="sc">/</span>se.rhohat </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>S.vals <span class="ot">=</span> <span class="fu">abs</span>(z.scores)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>S.vals</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  MSFT.SBUX MSFT.SP500 SBUX.SP500 </span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      2.361      2.482      0.706</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Here, the absolute value of the z-scores for <span class="math inline">\(\rho_{MSFT,SBUX}\)</span> and <span class="math inline">\(\rho_{MSFT,SP500}\)</span> are greater than 2 whereas the absolute value of the z-score for <span class="math inline">\(\rho_{SBUX,SP500}\)</span> is less than 2. Hence, for the pairs (MSFT, SBUX) and (MSFT, SP500) you cannot reject the null <a href="#eq-HT-H0Rho">Equation&nbsp;<span>9.21</span></a> at the 5% level but for the pair (SBUX, SP500) you can reject the null at the 5% level. The p-values for the test statistics are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span><span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span><span class="fu">pnorm</span>(S.vals))</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  MSFT.SBUX MSFT.SP500 SBUX.SP500 </span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     0.0182     0.0130     0.4804</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Here, the p-values for the pairs (MSFT,SBUX) and (MSFT,SP500) are less than 0.05 and the p-value for the pair (SBUX, SP500) is much greater than 0.05. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div id="exm-using-the-z-score-to-test-hypothesis-about-asset-sharpe-ratios-in-the-gwn-model" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 9.6 (Using the z-score to test hypothesis about asset Sharpe ratios in the GWN model) </strong></span>Consider using the z-score to test the hypotheses:</p>
+<p><span class="math display">\[
+H_0: \mathrm{SR}_i = \frac{\mu_i - r_f}{\sigma_i} = 0 \text{ vs. } H_1: \mathrm{SR}_i &gt; 0
+\]</span> using a 5% significance level. In Chapter <a href="08-bootstrap-new.html"><span>Chapter&nbsp;8</span></a> I used the delta method to show that, for large enough <span class="math inline">\(T\)</span>:</p>
+<p><span class="math display">\[
+\widehat{\mathrm{SR}}_i \sim N\left(\mathrm{SR}_i, \widehat{\mathrm{se}}\left(\widehat{\mathrm{SR}}_i\right)^2\right), ~  \widehat{\mathrm{se}}\left(\widehat{\mathrm{SR}}_i\right) = \frac{1}{\sqrt{T}}\sqrt{1+\frac{1}{2}\widehat{\mathrm{SR}}_i^2}
+\]</span> Then, the z-score has the form</p>
+<p><span class="math display">\[
+z_{\mathrm{SR}=0} = \frac{\widehat{\mathrm{SR}_i} - 0}{\widehat{\mathrm{se}}\left(\widehat{\mathrm{SR}}_i\right)} = \frac{\widehat{\mathrm{SR}}_i}{\frac{1}{\sqrt{T}}\sqrt{1+\frac{1}{2}\widehat{\mathrm{SR}}_i^2}} = \frac{\sqrt{T} \times \widehat{\mathrm{SR}}_i}{\sqrt{1+\frac{1}{2}\widehat{\mathrm{SR}}_i^2}}
+\]</span></p>
+<p><span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+<section id="relationship-between-hypothesis-tests-and-confidence-intervals" class="level3" data-number="9.3.4">
+<h3 data-number="9.3.4" class="anchored" data-anchor-id="relationship-between-hypothesis-tests-and-confidence-intervals"><span class="header-section-number">9.3.4</span> Relationship between hypothesis tests and confidence intervals</h3>
+<p>Consider testing the hypotheses <a href="#eq-HypothesisTwoSided">Equation&nbsp;<span>9.18</span></a> at the 5% significance level using the z-score <a href="#eq-HypothesisTstatisticZ">Equation&nbsp;<span>9.19</span></a>. The rule-of-thumb decision rule is to reject <span class="math inline">\(H_{0}:\,\theta=\theta_{0}\)</span> if <span class="math inline">\(|z_{\theta=\theta_{0}}|&gt;2\)</span>. This implies that:</p>
+<p><span class="math display">\[\begin{eqnarray*}
+\frac{\hat{\theta}-\theta_{0}}{\widehat{\mathrm{se}}(\hat{\theta})} &amp; &gt; &amp; 2\,\mathrm{~ or   }\,\frac{\hat{\theta}-\theta_{0}}{\widehat{\mathrm{se}}(\hat{\theta})}&lt;-2,
+\end{eqnarray*}\]</span></p>
+<p>which further implies that: <span class="math display">\[
+\theta_{0}&lt;\hat{\theta}-2\times\widehat{\mathrm{se}}(\hat{\theta})\,\mathrm{\,or}\,\,\theta_{0}&gt;\hat{\theta}+2\times\widehat{\mathrm{se}}(\hat{\theta}).
+\]</span> Recall the definition of an approximate 95% confidence interval for <span class="math inline">\(\theta\)</span>: <span class="math display">\[
+\hat{\theta}\pm2\times\widehat{\mathrm{se}}(\hat{\theta})=\left[\hat{\theta}-2\times\widehat{\mathrm{se}}(\hat{\theta}),\,\,\hat{\theta}+2\times\widehat{\mathrm{se}}(\hat{\theta})\right].
+\]</span> Notice that if <span class="math inline">\(|z_{\theta=\theta_{0}}|&gt;2\)</span> then <span class="math inline">\(\theta_{0}\)</span> does not lie in the approximate 95% confidence interval for <span class="math inline">\(\theta\)</span>. Hence, you can reject <span class="math inline">\(H_{0}:\,\theta=\theta_{0}\)</span> at the 5% significance level if <span class="math inline">\(\theta_{0}\)</span> does not lie in the 95% confidence for <span class="math inline">\(\theta\)</span>. This result allows you to have a deeper understanding of the 95% confidence interval for <span class="math inline">\(\theta\)</span>: it contains all values of <span class="math inline">\(\theta_{0}\)</span> for which you cannot reject <span class="math inline">\(H_{0}:\,\theta=\theta_{0}\)</span> at the 5% significance level.</p>
+<p>This duality between two-sided hypothesis tests and confidence intervals makes hypothesis testing for individual parameters particularly simple. As part of estimation, you calculate estimated standard errors and form approximate 95% confidence intervals. Then when you look at the approximate 95% confidence interval, it gives us all values of <span class="math inline">\(\theta_{0}\)</span> for which you cannot reject <span class="math inline">\(H_{0}:\,\theta=\theta_{0}\)</span> at the 5% significance level (approximately).</p>
+<div id="exm-hypothesis-testing-for-mu-i-rho-ij-and-sharpe-ratios-using-95-confidence-intervals" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 9.7 (Hypothesis testing for <span class="math inline">\(\mu_{i}\)</span>, <span class="math inline">\(\rho_{ij}\)</span>, and <span class="math inline">\(\mathrm{SR}_i\)</span> using 95% confidence intervals) </strong></span>For the example data, the approximate 95% confidence intervals for <span class="math inline">\(\mu_{i}\)</span> for Microsoft, Starbucks and the S&amp;P 500 index are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>lower <span class="ot">=</span> muhat.vals <span class="sc">-</span> <span class="dv">2</span><span class="sc">*</span>se.muhat </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>upper <span class="ot">=</span> muhat.vals <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>se.muhat </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(lower, upper)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          lower   upper</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; MSFT  -0.01116 0.01941</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SBUX  -0.00237 0.03168</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SP500 -0.00570 0.00908</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Consider testing <span class="math inline">\(H_{0}:\mu_{i}=0\)</span> at the 5% level. Here you see that <span class="math inline">\(\mu_{i}^{0}=0\)</span> lies in all of the 95% confidence intervals and so you do not reject <span class="math inline">\(H_{0}:\mu_{i}=0\)</span> at the 5% level for any asset. Each interval gives the values of <span class="math inline">\(\mu_{i}^{0}\)</span> for which you cannot reject <span class="math inline">\(H_{0}:\mu_{i}=\mu_{i}^{0}\)</span> at the 5% level. For example, for Microsoft you cannot reject the hypothesis (at the 5% level) that <span class="math inline">\(\mu_{MSFT}\)</span> is as small as -0.011 or as large as 0.019.</p>
+<p>Next, the approximate 95% confidence intervals for <span class="math inline">\(\rho_{ij}\)</span> for the pairs <span class="math inline">\(\rho_{MSFT,SBUX}\)</span>, <span class="math inline">\(\rho_{MSFT,SP500}\)</span>, and <span class="math inline">\(\rho_{SBUX,SP500}\)</span> are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>lower <span class="ot">=</span> rhohat.vals <span class="sc">-</span> <span class="dv">2</span><span class="sc">*</span>se.rhohat </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>upper <span class="ot">=</span> rhohat.vals <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>se.rhohat </span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(lower, upper)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;            lower upper</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; MSFT.SBUX  0.206 0.476</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; MSFT.SP500 0.523 0.712</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SBUX.SP500 0.337 0.578</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Consider testing <span class="math inline">\(H_{0}:\rho_{ij}=0.5\)</span> for all pairs of assets. Here, you see that <span class="math inline">\(\rho_{ij}^{0}=0.5\)</span> is not in the approximate 95% confidence intervals for <span class="math inline">\(\rho_{MSFT,SBUX}\)</span> and <span class="math inline">\(\rho_{MSFT,SP500}\)</span> but is in the approximate 95% confidence interval for <span class="math inline">\(\rho_{SBUX,SP500}\)</span>. Hence, you can reject <span class="math inline">\(H_{0}:\rho_{ij}=0.5\)</span> at the 5% significance level for <span class="math inline">\(\rho_{MSFT,SBUX}\)</span> and <span class="math inline">\(\rho_{MSFT,SP500}\)</span> but not for <span class="math inline">\(\rho_{SBUX,SP500}\)</span>.</p>
+<ul>
+<li>Add SR info here</li>
+</ul>
+<p><span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+</section>
+<section id="coefficient-tests-between-model-coefficients-for-two-assets" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="coefficient-tests-between-model-coefficients-for-two-assets"><span class="header-section-number">9.4</span> Coefficient tests between model coefficients for two assets</h2>
+<p>In this section I consider hypothesis tests for coefficients in the bivariate GWN model for asset returns.</p>
+<section id="test-for-equal-means-between-two-assets" class="level3" data-number="9.4.1">
+<h3 data-number="9.4.1" class="anchored" data-anchor-id="test-for-equal-means-between-two-assets"><span class="header-section-number">9.4.1</span> Test for equal means between two assets</h3>
+<p>Often it is of interest to test if the expected returns on two assets are the same:</p>
+<p><span class="math display">\[
+H_{0}:\mu_{1}=\mu_{2}\,\textrm{vs. } H_{1}:\mu_{1}\neq\mu_{2}.
+\]</span></p>
+<p>Notice that this hypothesis is not of the form that the two coefficients equal a specific value (e.g.&nbsp;<span class="math inline">\(\mu_1 = \mu_2 = 0.05\)</span>). However, you can transform the hypothesis into one in which a coefficient equals a specific value by considering the differences in the expected returns. In particular, the relation <span class="math inline">\(\mu_1 = \mu_2\)</span> is equivalent to the relation <span class="math inline">\(\delta = \mu_1 - \mu_2 = 0\)</span>. Hence, you can reformulate the hypothesis of equal expected returns to the hypothesis that the difference in expected returns is equal to zero:</p>
+<p><span id="eq-HT-equalmeans"><span class="math display">\[
+H_{0}:\delta = \mu_{1}-\mu_{2}=0\,\textrm{vs. } H_{1}:\delta = \mu_{1}-\mu_{2} \neq 0.
+\tag{9.23}\]</span></span></p>
+<p>Now, you have test in the form of the coefficient tests you considered earlier.</p>
+<p>The parameter <span class="math inline">\(\delta = \mu_1 - \mu_2\)</span> can be estimated with the plug-in estimator:</p>
+<p><span class="math display">\[
+\hat{\delta} = \hat{\mu}_1 - \hat{\mu}_2.
+\]</span></p>
+<p>To form a z-score, you require an estimate of <span class="math inline">\(\mathrm{se}(\hat{\delta})\)</span>. Now,</p>
+<p><span id="eq-HT-vardeltahat"><span class="math display">\[
+\mathrm{var}(\hat{\delta}) = \mathrm{var}(\hat{\mu}_1-\hat{\mu}_2)
+= \mathrm{var}(\hat{\mu}_1) + \mathrm{var}(\hat{\mu}_2) - 2\mathrm{cov}(\hat{\mu}_1,\hat{\mu}_2).
+\tag{9.24}\]</span></span></p>
+<p>To evaluate <a href="#eq-HT-vardeltahat">Equation&nbsp;<span>9.24</span></a>, you use the result from Chapter 7 that the joint distribution of the vector <span class="math inline">\((\hat{\mu}_1,\hat{\mu}_2)'\)</span> is multivariate normal: <span class="math display">\[
+\left( \begin{array}{c} \hat{\mu}_1 \\ \hat{\mu}_2 \end{array} \right) = N \left( \left( \begin{array}{c} \mu_1 \\ \mu_2 \end{array} \right), ~ \frac{1}{T} \left( \begin{array}{cc} \hat{\sigma}_1^2 &amp; \hat{\sigma}_{12} \\
+\hat{\sigma}_{12} &amp; \hat{\sigma}_2^2 \end{array} \right) \right),
+\]</span></p>
+<p>for large enough <span class="math inline">\(T\)</span>. Then</p>
+<p><span class="math display">\[
+\widehat{\mathrm{var}}(\hat{\delta}) = \frac{1}{T}(\hat{\sigma}_1^2 + \hat{\sigma}_2^2 - 2\hat{\sigma}_{12}),
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\widehat{\mathrm{se}}(\hat{\delta}) = \sqrt{\frac{1}{T}(\hat{\sigma}_1^2 + \hat{\sigma}_2^2 - 2\hat{\sigma}_{12})}.
+\]</span></p>
+<p>you can test <a href="#eq-HT-equalmeans">Equation&nbsp;<span>9.23</span></a> using the z-score:</p>
+<p><span id="eq-HT-zscoredeltahat"><span class="math display">\[
+z_{\delta=0} = \frac{\hat{\delta}}{\widehat{\mathrm{se}}(\hat{\delta})} = \frac{\hat{\mu}_1 - \hat{\mu}_2}{\sqrt{\frac{1}{T}(\hat{\sigma}_1^2 + \hat{\sigma}_2^2 - 2\hat{\sigma}_{12})}},
+\tag{9.25}\]</span></span></p>
+<p>with the test statistic <span class="math inline">\(S=\left| z_{\delta=0} \right|\)</span>.</p>
+<p>The estimate <span class="math inline">\(\widehat{\mathrm{var}}(\hat{\delta})\)</span> can also be computed using the delta method. Define <span class="math inline">\(\theta = (\mu_1,\mu_2)'\)</span> and <span class="math inline">\(f(\theta)=\delta = \mu_1 - \mu_2\)</span>. The gradient of <span class="math inline">\(f(\theta)\)</span> is:</p>
+<p><span class="math display">\[
+g(\theta) = \left(\begin{array}{c} 1 \\ 1 \end{array}  \right),
+\]</span></p>
+<p>and <span class="math inline">\(\widehat{\mathrm{var}}(\hat{\delta})\)</span> can be computed as:</p>
+<p><span class="math display">\[\begin{align*}
+\widehat{\mathrm{var}}(\hat{\delta}) &amp;= g(\hat{\theta})'\widehat{\mathrm{var}}(\hat{\theta})g(\hat{\theta})
+= (1, -1)' \left( \begin{array}{cc} \frac{\hat{\sigma}_1^2}{T} &amp; \frac{\hat{\sigma}_{12}}{T} \\ \frac{\hat{\sigma}_{12}}{T} &amp; \frac{\hat{\sigma}_2^2}{T} \end{array} \right) \left( \begin{array}{c} 1 \\ -1 \end{array}   \right) \\
+&amp;= \frac{1}{T}(\hat{\sigma}_1^2 + \hat{\sigma}_2^2 - 2\hat{\sigma}_{12}).
+\end{align*}\]</span></p>
+<div id="exm-testing-that-microsoft-and-starbucks-have-the-same-expected-return" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 9.8 (Testing that Microsoft and Starbucks have the same expected return.) </strong></span>Let’s use the z-score <a href="#eq-HT-zscoredeltahat">Equation&nbsp;<span>9.25</span></a> to test the hypothesis that the expected returns on Microsoft and Starbucks are the same using a 5% significance level. The R code to compute the z-score and test statistic is:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>delta.hat <span class="ot">=</span> muhat.vals[<span class="st">"MSFT"</span>] <span class="sc">-</span> muhat.vals[<span class="st">"SBUX"</span>]</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>sig2hat.vals <span class="ot">=</span> sigmahat.vals<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>covhat <span class="ot">=</span> <span class="fu">cov</span>(gwnMonthlyRetC[, <span class="fu">c</span>(<span class="st">"MSFT"</span>, <span class="st">"SBUX"</span>)])[<span class="dv">1</span>,<span class="dv">2</span>]</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>sehat.deltahat <span class="ot">=</span> <span class="fu">sqrt</span>((sig2hat.vals[<span class="st">"MSFT"</span>]<span class="sc">+</span>sig2hat.vals[<span class="st">"SBUX"</span>]<span class="sc">-</span><span class="dv">2</span><span class="sc">*</span>covhat)<span class="sc">/</span>n.obs)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>z.score.delta <span class="ot">=</span> delta.hat<span class="sc">/</span>sehat.deltahat</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>S<span class="ot">=</span> <span class="fu">abs</span>(z.score.delta)</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>ans <span class="ot">=</span> <span class="fu">c</span>(delta.hat, sehat.deltahat, S)</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(ans) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Estimate"</span>, <span class="st">"Std Error"</span>, <span class="st">"Test Statistic"</span>)</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>ans</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       Estimate      Std Error Test Statistic </span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        -0.0105         0.0093         1.1323</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Here, <span class="math inline">\(\hat{\delta}=-0.0105\)</span>, <span class="math inline">\(\widehat{\mathrm{se}}(\hat{\delta})=0.0093\)</span> and <span class="math inline">\(S=1.1323\)</span>. Since <span class="math inline">\(S &lt; 2\)</span> you do not reject <span class="math inline">\(H_0:\delta = \mu_{msft} - \mu_{sbux}=0\)</span> at the 5% level. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+<section id="test-for-equal-sharpe-ratios-between-two-assets" class="level3" data-number="9.4.2">
+<h3 data-number="9.4.2" class="anchored" data-anchor-id="test-for-equal-sharpe-ratios-between-two-assets"><span class="header-section-number">9.4.2</span> Test for equal Sharpe ratios between two assets</h3>
+<p>In the previous section, I considered testing if two assets have the same expected return. It is important to recognize that even if two assets have the same mean return they may have different standard deviations (volatilities) and, hence, different risks. Often, it is more interesting to test the hypothesis that two assets have the same reward-to-risk (i.e., Sharpe) ratios:</p>
+<p><span class="math display">\[
+H_{0}:\mathrm{SR}_1 = \frac{\mu_{1}-r_f}{\sigma_1}=\mathrm{SR}_2 = \frac{\mu_{2}-r_f}{\sigma_2}\,\textrm{vs. } H_{1}:\mathrm{SR}_1\neq\mathrm{SR}_2.
+\]</span></p>
+<p>where <span class="math inline">\(r_f\)</span> denotes the risk-free rate over the investment horizon. As with testing the equality between two means, it is convenient to re-formulate the hypothesis of equal Sharpe ratio to the hypothesis that the difference in the Sharpe ratios is equal to zero:</p>
+<p><span id="eq-HT-equalSR"><span class="math display">\[
+H_{0}: \delta = \mathrm{SR}_1 - \mathrm{SR}_2 = 0\,\textrm{vs. } H_{1}: \delta = \mathrm{SR}_1 - \mathrm{SR}_2 \ne 0.
+\tag{9.26}\]</span></span></p>
+<p>The plug-in estimator for <span class="math inline">\(\delta\)</span> is:</p>
+<p><span class="math display">\[
+\hat{\delta} = \widehat{\mathrm{SR}}_1 - \widehat{\mathrm{SR}}_2 = \frac{\hat{\mu}_1-r_f}{\hat{\sigma}_1} - \frac{\hat{\mu}_2-r_f}{\hat{\sigma}_2}
+\]</span></p>
+<p>To determine <span class="math inline">\(\widehat{\mathrm{se}}(\hat{\delta})\)</span> from <a href="#eq-HT-vardeltahat">Equation&nbsp;<span>9.24</span></a>, I utilize the result from Chapter <a href="08-bootstrap-new.html"><span>Chapter&nbsp;8</span></a> that the joint distribution of the vector <span class="math inline">\((\widehat{\mathrm{SR}}_1, \widehat{\mathrm{SR}}_2)\)</span> is multivariate normal:</p>
+<p><span class="math display">\[
+\begin{pmatrix} \widehat{\mathrm{SR}}_1 \\ \widehat{\mathrm{SR}}_2 \end{pmatrix} \sim N \left( \begin{pmatrix} \mathrm{SR}_1 \\ \mathrm{SR}_1 \end{pmatrix}, ~ \begin{pmatrix}
+\frac{1}{T}(1+\frac{1}{2}\widehat{\mathrm{SR}}_1^2) &amp; \frac{\hat{\rho}_{12}}{T}(1 + \frac{1}{2}\hat{\rho}_{12}\widehat{\mathrm{SR}}_1 \widehat{\mathrm{SR}}_2) \\ \frac{\hat{\rho}_{12}}{T}(1 + \frac{1}{2}\hat{\rho}_{12} \widehat{\mathrm{SR}}_1\widehat{\mathrm{SR}}_2) &amp; \frac{1}{T}(1+\frac{1}{2}\widehat{\mathrm{SR}}_2^2)
+\end{pmatrix}
+\right ),
+\]</span></p>
+<p>for large enough <span class="math inline">\(T\)</span>. Then,</p>
+<p><span class="math display">\[\begin{align*}
+\widehat{\mathrm{var}}(\hat{\delta}) &amp;= \widehat{\mathrm{var}}(\widehat{\mathrm{SR}}_1) + \widehat{\mathrm{var}}(\widehat{\mathrm{SR}}_2) - 2\widehat{\mathrm{cov}}(\widehat{\mathrm{SR}}_1,\widehat{\mathrm{SR}}_2) \\
+&amp;= \frac{1}{T}(1+\frac{1}{2}\widehat{\mathrm{SR}}_1^2) + \frac{1}{T}(1+\frac{1}{2}\widehat{\mathrm{SR}}_2^2) \\
+&amp;- 2\frac{\hat{\rho}_{12}}{T}(1 + \frac{1}{2}\hat{\rho}_{12}\widehat{\mathrm{SR}}_1\widehat{\mathrm{SR}}_2 )\\
+&amp;= \frac{1}{T}\left(2 + \frac{1}{2}(\widehat{\mathrm{SR}}_1^2 + \widehat{\mathrm{SR}}_2^2) - 2\hat{\rho}_{12}(1 +  \frac{1}{2}\hat{\rho}_{12}\widehat{\mathrm{SR}}_1\widehat{\mathrm{SR}}_2)    \right),
+\end{align*}\]</span></p>
+<p>and,</p>
+<p><span class="math display">\[
+\widehat{\mathrm{se}}(\hat{\delta}) = \sqrt{\frac{1}{T}\left(2 + \frac{1}{2}(\widehat{\mathrm{SR}}_1^2 + \widehat{\mathrm{SR}}_2^2) - 2\hat{\rho}_{12}(1 +  \frac{1}{2}\hat{\rho}_{12}\widehat{\mathrm{SR}}_1\widehat{\mathrm{SR}}_2)    \right)}.
+\]</span></p>
+<p>You can test <a href="#eq-HT-equalSR">Equation&nbsp;<span>9.26</span></a> using the z-score:</p>
+<p><span id="eq-HT-zscoredeltahatSR"><span class="math display">\[
+z_{\delta=0} = \frac{\hat{\delta}}{\widehat{\mathrm{se}}(\hat{\delta})} = \frac{\widehat{\mathrm{SR}}_1 - \widehat{\mathrm{SR}}_2}{\sqrt{\frac{1}{T}\left(2 + \frac{1}{2}(\widehat{\mathrm{SR}}_1^2 + \widehat{\mathrm{SR}}_2^2) - 2\hat{\rho}_{12}(1 +  \frac{1}{2}\hat{\rho}_{12}\widehat{\mathrm{SR}}_1\widehat{\mathrm{SR}}_2)    \right)}},
+\tag{9.27}\]</span></span></p>
+<p>with the test statistic <span class="math inline">\(S=\left| z_{\delta=0} \right|\)</span>.</p>
+<div id="exm-testing-equal-sharpe-ratios-between-microsoft-and-starbucks" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 9.9 (Testing equal Sharpe ratios between Microsoft and Starbucks) </strong></span>Let’s use the z-score <a href="#eq-HT-zscoredeltahatSR">Equation&nbsp;<span>9.27</span></a> to test the hypothesis of equal Sharpe ratios between Microsoft and Starbucks using a 5% significance level. The R code to compute the z-score and test statistic is:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>r.f <span class="ot">=</span> <span class="fl">0.03</span><span class="sc">/</span><span class="dv">12</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>SR.msft <span class="ot">=</span> (muhat.vals[<span class="st">"MSFT"</span>]<span class="sc">-</span>r.f)<span class="sc">/</span>sigmahat.vals[<span class="st">"MSFT"</span>]</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>SR.sbux <span class="ot">=</span> (muhat.vals[<span class="st">"SBUX"</span>]<span class="sc">-</span>r.f)<span class="sc">/</span>sigmahat.vals[<span class="st">"SBUX"</span>]</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>corhat <span class="ot">=</span> <span class="fu">cor</span>(gwnMonthlyRetC[, <span class="fu">c</span>(<span class="st">"MSFT"</span>, <span class="st">"SBUX"</span>)])[<span class="dv">1</span>,<span class="dv">2</span>]</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>delta.hat <span class="ot">=</span> SR.msft <span class="sc">-</span> SR.sbux</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>var.deltahat <span class="ot">=</span> (<span class="dv">2</span> <span class="sc">+</span> <span class="fl">0.5</span><span class="sc">*</span>(SR.msft<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> SR.sbux<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>                <span class="sc">-</span><span class="dv">2</span><span class="sc">*</span>corhat<span class="sc">*</span>(<span class="dv">1</span><span class="fl">+0.5</span><span class="sc">*</span>SR.msft<span class="sc">*</span>SR.sbux))</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>se.deltahat <span class="ot">=</span> <span class="fu">sqrt</span>(var.deltahat)</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>z.score.delta <span class="ot">=</span> delta.hat<span class="sc">/</span>se.deltahat</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>S <span class="ot">=</span> <span class="fu">abs</span>(z.score.delta)</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>ans <span class="ot">=</span> <span class="fu">c</span>(SR.msft, SR.sbux, delta.hat, se.deltahat, S)</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(ans) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"SR.msft"</span>, <span class="st">"S.sbux"</span>, <span class="st">"deltahat"</span>, <span class="st">"se.deltahat"</span>, <span class="st">"S"</span>)</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>ans</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     SR.msft      S.sbux    deltahat se.deltahat           S </span></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      0.0162      0.1089     -0.0927      1.1505      0.0805</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Although the Sharpe ratio for Starbucks is much larger than the Sharpe ratio for Microsoft, there is substantial estimation error in <span class="math inline">\(\hat{\delta}=\mathrm{SR}_{msft} - \mathrm{SR}_{sbux}\)</span> which produces a small test statistic <span class="math inline">\(S=0.0805\)</span>. Since <span class="math inline">\(S &lt; 2\)</span> you do not reject the null hypothesis of equal Sharpe ratios at the 5% level of significance. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+</section>
+<section id="wald-tests-for-general-linear-hypotheses-advanced" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="wald-tests-for-general-linear-hypotheses-advanced"><span class="header-section-number">9.5</span> Wald tests for general linear hypotheses (advanced)</h2>
+<ul>
+<li><p>testing equal means across many assets</p></li>
+<li><p>testing equal Sharpe ratios across many assets (mention result from Jobson and Korke etc here)</p></li>
+</ul>
+</section>
+<section id="model-specification-tests-1" class="level2" data-number="9.6">
+<h2 data-number="9.6" class="anchored" data-anchor-id="model-specification-tests-1"><span class="header-section-number">9.6</span> Model Specification Tests</h2>
+<ul>
+<li>Review GWN model assumptions</li>
+<li>Discuss why it is interesting and useful to test these assumptions</li>
+<li>What to do if certain assumptions are violated?</li>
+</ul>
+<section id="tests-for-normality" class="level3" data-number="9.6.1">
+<h3 data-number="9.6.1" class="anchored" data-anchor-id="tests-for-normality"><span class="header-section-number">9.6.1</span> Tests for normality</h3>
+<ul>
+<li><p>Why do you care about normality?</p>
+<ul>
+<li>Return distribution only depends on mean and volatility (and correlation in multivariate case).</li>
+<li>Justifies volatility as an appropriate measure of risk.</li>
+<li>Gives formula for Value-at-risk calculations.</li>
+<li>Justifies mean-variance portfolio theory and Black-Scholes option pricing formula.</li>
+<li>GWN model parameter estimates and standard error formula do not require the data to be normally distributed. These estimates are consistent and asymptotically normally distributed for many non-normal distributions. There may be estimators that are more accurate (i.e., have smaller standard errors)</li>
+</ul></li>
+<li><p>What to do if returns are found to not be normally distributed?</p>
+<ul>
+<li>Return distribution characteristics in addition to mean and volatility may be important to investors. Volatility may not be the best measure of asset return risk. For example, skewness and kurtosis. If many returns are non-normal then this casts doubt on the appropriateness of mean-variance portfolio theory.</li>
+<li>Standard practice is to compute VaR based on a normal distribution. If returns are not normally distributed this is an incorrect way to compute VaR. Instead of using the normal distribution quantile to compute VaR you can use the empirical quantile to compute VaR. If returns are substantially non-normal in the tails of the distribution then the empirical quantile will be more appropriate than the normal quantile for computing VaR</li>
+<li>How are returns non-normal? This is important.</li>
+</ul></li>
+</ul>
+<p>In chapter <a href="05-descriptiveStatistics-new.html"><span>Chapter&nbsp;5</span></a>, I used histograms, normal QQ-plots, and boxplots to assess whether the normal distribution is a good characterization of the empirical distribution of daily and monthly returns. For example, Figure <a href="#fig-HypothesisFourPanelMSFT">Figure&nbsp;<span>9.2</span></a> shows the four-panel plot for the monthly returns on Microsoft that I used to summarize the empirical distribution of returns. The histogram and smoothed histogram show that the empirical distribution of returns is bell-shaped like the normal distribution, whereas the boxplot and normal QQ-plot shows that returns have fatter tails than the normal distribution. Overall, the graphical descriptive statistics suggest that distribution of monthly Microsoft returns is not normally distributed. However, graphical diagnostics are not formal statistical tests. There are estimation errors in the statistics underlying the graphical diagnostics and it is possible that the observed non-normality of the data is due to sampling uncertainty. To be more definitive, I should use an appropriate test statistic to test the null hypothesis that the random return, <span class="math inline">\(R_{t}\)</span>, is normally distributed. Formally, the null hypothesis to be tested is:</p>
+<p><span id="eq-HT-H0normal"><span class="math display">\[
+H_{0}:R_{t}\, \textrm{is normally distributed}
+\tag{9.28}\]</span></span></p>
+<p>The alternative hypothesis is that <span class="math inline">\(R_{t}\)</span> is not normally distributed:</p>
+<p><span id="eq-HT-H1nonnormal"><span class="math display">\[
+H_{1}:R_{t}\,\textrm{is not normally distributed}
+\tag{9.29}\]</span></span></p>
+<p>Here, I do not specify a particular distribution under the alternative (e.g., a Student’s t distribution with a 5 degrees of freedom). The goal is to have a test statistic that will reject the null hypothesis <a href="#eq-HT-H0normal">Equation&nbsp;<span>9.28</span></a> for a wide range of non-normal distributions.</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-HypothesisFourPanelMSFT" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="09-hypothesisTestingGWNModel-new_files/figure-html/fig-HypothesisFourPanelMSFT-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;9.2: Four panel distribution plot for Microsoft monthly returns.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<section id="jb-test-based-on-skewness-and-kurtosis" class="level4" data-number="9.6.1.1">
+<h4 data-number="9.6.1.1" class="anchored" data-anchor-id="jb-test-based-on-skewness-and-kurtosis"><span class="header-section-number">9.6.1.1</span> JB test based on skewness and kurtosis</h4>
+<p></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-HypothesisChiSq2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="09-hypothesisTestingGWNModel-new_files/figure-html/fig-HypothesisChiSq2-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;9.3: pdf of <span class="math inline">\(\chi^{2}(2)\)</span></figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In Chapter <a href="02-probReview-new.html"><span>Chapter&nbsp;2</span></a>, I showed that the skewness and kurtosis of a normally distributed random variable are equal to zero and three, respectively. I can use this information to develop a simple test of <a href="#eq-HT-H0normal">Equation&nbsp;<span>9.28</span></a> against <a href="#eq-HT-H1nonnormal">Equation&nbsp;<span>9.29</span></a> based on testing the hypotheses: <span id="eq-HypothesisH0normal1"><span class="math display">\[
+H_{0}:\mathrm{skew}(R_{t}) = 0 ~ \mathrm{and} ~ \mathrm{kurt}(R_{t})=3
+\tag{9.30}\]</span></span> versus <span id="eq-HypothesisH1normal1"><span class="math display">\[
+H_{1}:\mathrm{skew}(R_{t}) \neq 0 ~ \mathrm{or} ~ \mathrm{kurt}(R_{t})\neq3 ~ \mathrm{or both}.
+\tag{9.31}\]</span></span></p>
+<p>To develop a test statistic for testing <a href="#eq-HypothesisH0normal1">Equation&nbsp;<span>9.30</span></a> against <a href="#eq-HypothesisH1normal1">Equation&nbsp;<span>9.31</span></a>, Jarque and Bera (1981) used the result (see Kendall and Stuart, 1977) that if <span class="math inline">\(\{R_{t}\}\sim\mathrm{iid}\,N(\mu,\sigma^{2})\)</span> then by the CLT it can be shown that: <span class="math display">\[
+\left(\begin{array}{c}
+\widehat{\mathrm{skew}}_{r}\\
+\widehat{\mathrm{kurt}}_{r}-3
+\end{array}\right)\sim N\left(\left(\begin{array}{c}
+0\\
+0
+\end{array}\right),\left(\begin{array}{cc}
+\frac{6}{T} &amp; 0\\
+0 &amp; \frac{24}{T}
+\end{array}\right)\right),
+\]</span> for large enough <span class="math inline">\(T\)</span>, where <span class="math inline">\(\widehat{\mathrm{skew}}_{r}\)</span> and <span class="math inline">\(\widehat{\mathrm{kurt}}_{r}\)</span> denote the sample skewness and kurtosis of the returns <span class="math inline">\(\{r_{t}\}_{t=1}^{T}\)</span>, respectively. This motivates Jarque and Bera’s <em>JB statistic</em>: <span id="eq-HypothesisJB"><span class="math display">\[
+\mathrm{JB}=T\times\left[\frac{\left(\widehat{\mathrm{ske}w}_{r}\right)^{2}}{6}+\frac{\left(\widehat{\mathrm{kurt}}_{r}-3\right)^{2}}{24}\right],
+\tag{9.32}\]</span></span> to test <a href="#eq-HT-H0normal">Equation&nbsp;<span>9.28</span></a> against <a href="#eq-HT-H1nonnormal">Equation&nbsp;<span>9.29</span></a>. If returns are normally distributed then <span class="math inline">\(\widehat{\mathrm{skew}}_{r}\approx0\)</span> and <span class="math inline">\(\widehat{\mathrm{kurt}}_{r}-3\approx0\)</span> so that <span class="math inline">\(\mathrm{JB}\approx0\)</span>. In contrast, if returns are not normally distributed then <span class="math inline">\(\widehat{\mathrm{skew}}_{r}\neq0\)</span> or <span class="math inline">\(\widehat{\mathrm{kurt}}_{r}-3\neq0\)</span> or both so that <span class="math inline">\(\mathrm{JB}&gt;0\)</span>. Hence, if JB is big then there is data evidence against the null hypothesis that returns are normally distributed.</p>
+<p>To determine the critical value for testing <a href="#eq-HT-H0normal">Equation&nbsp;<span>9.28</span></a> at a given significance level I need the distribution of the JB statistic <a href="#eq-HypothesisJB">Equation&nbsp;<span>9.32</span></a> under the null hypothesis <a href="#eq-HT-H0normal">Equation&nbsp;<span>9.28</span></a>. To this end, Jarque and Bera show, assuming <a href="#eq-HT-H0normal">Equation&nbsp;<span>9.28</span></a> and large enough <span class="math inline">\(T\)</span>, that: <span class="math display">\[
+\mathrm{JB}\sim\chi^{2}(2),
+\]</span> where <span class="math inline">\(\chi^{2}(2)\)</span> denotes a chi-square distribution with two degrees of freedom (see Appendix). Hence, the critical values for the JB statistic are the upper quantiles of <span class="math inline">\(\chi^{2}(2)\)</span>. Figure <a href="#fig-HypothesisChiSq2">Figure&nbsp;<span>9.3</span></a> shows the pdf of <span class="math inline">\(\chi^{2}(2)\)</span>. The 90%, 95% and 99% quantiles can be computed using the R function <code>qchisq()</code>:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a> <span class="fu">qchisq</span>(<span class="fu">c</span>(<span class="fl">0.90</span>, <span class="fl">0.95</span>, <span class="fl">0.99</span>), <span class="dv">2</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 4.61 5.99 9.21</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Since the 95% quantile of <span class="math inline">\(\chi^{2}(2)\)</span> is <span class="math inline">\(5.99\approx6\)</span>, a simple rule of thumb is to reject the null hypothesis <a href="#eq-HT-H0normal">Equation&nbsp;<span>9.28</span></a> at the 5% significance level if the JB statistic <a href="#eq-HypothesisJB">Equation&nbsp;<span>9.32</span></a> is greater than 6.</p>
+<p>Let <span class="math inline">\(X\sim\chi^{2}(2)\)</span>. The p-value of the JB test is computed using: <span class="math display">\[
+p-value=\Pr(X&gt;JB).
+\]</span> If the p-value() is less than <span class="math inline">\(\alpha\)</span> then the null () is rejected at the</p>
+<div id="exm-using-the-jb-statistic-to-test-the-normality-assumption-for-returns-on-microsoft-starbucks-and-the-s-p-500-index" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 9.10 (Using the JB statistic to test the normality assumption for returns on Microsoft Starbucks and the S&amp;P 500 index) </strong></span>The sample skewness and excess kurtosis values for the monthly returns on Microsoft, Starbucks, and the S&amp;P 500 index are</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>skewhat <span class="ot">=</span> <span class="fu">skewness</span>(gwnMonthlyRetC) </span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>ekurthat <span class="ot">=</span> <span class="fu">kurtosis</span>(gwnMonthlyRetC) </span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(skewhat, ekurthat)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                    MSFT   SBUX SP500</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Skewness        -0.0901 -0.987 -0.74</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Excess Kurtosis  2.0802  3.337  1.07</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The sample skewness values for the assets are not too large but the sample excess kurtosis values are fairly large. The JB statistics for the three assets are easy to compute</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>n.obs <span class="ot">=</span> <span class="fu">nrow</span>(gwnMonthlyRetC) </span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>JB <span class="ot">=</span> n.obs<span class="sc">*</span>((<span class="fu">as.numeric</span>(skewhat)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="dv">6</span> <span class="sc">+</span> (<span class="fu">as.numeric</span>(ekurthat)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="dv">24</span>) </span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(JB) <span class="ot">=</span> <span class="fu">colnames</span>(gwnMonthlyRetC) </span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>JB</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  MSFT  SBUX SP500 </span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  31.2 107.7  23.9</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Since all JB values are greater than 6, you reject the null hypothesis that the monthly returns are normally distributed.</p>
+<p>You can also use the <strong>tseries</strong> function <code>jarque.bera.test()</code> to compute the JB statistic:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">jarque.bera.test</span>(gwnMonthlyRetC[, <span class="dv">1</span>])</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Jarque Bera Test</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; data:  gwnMonthlyRetC[, 1]</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; X-squared = 31, df = 2, p-value = 2e-07</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="fu">jarque.bera.test</span>(gwnMonthlyRetC[, <span class="dv">2</span>])</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Jarque Bera Test</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; data:  gwnMonthlyRetC[, 2]</span></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; X-squared = 108, df = 2, p-value &lt;2e-16</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a><span class="fu">jarque.bera.test</span>(gwnMonthlyRetC[, <span class="dv">3</span>])</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Jarque Bera Test</span></span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; data:  gwnMonthlyRetC[, 3]</span></span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; X-squared = 24, df = 2, p-value = 7e-06</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The test statistics are slightly different from the direct calculation above due to differences in how the sample skewness and sample kurtosis is computed within the function <code>jarque.bera.test()</code>. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+<section id="shipiro-wilks-test" class="level4" data-number="9.6.1.2">
+<h4 data-number="9.6.1.2" class="anchored" data-anchor-id="shipiro-wilks-test"><span class="header-section-number">9.6.1.2</span> Shipiro Wilks test</h4>
+<p> To be complete…</p>
+</section>
+</section>
+<section id="tests-for-no-autocorrelation" class="level3" data-number="9.6.2">
+<h3 data-number="9.6.2" class="anchored" data-anchor-id="tests-for-no-autocorrelation"><span class="header-section-number">9.6.2</span> Tests for no autocorrelation</h3>
+<p></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-HypothesisSACFsp500" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="09-hypothesisTestingGWNModel-new_files/figure-html/fig-HypothesisSACFsp500-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;9.4: SACF for monthly returns on the S&amp;P 500 index.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>A key assumption of the GWN model is that returns are uncorrelated over time (not autocorrelated). In efficient financial markets where prices fully reflect true asset value, returns of actively traded assets should not be autocorrelated. In addition, if returns are autocorrelated then they are predictable. That is, future returns can be predicted from the past history of returns. If this is the case then trading strategies can be easily developed to exploit this predictability. But if many market participants act on these trading strategies then prices will adjust to eliminate any predictability in returns. Hence, for actively traded assets in well functioning markets I expect to see that the returns on these assets are uncorrelated over time.</p>
+<p>For less frequently traded assets returns may appear to be autocorrelated due to stale pricing.</p>
+<p>As you saw in Chapter <a href="06-GWNModel-new.html"><span>Chapter&nbsp;6</span></a>, this allows us to aggregate the GWN model over time and, in particular, derive the square-root-of time rule for aggregating return volatility. If returns are substantially correlated over time (i.e., autocorrelated) then the square-root-of-time rule will not be an accurate way to aggregate volatility.</p>
+<p>To measure autocorrelation in asset returns <span class="math inline">\(\{R_{t}\)</span>} I use the j<span class="math inline">\(^{th}\)</span> lag autocorrelation coefficient <span class="math display">\[\begin{align*}
+\rho_{j} &amp; =\mathrm{cor}(R_{t},R_{t-j})=\frac{\mathrm{cov}(R_{t},R_{t-j})}{\mathrm{var}(R_{t})},
+\end{align*}\]</span> which is estimated using the sample autocorrelation <span class="math display">\[
+\hat{\rho}_{j}=\frac{\frac{1}{T-1}\sum_{t=j+1}^{T}(r_{t}-\hat{\mu})(r_{t-j}-\hat{\mu})}{\frac{1}{T-1}\sum_{t=1}^{T}(r_{t}-\hat{\mu})^{2}}.
+\]</span> In chapter <a href="05-descriptiveStatistics-new.html"><span>Chapter&nbsp;5</span></a>, I used the sample autocorrelation function (SACF) to graphically evaluate the data evidence on autocorrelation for daily and monthly returns. For example, Figure <a href="#fig-HypothesisSACFsp500">Figure&nbsp;<span>9.4</span></a> shows the SACF for the monthly returns on the S&amp;P 500 index. Here you see that none of the <span class="math inline">\(\hat{\rho}_{j}\)</span>values are very large. You also see a pair of blue dotted lines on the graph. As you shall see, these dotted lines are related to critical values for testing the null hypothesis that <span class="math inline">\(\rho_{j}=0\)</span>. Hence, if</p>
+<section id="individual-tests" class="level4" data-number="9.6.2.1">
+<h4 data-number="9.6.2.1" class="anchored" data-anchor-id="individual-tests"><span class="header-section-number">9.6.2.1</span> Individual tests</h4>
+<p>Individual tests for autocorrelation are similar to coefficient tests discussed earlier and are based on testing the hypotheses <span class="math display">\[
+H_{0}:\rho_{j}=0 ~ vs. ~ H_{1}:\rho_{j}\neq0,
+\]</span> for a given lag <span class="math inline">\(j\)</span>. The tests rely on the result, justified by the CLT if <span class="math inline">\(T\)</span> is large enough, that if returns are covariance stationary and uncorrelated then <span class="math display">\[\begin{align*}
+\hat{\rho}_{j}\sim N\left(0,\frac{1}{T}\right)\text{ for all }j\geq1\,\mathrm{and}\,\mathrm{se}(\hat{\rho}_{j})=\frac{1}{\sqrt{T}}.
+\end{align*}\]</span> This motivates the test statistics <span class="math display">\[
+t_{\rho_{j=0}}=\frac{\hat{\rho}_{j}}{\mathrm{se}(\hat{\rho}_{j})}=\frac{\hat{\rho}_{j}}{1/\sqrt{T}}=\sqrt{T}\hat{\rho}_{j},\,j\geq1
+\]</span> and the 95% confidence intervals <span class="math display">\[
+\hat{\rho}_{j}\pm2\cdot\frac{1}{\sqrt{T}}.
+\]</span> If you use a 5% significance level, then you reject the null hypothesis <span class="math inline">\(H_{0}:\rho_{j}=0\)</span> if <span class="math display">\[
+|t_{\rho_{j=0}}|=\left\vert \sqrt{T}\hat{\rho}_{j}\right\vert &gt;2.
+\]</span> That is, reject if <span class="math display">\[
+\hat{\rho}_{j}&gt;\frac{2}{\sqrt{T}}\text{ or }\hat{\rho}_{j}&lt;\frac{-2}{\sqrt{T}}.
+\]</span> Here, note that the dotted lines on the SACF are at the points <span class="math inline">\(\pm2\cdot\frac{1}{\sqrt{T}}\)</span>. If the sample autocorrelation <span class="math inline">\(\hat{\rho}_{j}\)</span> crosses either above or below the dotted lines then you can reject the null hypothesis <span class="math inline">\(H_{0}:\rho_{j}=0\)</span> at the 5% level.</p>
+</section>
+<section id="joint-tests" class="level4" data-number="9.6.2.2">
+<h4 data-number="9.6.2.2" class="anchored" data-anchor-id="joint-tests"><span class="header-section-number">9.6.2.2</span> Joint tests</h4>
+<ul>
+<li>Have to be careful how to interpret the individual tests. Cannot simply use 20 individual tests at the 5% level to test a joint hypothesis at the 5% level. With independent individual tests each test has a 5% probability of rejecting the null when it is true. So if you do 20 individual tests it would not be surprising if one tests rejects and this could be purely by chance (a type I error) if the null of no autocorrelation was true.</li>
+</ul>
+<p>To be complete</p>
+</section>
+</section>
+<section id="tests-for-constant-parameters" class="level3" data-number="9.6.3">
+<h3 data-number="9.6.3" class="anchored" data-anchor-id="tests-for-constant-parameters"><span class="header-section-number">9.6.3</span> Tests for constant parameters</h3>
+<p> A key assumption of the GWN model is that returns are generated from a covariance stationary time series process. As a result, all of the parameters of the GWN model are constant over time. However, as shown in Chapter <a href="05-descriptiveStatistics-new.html"><span>Chapter&nbsp;5</span></a> there is evidence to suggest that the assumption of covariance stationarity may not always be appropriate. For example, the volatility of returns for some assets does not appear to be constant over time.</p>
+<p>A natural null hypothesis associated with the covariance stationarity assumption for the GWN model for an individual asset return has the form: <span class="math display">\[
+H_{0}:\mu_{i},\sigma_{i},\rho_{ij}\, \text{are constant over time}.
+\]</span> To reject this null implied by covariance stationarity, one only needs to find evidence that at least one parameter is not constant over time.</p>
+<section id="formal-tests-two-parameter-structural-change" class="level4" data-number="9.6.3.1">
+<h4 data-number="9.6.3.1" class="anchored" data-anchor-id="formal-tests-two-parameter-structural-change"><span class="header-section-number">9.6.3.1</span> Formal tests (two parameter structural change)</h4>
+<p></p>
+<p>To be completed</p>
+<ul>
+<li>Do two-sample structural change tests based on known segments. Analysis is very similar to testing equality of parameters across two assets.</li>
+</ul>
+</section>
+</section>
+<section id="tests-for-constant-parameters-based-on-rolling-estimators" class="level3" data-number="9.6.4">
+<h3 data-number="9.6.4" class="anchored" data-anchor-id="tests-for-constant-parameters-based-on-rolling-estimators"><span class="header-section-number">9.6.4</span> Tests for constant parameters based on rolling estimators</h3>
+<p></p>
+<p>In Chapter <a href="05-descriptiveStatistics-new.html"><span>Chapter&nbsp;5</span></a> I introduced rolling descriptive statistics to informally investigate the assumption of covariance stationarity. Given any parameter <span class="math inline">\(\theta\)</span> of the GWN model (or any function of the parameters), you can compute a set of rolling estimates of <span class="math inline">\(\theta\)</span> over windows of length <span class="math inline">\(n&lt;T\)</span>: <span class="math inline">\(\{\hat{\theta}_t(n) \}_{t=n}^{T}\)</span>. A time plot of these rolling estimates may show evidence of non-stationary behavior in returns.</p>
+<p>However, you must always keep in mind that estimates have estimation error and part of the observed time variation in the rolling estimates <span class="math inline">\(\{\hat{\theta}_t(n) \}_{t=n}^{T}\)</span> is due to random estimation error. To account for this estimation error, rolling estimates are often displayed with estimated standard error bands of the form:</p>
+<p><span id="eq-HT-rolling"><span class="math display">\[
+\hat{\theta}_t(n) \pm c\times \widehat{\mathrm{se}}\left( \hat{\theta}_t(n)\right),
+\tag{9.33}\]</span></span></p>
+<p>where <span class="math inline">\(c\)</span> is a constant representing some multiple of the estimated standard error. Typically, <span class="math inline">\(c\)</span> is chosen so that <a href="#eq-HT-rolling">Equation&nbsp;<span>9.33</span></a> represents an approximate confidence interval for <span class="math inline">\(\theta\)</span>. For example, setting <span class="math inline">\(c=2\)</span> gives an approximate 95% confidence interval.</p>
+<div id="exm-01" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 9.11 </strong></span>As in Chapter <a href="05-descriptiveStatistics-new.html"><span>Chapter&nbsp;5</span></a>, you can compute 24-month rolling estimates of <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span> for Microsoft, Starbucks and the S&amp;P 500 index using the <strong>zoo</strong> function <code>rollapply()</code>:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>roll.muhat <span class="ot">=</span> <span class="fu">rollapply</span>(gwnMonthlyRetC, <span class="at">width =</span> <span class="dv">24</span>, <span class="at">by =</span> <span class="dv">1</span>, </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">by.column =</span> <span class="cn">TRUE</span>, <span class="at">FUN =</span> mean, <span class="at">align =</span> <span class="st">"right"</span>)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>roll.sigmahat <span class="ot">=</span> <span class="fu">rollapply</span>(gwnMonthlyRetC, <span class="at">width =</span> <span class="dv">24</span>, <span class="at">by =</span> <span class="dv">1</span>, </span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>                          <span class="at">by.column =</span> <span class="cn">TRUE</span>, <span class="at">FUN =</span> sd, <span class="at">align =</span> <span class="st">"right"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Estimated standard errors for <span class="math inline">\(\hat{\mu}_t(n)\)</span> and <span class="math inline">\(\hat{\sigma}_t(n)\)</span> are computed using: <span class="math display">\[
+\widehat{\mathrm{se}}(\hat{\mu}_t(n)) = \frac{\hat{\sigma}_t(n)}{\sqrt{T}}, ~ \widehat{\mathrm{se}}(\hat{\sigma}_t(n)) = \frac{\hat{\sigma}_t(n)}{\sqrt{2T}}
+\]</span> Figure <a href="#fig-HTrolling">Figure&nbsp;<span>9.5</span></a> shows the rolling estimates of <span class="math inline">\(\mu\)</span> (top panel) and <span class="math inline">\(\sigma\)</span> (bottom panel) for Starbucks together with 95% confidence intervals (<span class="math inline">\(\pm2\times\)</span> standard error bands) computed using:</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>se.muhat.SBUX <span class="ot">=</span> roll.sigmahat[, <span class="st">"SBUX"</span>]<span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">24</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>se.sigmahat.SBUX <span class="ot">=</span> roll.sigmahat[, <span class="st">"SBUX"</span>]<span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">2</span> <span class="sc">*</span> <span class="dv">24</span>)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>lower.muhat.SBUX <span class="ot">=</span> roll.muhat[, <span class="st">"SBUX"</span>] <span class="sc">-</span> <span class="dv">2</span> <span class="sc">*</span> se.muhat.SBUX</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>upper.muhat.SBUX <span class="ot">=</span> roll.muhat[, <span class="st">"SBUX"</span>] <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> se.muhat.SBUX</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>lower.sigmahat.SBUX <span class="ot">=</span> roll.sigmahat[, <span class="st">"SBUX"</span>] <span class="sc">-</span> <span class="dv">2</span> <span class="sc">*</span> se.sigmahat.SBUX</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>upper.sigmahat.SBUX <span class="ot">=</span> roll.sigmahat[, <span class="st">"SBUX"</span>] <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> se.sigmahat.SBUX</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="co"># plot estimates with standard error bands</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>dataToPlot <span class="ot">=</span> <span class="fu">merge</span>(roll.muhat[, <span class="st">"SBUX"</span>], lower.muhat.SBUX, </span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>                   upper.muhat.SBUX, roll.sigmahat[,<span class="st">"SBUX"</span>],</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>                   lower.sigmahat.SBUX, upper.sigmahat.SBUX)</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>my.panel <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(...)</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>)</span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a><span class="fu">plot.zoo</span>(dataToPlot, <span class="at">main =</span> <span class="st">""</span>, <span class="at">screens =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>),</span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>         <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"black"</span>,<span class="st">"red"</span>, <span class="st">"red"</span>, <span class="st">"black"</span>, <span class="st">"red"</span>, <span class="st">"red"</span>),</span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>         <span class="at">lty =</span> <span class="fu">c</span>(<span class="st">"solid"</span>, <span class="st">"dashed"</span>, <span class="st">"dashed"</span>, <span class="st">"solid"</span>, <span class="st">"dashed"</span>, <span class="st">"dashed"</span>),</span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>         <span class="at">panel =</span> my.panel, <span class="at">ylab =</span> <span class="fu">list</span>(<span class="st">"muhat"</span>, <span class="st">"sigmahat"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-HTrolling" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="09-hypothesisTestingGWNModel-new_files/figure-html/fig-HTrolling-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;9.5: 24-month rolling estimates of <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span> for Starbucks with estimated standard error bands</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The standard error bands for <span class="math inline">\(\hat{\mu}_t(n)\)</span> are fairly wide, especially during the high volatility periods of the dot-com boom-bust and the financial crisis. During the dot-com period the 95% confidence intervals for <span class="math inline">\(\mu\)</span> are wide and contain both positive and negative values reflecting a high degree of uncertainty about the value of <span class="math inline">\(\mu\)</span>. However, during the economic boom around 2005, where <span class="math inline">\(\hat{\mu}_t(n)\)</span> is large and <span class="math inline">\(\hat{\sigma}_t(n)\)</span> is small, the 95% confidence interval for <span class="math inline">\(\mu\)</span> does not contain zero and one can infer that the mean is significantly positive. Also, at the height of the financial crisis, where <span class="math inline">\(\hat{\mu}_t(n)\)</span> is the largest negative value, the 95% confidence interval for <span class="math inline">\(\mu\)</span> contains all negative values and one can infer that the mean is significantly negative. At the end of the sample, the 95% confidence intervals for <span class="math inline">\(\mu\)</span> contain all positive values.<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></p>
+<p>The standard error bands for <span class="math inline">\(\hat{\sigma}_t(n)\)</span> are smaller than the bands for <span class="math inline">\(\hat{\mu}_t(n)\)</span> and one can see more clearly that <span class="math inline">\(\hat{\sigma}_t(n)\)</span> significantly larger during the dot-com period and the financial crisis period than during the economic boom period and the period after the financial crisis. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<p>Plotting rolling estimates with estimated standard error bands is good practice as it reminds you that there is estimation error in the rolling estimates and part of any observed time variation is this estimation error.</p>
+</section>
+</section>
+<section id="using-monte-carlo-simulation-to-understand-hypothesis-testing" class="level2" data-number="9.7">
+<h2 data-number="9.7" class="anchored" data-anchor-id="using-monte-carlo-simulation-to-understand-hypothesis-testing"><span class="header-section-number">9.7</span> Using Monte Carlo Simulation to Understand Hypothesis Testing</h2>
+<p> In chapter <a href="07-GWNModelEstimation-new.html"><span>Chapter&nbsp;7</span></a> I used Monte Carlo simulation to understand the statistical properties of estimators. Now, I will use Monte Carlo Simulation to understand hypothesis testing. To fix ideas, let <span class="math inline">\(R_{t}\)</span> be the return on a single asset described by the GWN model, let <span class="math inline">\(\theta\)</span> denote some parameter of the GWN model you are interested in testing an hypothesis about, let <span class="math inline">\(\hat{\theta}\)</span> denote an estimator for <span class="math inline">\(\theta\)</span> based on a sample of size <span class="math inline">\(T\)</span>, and let <span class="math inline">\(\widehat{\mathrm{se}}(\hat{\theta)}\)</span> denote the estimated standard error for <span class="math inline">\(\hat{\theta}\)</span>. Suppose you are interested in testing <span class="math inline">\(H_{0}:\theta=\theta_{0}\)</span> against <span class="math inline">\(H_{1}:\theta\neq\theta_{0}\)</span> using the z-score <span class="math inline">\(z_{\theta=\theta_{0}}=\frac{\hat{\theta}-\theta_{0}}{\widehat{\mathrm{se}}(\hat{\theta)}}\)</span>.</p>
+<p>To be completed</p>
+</section>
+<section id="using-the-bootstrap-for-hypothesis-testing" class="level2" data-number="9.8">
+<h2 data-number="9.8" class="anchored" data-anchor-id="using-the-bootstrap-for-hypothesis-testing"><span class="header-section-number">9.8</span> Using the Bootstrap for Hypothesis Testing</h2>
+<p>To be completed</p>
+<ul>
+<li>duality between HT and CIs can be exploited by the bootstrap. Use bootstrap to compute CI and see if hypothesized values lies in the interval. Illustrate with testing equality of 2 Sharpe ratios</li>
+</ul>
+</section>
+<section id="further-reading-hypothesis-testing-in-the-gwn-model" class="level2" data-number="9.9">
+<h2 data-number="9.9" class="anchored" data-anchor-id="further-reading-hypothesis-testing-in-the-gwn-model"><span class="header-section-number">9.9</span> Further Reading: Hypothesis Testing in the GWN Model</h2>
+<ul>
+<li>Mention books by Carol Alexander for discussion of rolling and EWMA estimates</li>
+<li>Formal tests for structural change require advanced probability and statistics. See <span class="citation" data-cites="zivot-2016">(<a href="references.html#ref-zivot-2016" role="doc-biblioref">Zivot 2016</a>)</span> for discussion. Many tests are implemented in the <strong>strucchange</strong> package.</li>
+</ul>
+</section>
+<section id="exercises" class="level2" data-number="9.10">
+<h2 data-number="9.10" class="anchored" data-anchor-id="exercises"><span class="header-section-number">9.10</span> Exercises</h2>
+<p>To be completed…</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-zivot-2016" class="csl-entry" role="listitem">
+Zivot, E. 2016. <em>Modeling Financial Time Series with r</em>. New York: Springer.
+</div>
+</div>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>In this book, I do not consider evaluating hypotheses from a Bayesian perspective.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>As an extreme example, consider testing <span class="math inline">\(H_{0}:\textrm{"all swans are white"}\)</span>. To logically accept this hypothesis you would have to show that every swan that ever existed is white. In contrast, if you have a data set that only contains white swans then saying you cannot reject the null hypothesis that all swans are white is consistent with your data set. <a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>It is important to emphasize that there is a “true state of the world” in this context. That is, the null hypothesis <span class="math inline">\(H_{0}\)</span> is either true or it is not. As a result, <span class="math inline">\(\Pr\left\{H_{0}\,\textrm{is true}\right\} =1\)</span> or <span class="math inline">\(0\)</span> depending on whether <span class="math inline">\(H_{0}\)</span> is true or not. <a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>A capital murder trial is one in which the defendant is eligible for the death penalty.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Tests for model assumptions are sometimes called model specification tests.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>This means that in an infinite number of hypothetical samples from the GWN model in which <span class="math inline">\(H_{0}\)</span> is true only 5 percent of the samples produce an estimate <span class="math inline">\(\hat{\mu}_{i}\)</span> that is more than <span class="math inline">\(1.96\)</span> values of <span class="math inline">\(\mathrm{se}(\hat{\mu}_{i})\)</span> away from <span class="math inline">\(\mu_{i}^{0}\)</span>.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>You have to be a little careful about interpreting the implicit hypotheses tests underlying the rolling 95% confidence intervals. Each confidence interval represents a single hypothesis test with a 5% significane level. However, we have many confidence intervals and so we are really doing many hypothesis tests. The joint significance level for all of these tests will be larger than the significance level for a single test.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./08-bootstrap-new.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Estimating Functions of GWN Model Parameters</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./10-introductionPortfolioTheory-new.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introduction to Portfolio Theory</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

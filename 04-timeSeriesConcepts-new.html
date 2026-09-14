@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Introduction to Computational Finance and Financial Econometrics with R - 4&nbsp; Time Series Concepts</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./05-descriptiveStatistics-new.html" rel="next">
+<link href="./03-matrixReview-new.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04-timeSeriesConcepts-new.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Time Series Concepts</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Introduction to Computational Finance and Financial Econometrics with R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-ReturnCalculations-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Return Calculations</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-probReview-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Review of Random Variables</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-matrixReview-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Algebra Review</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-timeSeriesConcepts-new.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Time Series Concepts</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-descriptiveStatistics-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Descriptive Statistics for Financial Data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-GWNModel-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">The Gaussian White Noise Return Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-GWNModelEstimation-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Estimation of The GWN Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-bootstrap-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Estimating Functions of GWN Model Parameters</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-hypothesisTestingGWNModel-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Hypothesis Testing in the GWN Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-introductionPortfolioTheory-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introduction to Portfolio Theory</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-PortfolioTheoryMatrix-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Portfolio Theory with Matrix Algebra</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-portfolioTheoryNoShortSales-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Portfolio Theory with Short Sales Constraints</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-riskBudgeting-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Portfolio Risk Budgeting</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-Stochastic-Processes" id="toc-sec-Stochastic-Processes" class="nav-link active" data-scroll-target="#sec-Stochastic-Processes"><span class="header-section-number">4.1</span> Stochastic Processes</a>
+  <ul class="collapse">
+  <li><a href="#stationary-stochastic-processes" id="toc-stationary-stochastic-processes" class="nav-link" data-scroll-target="#stationary-stochastic-processes"><span class="header-section-number">4.1.1</span> Stationary stochastic processes</a></li>
+  <li><a href="#non-stationary-processes" id="toc-non-stationary-processes" class="nav-link" data-scroll-target="#non-stationary-processes"><span class="header-section-number">4.1.2</span> Non-Stationary processes</a></li>
+  <li><a href="#ergodicity" id="toc-ergodicity" class="nav-link" data-scroll-target="#ergodicity"><span class="header-section-number">4.1.3</span> Ergodicity</a></li>
+  </ul></li>
+  <li><a href="#sec-Multivariate-Time-Series" id="toc-sec-Multivariate-Time-Series" class="nav-link" data-scroll-target="#sec-Multivariate-Time-Series"><span class="header-section-number">4.2</span> Multivariate Time Series</a>
+  <ul class="collapse">
+  <li><a href="#stationary-and-ergodic-multivariate-time-series" id="toc-stationary-and-ergodic-multivariate-time-series" class="nav-link" data-scroll-target="#stationary-and-ergodic-multivariate-time-series"><span class="header-section-number">4.2.1</span> Stationary and ergodic multivariate time series</a></li>
+  </ul></li>
+  <li><a href="#sec-Time-Series-Models" id="toc-sec-Time-Series-Models" class="nav-link" data-scroll-target="#sec-Time-Series-Models"><span class="header-section-number">4.3</span> Time Series Models</a>
+  <ul class="collapse">
+  <li><a href="#moving-average-models" id="toc-moving-average-models" class="nav-link" data-scroll-target="#moving-average-models"><span class="header-section-number">4.3.1</span> Moving average models</a></li>
+  <li><a href="#autoregressive-models" id="toc-autoregressive-models" class="nav-link" data-scroll-target="#autoregressive-models"><span class="header-section-number">4.3.2</span> Autoregressive Models</a></li>
+  <li><a href="#autoregressive-moving-average-models" id="toc-autoregressive-moving-average-models" class="nav-link" data-scroll-target="#autoregressive-moving-average-models"><span class="header-section-number">4.3.3</span> Autoregressive Moving Average Models</a></li>
+  <li><a href="#vector-autoregressive-models" id="toc-vector-autoregressive-models" class="nav-link" data-scroll-target="#vector-autoregressive-models"><span class="header-section-number">4.3.4</span> Vector Autoregressive Models</a></li>
+  </ul></li>
+  <li><a href="#forecasting" id="toc-forecasting" class="nav-link" data-scroll-target="#forecasting"><span class="header-section-number">4.4</span> Forecasting</a></li>
+  <li><a href="#further-reading-time-series-concepts" id="toc-further-reading-time-series-concepts" class="nav-link" data-scroll-target="#further-reading-time-series-concepts"><span class="header-section-number">4.5</span> Further Reading: Time Series Concepts</a></li>
+  <li><a href="#problems-time-series-concepts" id="toc-problems-time-series-concepts" class="nav-link" data-scroll-target="#problems-time-series-concepts"><span class="header-section-number">4.6</span> Problems: Time Series Concepts</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-Time-Series-Concepts" class="quarto-section-identifier"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Time Series Concepts</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Last updated on September 4, 2026</p>
+<p>Copyright © Eric Zivot 2026</p>
+<p>Financial variables such as asset prices and returns are naturally ordered by time. That is, these variables are <em>time series</em> variables. When we construct returns, the time index or data frequency becomes the investment horizon associated with the return. Typical data frequencies are daily, weekly, monthly and annual. In building probability models for time series variables, the time ordering of the data matters because we may think there are important temporal dependencies among the variables. For example, we might have reason to believe that the return on an asset this month is correlated with the return on the same asset in the previous month. This autocorrelation can only be defined if the time ordering of the data is preserved. A major complication in analyzing time series data is that the usual assumption of random sampling from a common population is not appropriate because it does not allow for any kind of time dependence in the time series variables. We would like to retain the notion that the observed data come from some population model, perhaps with time-invariant parameters, but we would like to allow the variables to have time dependencies. Fortunately, we can do this if the time series data come from a <em>stationary</em> time series process.</p>
+<p>This chapter reviews some basic times series concepts that are essential for describing and modeling financial time series. Section <a href="#sec-Stochastic-Processes"><span>Section&nbsp;4.1</span></a> defines univariate time series processes and introduces the important concepts of stationarity and ergodicity. Covariance stationary time series processes are defined, which gives meaning to measuring linear time dependence using autocorrelation. The benchmark Gaussian White Noise process and related processes are introduced and illustrated using R. Some common non-stationary time series processes are also discussed including the famous random walk model. Section <a href="#sec-Multivariate-Time-Series"><span>Section&nbsp;4.2</span></a> introduces covariance stationary multivariate time series process. Such processes allow for dynamic interactions among groups of time series variables. Section <a href="#sec-Time-Series-Models"><span>Section&nbsp;4.3</span></a> discusses time series model building and introduces the class of univariate autoregressive-moving average time series models and multivariate vector autoregression models. The properties of some simple models are derived and it is shown how to simulate observations from these models using R. The chapter concludes with a brief discussion of forecasting from time series models.</p>
+<p>The R packages used in this chapter are <strong>mvtnorm</strong> and <strong>vars</strong>. Make sure these packages are installed and loaded before running the R examples in this chapter.</p>
+<section id="sec-Stochastic-Processes" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="sec-Stochastic-Processes"><span class="header-section-number">4.1</span> Stochastic Processes</h2>
+<div id="def-stochastic-process" class="definition theorem definition">
+<p><span class="theorem-title"><strong>Definition 4.1 (Stochastic Process) </strong></span>A discrete-time <em>stochastic process</em> or <em>time series process</em> <span class="math display">\[
+\{\ldots,Y_{1},Y_{2},\ldots,Y_{t},Y_{t+1},\ldots\}=\{Y_{t}\}_{t=-\infty}^{\infty}
+\]</span> is a sequence of random variables indexed by time <span class="math inline">\(t\)</span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+</div>
+<p>In most applications, the time index is a regularly spaced index representing calendar time (e.g., days, months, years, etc.) but it can also be irregularly spaced representing event time (e.g., intra-day transaction times). In modeling time series data, the ordering imposed by the time index is important because we often would like to capture the temporal relationships, if any, between the random variables in the stochastic process. In random sampling from a population, the ordering of the random variables representing the sample does not matter because they are independent.</p>
+<div id="def-realization-of-stochastic-process" class="definition theorem definition">
+<p><span class="theorem-title"><strong>Definition 4.2 (Realization of Stochastic Process) </strong></span>A realization of a stochastic process with <span class="math inline">\(T\)</span> observations is the sequence of observed data <span class="math display">\[
+\{Y_{1}=y_{1},Y_{2}=y_{2},\ldots,Y_{T}=y_{T}\}=\{y_{t}\}_{t=1}^{T}.
+\]</span></p>
+</div>
+<p>The goal of time series modeling is to describe the probabilistic behavior of the underlying stochastic process that is believed to have generated the observed data in a concise way. In addition, we want to be able to use the observed sample to estimate important characteristics of a time series model such as measures of time dependence. In order to do this, we need to make a number of assumptions regarding the joint behavior of the random variables in the stochastic process such that we may treat the stochastic process in much the same way as we treat a random sample from a given population.</p>
+<section id="stationary-stochastic-processes" class="level3" data-number="4.1.1">
+<h3 data-number="4.1.1" class="anchored" data-anchor-id="stationary-stochastic-processes"><span class="header-section-number">4.1.1</span> Stationary stochastic processes</h3>
+<p>We often describe random sampling from a population as a sequence of independent, and identically distributed (iid) random variables <span class="math inline">\(X_{1},X_{2}\ldots\)</span> such that each <span class="math inline">\(X_{i}\)</span> is described by the same probability distribution <span class="math inline">\(F_{X}\)</span>, and write <span class="math inline">\(X_{i}\sim F_{X}\)</span>. With a time series process, we would like to preserve the identical distribution assumption but we do not want to impose the restriction that each random variable in the sequence is independent of all of the other variables. In many contexts, we would expect some dependence between random variables close together in time (e.g, <span class="math inline">\(X_{1}\)</span>, and <span class="math inline">\(X_{2})\)</span> but little or no dependence between random variables far apart in time (e.g., <span class="math inline">\(X_{1}\)</span> and <span class="math inline">\(X_{100})\)</span>. We can allow for this type of behavior using the concepts of <em>stationarity</em> and <em>ergodicity</em>.</p>
+<p>We start with the definition of strict stationarity.</p>
+<div id="def-strict-stationarity" class="definition theorem definition">
+<p><span class="theorem-title"><strong>Definition 4.3 (Strict stationarity) </strong></span>A stochastic process <span class="math inline">\(\{Y_{t}\}\)</span> is <em>strictly stationary</em> if, for any given finite integer <span class="math inline">\(r\)</span> and for any set of subscripts <span class="math inline">\(t_{1},t_{2},\ldots,t_{r}\)</span> the joint distribution of <span class="math inline">\((Y_{t_{1}},Y_{t_{2}},\ldots,Y_{t_{r}})\)</span> depends only on <span class="math inline">\(t_{1}-t,t_{2}-t,\ldots,t_{r}-t\)</span> but not on <span class="math inline">\(t\)</span>. In other words, the joint distribution of <span class="math inline">\((Y_{t_{1}},Y_{t_{2}},\ldots,Y_{t_{r}})\)</span> is the same as the joint distribution of <span class="math inline">\((Y_{t_{1}-t},Y_{t_{2}-t},\ldots,Y_{t_{r}-t})\)</span> for any value of <span class="math inline">\(t\)</span>.</p>
+</div>
+<p>In simple terms, the joint distribution of random variables in a strictly stationary stochastic process is <em>time invariant</em>. For example, the joint distribution of <span class="math inline">\((Y_{1},Y_{5},Y_{7})\)</span> is the same as the distribution of <span class="math inline">\((Y_{12},Y_{16},Y_{18})\)</span>. Just like in an iid sample, in a strictly stationary process all of the individual random variables <span class="math inline">\(Y_{t}\)</span> (<span class="math inline">\(t=-\infty,\ldots,\infty\)</span>) have the same marginal distribution <span class="math inline">\(F_{Y}\)</span>. This means they all have the same mean, variance etc., assuming these quantities exist. However, assuming strict stationarity does not make any assumption about the correlations between <span class="math inline">\(Y_{t},Y_{t_{1}},\ldots,Y_{t_{r}}\)</span> other than that the correlation between <span class="math inline">\(Y_{t}\)</span> and <span class="math inline">\(Y_{t_{r}}\)</span> only depends on <span class="math inline">\(t-t_{r}\)</span> (the time between <span class="math inline">\(Y_{t}\)</span> and <span class="math inline">\(Y_{t_{r}})\)</span> and not on <span class="math inline">\(t\)</span>. That is, strict stationarity allows for general temporal dependence between the random variables in the stochastic process.</p>
+<p>A useful property of strict stationarity is that it is preserved under general transformations, as summarized in the following proposition.</p>
+<div id="prp-01" class="proposition theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 4.1 </strong></span>Let <span class="math inline">\(\{Y_{t}\}\)</span> be strictly stationary and let <span class="math inline">\(g(\cdot)\)</span> be any function of the elements in <span class="math inline">\(\{Y_{t}\}\)</span>. Then <span class="math inline">\(\{g(Y_{t})\}\)</span>, is also strictly stationary.</p>
+</div>
+<p>For example, if <span class="math inline">\(\{Y_{t}\}\)</span> is strictly stationary then <span class="math inline">\(\{Y_{t}^{2}\}\)</span> and <span class="math inline">\(\{Y_{t}Y_{t-1}\}\)</span> are also strictly stationary.</p>
+<p>The following are some simple examples of strictly stationary processes.</p>
+<div id="exm-iid-sequence" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 4.1 (iid sequence) </strong></span>If <span class="math inline">\(\{Y_{t}\}\)</span> is an iid sequence, then it is strictly stationary. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div id="exm-non-iid-sequence" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 4.2 (Non iid sequence) </strong></span>Let <span class="math inline">\(\{Y_{t}\}\)</span> be an iid sequence and let <span class="math inline">\(X\sim N(0,1)\)</span> independent of <span class="math inline">\(\{Y_{t}\}\)</span>. Define <span class="math inline">\(Z_{t}=Y_{t}+X\)</span>. The sequence <span class="math inline">\(\{Z_{t}\}\)</span> is not an independent sequence (because of the common <span class="math inline">\(X)\)</span> but is an identically distributed sequence and is strictly stationary. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<p>Strict stationarity places very strong restrictions on the behavior of a time series. A related concept that imposes weaker restrictions and is convenient for time series model building is <em>covariance stationarity</em> (sometimes called <em>weak stationarity</em>).</p>
+<div id="def-covariance-stationarity" class="definition theorem definition">
+<p><span class="theorem-title"><strong>Definition 4.4 (Covariance stationarity) </strong></span>A stochastic process <span class="math inline">\(\{Y_{t}\}\)</span> is <em>covariance stationary</em> if</p>
+<ol type="1">
+<li><span class="math inline">\(E[Y_{t}]=\mu &lt; \infty\)</span> does not depend on <span class="math inline">\(t\)</span></li>
+<li><span class="math inline">\(\mathrm{var}(Y_{t})=\sigma^{2}&lt;\infty\)</span> does not depend on <span class="math inline">\(t\)</span></li>
+<li><span class="math inline">\(\mathrm{cov}(Y_{t},Y_{t-j})=\gamma_{j}&lt;\infty\)</span>, and depends only on <span class="math inline">\(j\)</span> but not on <span class="math inline">\(t\)</span> for <span class="math inline">\(j=0,1,2,\ldots\)</span></li>
+</ol>
+</div>
+<p>The term <span class="math inline">\(\gamma_{j}\)</span> is called the <span class="math inline">\(j^{\textrm{th}}\)</span> order <em>autocovariance.</em> The <span class="math inline">\(j^{\textrm{th}}\)</span> order <em>autocorrelation</em> is defined as: <span id="eq-autocorrelation"><span class="math display">\[
+\rho_{j}=\frac{\mathrm{cov}(Y_{t},Y_{t-j})}{\sqrt{\mathrm{var}(Y_{t})\mathrm{var}(Y_{t-j})}}=\frac{\gamma_{j}}{\sigma^{2}}.
+\tag{4.1}\]</span></span></p>
+<p>The autocovariances, <span class="math inline">\(\gamma_{j},\)</span> measure the direction of linear dependence between <span class="math inline">\(Y_{t}\)</span> and <span class="math inline">\(Y_{t-j}\)</span>. The autocorrelations, <span class="math inline">\(\rho_{j}\)</span>, measure both the direction and strength of linear dependence between <span class="math inline">\(Y_{t}\)</span> and <span class="math inline">\(Y_{t-j}\)</span>. With covariance stationarity, instead of assuming the entire joint distribution of a collection of random variables is time invariant we make a weaker assumption that only the mean, variance and autocovariances of the random variables are time invariant. A strictly stationary stochastic process <span class="math inline">\(\{Y_{t}\}\)</span> such that <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma^{2}\)</span>, and <span class="math inline">\(\gamma_{ij}\)</span> exist is a <em>covariance stationary</em> stochastic process. However, a covariance stationary process need not be strictly stationary.</p>
+<p>The autocovariances and autocorrelations are measures of the linear temporal dependence in a covariance stationary stochastic process. A graphical summary of this temporal dependence is given by the plot of <span class="math inline">\(\rho_{j}\)</span> against <span class="math inline">\(j\)</span>, and is called the <em>autocorrelation function</em> (ACF). Figure <a href="#fig-TimeSeriesConceptsACF">Figure&nbsp;<span>4.1</span></a> illustrates an ACF for a hypothetical covariance stationary time series with <span class="math inline">\(\rho_{j}=(0.9)^{j}\)</span> for <span class="math inline">\(j=1,2,\ldots,10\)</span> created with</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>rho <span class="ot">=</span> <span class="fl">0.9</span> </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>rhoVec <span class="ot">=</span> (rho)<span class="sc">^</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>) </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ts.plot</span>(rhoVec, <span class="at">type=</span><span class="st">"h"</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">xlab=</span><span class="st">"Lag j"</span>, </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab=</span><span class="fu">expression</span>(rho[j]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-TimeSeriesConceptsACF" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="04-timeSeriesConcepts-new_files/figure-html/fig-TimeSeriesConceptsACF-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;4.1: ACF for time series with <span class="math inline">\(\rho_{j}=(0.9)^{j}\)</span></figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>For this process the strength of linear time dependence decays toward zero geometrically fast as <span class="math inline">\(j\)</span> increases.</p>
+<p>The definition of covariance stationarity requires that <span class="math inline">\(E[Y_{t}]&lt;\infty\)</span> and <span class="math inline">\(\mathrm{var}(Y_{t})&lt;\infty.\)</span> That is, <span class="math inline">\(E[Y_{t}]\)</span> and <span class="math inline">\(\mathrm{var}(Y_{t})\)</span> must exist and be finite numbers. This is true if <span class="math inline">\(Y_{t}\)</span> is normally distributed. However, it is not true if, for example, <span class="math inline">\(Y_{t}\)</span> has a Student’s t distribution with one degree of freedom.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> Hence, a strictly stationary stochastic process <span class="math inline">\(\{Y_{t}\}\)</span> where the (marginal) pdf of <span class="math inline">\(Y_{t}\)</span> (for all <span class="math inline">\(t\)</span>) has very fat tails may not be covariance stationary.</p>
+<div id="exm-gaussian-white-noise" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 4.3 (Gaussian White Noise) </strong></span>Let <span class="math inline">\(Y_{t}\sim iid\)</span> <span class="math inline">\(N(0,\sigma^{2})\)</span>. Then <span class="math inline">\(\{Y_{t}\}\)</span> is called a <em>Gaussian white noise</em> (GWN) process and is denoted <span class="math inline">\(Y_{t}\sim\mathrm{GWN}(0,\sigma^{2})\)</span>. Notice that: <span class="math display">\[\begin{align*}
+E[Y_{t}] &amp; =0\textrm{ independent of }t,\\
+\mathrm{var}(Y_{t}) &amp; =\sigma^{2}\textrm{ independent of }t,\\
+\mathrm{cov}(Y_{t},Y_{t-j}) &amp; =0\text{ (for }j&gt;0)\text{ independent of }t\textrm{ for all }j,
+\end{align*}\]</span> so that <span class="math inline">\(\{Y_{t}\}\)</span> satisfies the properties of a covariance stationary process. The defining characteristic of a GWN process is the lack of any predictable pattern over time in the realized values of the process. The term white noise comes from the electrical engineering literature and represents the absence of any signal.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+<p>Simulating observations from a GWN process in R is easy: just simulate iid observations from a normal distribution. For example, to simulate <span class="math inline">\(T=250\)</span> observations from the GWN(0,1) process use:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">250</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The simulated iid N(0,1) values are generated using the <code>rnorm()</code> function. The command <code>set.seed(123)</code> initializes R’s internal random number generator using the seed value 123. Every time the random number generator seed is set to a particular value, the random number generator produces the same set of random numbers. This allows different people to create the same set of random numbers so that results are reproducible. The simulated data is illustrated in Figure <a href="#fig-TimeSeriesConcpetsGWN">Figure&nbsp;<span>4.2</span></a> created using:</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ts.plot</span>(y,<span class="at">main=</span><span class="st">"Gaussian White Noise Process"</span>,<span class="at">xlab=</span><span class="st">"time"</span>,</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab=</span><span class="st">"y(t)"</span>, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">lwd=</span><span class="dv">2</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-TimeSeriesConcpetsGWN" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="04-timeSeriesConcepts-new_files/figure-html/fig-TimeSeriesConcpetsGWN-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;4.2: Realization of a GWN(0,1) process.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The function <code>ts.plot()</code> creates a time series line plot with a dummy time index. An equivalent plot can be created using the generic <code>plot()</code> function with optional argument <code>type="l"</code>. The data in Figure <a href="#fig-TimeSeriesConcpetsGWN">Figure&nbsp;<span>4.2</span></a> fluctuate randomly about the mean value zero and exhibit a constant volatility of one (typical magnitude of a fluctuation about zero). There is no visual evidence of any predictable pattern in the data. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div id="exm-gwn-model-for-continuously-compounded-returns" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 4.4 (GWN model for continuously compounded returns) </strong></span>Let <span class="math inline">\(r_{t}\)</span> denote the continuously compounded monthly return on Microsoft stock and assume that <span class="math inline">\(r_{t}\sim\mathrm{iid}\,N(0.01,\,(0.05)^{2})\)</span>. We can represent this distribution in terms of a GWN process as follows <span class="math display">\[
+r_{t}=0.01+\varepsilon_{t},\,\varepsilon_{t}\sim\mathrm{GWN}(0,\,(0.05)^{2}).
+\]</span> Here, <span class="math inline">\(r_{t}\)</span> is constructed as a <span class="math inline">\(\mathrm{GWN}(0,\sigma^{2})\)</span> process plus a constant. Hence, <span class="math inline">\(\{r_{t}\}\)</span> is a GWN process with a non-zero mean: <span class="math inline">\(r_{t}\sim\mathrm{GWN}(0.01,\,(0.05)^{2}).\)</span> <span class="math inline">\(T=60\)</span> simulated values of <span class="math inline">\(\{r_{t}\}\)</span> are computed using:</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">60</span>, <span class="at">mean=</span><span class="fl">0.01</span>, <span class="at">sd=</span><span class="fl">0.05</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ts.plot</span>(y,<span class="at">main=</span><span class="st">"GWN Process for Monthly Continuously Compounded Returns"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab=</span><span class="st">"time"</span>,<span class="at">ylab=</span><span class="st">"r(t)"</span>, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">lwd=</span><span class="dv">2</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.01</span>,<span class="sc">-</span><span class="fl">0.04</span>,<span class="fl">0.06</span>), <span class="at">lwd=</span><span class="dv">2</span>, </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">lty=</span><span class="fu">c</span>(<span class="st">"solid"</span>,<span class="st">"solid"</span>,<span class="st">"dotted"</span>,<span class="st">"dotted"</span>), </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">col=</span><span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"red"</span>, <span class="st">"red"</span>, <span class="st">"red"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-TimeSeriesConceptsGWNreturns" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="04-timeSeriesConcepts-new_files/figure-html/fig-TimeSeriesConceptsGWNreturns-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;4.3: Simulated returns from GWN(0.01,(0.05)<span class="math inline">\(^{2})\)</span>.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>and are illustrated in Figure <a href="#fig-TimeSeriesConceptsGWNreturns">Figure&nbsp;<span>4.3</span></a>. Notice that the returns fluctuate around the mean value of <span class="math inline">\(0.01\)</span> (solid red line) and the size of a typical deviation from the mean is about <span class="math inline">\(0.05\)</span>. The red dotted lines show the values <span class="math inline">\(0.1 \pm 0.05\)</span> .</p>
+<p>An implication of the GWN assumption for monthly returns is that non-overlapping multi-period returns are also GWN. For example, consider the two-month return <span class="math inline">\(r_{t}(2)=r_{t}+r_{t-1}\)</span>. The non-overlapping process <span class="math inline">\(\{r_{t}(2)\}=\{...,r_{t-2}(2),r_{t}(2),r_{t+2}(2),...\}\)</span> is GWN with mean <span class="math inline">\(E[r_{t}(2)]=2\cdot\mu=0.02\)</span>, variance <span class="math inline">\(\mathrm{var}(r_{t}(2))=2\cdot\sigma^{2}=0.005\)</span>, and standard deviation <span class="math inline">\(\mathrm{sd}(r_{t}(2))=\sqrt{2}\sigma=0.071\)</span>. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div id="exm-independent-white-noise" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 4.5 (Independent white noise) </strong></span>Let <span class="math inline">\(Y_{t}\sim\mathrm{iid}\)</span> <span class="math inline">\((0,\sigma^{2})\)</span>. Then <span class="math inline">\(\{Y_{t}\}\)</span> is called an <em>independent white noise</em> (IWN) process and is denoted <span class="math inline">\(Y_{t}\sim\mathrm{IWN}(0,\sigma^{2})\)</span>. The difference between GWN and IWN is that with IWN we don’t specify that all random variables are normally distributed. The random variables can have any distribution with mean zero and variance <span class="math inline">\(\sigma^{2}.\)</span> To illustrate, suppose <span class="math inline">\(Y_{t}=\frac{1}{\sqrt{3}}\times t_{3}\)</span> where <span class="math inline">\(t_{3}\)</span> denotes a Student’s t distribution with <span class="math inline">\(3\)</span> degrees of freedom. This process has <span class="math inline">\(E[Y_{t}]=0\)</span> and <span class="math inline">\(\mathrm{var}(Y_{t})=1.\)</span> Figure <a href="#fig-TimeSeriesConceptsIWN">Figure&nbsp;<span>4.4</span></a> shows simulated observations from this process created using the R commands</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> (<span class="dv">1</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">3</span>))<span class="sc">*</span><span class="fu">rt</span>(<span class="dv">250</span>, <span class="at">df=</span><span class="dv">3</span>) </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ts.plot</span>(y, <span class="at">main=</span><span class="st">"Independent White Noise Process"</span>, <span class="at">xlab=</span><span class="st">"time"</span>, <span class="at">ylab=</span><span class="st">"y(t)"</span>,         </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">lwd=</span><span class="dv">2</span>) </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-TimeSeriesConceptsIWN" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="04-timeSeriesConcepts-new_files/figure-html/fig-TimeSeriesConceptsIWN-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;4.4: Simulation of IWN(0,1) process: <span class="math inline">\(Y_{t}\sim\frac{1}{\sqrt{3}}\times t_{3}\)</span></figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The simulated IWN process resembles the GWN in Figure <a href="#fig-TimeSeriesConceptsIWN">Figure&nbsp;<span>4.4</span></a> but has more extreme observations. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div id="exm-weak-white-noise" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 4.6 (Weak white noise) </strong></span>Let <span class="math inline">\(\{Y_{t}\}\)</span> be a sequence of uncorrelated random variables each with mean zero and variance <span class="math inline">\(\sigma^{2}\)</span>. Then <span class="math inline">\(\{Y_{t}\}\)</span> is called a <em>weak white noise</em> (WWN) process and is denoted <span class="math inline">\(Y_{t}\sim\mathrm{WWN}(0,\sigma^{2})\)</span>. With a WWN process, the random variables are not independent, only uncorrelated. This allows for potential non-linear temporal dependence between the random variables in the process. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+<section id="non-stationary-processes" class="level3" data-number="4.1.2">
+<h3 data-number="4.1.2" class="anchored" data-anchor-id="non-stationary-processes"><span class="header-section-number">4.1.2</span> Non-Stationary processes</h3>
+<p> In a covariance stationary stochastic process it is assumed that the means, variances and autocovariances are independent of time. In a <em>non-stationary</em> process, one or more of these assumptions is not true. The following examples illustrate some typical non-stationary time series processes.</p>
+<div id="exm-deterministically-trending-process" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 4.7 (Deterministically trending process) </strong></span>Suppose <span class="math inline">\(\{Y_{t}\}\)</span> is generated according to the <em>deterministically trending process</em>: <span class="math display">\[\begin{align*}
+Y_{t} &amp; =\beta_{0}+\beta_{1}t+\varepsilon_{t},~\varepsilon_{t}\sim\mathrm{GWN}(0,\sigma_{\varepsilon}^{2}),\\
+t &amp; =0,1,2,\ldots
+\end{align*}\]</span> Then <span class="math inline">\(\{Y_{t}\}\)</span> is nonstationary because the mean of <span class="math inline">\(Y_{t}\)</span> depends on <span class="math inline">\(t\)</span>: <span class="math display">\[
+E[Y_{t}]=\beta_{0}+\beta_{1}t.
+\]</span> Figure <a href="#fig-TimeSeriesConceptsTrend">Figure&nbsp;<span>4.5</span></a> shows a realization of this process with <span class="math inline">\(\beta_{0}=0,\beta_{1}=0.1\)</span> and <span class="math inline">\(\sigma_{\varepsilon}^{2}=1\)</span> created using the R commands:</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>e <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">250</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>y.dt <span class="ot">=</span> <span class="fl">0.1</span><span class="sc">*</span><span class="fu">seq</span>(<span class="dv">1</span>,<span class="dv">250</span>) <span class="sc">+</span> e</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ts.plot</span>(y.dt, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">main=</span><span class="st">"Deterministic Trend + Noise"</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">a=</span><span class="dv">0</span>, <span class="at">b=</span><span class="fl">0.1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-TimeSeriesConceptsTrend" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="04-timeSeriesConcepts-new_files/figure-html/fig-TimeSeriesConceptsTrend-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;4.5: Deterministically trending nonstationary process <span class="math inline">\(Y_{t}=0.1\times t+\varepsilon_{t},\varepsilon_{t}\sim\mathrm{GWN}(0,1)\)</span></figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Here the non-stationarity is created by the deterministic trend <span class="math inline">\(\beta_{0}+\beta_{1}t\)</span> in the data. The non-stationary process <span class="math inline">\(\{Y_{t}\}\)</span> can be transformed into a stationary process by simply subtracting off the trend: <span class="math display">\[
+X_{t}=Y_{t}-\beta_{0}-\beta_{1}t=\varepsilon_{t}\sim\mathrm{GWN}(0,\sigma_{\varepsilon}^{2}).
+\]</span> The detrended process <span class="math inline">\(X_{t}\sim\mathrm{GWN}(0,\sigma_{\varepsilon}^{2})\)</span> is obviously covariance stationary. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div id="exm-random-walk" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 4.8 (Random walk) </strong></span>A random walk (RW) process <span class="math inline">\(\{Y_{t}\}\)</span> is defined as: <span class="math display">\[\begin{align*}
+Y_{t} &amp; =Y_{t-1}+\varepsilon_{t},~\varepsilon_{t}\sim\mathrm{GWN}(0,\sigma_{\varepsilon}^{2}),\\
+&amp; Y_{0}\textrm{ is fixed (non-random)}.
+\end{align*}\]</span> By recursive substitution starting at <span class="math inline">\(t=1\)</span>, we have: <span class="math display">\[\begin{align*}
+Y_{1} &amp; =Y_{0}+\varepsilon_{1},\\
+Y_{2} &amp; =Y_{1}+\varepsilon_{2}=Y_{0}+\varepsilon_{1}+\varepsilon_{2},\\
+&amp; \vdots\\
+Y_{t} &amp; =Y_{t-1}+\varepsilon_{t}=Y_{0}+\varepsilon_{1}+\cdots+\varepsilon_{t}\\
+&amp; =Y_{0}+\sum_{j=1}^{t}\varepsilon_{j}.
+\end{align*}\]</span> Now, <span class="math inline">\(E[Y_{t}]=Y_{0}\)</span> which is independent of <span class="math inline">\(t\)</span>. However, <span class="math display">\[
+\mathrm{var}(Y_{t})=\mathrm{var}\left(\sum_{j=1}^{t}\varepsilon_{j}\right)=\sum_{j=1}^{t}\sigma_{\varepsilon}^{2}=\sigma_{\varepsilon}^{2}\times t,
+\]</span> which depends on <span class="math inline">\(t\)</span>, and so <span class="math inline">\(\{Y_{t}\}\)</span> is not stationary.</p>
+<p>Figure <a href="#fig-TimeSeriesConceptsRW">Figure&nbsp;<span>4.6</span></a> shows a realization of the RW process with <span class="math inline">\(Y_{0}=0\)</span> and <span class="math inline">\(\sigma_{\varepsilon}^{2}=1\)</span> created using the R commands:</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">321</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>e <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">250</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>y.rw <span class="ot">=</span> <span class="fu">cumsum</span>(e)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ts.plot</span>(y.rw, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">main=</span><span class="st">"Random Walk"</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-TimeSeriesConceptsRW" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="04-timeSeriesConcepts-new_files/figure-html/fig-TimeSeriesConceptsRW-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;4.6: Random walk process: <span class="math inline">\(Y_{t}=Y_{t-1}+\varepsilon_{t},\varepsilon_{t}\sim\mathrm{GWN}(0,1)\)</span>.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The RW process looks much different from the GWN process in Figure <a href="#fig-TimeSeriesConcpetsGWN">Figure&nbsp;<span>4.2</span></a>. As the variance of the process increases linearly with time, the uncertainty about where the process will be at a given point in time increases with time.</p>
+<p>Although <span class="math inline">\(\{Y_{t}\}\)</span> is non-stationary, a simple first-differencing transformation, however, yields a covariance stationary process: <span class="math display">\[
+X_{t}=Y_{t}-Y_{t-1}=\varepsilon_{t}\sim\mathrm{GWN}(0,\sigma_{\varepsilon}^{2}).
+\]</span></p>
+<p><span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div id="exm-random-walk-with-drift-model-for-log-stock-prices" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 4.9 (Random walk with drift model for log stock prices) </strong></span>Let <span class="math inline">\(r_{t}\)</span> denote the continuously compounded monthly return on Microsoft stock and assume that <span class="math inline">\(r_{t}\sim\mathrm{GWN}(\mu,\,\sigma^{2})\)</span>. Since <span class="math inline">\(r_{t}=\ln(P_{t}/P_{t-1})\)</span> it follows that <span class="math inline">\(\ln P_{t}=\ln P_{t-1}+r_{t}\)</span>. Now, re-express <span class="math inline">\(r_{t}\)</span> as <span class="math inline">\(r_{t}=\mu+\varepsilon_{t}\)</span> where <span class="math inline">\(\varepsilon_{t}\sim\mathrm{GWN}(0,\sigma^{2}).\)</span> Then <span class="math inline">\(lnP_{t}=lnP_{t-1}+\mu+\varepsilon_{t}.\)</span> By recursive substitution we have <span class="math inline">\(lnP_{t}=lnP_{0}+\mu t+\sum_{t=1}^{t}\varepsilon_{t}\)</span> and so <span class="math inline">\(\ln P_{t}\)</span> follows a random walk process with drift value <span class="math inline">\(\mu\)</span>. Here, <span class="math inline">\(E[lnP_{t}]=\mu t\)</span> and <span class="math inline">\(\mathrm{var}(lnP_{t})=\sigma^{2}t\)</span> so <span class="math inline">\(lnP_{t}\)</span> is non-stationary because both the mean and variance depend on <span class="math inline">\(t\)</span>. In this model, prices, however, do not follow a random walk since <span class="math inline">\(P_{t}=e^{\ln P_{t}}=P_{t-1}e^{r_{t}}\)</span>. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+<section id="ergodicity" class="level3" data-number="4.1.3">
+<h3 data-number="4.1.3" class="anchored" data-anchor-id="ergodicity"><span class="header-section-number">4.1.3</span> Ergodicity</h3>
+<p> In a strictly stationary or covariance stationary stochastic process no assumption is made about the strength of dependence between random variables in the sequence. For example, in a covariance stationary stochastic process it is possible that <span class="math inline">\(\rho_{1}=\mathrm{cor}(Y_{t},Y_{t-1})=\rho_{100}=\mathrm{cor}(Y_{t},Y_{t-100})=0.5\)</span>, say. However, in many contexts it is reasonable to assume that the strength of dependence between random variables in a stochastic process diminishes the farther apart they become. That is, <span class="math inline">\(\rho_{1}&gt;\rho_{2}\cdots\)</span> and that eventually <span class="math inline">\(\rho_{j}=0\)</span> for <span class="math inline">\(j\)</span> large enough. This diminishing dependence assumption is captured by the concept of <em>ergodicity</em>.</p>
+<div id="def-ergodicity-intuitive-definition" class="definition theorem definition">
+<p><span class="theorem-title"><strong>Definition 4.5 (Ergodicity (intuitive definition)) </strong></span>Intuitively, a stochastic process <span class="math inline">\(\{Y_{t}\}\)</span> is <em>ergodic</em> if any two collections of random variables partitioned far apart in the sequence are essentially independent.</p>
+</div>
+<p>The formal definition of ergodicity is highly technical and requires advanced concepts in probability theory. However, the intuitive definition captures the essence of the concept. The stochastic process <span class="math inline">\(\{Y_{t}\}\)</span> is ergodic if <span class="math inline">\(Y_{t}\)</span> and <span class="math inline">\(Y_{t-j}\)</span> are essentially independent if <span class="math inline">\(j\)</span> is large enough.</p>
+<p>If a stochastic process <span class="math inline">\(\{Y_{t}\}\)</span> is covariance stationary and ergodic then strong restrictions are placed on the joint behavior of the elements in the sequence and on the type of temporal dependence allowed.</p>
+<div id="exm-white-noise-processes" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 4.10 (White noise processes) </strong></span>If <span class="math inline">\(\{Y_{t}\}\)</span> is GWN or IWN then it is both covariance stationary and ergodic. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div id="exm-covariance-stationary-but-not-ergodic-process-white-1984-page-41" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 4.11 (Covariance stationary but not ergodic process (White 1984 page 41)) </strong></span>Let <span class="math inline">\(Y_{t}\sim\mathrm{GWN}(0,1)\)</span> and let <span class="math inline">\(X\sim N(0,1)\)</span> independent of <span class="math inline">\(\{Y_{t}\}\)</span>. Define <span class="math inline">\(Z_{t}=Y_{t}+X\)</span>. Then <span class="math inline">\(\{Z_{t}\}\)</span> is covariance stationary but not ergodic. To see why <span class="math inline">\(\{Z_{t}\}\)</span> is not ergodic, note that for all <span class="math inline">\(j&gt;0\)</span>: <span class="math display">\[\begin{align*}
+\mathrm{var}(Z_{t}) &amp; =\mathrm{var}(Y_{t}+X)=1+1=2,\\
+\gamma_{j} &amp; =\mathrm{cov}(Y_{t}+X,Y_{t-j}+X)=\mathrm{cov}(Y_{t},Y_{t-j})+\mathrm{cov}(Y_{t},X)+\mathrm{cov}(Y_{t-j},X)+\mathrm{cov}(X,X)\\
+&amp; =\mathrm{cov}(X,X)=\mathrm{var}(X)=1,\\
+\rho_{j} &amp; =\frac{1}{2}\text{ for all }j.
+\end{align*}\]</span> Hence, the correlation between random variables separated far apart does not eventually go to zero and so <span class="math inline">\(\{Z_{t}\}\)</span> cannot be ergodic. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+</section>
+<section id="sec-Multivariate-Time-Series" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="sec-Multivariate-Time-Series"><span class="header-section-number">4.2</span> Multivariate Time Series</h2>
+<p> Consider <span class="math inline">\(n\)</span> time series variables <span class="math inline">\(\{Y_{1t}\},\ldots,\{Y_{nt}\}\)</span>. A <em>multivariate time series</em> is the <span class="math inline">\((n\times1)\)</span> vector time series <span class="math inline">\(\{\mathbf{Y}_{t}\}\)</span> where the <span class="math inline">\(i^{th}\)</span> row of <span class="math inline">\(\{\mathbf{Y}_{t}\}\)</span> is <span class="math inline">\(\{Y_{it}\}\)</span>. That is, for any time <span class="math inline">\(t\)</span>, <span class="math inline">\(\mathbf{Y}_{t}=(Y_{1t},\ldots,Y_{nt})^{\prime}\)</span>. Multivariate time series analysis is used when one wants to model and explain the interactions and co-movements among a group of time series variables. In finance, multivariate time series analysis is used to model systems of asset returns, asset prices, exchange rates, the term structure of interest rates, and economic variables, etc.. Many of the time series concepts described previously for univariate time series carry over to multivariate time series in a natural way. Additionally, there are some important time series concepts that are particular to multivariate time series. The following sections give the details of these extensions.</p>
+<section id="stationary-and-ergodic-multivariate-time-series" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="stationary-and-ergodic-multivariate-time-series"><span class="header-section-number">4.2.1</span> Stationary and ergodic multivariate time series</h3>
+<p>A multivariate time series <span class="math inline">\(\{\mathbf{Y}_{t}\}\)</span> is covariance stationary and ergodic if all of its component time series are stationary and ergodic. The mean of <span class="math inline">\(\mathbf{Y}_{t}\)</span> is defined as the <span class="math inline">\((n\times1)\)</span> vector <span class="math display">\[
+E[\mathbf{Y}_{t}]=(\mu_{1},\ldots,\mu_{n})^{\prime}=\boldsymbol{\mu},
+\]</span> where <span class="math inline">\(\mu_{i}=E[Y_{it}]\)</span> for <span class="math inline">\(i=1,\ldots,n\)</span>. The variance/covariance matrix of <span class="math inline">\(\mathbf{Y}_{t}\)</span> is the <span class="math inline">\((n\times n)\)</span> matrix <span class="math display">\[\begin{align*}
+\mathrm{var}(\mathbf{Y}_{t}) &amp; =\boldsymbol{\Sigma}=E[(\mathbf{Y}_{t}-\boldsymbol{\mu})(\mathbf{Y}_{t}-\boldsymbol{\mu})^{\prime}]\\
+&amp; =\left(\begin{array}{cccc}
+\mathrm{var}(Y_{1t}) &amp; \mathrm{cov}(Y_{1t},Y_{2t}) &amp; \cdots &amp; \mathrm{cov}(Y_{1t},Y_{nt})\\
+\mathrm{cov}(Y_{2t},Y_{1t}) &amp; \mathrm{var}(Y_{2t}) &amp; \cdots &amp; \mathrm{cov}(Y_{2t},Y_{nt})\\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots\\
+\mathrm{cov}(Y_{nt},Y_{1t}) &amp; \mathrm{cov}(Y_{nt},Y_{2t}) &amp; \cdots &amp; \mathrm{var}(Y_{nt})
+\end{array}\right).
+\end{align*}\]</span> The matrix <span class="math inline">\(\boldsymbol{\Sigma}\)</span> has elements <span class="math inline">\(\sigma_{ij}=\)</span> cov<span class="math inline">\((Y_{it},Y_{jt})\)</span> which measure the contemporaneous linear dependence between <span class="math inline">\(Y_{it}\)</span> and <span class="math inline">\(Y_{jt}\)</span> that is time invariant. The correlation matrix of <span class="math inline">\(\mathbf{Y}_{t}\)</span> is the <span class="math inline">\((n\times n)\)</span> matrix <span class="math display">\[
+\mathrm{cor}(\mathbf{Y}_{t})=\mathbf{C}=\mathbf{D}^{-1} \boldsymbol{\Sigma} \mathbf{D}^{-1},
+\]</span> where <span class="math inline">\(\mathbf{D}\)</span> is an <span class="math inline">\((n\times n)\)</span> diagonal matrix with <span class="math inline">\(j^{th}\)</span> diagonal element <span class="math inline">\(\sigma_{j}=\mathrm{sd}(Y_{jt})\)</span>.</p>
+<section id="cross-covariance-and-correlation-matrices" class="level4" data-number="4.2.1.1">
+<h4 data-number="4.2.1.1" class="anchored" data-anchor-id="cross-covariance-and-correlation-matrices"><span class="header-section-number">4.2.1.1</span> Cross covariance and correlation matrices</h4>
+<p>For a univariate time series <span class="math inline">\(\{Y_{t}\}\)</span>, the autocovariances, <span class="math inline">\(\gamma_{k}\)</span>, and autocorrelations, <span class="math inline">\(\rho_{k}\)</span>, summarize the linear time dependence in the data. With a multivariate time series <span class="math inline">\(\{\mathbf{Y}_{t}\}\)</span> each component has autocovariances and autocorrelations but there are also cross lead-lag covariances and correlations between all possible pairs of components. The lag <span class="math inline">\(k\)</span> autocovariances and autocorrelations of <span class="math inline">\(Y_{jt}\)</span>, for <span class="math inline">\(j=1,\ldots,n\)</span>, are defined as <span class="math display">\[\begin{align*}
+\gamma_{jj}^{k} &amp; =\mathrm{cov}(Y_{jt},Y_{jt-k}),\\
+\rho_{jj}^{k} &amp; =\mathrm{corr}(Y_{jt},Y_{jt-k})=\frac{\gamma_{jj}^{k}}{\sigma_{j}^{2}},
+\end{align*}\]</span> and these are symmetric in <span class="math inline">\(k\)</span>: <span class="math inline">\(\gamma_{jj}^{k}=\gamma_{jj}^{-k}\)</span>, <span class="math inline">\(\rho_{jj}^{k}=\rho_{jj}^{-k}\)</span>. The <em>cross lag-k covariances</em> and <em>cross lag-k correlations</em> between <span class="math inline">\(Y_{it}\)</span> and <span class="math inline">\(Y_{jt}\)</span> are defined as <span class="math display">\[\begin{align*}
+\gamma_{ij}^{k} &amp; =\mathrm{cov}(Y_{it},Y_{jt-k}),\\
+\rho_{ij}^{k} &amp; =\mathrm{corr}(Y_{jt},Y_{jt-k})=\frac{\gamma_{ij}^{k}}{\sqrt{\sigma_{i}^{2}\sigma_{j}^{2}}},
+\end{align*}\]</span> and they are not necessarily symmetric in <span class="math inline">\(k\)</span>. In general, <span class="math display">\[
+\gamma_{ij}^{k}=\mathrm{cov}(Y_{it},Y_{jt-k})\neq\mathrm{cov}(Y_{jt},Y_{it-k})=\gamma_{ji}^{k}.
+\]</span> If <span class="math inline">\(\gamma_{ij}^{k}\neq0\)</span> for some <span class="math inline">\(k&gt;0\)</span> then <span class="math inline">\(Y_{jt}\)</span> is said to <em>lead</em> <span class="math inline">\(Y_{it}\)</span>. This implies that past values of <span class="math inline">\(Y_{jt}\)</span> are useful for predicting future values of <span class="math inline">\(Y_{it}.\)</span> Similarly, if <span class="math inline">\(\gamma_{ji}^{k}\neq0\)</span> for some <span class="math inline">\(k&gt;0\)</span> then <span class="math inline">\(Y_{it}\)</span> is said to <em>lead</em> <span class="math inline">\(Y_{jt}\)</span>. It is possible that <span class="math inline">\(Y_{it}\)</span> leads <span class="math inline">\(Y_{jt}\)</span> and vice-versa. In this case, there is said to be <em>dynamic feedback</em> between the two series.</p>
+<p>All of the lag <span class="math inline">\(k\)</span> cross covariances and correlations are summarized in the <span class="math inline">\((n\times n)\)</span> lag <span class="math inline">\(k\)</span> cross covariance and lag <span class="math inline">\(k\)</span> cross correlation matrices <span class="math display">\[\begin{align*}
+\boldsymbol{\Gamma}_{k} &amp; =E[(\mathbf{Y}_{t}-\boldsymbol{\mu})(\mathbf{Y}_{t-k}-\boldsymbol{\mu})^{\prime}]\\
+&amp; =\left(\begin{array}{cccc}
+\mathrm{cov}(Y_{1t},Y_{1t-k}) &amp; \mathrm{cov}(Y_{1t},Y_{2t-k}) &amp; \cdots &amp; \mathrm{cov}(Y_{1t},Y_{nt-k})\\
+\mathrm{cov}(Y_{2t},Y_{1t-k}) &amp; \mathrm{cov}(Y_{2t},Y_{2t-k}) &amp; \cdots &amp; \mathrm{cov}(Y_{2t},Y_{nt-k})\\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots\\
+\mathrm{cov}(Y_{nt},Y_{1t-k}) &amp; \mathrm{cov}(Y_{nt},Y_{2t-k}) &amp; \cdots &amp; \mathrm{cov}(Y_{nt},Y_{nt-k})
+\end{array}\right),\\
+\mathbf{C}_{k} &amp; =\mathbf{D}^{-1}\boldsymbol{\Gamma}_{k}\mathbf{D}^{-1}.
+\end{align*}\]</span> The matrices <span class="math inline">\(\boldsymbol{\Gamma}_{k}\)</span> and <span class="math inline">\(\mathbf{C}_{k}\)</span> are not symmetric in <span class="math inline">\(k\)</span> but it is easy to show that <span class="math inline">\(\boldsymbol{\Gamma}_{-k}=\boldsymbol{\Gamma}_{k}^{\prime}\)</span> and <span class="math inline">\(\mathbf{C}_{-k}=\mathbf{C}_{k}^{\prime}\)</span>.</p>
+<div id="exm-multivariate-gaussian-white-noise-processes" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 4.12 (Multivariate Gaussian white noise processes) </strong></span>Let <span class="math inline">\(\{\mathbf{Y}_{t}\}\)</span> be an <span class="math inline">\(n\times1\)</span> vector time series process. If <span class="math inline">\(\mathbf{Y}_{t}\sim iid\,N(\mathbf{0},\,\boldsymbol{\Sigma})\)</span> then <span class="math inline">\(\{\mathbf{Y}_{t}\}\)</span> is called <em>multivariate Gaussian white noise</em> and is denoted <span class="math inline">\(\mathbf{Y}_{t}\sim\mathrm{GWN}(\mathbf{0},\,\boldsymbol{\Sigma})\)</span>. Notice that <span class="math display">\[\begin{eqnarray*}
+E[\mathbf{Y}_{t}] &amp; = &amp; \mathbf{0},\\
+\mathrm{var}(\mathbf{Y}_{t}) &amp; = &amp; \boldsymbol{\Sigma},\\
+\mathrm{cov}(Y_{jt},Y_{jt-k}) &amp; = &amp; \gamma_{jj}^{k}=0\,(\textrm{for}\,k&gt;0)\\
+\mathrm{cov}(Y_{it},Y_{jt-k}) &amp; = &amp; \gamma_{ij}^{k}=0\,(\textrm{for}\,k&gt;0)
+\end{eqnarray*}\]</span> Hence, the elements of <span class="math inline">\(\{\mathbf{Y}_{t}\}\)</span> are contemporaneously correlated but exhibit no time dependence. That is, each element of <span class="math inline">\(\mathbf{Y}_{t}\)</span> exhibits no time dependence and there is no dynamic feedback between any two elements. Simulating observations from <span class="math inline">\(\mathrm{GWN}(\mathbf{0},\,\boldsymbol{\Sigma})\)</span> requires simulating from a multivariate normal distribution, which can be done using the <strong>mvtnorm</strong> function <code>rmvnorm()</code>. For example, to simulate and plot <span class="math inline">\(T=250\)</span> observation from a bivariate <span class="math inline">\(\mathrm{GWN}(\mathbf{0},\,\boldsymbol{\Sigma})\)</span> process with <span class="math display">\[
+\boldsymbol{\Sigma}=\left(\begin{array}{cc}
+4 &amp; 1\\
+1 &amp; 1
+\end{array}\right)\Rightarrow \mathbf{C}=\left(\begin{array}{cc}
+1 &amp; 0.5\\
+0.5 &amp; 1
+\end{array}\right)
+\]</span> use:</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mvtnorm) </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>Sigma <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="dv">2</span>, <span class="dv">2</span>) </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">=</span> <span class="fu">rmvnorm</span>(<span class="dv">250</span>, <span class="at">sigma=</span>Sigma) </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(Y) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Y1"</span>, <span class="st">"Y2"</span>) </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ts.plot</span>(Y, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">col=</span><span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"blue"</span>)) </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">0</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topleft"</span>, <span class="at">legend=</span><span class="fu">c</span>(<span class="st">"Y1"</span>, <span class="st">"Y2"</span>), </span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">col=</span><span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"blue"</span>), <span class="at">lty=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-TimeSeriesMultivariateGWN" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="04-timeSeriesConcepts-new_files/figure-html/fig-TimeSeriesMultivariateGWN-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;4.7: Simulated bivariate GWN process.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The simulated values are shown on the same plot in Figure <a href="#fig-TimeSeriesMultivariateGWN">Figure&nbsp;<span>4.7</span></a>. Both series fluctuate randomly about zero, and the first series (black line) has larger fluctuations (volatility) than the second series (blue line). The two series are contemporaneously correlated <span class="math inline">\((\rho_{12}=0.5)\)</span> but are both uncorrelated over time (<span class="math inline">\(\rho_{11}^{k}=\rho_{22}^{k}=0,\,k&gt;0)\)</span> and are not cross-lag correlated (<span class="math inline">\(\rho_{12}^{k}=\rho_{21}^{k}=0,\,k&gt;0\)</span>). <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+</section>
+</section>
+<section id="sec-Time-Series-Models" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="sec-Time-Series-Models"><span class="header-section-number">4.3</span> Time Series Models</h2>
+<p>Time series models are probability models that are used to describe the behavior of a stochastic process. In many cases of interest, it is assumed that the stochastic process to be modeled is covariance stationary and ergodic. Then, the main feature of the process to be modeled is the time dependence between the random variables. In this section, we illustrate some simple models for covariance stationary and ergodic time series that exhibit particular types of linear time dependence captured by autocorrelations. The univariate models, made popular originally by <span class="citation" data-cites="box-1976">(<a href="references.html#ref-box-1976" role="doc-biblioref">Box and Jenkins 1976</a>)</span>, are called <em>autoregressive moving average</em> (ARMA) models. The multivariate model, made popular by <span class="citation" data-cites="sims-1980">(<a href="references.html#ref-sims-1980" role="doc-biblioref">Sims 1980</a>)</span>, is called the <em>vector autoregressive</em> (VAR) model. These models are used extensively in economics and finance for modeling univariate and multivariate time series.</p>
+<section id="moving-average-models" class="level3" data-number="4.3.1">
+<h3 data-number="4.3.1" class="anchored" data-anchor-id="moving-average-models"><span class="header-section-number">4.3.1</span> Moving average models</h3>
+<p>Moving average models are simple covariance stationary and ergodic time series models built from linear functions of GWN that can capture time dependence between random variables that lasts only for a finite number of lags.</p>
+<section id="ma1-model" class="level4" data-number="4.3.1.1">
+<h4 data-number="4.3.1.1" class="anchored" data-anchor-id="ma1-model"><span class="header-section-number">4.3.1.1</span> MA(1) Model</h4>
+<p> Suppose you want to create a covariance stationary and ergodic stochastic process <span class="math inline">\(\{Y_{t}\}\)</span> in which <span class="math inline">\(Y_{t}\)</span> and <span class="math inline">\(Y_{t-1}\)</span> are correlated but <span class="math inline">\(Y_{t}\)</span> and <span class="math inline">\(Y_{t-j}\)</span> are not correlated for <span class="math inline">\(j&gt;1.\)</span> That is, the time dependence in the process only lasts for one period. Such a process can be created using the <em>first order moving average</em> (MA(1)) model: <span id="eq-MA1"><span class="math display">\[
+Y_{t} =\mu+\varepsilon_{t}+\theta\varepsilon_{t-1},~-1&lt;\theta&lt;1, ~ \varepsilon_{t}\sim\mathrm{GWN}(0,\sigma_{\varepsilon}^{2}).
+\tag{4.2}\]</span></span> The MA(1) model is a simple linear function of the GWN random variables <span class="math inline">\(\varepsilon_{t}\)</span> and <span class="math inline">\(\varepsilon_{t-1}.\)</span> This linear structure allows for easy analysis of the model. The moving average parameter <span class="math inline">\(\theta\)</span> determines the sign and magnitude of the correlation between <span class="math inline">\(Y_{t}\)</span> and <span class="math inline">\(Y_{t-1}\)</span>. Clearly, if <span class="math inline">\(\theta=0\)</span> then <span class="math inline">\(Y_{t}=\mu+\varepsilon_{t}\)</span> so that <span class="math inline">\(\{Y_{t}\}\)</span> is GWN with non-zero mean <span class="math inline">\(\mu\)</span> and exhibits no time dependence. As will be shown below, the MA(1) model produces a covariance stationary and ergodic process for any (finite) value of <span class="math inline">\(\theta\)</span>. The restriction <span class="math inline">\(-1&lt;\theta&lt;1\)</span> is called the <em>invertibility</em> restriction and will be explained below.</p>
+<p>To verify that <a href="#eq-MA1">Equation&nbsp;<span>4.2</span></a> process is a covariance stationary process we must show that the mean, variance and autocovariances are time invariant. For the mean, we have: <span class="math display">\[
+E[Y_{t}]=\mu+E[\varepsilon_{t}]+\theta E[\varepsilon_{t-1}]=\mu,
+\]</span> because <span class="math inline">\(E[\varepsilon_{t}]=E[\varepsilon_{t-1}]=0\)</span>.</p>
+<p>For the variance, we have <span class="math display">\[\begin{align*}
+\mathrm{var}(Y_{t}) &amp; =\sigma^{2}=E[(Y_{t}-\mu)^{2}]=E[(\varepsilon_{t}+\theta\varepsilon_{t-1})^{2}]\\
+&amp; =E[\varepsilon_{t}^{2}]+2\theta E[\varepsilon_{t}\varepsilon_{t-1}]+\theta^{2}E[\varepsilon_{t-1}^{2}]\\
+&amp; =\sigma_{\varepsilon}^{2}+0+\theta^{2}\sigma_{\varepsilon}^{2}=\sigma_{\varepsilon}^{2}(1+\theta^{2}).
+\end{align*}\]</span> The term <span class="math inline">\(E[\varepsilon_{t}\varepsilon_{t-1}]=\mathrm{cov}(\varepsilon_{t},\varepsilon_{t-1})=0\)</span> because <span class="math inline">\(\{\varepsilon_{t}\}\)</span> is an independent process.</p>
+<p>For <span class="math inline">\(\gamma_{1}=\mathrm{cov}(Y_{t},Y_{t-1}),\)</span> we have: <span class="math display">\[\begin{align*}
+\mathrm{cov}(Y_{t},Y_{t-1}) &amp; =E[(Y_{t}-\mu)(Y_{t-1}-\mu)]\\
+&amp; =E[(\varepsilon_{t}+\theta\varepsilon_{t-1})(\varepsilon_{t-1}+\theta\varepsilon_{t-2})]\\
+&amp; =E[\varepsilon_{t}\varepsilon_{t-1}]+\theta E[\varepsilon_{t}\varepsilon_{t-2}]\\
+&amp; +\theta E[\varepsilon_{t-1}^{2}]+\theta^{2}E[\varepsilon_{t-1}\varepsilon_{t-2}]\\
+&amp; =0+0+\theta\sigma_{\varepsilon}^{2}+0=\theta\sigma_{\varepsilon}^{2}.
+\end{align*}\]</span> Here, the sign of <span class="math inline">\(\gamma_{1}\)</span> is the same as the sign of <span class="math inline">\(\theta\)</span>.</p>
+<p>For <span class="math inline">\(\rho_{1}=\mathrm{cor}(Y_{t},Y_{t-1})\)</span> we have: <span class="math display">\[
+\rho_{1}=\frac{\gamma_{1}}{\sigma^{2}}=\frac{\theta\sigma_{\varepsilon}^{2}}{\sigma_{\varepsilon}^{2}(1+\theta^{2})}=\frac{\theta}{(1+\theta^{2})}.
+\]</span> Clearly, <span class="math inline">\(\rho_{1}=0\)</span> if <span class="math inline">\(\theta=0\)</span>; <span class="math inline">\(\rho_{1}&gt;0\)</span> if <span class="math inline">\(\theta&gt;0;\rho_{1}&lt;0\)</span> if <span class="math inline">\(\theta&lt;0\)</span>. Also, the largest value for <span class="math inline">\(|\rho_{1}|\)</span> is 0.5 which occurs when <span class="math inline">\(|\theta|=1\)</span>. Hence, a MA(1) model cannot describe a stochastic process that has <span class="math inline">\(|\rho_{1}|&gt;0.5\)</span>. Also, note that there is more than one value of <span class="math inline">\(\theta\)</span> that produces the same value of <span class="math inline">\(\rho_{1}.\)</span> For example, <span class="math inline">\(\theta\)</span> and 1/<span class="math inline">\(\theta\)</span> give the same value for <span class="math inline">\(\rho_{1}\)</span>. The <em>invertibility restriction</em> <span class="math inline">\(-1&lt;\theta&lt;1\)</span> provides a unique mapping between <span class="math inline">\(\theta\)</span> and <span class="math inline">\(\rho_{1}.\)</span></p>
+<p>For <span class="math inline">\(\gamma_{2}=\mathrm{cov}(Y_{t},Y_{t-2}),\)</span> we have:</p>
+<p><span class="math display">\[\begin{align*}
+\mathrm{cov}(Y_{t},Y_{t-2}) &amp;= E[(Y_{t}-\mu)(Y_{t-2}-\mu)] \\
+&amp;= E[(\varepsilon_{t}+\theta\varepsilon_{t-1})(\varepsilon_{t-2}+\theta\varepsilon_{t-3})] \\
+&amp;= E[\varepsilon_{t}\varepsilon_{t-2}]+\theta E[\varepsilon_{t}\varepsilon_{t-3}] \\
+&amp;+ \theta E[\varepsilon_{t-1}\varepsilon_{t-2}]+\theta^{2}E[\varepsilon_{t-1}\varepsilon_{t-3}] \\
+&amp;= 0+0+0+0=0.
+\end{align*}\]</span></p>
+<p>Similar calculations can be used to show that <span class="math inline">\(\mathrm{cov}(Y_{t},Y_{t-j})=\gamma_{j}=0\text{ for }j&gt;1.\)</span> Hence, for <span class="math inline">\(j&gt;1\)</span> we have <span class="math inline">\(\rho_{j}=0\)</span> and there is only time dependence between <span class="math inline">\(Y_{t}\)</span> and <span class="math inline">\(Y_{t-1}\)</span> but no time dependence between <span class="math inline">\(Y_{t}\)</span> and <span class="math inline">\(Y_{t-j}\)</span> for <span class="math inline">\(j&gt;1\)</span>. Because <span class="math inline">\(\rho_{j}=0\)</span> for <span class="math inline">\(j&gt;1\)</span> the MA(1) process is trivially ergodic.</p>
+<div id="exm-simulating-values-from-ma-1-process" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 4.13 (Simulating values from MA(1) process) </strong></span>Consider simulating <span class="math inline">\(T=250\)</span> observations from <a href="#eq-MA1">Equation&nbsp;<span>4.2</span></a> with <span class="math inline">\(\mu=1\)</span>, <span class="math inline">\(\theta=0.9\)</span> and <span class="math inline">\(\sigma_{\varepsilon}=1\)</span>. When simulating an MA(1) process, you need to decide how to start the simulation. The value of <span class="math inline">\(Y_{t}\)</span> at <span class="math inline">\(t=0\)</span>, <span class="math inline">\(y_{0},\)</span> is called the <em>initial value</em> and is the starting value for the simulation. Now, the first two observations from <a href="#eq-MA1">Equation&nbsp;<span>4.2</span></a> starting at <span class="math inline">\(t=0\)</span> are <span class="math display">\[\begin{eqnarray*}
+y_{0} &amp; = &amp; \mu+\varepsilon_{0}+\theta\varepsilon_{-1},\\
+y_{1} &amp; = &amp; \mu+\varepsilon_{1}+\theta\varepsilon_{0}.
+\end{eqnarray*}\]</span> It is common practice is to set <span class="math inline">\(\varepsilon_{-1}=\varepsilon_{0}=0\)</span> so that <span class="math inline">\(y_{0}=\mu\)</span>, <span class="math inline">\(y_{1}=\mu+\varepsilon_{1}=y_{0}+\varepsilon_{1}\)</span> and <span class="math inline">\(\varepsilon_{1}\)</span> is the first simulated error term. The remaining observations for <span class="math inline">\(t=2,\ldots,T\)</span> are created from <a href="#eq-MA1">Equation&nbsp;<span>4.2</span></a>. We can implement the simulation in a number of ways in R. The most straightforward way is to use a simple loop:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>n.obs <span class="ot">=</span> <span class="dv">250</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">=</span> <span class="dv">1</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="fl">0.9</span> </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>sigma.e <span class="ot">=</span> <span class="dv">1</span> </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>e <span class="ot">=</span> <span class="fu">rnorm</span>(n.obs, <span class="at">sd =</span> sigma.e) </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, n.obs) </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>y[<span class="dv">1</span>] <span class="ot">=</span> mu <span class="sc">+</span> e[<span class="dv">1</span>] </span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>n.obs) {   </span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    y[i] <span class="ot">=</span> mu <span class="sc">+</span> e[i] <span class="sc">+</span> theta<span class="sc">*</span>e[i<span class="dv">-1</span>] </span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(y, <span class="at">n=</span><span class="dv">3</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.440 0.265 2.352</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The “for loop” in R can be slow, however, especially for a very large number of simulations. The simulation can be more efficiently implemented using <em>vectorized</em> calculations as illustrated below:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>e <span class="ot">=</span> <span class="fu">rnorm</span>(n.obs, <span class="at">sd =</span> sigma.e) </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>em1 <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">0</span>, e[<span class="dv">1</span><span class="sc">:</span>(n.obs<span class="dv">-1</span>)]) </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> mu <span class="sc">+</span> e <span class="sc">+</span> theta<span class="sc">*</span>em1 </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(y, <span class="at">n=</span><span class="dv">3</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.440 0.265 2.352</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The vectorized calculation avoids looping all together and computes all of the simulated values at the same time. This can be considerably faster than the “for loop” calculation.</p>
+<p>The MA(1) model is a special case of the more general <em>autoregressive integrated moving average</em> (ARIMA) model. R has many built-in functions and several packages for working with ARIMA models. In particular, the R function <code>arima.sim()</code> can be used to simulate observations from a MA(1) process. It essentially implements the simulation loop described above. The arguments of <code>arima.sim()</code> are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">args</span>(arima.sim)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; function (model, n, rand.gen = rnorm, innov = rand.gen(n, ...), </span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     n.start = NA, start.innov = rand.gen(n.start, ...), ...) </span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; NULL</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>where <code>model</code> is a list with named components describing the ARIMA model parameters (excluding the mean value), <code>n</code> is the number of simulated observations, <code>rand.gen</code> specifies the pdf for <span class="math inline">\(\varepsilon_{t},\)</span> <code>innov</code> is a vector <span class="math inline">\(\varepsilon_{t}\)</span> values of length <code>n</code>, <code>n.start</code> is the number of pre-simulation (burn-in) values for <span class="math inline">\(\varepsilon_{t}\)</span>, <code>start.innov</code> is a vector of <code>n.start</code> pre-simulation values for <span class="math inline">\(\varepsilon_{t}\)</span>, and <code>...</code> specify any additional arguments for <code>rand.gen</code>. For example, to perform the same simulations as above use:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>ma1.model <span class="ot">=</span> <span class="fu">list</span>(<span class="at">ma=</span><span class="fl">0.9</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> mu <span class="sc">+</span> <span class="fu">arima.sim</span>(<span class="at">model=</span>ma1.model, <span class="at">n=</span><span class="dv">250</span>, </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">n.start=</span><span class="dv">1</span>, <span class="at">start.innov=</span><span class="dv">0</span>) </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(y, <span class="at">n=</span><span class="dv">3</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Time Series:</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Start = 1 </span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; End = 3 </span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Frequency = 1 </span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.440 0.265 2.352</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The <code>ma</code> component of the <code>"list"</code> object <code>ma1.model</code> specifies the value of <span class="math inline">\(\theta\)</span> for the MA(1) model, and is used as an input to the function <code>arima.sim()</code>. The options <code>n.start = 1</code> and <code>start.innov = 0</code> sets the start-up initial value <span class="math inline">\(\varepsilon_{0}=0\)</span>. By default, <code>arima.sim()</code> sets <span class="math inline">\(\mu=0\)</span>, specifies <span class="math inline">\(\varepsilon_{t}\sim\mathrm{GWN}(0,1)\)</span>, and returns <span class="math inline">\(\varepsilon_{t}+\theta\varepsilon_{t-1}\)</span> for <span class="math inline">\(t=1,\ldots,T\)</span>. The simulated value for <span class="math inline">\(Y_{t}\)</span> is constructed by adding the value of <code>mu</code> (<span class="math inline">\(\mu=1)\)</span> to the output of <code>arima.sim()</code>.</p>
+<p>The function <code>ARMAacf()</code> can be used to compute the theoretical autocorrelations, <span class="math inline">\(\rho_{j},\)</span> from the MA(1) model (recall, <span class="math inline">\(\rho_{1}=\theta/(1+\theta^{2})\)</span> and <span class="math inline">\(\rho_{j}=0\)</span> for <span class="math inline">\(j&gt;1)\)</span>. For example, to compute <span class="math inline">\(\rho_{j}\)</span> for <span class="math inline">\(j=1,\ldots,10\)</span> use:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>ma1.acf <span class="ot">=</span> <span class="fu">ARMAacf</span>(<span class="at">ar=</span><span class="dv">0</span>, <span class="at">ma=</span><span class="fl">0.9</span>, <span class="at">lag.max=</span><span class="dv">10</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>ma1.acf</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     0     1     2     3     4     5     6     7     8     9    10 </span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1.000 0.497 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Figure <a href="#fig-TimeSeriesConceptsMA1">Figure&nbsp;<span>4.8</span></a> shows the simulated data and the theoretical ACF created using:</p>
+<div class="cell" data-layout-align="center" data-fig.asp="1">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>))</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ts.plot</span>(y,<span class="at">main=</span><span class="st">"MA(1) Process: mu=1, theta=0.9"</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="at">xlab=</span><span class="st">"time"</span>,<span class="at">ylab=</span><span class="st">"y(t)"</span>, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">lwd=</span><span class="dv">2</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">10</span>, ma1.acf,<span class="at">type=</span><span class="st">"h"</span>, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">lwd=</span><span class="dv">2</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="at">main=</span><span class="st">"ACF for MA(1): theta=0.9"</span>,<span class="at">xlab=</span><span class="st">"lag"</span>,<span class="at">ylab=</span><span class="st">"rho(j)"</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">0</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-TimeSeriesConceptsMA1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="04-timeSeriesConcepts-new_files/figure-html/fig-TimeSeriesConceptsMA1-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;4.8: Simulated values and theoretical ACF from MA(1) process with <span class="math inline">\(\mu=1\)</span>, <span class="math inline">\(\theta=0.9\)</span> and <span class="math inline">\(\sigma_{\varepsilon}^{2}=1\)</span>.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Compared to the GWN process in <a href="#fig-TimeSeriesConcpetsGWN">Figure&nbsp;<span>4.2</span></a>, the MA(1) process is a bit smoother in its appearance. This is due to the positive one-period time dependence captured by <span class="math inline">\(\rho_{1}=0.4972\)</span>. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div id="exm-ma-1-model-for-overlapping-continuously-compounded-returns" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 4.14 (MA(1) model for overlapping continuously compounded returns) </strong></span>Let <span class="math inline">\(R_{t}\)</span> denote the one-month continuously compounded return and assume that: <span class="math display">\[
+R_{t}\sim ~\mathrm{GWN}(\mu,\sigma^{2}).
+\]</span> Consider creating a monthly time series of two-month continuously compounded returns using: <span class="math display">\[
+R_{t}(2)=R_{t}+R_{t-1}.
+\]</span> The time series of these two-month returns, observed monthly, overlap by one month: <span class="math display">\[\begin{align*}
+R_{t}(2) &amp; =R_{t}+R_{t-1},\\
+R_{t-1}(2) &amp; =R_{t-1}+R_{t-2},\\
+R_{t-2}(2) &amp; =R_{t-2}+R_{t-3},\\
+&amp; \vdots
+\end{align*}\]</span> The one-month overlap in the two-month returns implies that <span class="math inline">\(\{R_{t}(2)\}\)</span> follows an MA(1) process. To show this, we need to show that the autocovariances of <span class="math inline">\(\{R_{t}(2)\}\)</span> behave like the autocovariances of an MA(1) process.</p>
+<p>To verify that <span class="math inline">\(\{R_{t}(2)\}\)</span> follows an MA(1) process, first we have: <span class="math display">\[\begin{align*}
+E[R_{t}(2)] &amp; =E[R_{t}]+E[R_{t-1}]=2\mu,\\
+\mathrm{var}(R_{t}(2)) &amp; =\mathrm{var}(R_{t}+R_{t-1})=2\sigma^{2}.
+\end{align*}\]</span> Next, we have: <span class="math display">\[
+\mathrm{cov}(R_{t}(2),R_{t-1}(2))=\mathrm{cov}(R_{t}+R_{t-1},R_{t-1}+R_{t-2})=\mathrm{cov}(R_{t-1},R_{t-1})=\mathrm{var}(R_{t-1})=\sigma^{2},
+\]</span> and, <span class="math display">\[\begin{align*}
+\mathrm{cov}(R_{t}(2),R_{t-2}(2)) &amp; =\mathrm{cov}(R_{t}+R_{t-1},R_{t-2}+R_{t-3})=0,\\
+\mathrm{cov}(R_{t}(2),R_{t-j}(2)) &amp; =0\text{ for }j&gt;1.
+\end{align*}\]</span> Hence, the autocovariances of <span class="math inline">\(\{R_{t}(2)\}\)</span> are those of an MA(1) process.</p>
+<p>Notice that <span class="math display">\[
+\rho_{1}=\frac{\sigma^{2}}{2\sigma^{2}}=\frac{1}{2}.
+\]</span> What MA(1) process describes <span class="math inline">\(\{R_{t}(2)\}\)</span>? Because <span class="math inline">\(\rho_{1}=\frac{\theta}{1+\theta^{2}}=0.5\)</span> it follows that <span class="math inline">\(\theta=1\)</span>. Hence, the MA(1) process has mean <span class="math inline">\(2\mu\)</span> and <span class="math inline">\(\theta=1\)</span> and can be expressed as the MA(1) model: <span class="math display">\[\begin{align*}
+R_{t}(2) &amp; =2\mu+\varepsilon_{t}+\varepsilon_{t-1},\\
+&amp; \varepsilon_{t}\sim\mathrm{GWN}(0,\sigma^{2}).
+\end{align*}\]</span></p>
+<p>Notice that this is a <em>non-invertible</em> MA(1) model. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+<section id="maq-model" class="level4" data-number="4.3.1.2">
+<h4 data-number="4.3.1.2" class="anchored" data-anchor-id="maq-model"><span class="header-section-number">4.3.1.2</span> MA(q) Model</h4>
+<p> The MA(<span class="math inline">\(q\)</span>) model has the form <span id="eq-ma-q"><span class="math display">\[
+Y_{t}=\mu+\varepsilon_{t}+\theta_{1}\varepsilon_{t-1}+\cdots+\theta_{q}\varepsilon_{t-q},
+\tag{4.3}\]</span></span> where <span class="math display">\[
+\varepsilon_{t}\sim\mathrm{GWN}(0,\sigma_{\varepsilon}^{2}).
+\]</span> The MA(q) model is stationary and ergodic provided <span class="math inline">\(\theta_{1},\ldots,\theta_{q}\)</span> are finite. The moments of the MA(<span class="math inline">\(q\)</span>) (see end-of-chapter exercises) are <span class="math display">\[\begin{align*}
+E[Y_{t}] &amp; =\mu,\\
+\gamma_{0} &amp; =\sigma^{2}(1+\theta_{1}^{2}+\cdots+\theta_{q}^{2}),\\
+\gamma_{j} &amp; =\left\{ \begin{array}{c}
+\left(\theta_{j}+\theta_{j+1}\theta_{1}+\theta_{j+2}\theta_{2}+\cdots+\theta_{q}\theta_{q-j}\right)\sigma^{2}\text{ for }j=1,2,\ldots,q\\
+0\text{ for }j&gt;q
+\end{array}.\right.
+\end{align*}\]</span> Hence, the ACF of an MA(<span class="math inline">\(q\)</span>) is non-zero up to lag <span class="math inline">\(q\)</span> and is zero afterward.</p>
+<div id="exm-overlapping-returns-and-ma-q-models" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 4.15 (Overlapping returns and MA(q) models) </strong></span>MA(<span class="math inline">\(q\)</span>) models often arise in finance through data aggregation transformations. For example, let <span class="math inline">\(R_{t}=\ln(P_{t}/P_{t-1})\)</span> denote the monthly continuously compounded return on an asset with price <span class="math inline">\(P_{t}\)</span>. Define the annual return at time <span class="math inline">\(t\)</span> using monthly returns as <span class="math inline">\(R_{t}(12)=\ln(P_{t}/P_{t-12})=\sum_{j=0}^{11}R_{t-j}\)</span>. Suppose <span class="math inline">\(R_{t}\sim\mathrm{GWN}(\mu,\sigma^{2})\)</span> and consider a sample of monthly returns of size <span class="math inline">\(T\)</span>, <span class="math inline">\(\{R_{1},R_{2},\ldots,R_{T}\}\)</span>. A sample of annual returns may be created using <em>overlapping</em> or <em>non-overlapping</em> returns. Let <span class="math inline">\(\{R_{12}(12),R_{13}(12),\)</span> <span class="math inline">\(\ldots,R_{T}(12)\}\)</span> denote a sample of <span class="math inline">\(T^{\ast}=T-11\)</span> monthly overlapping annual returns and <span class="math inline">\(\{R_{12}(12),R_{24}(12),\ldots,R_{T}(12)\}\)</span> denote a sample of <span class="math inline">\(T/12\)</span> non-overlapping annual returns. Researchers often use overlapping returns in analysis due to the apparent larger sample size. One must be careful using overlapping returns because the monthly annual return sequence <span class="math inline">\(\{R_{t}(12)\}\)</span> is not a Gaussian white noise process even if the monthly return sequence <span class="math inline">\(\{R_{t}\}\)</span> is. To see this, straightforward calculations give: <span class="math display">\[\begin{eqnarray*}
+E[R_{t}(12)] &amp; = &amp; 12\mu,\\
+\gamma_{0} &amp; = &amp; \mathrm{var}(R_{t}(12))=12\sigma^{2},\\
+\gamma_{j} &amp; = &amp; \mathrm{cov}(R_{t}(12),R_{t-j}(12))=(12-j)\sigma^{2}\text{ for }j&lt;12,\\
+\gamma_{j} &amp; = &amp; 0\text{ for }j\geq12.
+\end{eqnarray*}\]</span> Since <span class="math inline">\(\gamma_{j}=0\)</span> for <span class="math inline">\(j\geq12\)</span> notice that <span class="math inline">\(\{R_{t}(12)\}\)</span> behaves like an MA(11) process: <span class="math display">\[\begin{eqnarray*}
+R_{t}(12) &amp; = &amp; 12\mu+\varepsilon_{t}+\theta_{1}\varepsilon_{t-1}+\cdots+\theta_{11}\varepsilon_{t-11},\\
+\varepsilon_{t} &amp; \sim &amp; \mathrm{GWN}(0,\sigma^{2}).
+\end{eqnarray*}\]</span></p>
+<p><span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+</section>
+<section id="autoregressive-models" class="level3" data-number="4.3.2">
+<h3 data-number="4.3.2" class="anchored" data-anchor-id="autoregressive-models"><span class="header-section-number">4.3.2</span> Autoregressive Models</h3>
+<p>Moving average models can capture almost any kind of autocorrelation structure. However, this may require many moving average terms in <a href="#eq-ma-q">Equation&nbsp;<span>4.3</span></a>. Another type of simple time series model is the <em>autoregressive model</em>. This model can capture complex autocorrelation patterns with a small number of parameters and is used more often in practice than the moving average model.</p>
+<section id="ar1-model" class="level4" data-number="4.3.2.1">
+<h4 data-number="4.3.2.1" class="anchored" data-anchor-id="ar1-model"><span class="header-section-number">4.3.2.1</span> AR(1) Model</h4>
+<p> Suppose you want to create a covariance stationary and ergodic stochastic process <span class="math inline">\(\{Y_{t}\}\)</span> in which <span class="math inline">\(Y_{t}\)</span> and <span class="math inline">\(Y_{t-1}\)</span> are correlated, <span class="math inline">\(Y_{t}\)</span> and <span class="math inline">\(Y_{t-2}\)</span> are slightly less correlated, <span class="math inline">\(Y_{t}\)</span> and <span class="math inline">\(Y_{t-3}\)</span> are even less correlated and eventually <span class="math inline">\(Y_{t}\)</span> and <span class="math inline">\(Y_{t-j}\)</span> are uncorrelated for <span class="math inline">\(j\)</span> large enough. That is, the time dependence in the process decays to zero as the random variables in the process get farther and farther apart. Such a process can be created using the <em>first order autoregressive</em> (AR(1)) model: <span id="eq-AR1"><span class="math display">\[
+Y_{t}-\mu =\phi(Y_{t-1}-\mu)+\varepsilon_{t},~-1&lt;\phi&lt;1,~ \varepsilon_{t}\sim\mathrm{iid} ~ N(0,\sigma_{\varepsilon}^{2}).
+\tag{4.4}\]</span></span></p>
+<p>It can be shown that the AR(1) model is covariance stationary and ergodic provided <span class="math inline">\(-1&lt;\phi&lt;1\)</span>. We will show that the AR(1) process has the following properties: <span id="eq-AR1-mean"><span class="math display">\[
+E[Y_{t}]  =\mu,
+\tag{4.5}\]</span></span> <span id="eq-AR1-variance"><span class="math display">\[
+\mathrm{var}(Y_{t}) =\sigma^{2}=\sigma_{\varepsilon}^{2}/(1-\phi^{2}),
+\tag{4.6}\]</span></span> <span id="eq-AR1-gamma1"><span class="math display">\[
+\mathrm{cov}(Y_{t},Y_{t-1}) =\gamma_{1}=\sigma^{2}\phi,
+\tag{4.7}\]</span></span> <span id="eq-AR1-rho1"><span class="math display">\[
+\mathrm{cor}(Y_{t},Y_{t-1}) =\rho_{1}=\gamma_{1}/\sigma^{2}=\phi,
+\tag{4.8}\]</span></span> <span id="eq-AR1-gamma-j"><span class="math display">\[
+\mathrm{cov}(Y_{t},Y_{t-j}) =\gamma_{j}=\sigma^{2}\phi^{j},
+\tag{4.9}\]</span></span> <span id="eq-AR1-rho-j"><span class="math display">\[
+\mathrm{cor}(Y_{t},Y_{t-j}) =\rho_{j}=\gamma_{j}/\sigma^{2}=\phi^{j}.
+\tag{4.10}\]</span></span> Notice that the restriction <span class="math inline">\(|\phi|&lt;1\)</span> implies that: <span class="math display">\[
+\lim_{j\rightarrow\infty}\rho_{j}=\phi^{j}=0,
+\]</span> so that <span class="math inline">\(Y_{t}\)</span> is essentially independent of <span class="math inline">\(Y_{t-j}\)</span> for large <span class="math inline">\(j\)</span> and so <span class="math inline">\(\{Y_{t}\}\)</span> is ergodic<span class="math inline">\(.\)</span> For example, if <span class="math inline">\(\phi=0.5\)</span> then <span class="math inline">\(\rho_{10}=(0.5)^{10}=0.001\)</span>; if <span class="math inline">\(\phi=0.9\)</span> then <span class="math inline">\(\rho_{10}=(0.9)^{10}=0.349\)</span>. Hence, the closer <span class="math inline">\(\phi\)</span> is to unity the stronger is the time dependence in the process. If <span class="math inline">\(\phi=1\)</span>, then <a href="#eq-AR1">Equation&nbsp;<span>4.4</span></a> becomes the random walk model <span class="math inline">\(Y_{t}=Y_{t-1}+\varepsilon_{t}\)</span> and is a non-stationary process.</p>
+<p>Verifying covariance stationarity for the AR(1) model is more involved than for the MA(1) model, and establishing the properties <a href="#eq-AR1-mean">Equation&nbsp;<span>4.5</span></a> - <a href="#eq-AR1-rho-j">Equation&nbsp;<span>4.10</span></a> involves some tricks. In what follows, we will assume that <span class="math inline">\(\{Y_{t}\}\)</span> is a covariance stationary process and that <span class="math inline">\(|\phi|&lt;1.\)</span> First, consider the derivation for <a href="#eq-AR1-mean">Equation&nbsp;<span>4.5</span></a>. We have: <span class="math display">\[\begin{align*}
+E[Y_{t}] &amp; =\mu+\phi(E[Y_{t-1}]-\mu)+E[\varepsilon_{t}]\\
+&amp; =\mu+\phi E[Y_{t-1}]-\phi\mu.
+\end{align*}\]</span> Here, we use the first trick. Given that <span class="math inline">\(\{Y_{t}\}\)</span> is covariance stationary it follows that <span class="math inline">\(E[Y_{t}]=E[Y_{t-1}].\)</span> Substituting <span class="math inline">\(E[Y_{t}]=E[Y_{t-1}]\)</span> into the above and solving for <span class="math inline">\(E[Y_{t}]\)</span> gives <a href="#eq-AR1-mean">Equation&nbsp;<span>4.5</span></a>.</p>
+<p>A similar trick can be used to derive <a href="#eq-AR1-variance">Equation&nbsp;<span>4.6</span></a>: <span class="math display">\[
+\mathrm{var}(Y_{t})=\phi^{2}(\mathrm{var}(Y_{t-1}))+\mathrm{var}(\varepsilon_{t})=\phi^{2}(\mathrm{var}(Y_{t}))+\sigma_{\varepsilon}^{2},
+\]</span> which uses the fact that <span class="math inline">\(Y_{t-1}\)</span> is independent of <span class="math inline">\(\varepsilon_{t}\)</span> (because <span class="math inline">\(Y_{t-1}\)</span> only depends on <span class="math inline">\(t-1\)</span> values) and <span class="math inline">\(\mathrm{var}(Y_{t})=\mathrm{var}(Y_{t-1})\)</span> given that <span class="math inline">\(\{Y_{t}\}\)</span> is covariance stationary. Solving for <span class="math inline">\(\sigma^{2}=\mathrm{var}(Y_{t})\)</span> gives <a href="#eq-AR1-variance">Equation&nbsp;<span>4.6</span></a>.</p>
+<p>To determine <a href="#eq-AR1-gamma1">Equation&nbsp;<span>4.7</span></a>, we use another trick. Multiply both sides of <a href="#eq-AR1">Equation&nbsp;<span>4.4</span></a> by <span class="math inline">\(Y_{t-1}-\mu\)</span> and take expectations to give: <span class="math display">\[
+\gamma_{1}=E\left[\left(Y_{t}-\mu\right)\left(Y_{t-1}-\mu\right)\right]=\phi E\left[(Y_{t-1}-\mu)^{2}\right]+E\left[\varepsilon_{t}\left(Y_{t-1}-\mu\right)\right]=\phi\sigma^{2},
+\]</span> which uses the fact that <span class="math inline">\(Y_{t-1}\)</span> is independent of <span class="math inline">\(\varepsilon_{t}\)</span>, and <span class="math inline">\(\mathrm{var}(Y_{t})=\mathrm{var}(Y_{t-1})=\sigma^{2}\)</span>. Finally, to determine <a href="#eq-AR1-gamma-j">Equation&nbsp;<span>4.9</span></a>, multiply both sides of <a href="#eq-AR1">Equation&nbsp;<span>4.4</span></a> by <span class="math inline">\(Y_{t-j}-\mu\)</span> and take expectations to give: <span class="math display">\[\begin{align*}
+\gamma_{j} &amp; =E\left[\left(Y_{t}-\mu\right)\left(Y_{t-j}-\mu\right)\right]=\phi E\left[(Y_{t-1}-\mu)(Y_{t-j}-\mu)\right]+E\left[\varepsilon_{t}\left(Y_{t-j}-\mu\right)\right]\\
+&amp; =\phi\gamma_{j-1},
+\end{align*}\]</span> which uses the fact that <span class="math inline">\(Y_{t-j}\)</span> is independent of <span class="math inline">\(\varepsilon_{t}\)</span>, and <span class="math inline">\(E\left[(Y_{t-1}-\mu)(Y_{t-j}-\mu)\right]=\gamma_{j-1}\)</span> provided <span class="math inline">\(\{Y_{t}\}\)</span> is covariance stationary. Using recursive substitution and <span class="math inline">\(\gamma_{0}=\sigma^{2}\)</span> gives <a href="#eq-AR1-gamma-j">Equation&nbsp;<span>4.9</span></a>.</p>
+<p>The AR(1) model <a href="#eq-AR1">Equation&nbsp;<span>4.4</span></a> is written in what is called the <em>mean-adjusted form</em>. The mean-adjusted form can be re-expressed in the form of a linear regression model as follows: <span id="eq-AR1-regression"><span class="math display">\[
+\begin{aligned}
+Y_{t}-\mu &amp; =\phi(Y_{t-1}-\mu)+\varepsilon_{t}\Rightarrow\\
+Y_{t} &amp; =\mu-\phi\mu+\phi Y_{t-1}+\varepsilon_{t}\\
+&amp; =c+\phi Y_{t-1}+\varepsilon_{t},
+\end{aligned}
+\tag{4.11}\]</span></span> where <span class="math inline">\(c=(1-\phi)\mu\Rightarrow\mu=c/(1-\phi)\)</span> is the intercept of the linear regression. This regression model form is convenient for estimation by ordinary least squares.</p>
+<div id="exm-simulating-values-from-ar-1-process" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 4.16 (Simulating values from AR(1) process) </strong></span>Consider simulating 250 observations from <a href="#eq-AR1">Equation&nbsp;<span>4.4</span></a> with <span class="math inline">\(\mu=1\)</span>, <span class="math inline">\(\phi=0.9\)</span> and <span class="math inline">\(\sigma_{\varepsilon}=1\)</span>. To start the simulation, an initial value or start-up value for <span class="math inline">\(Y_{0}\)</span> is required. A commonly used initial value is the mean value <span class="math inline">\(\mu\)</span> so that <span class="math inline">\(Y_{1}=\mu+\varepsilon_{1}.\)</span> As with the MA(1) model, this can be performed using a simple “for loop” in R:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>phi <span class="ot">=</span> <span class="fl">0.9</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">=</span> <span class="dv">1</span> </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>sigma.e <span class="ot">=</span> <span class="dv">1</span> </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>n.obs <span class="ot">=</span> <span class="dv">250</span> </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, n.obs)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) </span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>e <span class="ot">=</span> <span class="fu">rnorm</span>(n.obs, <span class="at">sd=</span>sigma.e) </span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>y[<span class="dv">1</span>] <span class="ot">=</span> mu <span class="sc">+</span> e[<span class="dv">1</span>]  </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>n.obs) {</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>     y[i] <span class="ot">=</span> mu <span class="sc">+</span> phi<span class="sc">*</span>(y[i<span class="dv">-1</span>] <span class="sc">-</span> mu) <span class="sc">+</span> e[i] </span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>} </span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(y, <span class="dv">3</span>)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.440 0.265 1.898</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Unfortunately, there is no easy way to vectorize the loop calculation. However, the R function <code>filter()</code>, with optional argument <code>method = "recursive"</code>, implements the AR(1) recursion efficiently in C code and so is more efficient than the for loop code in R above:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> mu <span class="sc">+</span> stats<span class="sc">::</span><span class="fu">filter</span>(e, phi, <span class="at">method=</span><span class="st">"recursive"</span>) </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(y, <span class="dv">3</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Time Series:</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Start = 1 </span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; End = 3 </span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Frequency = 1 </span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.440 0.265 1.898</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The R function <code>arima.sim()</code>, which internally uses the <code>filter()</code> function, can also be used to simulate observations from an AR(1) process. For the AR(1) model, the function <code>arima.sim()</code> simulates the <em>components form</em> of the AR(1) model <span class="math display">\[\begin{eqnarray*}
+Y_{t} &amp; = &amp; \mu+u_{t,}\\
+u_{t} &amp; = &amp; \phi u_{t-1}+\epsilon_{t}.
+\end{eqnarray*}\]</span> Hence, to replicate the “for loop” simulation with <code>arima.sim()</code> use:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>ar1.model <span class="ot">=</span> <span class="fu">list</span>(<span class="at">ar=</span><span class="fl">0.9</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> mu <span class="sc">+</span> <span class="fu">arima.sim</span>(<span class="at">model=</span>ar1.model,<span class="at">n=</span><span class="dv">250</span>,<span class="at">n.start=</span><span class="dv">1</span>, <span class="at">start.innov=</span><span class="dv">0</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(y, <span class="dv">3</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Time Series:</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Start = 1 </span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; End = 3 </span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Frequency = 1 </span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.440 0.265 1.898</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The R function <code>ARMAacf()</code> can be used to compute the theoretical ACF for an AR(1) model as follows</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>ar1.acf <span class="ot">=</span> <span class="fu">ARMAacf</span>(<span class="at">ar =</span> <span class="fl">0.9</span>, <span class="at">ma =</span> <span class="dv">0</span>, <span class="at">lag.max =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The simulated AR(1) values and the ACF are shown in Figure <a href="#fig-TimeSeriesConceptsAR1">Figure&nbsp;<span>4.9</span></a>. Compared to the MA(1) process in Figure <a href="#fig-TimeSeriesConceptsMA1">Figure&nbsp;<span>4.8</span></a>, the realizations from the AR(1) process are much smoother. That is, when <span class="math inline">\(Y_{t}\)</span> wanders high above its mean it tends to stay above the mean for a while and when it wanders low below the mean it tends to stay below for a while. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div class="cell" data-layout-align="center" data-fig.asp="1">
+<div class="cell-output-display">
+<div id="fig-TimeSeriesConceptsAR1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="04-timeSeriesConcepts-new_files/figure-html/fig-TimeSeriesConceptsAR1-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;4.9: Simulated values and ACF from AR(1) model with <span class="math inline">\(\mu=1,\phi=0.9\)</span> and <span class="math inline">\(\sigma_{\varepsilon}^{2}=1\)</span></figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="exm-ar-1-models-and-the-speed-of-mean-reversion" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 4.17 (AR(1) models and the speed of mean reversion) </strong></span>&nbsp;</p>
+<ul>
+<li>insert example showing AR(1) models with different values of <span class="math inline">\(\rho\)</span></li>
+<li>discuss the concept of mean reversion</li>
+<li>discuss RW model as special case of AR(1)</li>
+</ul>
+<p><span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+<section id="arp-model" class="level4" data-number="4.3.2.2">
+<h4 data-number="4.3.2.2" class="anchored" data-anchor-id="arp-model"><span class="header-section-number">4.3.2.2</span> AR(p) Model</h4>
+<p> The covariance stationary AR(<span class="math inline">\(p\)</span>) model in mean-adjusted form is <span id="eq-AR-p"><span class="math display">\[
+\begin{aligned}
+Y_{t}-\mu &amp; =\phi_{1}(Y_{t-1}-\mu)+\cdots+\phi_{p}(Y_{t-p}-\mu)+\varepsilon_{t},\\
+&amp; \varepsilon_{t}\sim\mathrm{GWN}(0,\sigma_{\varepsilon}^{2}),
+\end{aligned}
+\tag{4.12}\]</span></span> where <span class="math inline">\(\mu=E[Y_{t}].\)</span> Like the AR(1), restrictions on the autoregressive parameters <span class="math inline">\(\phi_{1},\ldots,\phi_{p}\)</span> are required for <span class="math inline">\(\{Y_{t}\}\)</span> to be covariance stationary and ergodic. A detailed treatment of these restrictions is beyond the scope of this book. However, one simple necessary condition for <span class="math inline">\(\{Y_{t}\}\)</span> to be covariance stationary is <span class="math inline">\(|\phi|&lt;1\)</span> where <span class="math inline">\(\phi=\phi_{1}+\cdots+\phi_{p}.\)</span> Hence, in the AR(p) model the sum of the autoregressive components <span class="math inline">\(\phi\)</span> has a similar interpretation as the single autoregressive coefficient in the AR(1) model.</p>
+<p>The regression form of the AR(p) is <span class="math display">\[
+Y_{t}=c+\phi_{1}Y_{t-1}+\cdots+\phi_{p}Y_{t-p}+\varepsilon_{t},
+\]</span> where <span class="math inline">\(c=\mu/(1-\phi_{1}-\cdots-\phi_{p})=\mu/(1-\phi).\)</span> This form is convenient for estimation purposes because it is in the form of a linear regression.</p>
+<p>The regression form of the AR(p) model is used very often in practice because of its simple linear structure and because it can capture a wide variety of autocorrelation patterns such as exponential decay, damped cyclical patterns, and oscillating damped cyclical patterns. Unfortunately, the mathematical derivation of the autocorrelations in the AR(p) model is complicated and tedious (and beyond the scope of this book). The exercises at the end of the chapter illustrate some of the calculations for the AR(2) model.</p>
+</section>
+</section>
+<section id="autoregressive-moving-average-models" class="level3" data-number="4.3.3">
+<h3 data-number="4.3.3" class="anchored" data-anchor-id="autoregressive-moving-average-models"><span class="header-section-number">4.3.3</span> Autoregressive Moving Average Models</h3>
+<p> Autoregressive and moving average models can be combined into a general model called the <em>autoregressive moving average</em> (ARMA) model. The ARMA model with <span class="math inline">\(p\)</span> autoregressive components and <span class="math inline">\(q\)</span> moving average components, denoted ARMA(p,q) is given by <span id="eq-ARMA-pq"><span class="math display">\[
+\begin{aligned}
+Y_{t}-\mu &amp; =\phi_{1}(Y_{t-1}-\mu)+\cdots+\phi_{p}(Y_{t-p}-\mu) \\
+&amp; +\varepsilon_{t}+\theta_{1}\varepsilon_{t-1}+\cdots+\theta_{q}\varepsilon_{t-q}  \\
+\varepsilon_{t} &amp; \sim\mathrm{GWN}(0,\sigma^{2})
+\end{aligned}
+\tag{4.13}\]</span></span> The regression formulation is <span class="math display">\[
+Y_{t}=c+\phi_{1}Y_{t-1}+\cdots+\phi_{p}Y_{t-p}+\varepsilon_{t}+\theta\varepsilon_{t-1}+\cdots+\theta\varepsilon_{t-q}
+\]</span> where <span class="math inline">\(c=\mu/(1-\phi_{1}-\cdots-\phi_{p})=\mu/(1-\phi)\)</span> and <span class="math inline">\(\phi=\phi_{1}+\cdots+\phi_{p}.\)</span> This model combines aspects of the pure moving average models and the pure autoregressive models and can capture many types of autocorrelation patterns. For modeling typical non-seasonal economic and financial data, it is seldom necessary to consider models in which <span class="math inline">\(p&gt;2\)</span> and <span class="math inline">\(q&gt;2\)</span>. For example, the simple ARMA(1,1) model</p>
+<p><span id="eq-ARMA-11"><span class="math display">\[
+Y_{t}-\mu = \phi_{1}(Y_{t-1}-\mu) + \varepsilon_{t}+\theta_{1}\varepsilon_{t-1}
+\tag{4.14}\]</span></span></p>
+<p>can capture many realistic autocorrelations observed in data.</p>
+</section>
+<section id="vector-autoregressive-models" class="level3" data-number="4.3.4">
+<h3 data-number="4.3.4" class="anchored" data-anchor-id="vector-autoregressive-models"><span class="header-section-number">4.3.4</span> Vector Autoregressive Models</h3>
+<p> The most popular multivariate time series model is the (VAR) model. The VAR model is a multivariate extension of the univariate autoregressive model <a href="#eq-AR-p">Equation&nbsp;<span>4.12</span></a>. For example, a bivariate VAR(1) model for <span class="math inline">\(\mathbf{Y}_{t}=(Y_{1t},Y_{2t})^{\prime}\)</span> has the form <span class="math display">\[
+\left(\begin{array}{c}
+Y_{1t}\\
+Y_{2t}
+\end{array}\right)=\left(\begin{array}{c}
+c_{1}\\
+c_{2}
+\end{array}\right)+\left(\begin{array}{cc}
+a_{11}^{1} &amp; a_{12}^{1}\\
+a_{21}^{1} &amp; a_{22}^{1}
+\end{array}\right)\left(\begin{array}{c}
+Y_{1t-1}\\
+Y_{2t-1}
+\end{array}\right)+\left(\begin{array}{c}
+\varepsilon_{1t}\\
+\varepsilon_{2t}
+\end{array}\right),
+\]</span> or <span class="math display">\[\begin{align*}
+Y_{1t} &amp; =c_{1}+a_{11}^{1}Y_{1t-1}+a_{12}^{1}Y_{2t-1}+\varepsilon_{1t},\\
+Y_{2t} &amp; =c_{2}+a_{21}^{1}Y_{1t-1}+a_{22}^{1}Y_{2t-1}+\varepsilon_{2t},
+\end{align*}\]</span> where <span class="math display">\[
+\left(\begin{array}{c}
+\varepsilon_{1t}\\
+\varepsilon_{2t}
+\end{array}\right)\sim\mathrm{iid}\text{ }N\left(\left(\begin{array}{c}
+0\\
+0
+\end{array}\right),\left(\begin{array}{cc}
+\sigma_{11} &amp; \sigma_{12}\\
+\sigma_{12} &amp; \sigma_{22}
+\end{array}\right)\right).
+\]</span> In the equations for <span class="math inline">\(Y_{1}\)</span> and <span class="math inline">\(Y_{2}\)</span>, the lagged values of both <span class="math inline">\(Y_{1}\)</span> and <span class="math inline">\(Y_{2}\)</span> are present. Hence, the VAR(1) model allows for dynamic feedback between <span class="math inline">\(Y_{1}\)</span> and <span class="math inline">\(Y_{2}\)</span> and can capture cross-lag correlations between the variables. In matrix notation, the model is <span class="math display">\[\begin{eqnarray*}
+\mathbf{Y}_{t} &amp; = &amp; \mathbf{A}\mathbf{Y}_{t-1}+\boldsymbol{\varepsilon}_{t},\\
+\boldsymbol{\varepsilon}_{t} &amp; \sim &amp; N(\mathbf{0},\,\boldsymbol{\Sigma}),
+\end{eqnarray*}\]</span> where <span class="math display">\[
+\mathbf{A}=\left(\begin{array}{cc}
+a_{11}^{1} &amp; a_{12}^{1}\\
+a_{21}^{1} &amp; a_{22}^{1}
+\end{array}\right),\,\boldsymbol{\Sigma}=\left(\begin{array}{cc}
+\sigma_{11} &amp; \sigma_{12}\\
+\sigma_{12} &amp; \sigma_{22}
+\end{array}\right).
+\]</span></p>
+<p>The general VAR(<span class="math inline">\(p\)</span>) model for <span class="math inline">\(\mathbf{Y}_{t}=(Y_{1t},Y_{2t},\ldots,Y_{nt})^{\prime}\)</span> has the form <span class="math display">\[
+\mathbf{Y}_{t}=\mathbf{c+A}_{1}\mathbf{Y}_{t-1}+\mathbf{A}_{2}\mathbf{Y}_{t-2}+\cdots+\mathbf{A}_{p}\mathbf{Y}_{t-p}+\boldsymbol{\varepsilon}_{t},
+\]</span> where <span class="math inline">\(\mathbf{A}_{i}\)</span> are <span class="math inline">\((n\times n)\)</span> coefficient matrices and <span class="math inline">\(\mathbf{\varepsilon}_{t}\)</span> is an <span class="math inline">\((n\times1)\)</span> unobservable zero mean white noise vector process with covariance matrix <span class="math inline">\(\Sigma\)</span>. VAR models are capable of capturing much of the complicated dynamics observed in stationary multivariate time series.</p>
+<div id="exm-simulated-values-from-a-bivariate-var-1-process" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 4.18 (Simulated values from a bivariate VAR(1) process) </strong></span>To be completed</p>
+</div>
+</section>
+</section>
+<section id="forecasting" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="forecasting"><span class="header-section-number">4.4</span> Forecasting</h2>
+<ul>
+<li>One of the main practical uses of time series models is for forecasting future observations</li>
+<li>The existence of time dependence in a covariance stationary time series means that we can exploit this time dependence to obtain forecasts of future observations that are superior to the unconditional mean.</li>
+<li>Describe basic forecasting problem</li>
+<li>Show result that conditional mean is optimal mse forecast</li>
+<li>Show chain-rule of forecasting for AR(1) processes</li>
+</ul>
+</section>
+<section id="further-reading-time-series-concepts" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="further-reading-time-series-concepts"><span class="header-section-number">4.5</span> Further Reading: Time Series Concepts</h2>
+<p>This chapter gives a very brief introduction to time series modeling. More thorough treatments of time series analysis with an orientation towards economics and finance with examples in R are given in <span class="citation" data-cites="RuppertMatteson-2015">(<a href="references.html#ref-RuppertMatteson-2015" role="doc-biblioref">Ruppert and Matteson 2015</a>)</span>, <span class="citation" data-cites="tsay-2010">(<a href="references.html#ref-tsay-2010" role="doc-biblioref">Tsay 2010</a>)</span>, and <span class="citation" data-cites="zivot-2016">(<a href="references.html#ref-zivot-2016" role="doc-biblioref">Zivot 2016</a>)</span>. The CRAN task view for Time Series is an excellent summary of R packages used for time series analysis.</p>
+</section>
+<section id="problems-time-series-concepts" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="problems-time-series-concepts"><span class="header-section-number">4.6</span> Problems: Time Series Concepts</h2>
+<div id="exr-01" class="exercise theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 4.1 </strong></span>Suppose the time series <span class="math inline">\(\left\{ X_{t}\right\} _{t=-\infty}^{\infty}\)</span> is independent white noise. That is <span class="math inline">\(X_{t}\sim i.i.d.\,(0,\sigma^{2})\)</span>. Define two new time series <span class="math inline">\(\left\{ Y_{t}\right\} _{t=-\infty}^{\infty}\)</span> and <span class="math inline">\(\left\{ Z_{t}\right\} _{t=-\infty}^{\infty}\)</span>, where <span class="math inline">\(Y_{t}=X_{t}^{2}\)</span> and <span class="math inline">\(Z_{t}=|X_{t}|\)</span>. Are <span class="math inline">\(\left\{ Y_{t}\right\} _{t=-\infty}^{\infty}\)</span> and <span class="math inline">\(\left\{ Z_{t}\right\} _{t=-\infty}^{\infty}\)</span> also independent white noise processes? Why or why not?</p>
+</div>
+<div id="exr-02" class="exercise theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 4.2 </strong></span>Realizations from four stochastic processes are given in Figure . Which processes appear to be covariance stationary and which processes appear to be non-stationary? Briefly justify your answers.</p>
+</div>
+<div id="exr-03" class="exercise theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 4.3 </strong></span>Consider the MA(1) model <span class="math display">\[\begin{eqnarray*}
+Y_{t} &amp; = &amp; 0.05+\varepsilon_{t}+\theta\varepsilon_{t-1},\,-1&lt;\theta&lt;1\\
+\varepsilon_{t} &amp; \sim &amp; iid\,N(0,(0.10)^{2}).
+\end{eqnarray*}\]</span> This process has mean <span class="math inline">\(E[Y_{t}]=0.05.\)</span></p>
+<ol type="1">
+<li>Calculate <span class="math inline">\(\mathrm{var}(Y_{t})\)</span> and <span class="math inline">\(\rho_{1}=\mathrm{cor}(Y_{t},Y_{t-1})\)</span> for <span class="math inline">\(\theta=0.5\)</span> and <span class="math inline">\(\theta=0.9\)</span>.</li>
+<li>Using the R function <code>arima.sim()</code>, simulate and plot 250 observations of the MA(1) process with <span class="math inline">\(\theta=0.5\)</span> and <span class="math inline">\(\theta=0.9\)</span> . Briefly comment on the behavior of the simulated data series. Does it look covariance stationary? Does it show evidence of time dependence?</li>
+</ol>
+</div>
+<div id="exr-04" class="exercise theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 4.4 </strong></span>Consider the AR(1) model <span class="math display">\[\begin{eqnarray*}
+Y_{t}-0.05 &amp; =\phi(Y_{t-1}-0.05)+\varepsilon_{t},\,-1&lt;\phi&lt;1\\
+&amp; \varepsilon_{t}\sim iid\,N(0,(0.10)^{2}).
+\end{eqnarray*}\]</span> This process has mean <span class="math inline">\(E[Y_{t}]=0.05.\)</span></p>
+<ol type="1">
+<li>Calculate <span class="math inline">\(\mathrm{var}(Y_{t})\)</span> for <span class="math inline">\(\phi=0.5\)</span> and <span class="math inline">\(\phi=0.9\)</span>.</li>
+<li>Calculate <span class="math inline">\(\rho_{j}=\mathrm{cor}(Y_{t},Y_{t-j})\)</span> for <span class="math inline">\(\phi=0.5\)</span> and <span class="math inline">\(\phi=0.9\)</span> and for <span class="math inline">\(j=1,\ldots,5\)</span>.</li>
+<li>Using the R function <code>arima.sim()</code>, simulate and plot 250 observations of the AR(1) process with <span class="math inline">\(\theta=0.5\)</span> and <span class="math inline">\(\theta=0.9\)</span> . Briefly comment on the behavior of the simulated data series. Does it look covariance stationary? Does it show evidence of time dependence? How is it different from the MA(1) process</li>
+</ol>
+</div>
+<div id="exr-05" class="exercise theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 4.5 </strong></span>Figure shows a realization of a stochastic process representing a monthly time series of overlapping 2-month continuously compounded returns <span class="math inline">\(r_{t}(2)=r_{t}+r_{t-1}\)</span>, where the 1-month continuously compounded returns <span class="math inline">\({r_{t}}\)</span> follow a Gaussian White noise process with variance 1.</p>
+<ol type="1">
+<li>Based on the sample autocorrelations, which time series process is most appropriate for describing the series: MA(1) or AR(1)? Justify your answer.</li>
+<li>If you think the process is an AR(1) process, what do you think is the value of the autoregressive parameter? If you think the process is a MA(1) process, what do you think is the value of the moving average parameter?</li>
+</ol>
+</div>
+<div id="exr-06" class="exercise theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 4.6 </strong></span>Let <span class="math inline">\({Y_t}\)</span> represent a stochastic process. Under what conditions is <span class="math inline">\({Y_t}\)</span> covariance stationary?</p>
+</div>
+<div id="exr-07" class="exercise theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 4.7 </strong></span>Realizations from four stochastic processes are given in the Figures below:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="04-timeSeriesConcepts-new_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Which processes appear to be covariance stationary and which processes appear to be non-stationary? For those processes that you think are non-stationary, explain why the process is non-stationary.</p>
+</div>
+<div id="exr-08" class="exercise theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 4.8 </strong></span>Consider the following model: <span class="math display">\[
+Y_t = 10 - 0.67 Y_{t-1} + \epsilon_t, \,\,\,\, \epsilon \sim N(0, 1)  
+\]</span></p>
+<ol type="1">
+<li><p>Is it stationary? Why or why not?</p></li>
+<li><p>Find the mean and the variance of this process.</p></li>
+</ol>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-box-1976" class="csl-entry" role="listitem">
+Box, G., and G. M. Jenkins. 1976. <em>Time Series Analysis : Forecasting and Control</em>. San Francisco: Holden-Day.
+</div>
+<div id="ref-RuppertMatteson-2015" class="csl-entry" role="listitem">
+Ruppert, D., and D. S. Matteson. 2015. <em>Statistics and Data Analysis for Financial Engineering with r Examples</em>. New York: Springer.
+</div>
+<div id="ref-sims-1980" class="csl-entry" role="listitem">
+Sims, C. A. 1980. <em>Macroeconomics and Reality</em>. Econometrica.
+</div>
+<div id="ref-tsay-2010" class="csl-entry" role="listitem">
+Tsay, R. 2010. <em>Analysis of Financial Time Serie</em>. Wiley.
+</div>
+<div id="ref-zivot-2016" class="csl-entry" role="listitem">
+Zivot, E. 2016. <em>Modeling Financial Time Series with r</em>. New York: Springer.
+</div>
+</div>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>To conserve on notation, we will represent the stochastic process<span class="math inline">\(\{Y_{t}\}_{t=-\infty}^{\infty}\)</span> simply as <span class="math inline">\(\{Y_{t}\}.\)</span><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>This is also called a Cauchy distribution. For this distribution <span class="math inline">\(E[Y_{t}]=\mathrm{var}(Y_{t})=\mathrm{cov}(Y_{t},Y_{t-j})=\infty.\)</span><a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>As an example of white noise, think of tuning an AM radio. In between stations there is no signal and all you hear is static. This is white noise.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./03-matrixReview-new.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Algebra Review</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./05-descriptiveStatistics-new.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Descriptive Statistics for Financial Data</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

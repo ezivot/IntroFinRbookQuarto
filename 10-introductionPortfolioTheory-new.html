@@ -1,0 +1,2200 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Introduction to Computational Finance and Financial Econometrics with R - 10&nbsp; Introduction to Portfolio Theory</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./11-PortfolioTheoryMatrix-new.html" rel="next">
+<link href="./09-hypothesisTestingGWNModel-new.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./10-introductionPortfolioTheory-new.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introduction to Portfolio Theory</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Introduction to Computational Finance and Financial Econometrics with R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-ReturnCalculations-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Return Calculations</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-probReview-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Review of Random Variables</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-matrixReview-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Algebra Review</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-timeSeriesConcepts-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Time Series Concepts</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-descriptiveStatistics-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Descriptive Statistics for Financial Data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-GWNModel-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">The Gaussian White Noise Return Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-GWNModelEstimation-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Estimation of The GWN Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-bootstrap-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Estimating Functions of GWN Model Parameters</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-hypothesisTestingGWNModel-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Hypothesis Testing in the GWN Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-introductionPortfolioTheory-new.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introduction to Portfolio Theory</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-PortfolioTheoryMatrix-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Portfolio Theory with Matrix Algebra</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-portfolioTheoryNoShortSales-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Portfolio Theory with Short Sales Constraints</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-riskBudgeting-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Portfolio Risk Budgeting</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#assumptions-about-returns-and-investor-risk-preferences" id="toc-assumptions-about-returns-and-investor-risk-preferences" class="nav-link active" data-scroll-target="#assumptions-about-returns-and-investor-risk-preferences"><span class="header-section-number">10.1</span> Assumptions About Returns and Investor Risk Preferences</a></li>
+  <li><a href="#sec-Portfolios-of-Two-Risky-Assets" id="toc-sec-Portfolios-of-Two-Risky-Assets" class="nav-link" data-scroll-target="#sec-Portfolios-of-Two-Risky-Assets"><span class="header-section-number">10.2</span> Portfolios of Two Risky Assets</a>
+  <ul class="collapse">
+  <li><a href="#the-portfolio-problem" id="toc-the-portfolio-problem" class="nav-link" data-scroll-target="#the-portfolio-problem"><span class="header-section-number">10.2.1</span> The Portfolio Problem</a></li>
+  <li><a href="#portfolio-value-at-risk" id="toc-portfolio-value-at-risk" class="nav-link" data-scroll-target="#portfolio-value-at-risk"><span class="header-section-number">10.2.2</span> Portfolio Value-at-Risk</a></li>
+  <li><a href="#the-set-of-feasible-portfolios" id="toc-the-set-of-feasible-portfolios" class="nav-link" data-scroll-target="#the-set-of-feasible-portfolios"><span class="header-section-number">10.2.3</span> The set of feasible portfolios</a></li>
+  <li><a href="#computing-the-global-minimum-variance-portfolio" id="toc-computing-the-global-minimum-variance-portfolio" class="nav-link" data-scroll-target="#computing-the-global-minimum-variance-portfolio"><span class="header-section-number">10.2.4</span> Computing the global minimum variance portfolio</a></li>
+  <li><a href="#correlation-and-the-shape-of-the-portfolio-frontier" id="toc-correlation-and-the-shape-of-the-portfolio-frontier" class="nav-link" data-scroll-target="#correlation-and-the-shape-of-the-portfolio-frontier"><span class="header-section-number">10.2.5</span> Correlation and the shape of the portfolio frontier</a></li>
+  </ul></li>
+  <li><a href="#sec-Efficient-portfolios-with-two-risky-assets" id="toc-sec-Efficient-portfolios-with-two-risky-assets" class="nav-link" data-scroll-target="#sec-Efficient-portfolios-with-two-risky-assets"><span class="header-section-number">10.3</span> Efficient portfolios with two risky assets</a>
+  <ul class="collapse">
+  <li><a href="#optimal-portfolios" id="toc-optimal-portfolios" class="nav-link" data-scroll-target="#optimal-portfolios"><span class="header-section-number">10.3.1</span> Optimal portfolios</a></li>
+  </ul></li>
+  <li><a href="#sec-Efficient-portfolios-with-a-risk-free-asset" id="toc-sec-Efficient-portfolios-with-a-risk-free-asset" class="nav-link" data-scroll-target="#sec-Efficient-portfolios-with-a-risk-free-asset"><span class="header-section-number">10.4</span> Efficient portfolios with a risk-free asset</a>
+  <ul class="collapse">
+  <li><a href="#portfolios-with-one-risky-asset-and-one-risk-free-asset" id="toc-portfolios-with-one-risky-asset-and-one-risk-free-asset" class="nav-link" data-scroll-target="#portfolios-with-one-risky-asset-and-one-risk-free-asset"><span class="header-section-number">10.4.1</span> Portfolios with one risky asset and one risk-free asset</a></li>
+  <li><a href="#portfolios-with-one-risky-asset-and-one-risk-free-asset-with-different-borrowing-and-lending-rates" id="toc-portfolios-with-one-risky-asset-and-one-risk-free-asset-with-different-borrowing-and-lending-rates" class="nav-link" data-scroll-target="#portfolios-with-one-risky-asset-and-one-risk-free-asset-with-different-borrowing-and-lending-rates"><span class="header-section-number">10.4.2</span> Portfolios with one risky asset and one risk-free asset with different borrowing and lending rates</a></li>
+  </ul></li>
+  <li><a href="#sec-Efficient-portfolios-with-two-risky-assets-and-a-risk-free-asset" id="toc-sec-Efficient-portfolios-with-two-risky-assets-and-a-risk-free-asset" class="nav-link" data-scroll-target="#sec-Efficient-portfolios-with-two-risky-assets-and-a-risk-free-asset"><span class="header-section-number">10.5</span> Efficient portfolios with two risky assets and a risk-free asset</a>
+  <ul class="collapse">
+  <li><a href="#solving-for-the-tangency-portfolio" id="toc-solving-for-the-tangency-portfolio" class="nav-link" data-scroll-target="#solving-for-the-tangency-portfolio"><span class="header-section-number">10.5.1</span> Solving for the Tangency Portfolio</a></li>
+  <li><a href="#mutual-fund-separation" id="toc-mutual-fund-separation" class="nav-link" data-scroll-target="#mutual-fund-separation"><span class="header-section-number">10.5.2</span> Mutual Fund Separation</a></li>
+  <li><a href="#interpreting-efficient-portfolios" id="toc-interpreting-efficient-portfolios" class="nav-link" data-scroll-target="#interpreting-efficient-portfolios"><span class="header-section-number">10.5.3</span> Interpreting Efficient Portfolios</a></li>
+  <li><a href="#efficient-portfolios-and-value-at-risk" id="toc-efficient-portfolios-and-value-at-risk" class="nav-link" data-scroll-target="#efficient-portfolios-and-value-at-risk"><span class="header-section-number">10.5.4</span> Efficient Portfolios and Value-at-Risk</a></li>
+  </ul></li>
+  <li><a href="#sec-Application-to-Real" id="toc-sec-Application-to-Real" class="nav-link" data-scroll-target="#sec-Application-to-Real"><span class="header-section-number">10.6</span> Application to Real World Portfolios</a></li>
+  <li><a href="#further-reading-introduction-to-portfolio-theory" id="toc-further-reading-introduction-to-portfolio-theory" class="nav-link" data-scroll-target="#further-reading-introduction-to-portfolio-theory"><span class="header-section-number">10.7</span> Further Reading: Introduction to Portfolio Theory</a></li>
+  <li><a href="#appendix-review-of-optimization-and-constrained-optimization" id="toc-appendix-review-of-optimization-and-constrained-optimization" class="nav-link" data-scroll-target="#appendix-review-of-optimization-and-constrained-optimization"><span class="header-section-number">10.8</span> Appendix: Review of Optimization and Constrained Optimization</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">10.9</span> Exercises</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-Introduction-to-Portfolio-Theory" class="quarto-section-identifier"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introduction to Portfolio Theory</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Updated: September 10, 2026 Copyright © Eric Zivot 2026</p>
+<p>Chapters <a href="07-GWNModelEstimation-new.html"><span>Chapter&nbsp;7</span></a> through <a href="09-hypothesisTestingGWNModel-new.html"><span>Chapter&nbsp;9</span></a> focused on the development and estimation of, and the statistical inference for, the GWN model for asset returns. In this chapter, I use the GWN model for asset returns as the basis for the quantitative analysis of portfolios and asset allocation. Specifically, I introduce the mean-variance portfolio analysis framework originally developed by Harry Markowitz.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> This framework is the widely used in academia and industry and is covered in most standard textbooks on investment analysis such as <span class="citation" data-cites="bkm-2013">(<a href="references.html#ref-bkm-2013" role="doc-biblioref">Bodie, Kane, and Marcus 2013</a>)</span>, <span class="citation" data-cites="egbg-2014">(<a href="references.html#ref-egbg-2014" role="doc-biblioref">Elton et al. 2014</a>)</span>, and <span class="citation" data-cites="sharpe-1999">(<a href="references.html#ref-sharpe-1999" role="doc-biblioref">Sharpe 1999</a>)</span>. In this framework, asset returns are assumed to be normally distributed and so investor preferences over portfolios of assets depend only on the expected return and variance of the portfolio returns. Investors are assumed to like portfolio with high mean returns but dislike portfolio with high return variances. Since portfolios that have high (low) expected returns tend to have high (low) variances investors face a mean-variance tradeoff between different portfolios. Markowitz’s mean-variance portfolio theory quantifies this mean-variance tradeoff and provides a methodology that investors can use to determine optimal portfolio choice.</p>
+<p>This chapter introduces Markowitz’s mean-variance portfolio theory in a simplified setting where there are only two risky assets and a single risk-free asset. This allows us to present the main results of mean-variance portfolio theory graphically and with simple algebra. However, as you shall see in the next chapter, many of the analytic results I derive for portfolios of two risky assets, and for portfolios of two risky assets and a single risk-free asset, can be applied to situations in which there are many risky assets and a single risk-free asset. Therefore, it is highly beneficial to study and understand well the portfolio theory results in the simplified framework of this chapter.</p>
+<p>This chapter is organized as follows. In <a href="#sec-Portfolios-of-Two-Risky-Assets"><span>Section&nbsp;10.2</span></a> I review expected return, variance and value-at-risk calculations for portfolios of two risky assets. In <a href="#sec-Efficient-portfolios-with-two-risky-assets"><span>Section&nbsp;10.3</span></a> I introduce mean-variance portfolio analysis for portfolios of two risky assets. The portfolio risk-return frontier is introduced, efficient portfolios are defined, and the global minimum variance portfolio is defined. In <a href="#sec-Efficient-portfolios-with-a-risk-free-asset"><span>Section&nbsp;10.4</span></a> I present the analysis of portfolios with a single risky asset and a risk-free asset. I also define the Sharpe ratio/slope of a risky asset and illustrate it graphically. I discuss portfolios of two risky assets and a risk-free asset, define the The tangency portfolio, present the Mutual Fund Separation Theorem in <a href="#sec-Efficient-portfolios-with-two-risky-assets-and-a-risk-free-asset"><span>Section&nbsp;10.5</span></a> I give a brief illustration of the theory to a real world two asset portfolio of stocks and bonds in <a href="#sec-Application-to-Real"><span>Section&nbsp;10.6</span></a>. In the Appendix I review some basic results on constrained optimization of functions that I use in the chapter.</p>
+<p>The R packages I use in this chapter are <strong>introcompfinr</strong>, <strong>kableExtra</strong>, <strong>knitr</strong>,<br>
+and <strong>PerformanceAnalytics</strong>. Make sure these packages are installed and loaded in R before replicating the chapter examples.</p>
+<section id="assumptions-about-returns-and-investor-risk-preferences" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="assumptions-about-returns-and-investor-risk-preferences"><span class="header-section-number">10.1</span> Assumptions About Returns and Investor Risk Preferences</h2>
+<p>To develop a quantitative methodology for investment analysis, I make the following assumptions regarding the probability distribution of asset returns and the behavior of investors:</p>
+<ol type="1">
+<li>Returns are covariance stationary and ergodic, and jointly normally distributed over the investment horizon. This implies that means, variances and covariances of returns are constant over the investment horizon and completely characterize the joint distribution of returns.</li>
+<li>Investors know the values of asset return means, variances and covariances.</li>
+<li>Investors only care about portfolio expected return and portfolio variance. Investors like portfolios with high expected return but dislike portfolios with high return variance.</li>
+</ol>
+<p>The first assumption is supported by the stylized facts of asset returns for investment horizons of at least a month as discussed in Chapter <a href="05-descriptiveStatistics-new.html"><span>Chapter&nbsp;5</span></a>. The second assumption can be thought of as assuming that investors have access to high quality information that they can use to determine expected returns, variances, and covariances. For example, investors can download asset price data from <code>finance.yahoo.com</code> and compute estimates of expected returns, variances, and covariances using sample statistics. Two points are relevant for the third assumption. First, if the distribution of assets returns is jointly normal then the probability distribution of returns is completely characterized by means, variances, and covariances. Second, the third assumption describes the mean-variance trade-off investors face. All else equal, investors prefer assets that have the highest expected return. However, as you have seen, assets with high expected returns tend to also have high variances. High variance represents more uncertainty about future return and it is assumed that investors do not like uncertainty about future return. That is, I assume that investors are <em>risk averse</em>.</p>
+</section>
+<section id="sec-Portfolios-of-Two-Risky-Assets" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="sec-Portfolios-of-Two-Risky-Assets"><span class="header-section-number">10.2</span> Portfolios of Two Risky Assets</h2>
+<p> Consider the following investment problem. You can invest in two assets A (Amazon stock) and B (Boeing stock) over the next year, and you want to know how much to invest in each asset to make the investor most happy given the assumptions about return distributions and risk preferences from the previous sub-section. Let <span class="math inline">\(R_{A}\)</span> and <span class="math inline">\(R_{B}\)</span> denote the annual simple returns on assets A and B, respectively.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> These returns are to be treated as random variables because the returns will not be realized until the end-of-the year. I assume that the returns <span class="math inline">\(R_{A}\)</span> and <span class="math inline">\(R_{B}\)</span> are jointly normally distributed, and that I have the following information about the means, variances, and covariances of the probability distribution of the two returns:</p>
+<p><span id="eq-portfolio-inputs-1"><span class="math display">\[
+\mu_{A} =E[R_{A}],~\sigma_{A}^{2}=\mathrm{var}(R_{A}),~\mu_{B}=E[R_{B}],~\sigma_{B}^{2}=\mathrm{var}(R_{B}),
+\tag{10.1}\]</span></span> <span id="eq-portfolio-inputs-2"><span class="math display">\[
+\sigma_{AB} =\mathrm{cov}(R_{A},R_{B}),~\rho_{AB}=\mathrm{cor}(R_{A},R_{B})=\frac{\sigma_{AB}}{\sigma_{A}\sigma_{B}}.
+\tag{10.2}\]</span></span></p>
+<p>I assume that these values are taken as given. In practice, they can be estimated from historical return data for the two stocks, or they can be subjective guesses by the investor.</p>
+<p>The expected returns, <span class="math inline">\(\mu_{A}\)</span> and <span class="math inline">\(\mu_{B}\)</span>, are our best guesses for the annual returns on each of the assets. However, because the investment returns are random variables you must recognize that the realized returns may be different from our expectations. The variances, <span class="math inline">\(\sigma_{A}^{2}\)</span> and <span class="math inline">\(\sigma_{B}^{2}\)</span>, provide measures of the uncertainty associated with these annual returns. You can also think of the variances as measuring the risk associated with the investments. Assets with high return variability (or volatility) are often thought to be risky, and assets with low return volatility are often thought to be safe. The covariance <span class="math inline">\(\sigma_{AB}\)</span> gives us information about the direction of any linear dependence between returns. If <span class="math inline">\(\sigma_{AB}&gt;0\)</span> then the two returns tend to move in the same direction; if <span class="math inline">\(\sigma_{AB}&lt;0\)</span> the returns tend to move in opposite directions; if <span class="math inline">\(\sigma_{AB}=0\)</span> then the returns tend to move independently. The strength of the dependence between the returns is measured by the correlation coefficient <span class="math inline">\(\rho_{AB}\)</span>. If <span class="math inline">\(\rho_{AB}\)</span> is close to one in absolute value then returns mimic each other extremely closely, whereas if <span class="math inline">\(\rho_{AB}\)</span> is close to zero then the returns may show very little relationship.</p>
+<div id="exm-two-risky-asset-portfolio-information" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 10.1 (Two risky asset portfolio information) </strong></span><a href="#tbl-TableExampleData">Table&nbsp;<span>10.1</span></a> gives annual return distribution parameters for the two hypothetical assets A and B that will be used in subsequent examples. Asset A is the high risk asset with an annual return of <span class="math inline">\(\mu_{A}=17.5\%\)</span> and annual standard deviation of <span class="math inline">\(\sigma_{A}=25.8\%\)</span>. Asset B is a lower risk asset with annual return <span class="math inline">\(\mu_{B}=5.5\%\)</span> and annual standard deviation of <span class="math inline">\(\sigma_{B}=11.5\%\)</span>. The assets are assumed to be slightly negatively correlated with correlation coefficient <span class="math inline">\(\rho_{AB}=-0.164\)</span>.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> Given the standard deviations and the correlation, the covariance can be determined from <span class="math inline">\(\sigma_{AB}=\rho_{AB}\sigma_{A}\sigma_{B}=(-0.164)(0.0258)(0.115)=-0.004875.\)</span> In R, the example data is:<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>mu.A <span class="ot">=</span> <span class="fl">0.175</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>sig.A <span class="ot">=</span> <span class="fl">0.258</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>sig2.A <span class="ot">=</span> sig.A<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>mu.B <span class="ot">=</span> <span class="fl">0.055</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>sig.B <span class="ot">=</span> <span class="fl">0.115</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>sig2.B <span class="ot">=</span> sig.B<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>rho.AB <span class="ot">=</span> <span class="sc">-</span><span class="fl">0.164</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>sig.AB <span class="ot">=</span> rho.AB<span class="sc">*</span>sig.A<span class="sc">*</span>sig.B</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-TableExampleData" class="anchored">
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Table&nbsp;10.1: Example data for two asset portfolio</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">\(\mu_{A}\)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">\(\mu_{B}\)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">\(\sigma^{2}_{A}\)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">\(\sigma^{2}_{B}\)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">\(\sigma_{A}\)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">\(\sigma_{B}\)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">\(\sigma_{AB}\)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">\(\rho_{AB}\)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.175</td>
+<td style="text-align: right;">0.055</td>
+<td style="text-align: right;">0.067</td>
+<td style="text-align: right;">0.013</td>
+<td style="text-align: right;">0.258</td>
+<td style="text-align: right;">0.115</td>
+<td style="text-align: right;">-0.005</td>
+<td style="text-align: right;">-0.164</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+</div>
+</div>
+<p><span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<section id="the-portfolio-problem" class="level3" data-number="10.2.1">
+<h3 data-number="10.2.1" class="anchored" data-anchor-id="the-portfolio-problem"><span class="header-section-number">10.2.1</span> The Portfolio Problem</h3>
+<p>The portfolio problem is set-up as follows. The investor has a given amount of initial wealth <span class="math inline">\(W_{0}\)</span> to be invested for one period (e.g., one month or one year). The investor can only invest in the two risky assets A and B and all wealth must be invested in the two assets. The investor has to decide how much wealth to put in asset A and how much to put in asset B. Let <span class="math inline">\(x_{A}\)</span> and <span class="math inline">\(x_{B}\)</span> denote the shares of wealth invested in assets A and B, respectively. The values of <span class="math inline">\(x_{A}\)</span> and <span class="math inline">\(x_{B}\)</span> can be positive or negative. Positive values denote <em>long</em> positions (purchases) in the assets. Negative values denote <em>short</em> positions (sales).<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> Since all wealth is put into the two investments it follows that <span class="math inline">\(x_{A}+x_{B}=1\)</span>. If asset A is shorted, then it is assumed that the proceeds of the short sale are used to purchase more of asset B and vice-versa.</p>
+<p>The investment in the two assets forms a <em>portfolio,</em> and the shares <span class="math inline">\(x_{A}\)</span> and <span class="math inline">\(x_{B}\)</span> are referred to as <em>portfolio shares</em> or <em>portfolio weights</em>. The return on the portfolio over the next year is a random variable, and is given by:</p>
+<p><span id="eq-Rp"><span class="math display">\[
+R_{p}=x_{A}R_{A}+x_{B}R_{B},
+\tag{10.3}\]</span></span></p>
+<p>which is a linear combination or weighted average of the random variables <span class="math inline">\(R_{A}\)</span> and <span class="math inline">\(R_{B}\)</span>. Since <span class="math inline">\(R_{A}\)</span> and <span class="math inline">\(R_{B}\)</span> are assumed to be normally distributed, <span class="math inline">\(R_{p}\)</span> is also normally distributed.</p>
+<p>Using the properties of linear combinations of random variables from Chapter <a href="02-probReview-new.html"><span>Chapter&nbsp;2</span></a> it follows that</p>
+<p><span id="eq-port-ER"><span class="math display">\[
+\mu_{p} =E[R_{p}]=x_{A}\mu_{A}+x_{B}\mu_{B},
+\tag{10.4}\]</span></span> <span id="eq-port-var"><span class="math display">\[
+\sigma_{p}^{2} =\mathrm{var}(R_{p})=x_{A}^{2}\sigma_{A}^{2}+x_{B}^{2}\sigma_{B}^{2}+2x_{A}x_{B}\sigma_{AB},
+\tag{10.5}\]</span></span> <span id="eq-port-sd"><span class="math display">\[
+\sigma_{p} =\mathrm{SD}(R_{p})=\sqrt{x_{A}^{2}\sigma_{A}^{2}+x_{B}^{2}\sigma_{B}^{2}+2x_{A}x_{B}\sigma_{AB}}.
+\tag{10.6}\]</span></span></p>
+<p>Hence, the portfolio return has the following normal distribution: <span class="math display">\[
+R_{p}\sim N(\mu_{p},\sigma_{p}^{2}).
+\]</span></p>
+<p>Given the portfolio return distribution, end-of-period wealth is</p>
+<p><span class="math display">\[
+W_{1} = W_{0}\times (1 + R_{p}) = W_{0}+ W_{0}\times R_{p},
+\]</span></p>
+<p>which is a linear function of the random portfolio return <span class="math inline">\(R_{p}\)</span>. It follows that</p>
+<p><span class="math display">\[\begin{align*}
+E[W_{1}] &amp;= W_{0} + W_{0}\times E[R_{p}] = W_{0}(1 + \mu_{p}), \\
+\mathrm{var}(W_{1}) &amp;= W_{0}^{2}\times \mathrm{var}(R_{p}) = W_{0}^{2}\times \sigma_{p}^2,
+\end{align*}\]</span></p>
+<p>so that the distribution of <span class="math inline">\(W_{1}\)</span> is normal:</p>
+<p><span class="math display">\[
+W_{1} \sim N(W_{0}(1 + \mu_{p}), W_{0}^{2}\times \sigma_{p}^2).
+\]</span></p>
+<p>The investor cares most about the distribution of end-of-period wealth <span class="math inline">\(W_{1}\)</span>, which depends on the values of <span class="math inline">\(W_{0}\)</span>, <span class="math inline">\(\mu_{p}\)</span>, and <span class="math inline">\(\sigma_{p}^2\)</span>. Since <span class="math inline">\(\mu_{p}\)</span> and <span class="math inline">\(\sigma_{p}^2\)</span> are functions of <span class="math inline">\(x_{A}\)</span> and <span class="math inline">\(x_{B}\)</span>, the portfolio problem is to find the values of <span class="math inline">\(x_{A}\)</span> and <span class="math inline">\(x_{B}\)</span> that makes the investor most happy with respect to the probability distribution of end-of-period wealth.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
+<p>The results <a href="#eq-port-ER">Equation&nbsp;<span>10.4</span></a> and <a href="11-PortfolioTheoryMatrix-new.html#eq-port-var">Equation&nbsp;<span>11.29</span></a> are so important to portfolio theory that it is worthwhile to review the derivations.<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> For the first result <a href="#eq-port-ER">Equation&nbsp;<span>10.4</span></a>, you have: <span class="math display">\[
+E[R_{p}]=E[x_{A}R_{A}+x_{B}R_{B}]=x_{A}E[R_{A}]+x_{B}E[R_{B}]=x_{A}\mu_{A}+x_{B}\mu_{B},
+\]</span> by the linearity of the expectation operator. For the second result <a href="11-PortfolioTheoryMatrix-new.html#eq-port-var">Equation&nbsp;<span>11.29</span></a>, you have: <span class="math display">\[\begin{align*}
+\mathrm{var}(R_{p}) &amp; =E[(R_{p}-\mu_{p})^{2}]=E[(x_{A}(R_{A}-\mu_{A})+x_{B}(R_{B}-\mu_{B}))^{2}]\\
+&amp; =E[x_{A}^{2}(R_{A}-\mu_{A})^{2}+x_{B}^{2}(R_{B}-\mu_{B})^{2}+2x_{A}x_{B}(R_{A}-\mu_{A})(R_{B}-\mu_{B})]\\
+&amp; =x_{A}^{2}E[(R_{A}-\mu_{A})^{2}]+x_{B}^{2}E[(R_{B}-\mu_{B})^{2}]+2x_{A}x_{B}E[(R_{A}-\mu_{A})(R_{B}-\mu_{B})]\\
+&amp; =x_{A}^{2}\sigma_{A}^{2}+x_{B}^{2}\sigma_{B}^{2}+2x_{A}x_{B}\sigma_{AB}.
+\end{align*}\]</span></p>
+<p>The third line uses linearity of the expectations operator, and the fourth line uses the definition of variance and covariance.</p>
+<p>Notice that the variance of the portfolio is a weighted average of the variances of the individual assets plus two times the product of the portfolio weights times the covariance between the assets. If the portfolio weights are both positive then a positive covariance will tend to increase the portfolio variance, because both returns tend to move in the same direction, and a negative covariance will tend to reduce the portfolio variance as returns tend to move in opposite directions. Thus finding assets with negatively correlated returns can be very beneficial when forming portfolios because risk, as measured by portfolio standard deviation, can be reduced. What is perhaps surprising is that forming portfolios with positively correlated assets can also reduce risk as long as the correlation is not too large. I illustrate these results with the following examples.</p>
+<div id="exm-two-asset-portfolios" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 10.2 (Two asset portfolios) </strong></span>Consider creating some portfolios using the asset information in <a href="#tbl-TableExampleData">Table&nbsp;<span>10.1</span></a>. The first portfolio is an equally weighted portfolio with <span class="math inline">\(x_{A}=x_{B}=0.5\)</span>. Using <a href="#eq-port-ER">Equation&nbsp;<span>10.4</span></a>-<a href="#eq-port-sd">Equation&nbsp;<span>10.6</span></a>, you have: <span class="math display">\[\begin{align*}
+\mu_{p_{1}} &amp; =(0.5)\cdot(0.175)+(0.5)\cdot(0.055)=0.115\\
+\sigma_{p_{1}}^{2} &amp; =(0.5)^{2}\cdot(0.067)+(0.5)^{2}\cdot(0.013)\\
+&amp; +2\cdot(0.5)(0.5)(-0.004866)\\
+&amp; =0.01751\\
+\sigma_{p_{1}} &amp; =\sqrt{0.01751}=0.1323
+\end{align*}\]</span> This portfolio has expected return half-way between the expected returns on assets A and B, but the portfolio standard deviation is less than half-way between the asset standard deviations. This reflects risk reduction via <em>diversification</em>. Here, diversification means investing wealth in two assets instead of investing wealth in a single asset. In R, the portfolio parameters are computed using:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>x.A <span class="ot">=</span> <span class="fl">0.5</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>x.B <span class="ot">=</span> <span class="fl">0.5</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>mu.p1 <span class="ot">=</span> x.A<span class="sc">*</span>mu.A <span class="sc">+</span> x.B<span class="sc">*</span>mu.B</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>sig2.p1 <span class="ot">=</span> x.A<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.A <span class="sc">+</span> x.B<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.B <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x.A<span class="sc">*</span>x.B<span class="sc">*</span>sig.AB</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>sig.p1 <span class="ot">=</span> <span class="fu">sqrt</span>(sig2.p1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+<span class="math inline">\(\mu_{p_{1}}\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(\sigma_{p_{1}}\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(0.5\sigma_{A}+0.5\sigma_{B}\)</span>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0.115
+</td>
+<td style="text-align:right;">
+0.132
+</td>
+<td style="text-align:right;">
+0.186
+</td>
+</tr>
+</tbody>
+
+</table>
+<p>Next, consider a long-short portfolio with <span class="math inline">\(x_{A}=1.5\)</span> and <span class="math inline">\(x_{B}=-0.5\)</span>. In this portfolio, asset B is sold short and the proceeds of the short sale are used to <em>leverage</em> the investment in asset A.<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> The portfolio characteristics are: <span class="math display">\[\begin{align*}
+\mu_{p_{2}} &amp; =(1.5)\cdot(0.175)+(-0.5)\cdot(0.055)=0.235\\
+\sigma_{p_{2}}^{2} &amp; =(1.5)^{2}\cdot(0.067)+(-0.5)^{2}\cdot(0.013)\\
+&amp; +2\cdot(1.5)(-0.5)(-0.004866)\\
+&amp; =0.1604\\
+\sigma_{p_{2}} &amp; =\sqrt{0.1604}=0.4005
+\end{align*}\]</span> This portfolio has both a higher expected return and standard deviation than asset A. The high standard deviation is due to the short sale, which is a type of leverage, and the negative correlation between assets A and B. In R, the portfolio parameters are computed using:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>x.A <span class="ot">=</span> <span class="fl">1.5</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>x.B <span class="ot">=</span> <span class="sc">-</span><span class="fl">0.5</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>mu.p2 <span class="ot">=</span> x.A<span class="sc">*</span>mu.A <span class="sc">+</span> x.B<span class="sc">*</span>mu.B</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>sig2.p2 <span class="ot">=</span> x.A<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.A <span class="sc">+</span> x.B<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.B <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x.A<span class="sc">*</span>x.B<span class="sc">*</span>sig.AB</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>sig.p2 <span class="ot">=</span> <span class="fu">sqrt</span>(sig2.p2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+<span class="math inline">\(\mu_{p_{2}}\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(\sigma_{p_{2}}\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(1.5\sigma_{A}-0.5\sigma_{B}\)</span>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0.235
+</td>
+<td style="text-align:right;">
+0.4
+</td>
+<td style="text-align:right;">
+0.33
+</td>
+</tr>
+</tbody>
+
+</table>
+<p><span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<p>In the above example, the equally weighted portfolio has expected return half way between the expected returns on assets A and B, but has standard deviation (volatility) that is less than half way between the standard deviations of the two assets. For long-only portfolios, you can show that this is a general result as long as the correlation between the two assets is not perfectly positive.</p>
+<div id="prp-01" class="proposition theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 10.1 </strong></span>Consider a portfolio of the two assets A and B with portfolios weights <span class="math inline">\(x_{A}\geq0\)</span> and <span class="math inline">\(x_{B}\geq0\)</span> such that <span class="math inline">\(x_{A}+x_{B}=1.\)</span> Then if <span class="math inline">\(\rho_{AB}\neq1\)</span></p>
+<p><span class="math display">\[
+\sigma_{p}=(x_{A}^{2}\sigma_{A}^{2}+x_{B}^{2}\sigma_{B}^{2}+2x_{A}x_{B}\sigma_{AB})^{1/2}&lt;x_{A}\sigma_{A}+x_{B}\sigma_{B}.
+\]</span></p>
+<p>If <span class="math inline">\(\rho_{AB}=1\)</span> then</p>
+<p><span class="math display">\[
+\sigma_{p}=x_{A}\sigma_{A}+x_{B}\sigma_{B}.
+\]</span></p>
+</div>
+<p>The proof is straightforward. Use <span class="math inline">\(\sigma_{AB}=\rho_{AB}\sigma_{A}\sigma_{B}\)</span> and write</p>
+<p><span class="math display">\[
+\sigma_{p}^{2}=x_{A}^{2}\sigma_{A}^{2}+x_{B}^{2}\sigma_{B}^{2}+2x_{A}x_{B}\sigma_{AB}=x_{A}^{2}\sigma_{A}^{2}+x_{B}^{2}\sigma_{B}^{2}+2x_{A}x_{B}\rho_{AB}\sigma_{A}\sigma_{B}.
+\]</span></p>
+<p>Now add and subtract <span class="math inline">\(2x_{A}x_{B}\sigma_{A}\sigma_{B}\)</span> from the right-hand side to give <span class="math display">\[\begin{eqnarray*}
+\sigma_{p}^{2} &amp; = &amp; (x_{A}^{2}\sigma_{A}^{2}+x_{B}^{2}\sigma_{B}^{2}+2x_{A}x_{B}\sigma_{A}\sigma_{B})-2x_{A}x_{B}\sigma_{A}\sigma_{B}+2x_{A}x_{B}\rho_{AB}\sigma_{A}\sigma_{B}\\
+&amp; = &amp; \left(x_{A}\sigma_{A}+x_{B}\sigma_{B}\right)^{2}-2x_{A}x_{B}\sigma_{A}\sigma_{B}(1-\rho_{AB}).
+\end{eqnarray*}\]</span> If <span class="math inline">\(\rho_{AB}\neq1\)</span> then <span class="math inline">\(2x_{A}x_{B}\sigma_{A}\sigma_{B}(1-\rho_{AB})&gt;0\)</span> and so <span class="math display">\[
+\sigma_{p}^{2}&lt;\left(x_{A}\sigma_{A}+x_{B}\sigma_{B}\right)^{2}\Rightarrow\sigma_{p}&lt;x_{A}\sigma_{A}+x_{B}\sigma_{B}.
+\]</span></p>
+<p>If <span class="math inline">\(\rho_{AB}=1\)</span> then <span class="math inline">\(2x_{A}x_{B}\sigma_{A}\sigma_{B}(1-\rho_{AB})=0\)</span> and <span class="math display">\[
+\sigma_{p}^{2}=\left(x_{A}\sigma_{A}+x_{B}\sigma_{B}\right)\Rightarrow\sigma_{p}=x_{A}\sigma_{A}+x_{B}\sigma_{B}
+\]</span> This result shows that the volatility of a long-only two asset portfolio is a weighted average of individual asset volatility only when the two assets have perfectly positively correlated returns. Hence, in this case there is no risk reduction benefit from forming a portfolio. However, if assets are not perfectly correlated then there can be a risk reduction benefit from forming a portfolio. How big the risk reduction benefit is depends on the magnitude of the asset return correlation <span class="math inline">\(\rho_{AB}\)</span>. In general, the closer <span class="math inline">\(\rho_{AB}\)</span> is to -1 the larger is the risk reduction benefit.</p>
+<p><a href="#fig-IntroPortRiskReturn">Figure&nbsp;<span>10.1</span></a> shows the risk-return characteristics of assets A and B as well as the equally weighted and long-short portfolios (labeled P1 and P2, respectively). The dotted line connecting the points A and B represents linear risk-return trade-offs of portfolios of assets A and B, respectively, that occurs if <span class="math inline">\(\rho_{AB}=1\)</span>. The point P1, which represents the equally weighted long-only portfolio, has expected return half-way between the expected returns on assets A and B but has standard deviation less than half-way between the standard deviations of assets A and B. As a result, P1 lies to the left of the dotted line indicating a risk reduction benefit to the portfolio. In contrast, the point P2, which represents the long-short portfolio, lies to the right of the dotted line indicating a risk inflation cost of the portfolio due to leverage.</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-IntroPortRiskReturn" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="10-introductionPortfolioTheory-new_files/figure-html/fig-IntroPortRiskReturn-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;10.1: Risk-return characteristics of assets A and B, the equally weighted portfolio P1 and the long-short portfolio P2.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="portfolio-value-at-risk" class="level3" data-number="10.2.2">
+<h3 data-number="10.2.2" class="anchored" data-anchor-id="portfolio-value-at-risk"><span class="header-section-number">10.2.2</span> Portfolio Value-at-Risk</h3>
+<p> Consider an initial investment of <span class="math inline">\(\$W_{0}\)</span> in the portfolio of assets A and B with return given by <a href="#eq-Rp">Equation&nbsp;<span>10.3</span></a>, expected return given by <a href="#eq-port-ER">Equation&nbsp;<span>10.4</span></a>) and variance given by <a href="11-PortfolioTheoryMatrix-new.html#eq-port-var">Equation&nbsp;<span>11.29</span></a>. Then <span class="math inline">\(R_{p}\sim N(\mu_{p},\sigma_{p}^{2})\)</span>. For <span class="math inline">\(\alpha\in(0,1)\)</span>, the <span class="math inline">\(\alpha\times100\%\)</span> portfolio value-at-risk is given by:</p>
+<p><span id="eq-portfolio-VaR"><span class="math display">\[
+\mathrm{VaR}_{p,\alpha}= -q_{\alpha}^{R_{p}}W_{0},
+\tag{10.7}\]</span></span></p>
+<p>where <span class="math inline">\(q_{\alpha}^{R_{p}}\)</span> is the <span class="math inline">\(\alpha\)</span>-quantile of the distribution of <span class="math inline">\(R_{p}\)</span> and is given by</p>
+<p><span id="eq-portfolio-normal-quantile"><span class="math display">\[
+q_{\alpha}^{R_{p}}=\mu_{p}+\sigma_{p}q_{\alpha}^{z},
+\tag{10.8}\]</span></span></p>
+<p>where <span class="math inline">\(q_{\alpha}^{z}\)</span> is the <span class="math inline">\(\alpha\)</span>-quantile of the standard normal distribution.<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a></p>
+<p>What is the relationship between portfolio VaR and the individual asset VaRs? Is portfolio VaR a weighted average of the individual asset VaRs? In general, portfolio VaR is not a weighted average of the asset VaRs. To see this consider the portfolio weighted average of the individual asset return quantiles:</p>
+<p><span id="eq-weighted-asset-quantile"><span class="math display">\[
+\begin{aligned}
+x_{A}q_{\alpha}^{R_{A}}+x_{B}q_{\alpha}^{R_{B}} &amp; =x_{A}(\mu_{A}+\sigma_{A}q_{\alpha}^{z})+x_{B}(\mu_{B}+\sigma_{B}q_{\alpha}^{z}) \\
+&amp; =x_{A}\mu_{A}+x_{B}\mu_{B}+(x_{A}\sigma_{A}+x_{B}\sigma_{B})q_{\alpha}^{z} \\
+&amp; =\mu_{p}+(x_{A}\sigma_{A}+x_{B}\sigma_{B})q_{\alpha}^{z}.
+\end{aligned}
+\tag{10.9}\]</span></span></p>
+<p>The weighted asset quantile <a href="#eq-weighted-asset-quantile">Equation&nbsp;<span>10.9</span></a> is not equal to the portfolio quantile <a href="#eq-portfolio-normal-quantile">Equation&nbsp;<span>10.8</span></a> unless <span class="math inline">\(\rho_{AB}=1\)</span>. Hence, weighted asset VaR is in general not equal to portfolio VaR because the quantile <a href="#eq-weighted-asset-quantile">Equation&nbsp;<span>10.9</span></a> assumes a perfectly positive correlation between <span class="math inline">\(R_{A}\)</span> and <span class="math inline">\(R_{B}\)</span>.</p>
+<div id="exm-portfolio-var" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 10.3 (Portfolio VaR) </strong></span>Consider an initial investment of <span class="math inline">\(W_{0}=\$100,000\)</span>. Assuming that returns are simple, the 5% VaRs on assets A and B are:</p>
+<p><span class="math display">\[\begin{align*}
+\mathrm{VaR}_{A,0.05} &amp; = -q_{0.05}^{R_{A}}W_{0}= -\left(\mu_{A}+\sigma_{A}q_{.05}^{z}\right)W_{0}\\
+&amp; = -(0.175+0.258(-1.645))\cdot100,000= 24,937,\\
+\mathrm{VaR}_{B,0.05} &amp; = -q_{0.05}^{R_{B}}W_{0}= -\left(\mu_{B}+\sigma_{B}q_{.05}^{z}\right)W_{0}\\
+&amp; = -(0.055+0.115(-1.645))\cdot100,000= 13,416.
+\end{align*}\]</span></p>
+<p>The 5% VaR on the equal weighted portfolio with <span class="math inline">\(x_{A}=x_{B}=0.5\)</span> is:</p>
+<p><span class="math display">\[\begin{align*}
+\mathrm{VaR}_{p,0.05} &amp; = -q_{0.05}^{R_{p}}W_{0}= -\left(\mu_{p}+\sigma_{p}q_{.05}^{z}\right)W_{0}\\
+&amp; = -(0.115+0.1323(-1.645))\cdot100,000= 10,268,
+\end{align*}\]</span></p>
+<p>and the weighted average of the individual asset VaRs is, <span class="math display">\[
+x_{A}\mathrm{VaR}_{A,0.05}+x_{B}\mathrm{VaR}_{B,0.05}=0.5(24,937)+0.5(13,416)=19,177.
+\]</span> The 5% VaR on the long-short portfolio with <span class="math inline">\(x_{A}=1.5\)</span> and <span class="math inline">\(x_{B}=-0.5\)</span> is: <span class="math display">\[
+\mathrm{VaR}_{p,0.05}= -q_{0.05}^{R_{p}}W_{0}= -(0.235+0.4005(-1.645))\cdot100,000=42,371,
+\]</span> and the weighted average of the individual asset VaRs is, <span class="math display">\[
+x_{A}\mathrm{VaR}_{A,0.05}+x_{B}\mathrm{VaR}_{B,0.05}=1.5(24,937)-0.5(13,416)=30,698.
+\]</span> Notice that VaR<span class="math inline">\(_{p,0.05}\neq x_{A}\mathrm{VaR}_{A,0.05}+x_{B}\mathrm{VaR}_{B,0.05}\)</span> because <span class="math inline">\(\rho_{AB}\neq1\)</span>.</p>
+<p>Using R, these computations are:</p>
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>w0 <span class="ot">=</span> <span class="dv">100000</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>VaR.A <span class="ot">=</span> <span class="sc">-</span>(mu.A <span class="sc">+</span> sig.A<span class="sc">*</span><span class="fu">qnorm</span>(<span class="fl">0.05</span>))<span class="sc">*</span>w0</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>VaR.B <span class="ot">=</span> <span class="sc">-</span>(mu.B <span class="sc">+</span> sig.B<span class="sc">*</span><span class="fu">qnorm</span>(<span class="fl">0.05</span>))<span class="sc">*</span>w0</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>VaR.p1 <span class="ot">=</span> <span class="sc">-</span>(mu.p1 <span class="sc">+</span> sig.p1<span class="sc">*</span><span class="fu">qnorm</span>(<span class="fl">0.05</span>))<span class="sc">*</span>w0</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>VaR.p2 <span class="ot">=</span> <span class="sc">-</span>(mu.p2 <span class="sc">+</span> sig.p2<span class="sc">*</span><span class="fu">qnorm</span>(<span class="fl">0.05</span>))<span class="sc">*</span>w0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+<span class="math inline">\(VaR_{A,0.05}\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(VaR_{B,0.05}\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(VaR_{p_{1},0.05}\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(VaR_{p_{2},0.05}\)</span>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+24937
+</td>
+<td style="text-align:right;">
+13416
+</td>
+<td style="text-align:right;">
+10268
+</td>
+<td style="text-align:right;">
+42371
+</td>
+</tr>
+</tbody>
+
+</table>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+<span class="math inline">\(0.5VaR_{A,0.05}+0.5VaR_{B,0.05}\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(1.5VaR_{A,0.05}-0.5VaR_{B,0.05}\)</span>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+19177
+</td>
+<td style="text-align:right;">
+30698
+</td>
+</tr>
+</tbody>
+
+</table>
+<p><span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div id="exm-create-r-function-to-compute-normal-var" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 10.4 (Create R function to compute normal VaR) </strong></span>The previous example used repetitive R calculations to compute the 5% VaR for a variety of investments. An alternative approach is to create an R function to compute the VaR given <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma\)</span>, <span class="math inline">\(\alpha\)</span> (VaR probability) and <span class="math inline">\(W_{0}\)</span>, and then apply the function using the inputs of the different assets. A simple function to compute VaR based on normally distributed asset returns is:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>normalVaR <span class="ot">=</span> <span class="cf">function</span>(mu, sigma, w0, <span class="at">alpha =</span> <span class="fl">0.05</span>, <span class="at">invert=</span><span class="cn">TRUE</span>) {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="do">## compute normal VaR for collection of assets given mean and sd vector</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="do">## inputs:</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="do">## mu         n x 1 vector of expected returns</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="do">## sigma      n x 1 vector of standard deviations</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="do">## w0         scalar initial investment in $</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="do">## alpha      scalar tail probability</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="do">## invert     logical. If TRUE report VaR as positive number</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="do">## output:</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="do">## VaR        n x 1 vector of left tail return quantiles</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> ( <span class="fu">length</span>(mu) <span class="sc">!=</span> <span class="fu">length</span>(sigma) )</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"mu and sigma must have same number of elements"</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> ( alpha <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">||</span> alpha <span class="sc">&gt;</span> <span class="dv">1</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"alpha must be between 0 and 1"</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  VaR <span class="ot">=</span> w0<span class="sc">*</span>(mu <span class="sc">+</span> sigma<span class="sc">*</span><span class="fu">qnorm</span>(alpha))</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (invert) {</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    VaR <span class="ot">=</span> <span class="sc">-</span>VaR</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(VaR)</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>You create an R function using <code>function()</code>. Every R function has a set of arguments or inputs. Here, the arguments are the <span class="math inline">\(n \times 1\)</span> vectors <code>mu</code> and <code>sigma</code>, the scalars <code>w0</code> and <code>alpha</code>, and the logical value <code>invert</code>. Default values for <code>alpha</code> and <code>invert</code> are specified in the definition of the function. The body of the function is defined within the braces <code>{}</code>, and the return value of the function is specified using <code>return()</code>. Here, you first check that the inputs <code>mu</code> and <code>sigma</code> are of the same length, and that the tail probability <span class="math inline">\(\alpha\)</span> is between 0 and 1. Then, you compute normal VaR using <a href="#eq-portfolio-VaR">Equation&nbsp;<span>10.7</span></a>. If <code>invert=TRUE</code> you multiply the result by <span class="math inline">\(-1\)</span>. Finally, you return the vector of VaR values. After running the code that defines the function <code>normalVaR()</code>, it will be available in the R session for use like any other R function.</p>
+<p>Using the <code>normalVaR()</code> function, the 5% VaR values of asset A, B and equally weighted portfolio are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">normalVaR</span>(<span class="at">mu=</span><span class="fu">c</span>(mu.A, mu.B, mu.p1),</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">sigma=</span><span class="fu">c</span>(sig.A, sig.B, sig.p1),</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">w0=</span><span class="dv">100000</span>, <span class="at">alpha=</span><span class="fl">0.05</span>) </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 24937 13416 10268</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+<section id="the-set-of-feasible-portfolios" class="level3" data-number="10.2.3">
+<h3 data-number="10.2.3" class="anchored" data-anchor-id="the-set-of-feasible-portfolios"><span class="header-section-number">10.2.3</span> The set of feasible portfolios</h3>
+<p>The collection of all <em>feasible</em> portfolios, or the <em>investment possibilities set</em>, in the case of two assets is simply all possible portfolios that can be formed by varying the portfolio weights <span class="math inline">\(x_{A}\)</span> and <span class="math inline">\(x_{B}\)</span> such that the weights sum to one (<span class="math inline">\(x_{A}+x_{B}=1)\)</span>. I summarize the expected return-risk (mean-volatility) properties of the feasible portfolios in a plot with portfolio expected return, <span class="math inline">\(\mu_{p}\)</span>, on the vertical axis and portfolio standard deviation, <span class="math inline">\(\sigma_{p}\)</span>, on the horizontal axis. The portfolio standard deviation is used instead of variance because standard deviation is measured in the same units as the expected value (recall, variance is the average squared deviation from the mean).</p>
+<div id="exm-investment-possibilities-set-for-example-data" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 10.5 (Investment possibilities set for example data) </strong></span>The investment possibilities set for the data in <a href="#tbl-TableExampleData">Table&nbsp;<span>10.1</span></a> is illustrated in <a href="#fig-IntroPortEfficientPort">Figure&nbsp;<span>10.2</span></a>. Here the portfolio weight on asset A, <span class="math inline">\(x_{A}\)</span>, is varied from -0.4 to 1.4 in increments of 0.1 and, since <span class="math inline">\(x_{B}=1-x_{A}\)</span>, the weight on asset B then varies from 1.4 to -0.4. This gives us 18 portfolios with weights <span class="math inline">\((x_{A},x_{B})=(-0.4,1.4),(-0.3,1.3),...,(1.3,-0.3),(1.4,-0.4)\)</span>. For each of these portfolios I use the formulas <a href="#eq-port-ER">Equation&nbsp;<span>10.4</span></a> and <a href="#eq-port-sd">Equation&nbsp;<span>10.6</span></a> to compute <span class="math inline">\(\mu_{p}\)</span> and <span class="math inline">\(\sigma_{p}\)</span>. In R, the calculations are:</p>
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>x.A <span class="ot">=</span> <span class="fu">seq</span>(<span class="at">from=</span><span class="sc">-</span><span class="fl">0.4</span>, <span class="at">to=</span><span class="fl">1.4</span>, <span class="at">by=</span><span class="fl">0.1</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>x.B <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> x.A</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>mu.p <span class="ot">=</span> x.A<span class="sc">*</span>mu.A <span class="sc">+</span> x.B<span class="sc">*</span>mu.B</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>sig2.p <span class="ot">=</span> x.A<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.A <span class="sc">+</span> x.B<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.B <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x.A<span class="sc">*</span>x.B<span class="sc">*</span>sig.AB</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>sig.p <span class="ot">=</span> <span class="fu">sqrt</span>(sig2.p)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>port.names <span class="ot">=</span> <span class="fu">paste</span>(<span class="st">"portfolio"</span>, <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(x.A), <span class="at">sep=</span><span class="st">" "</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>data.tbl <span class="ot">=</span> <span class="fu">as.data.frame</span>(<span class="fu">cbind</span>(x.A, x.B, mu.p, sig.p))</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(data.tbl) <span class="ot">=</span> port.names</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>col.names <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"$x_{A}$"</span>,<span class="st">"$x_{B}$"</span>, <span class="st">"$</span><span class="sc">\\</span><span class="st">mu_{p}$"</span>, <span class="st">"$</span><span class="sc">\\</span><span class="st">sigma_{p}$"</span> )</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>tbl.data <span class="ot">=</span> <span class="fu">kbl</span>(data.tbl, <span class="at">col.names=</span>col.names) <span class="sc">%&gt;%</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>   <span class="fu">kable_styling</span>(<span class="at">full_width=</span><span class="cn">FALSE</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(tbl.data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(x_{A}\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(x_{B}\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(\mu_{p}\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(\sigma_{p}\)</span>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+portfolio 1
+</td>
+<td style="text-align:right;">
+-0.4
+</td>
+<td style="text-align:right;">
+1.4
+</td>
+<td style="text-align:right;">
+0.007
+</td>
+<td style="text-align:right;">
+0.205
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+portfolio 2
+</td>
+<td style="text-align:right;">
+-0.3
+</td>
+<td style="text-align:right;">
+1.3
+</td>
+<td style="text-align:right;">
+0.019
+</td>
+<td style="text-align:right;">
+0.179
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+portfolio 3
+</td>
+<td style="text-align:right;">
+-0.2
+</td>
+<td style="text-align:right;">
+1.2
+</td>
+<td style="text-align:right;">
+0.031
+</td>
+<td style="text-align:right;">
+0.155
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+portfolio 4
+</td>
+<td style="text-align:right;">
+-0.1
+</td>
+<td style="text-align:right;">
+1.1
+</td>
+<td style="text-align:right;">
+0.043
+</td>
+<td style="text-align:right;">
+0.133
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+portfolio 5
+</td>
+<td style="text-align:right;">
+0.0
+</td>
+<td style="text-align:right;">
+1.0
+</td>
+<td style="text-align:right;">
+0.055
+</td>
+<td style="text-align:right;">
+0.115
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+portfolio 6
+</td>
+<td style="text-align:right;">
+0.1
+</td>
+<td style="text-align:right;">
+0.9
+</td>
+<td style="text-align:right;">
+0.067
+</td>
+<td style="text-align:right;">
+0.102
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+portfolio 7
+</td>
+<td style="text-align:right;">
+0.2
+</td>
+<td style="text-align:right;">
+0.8
+</td>
+<td style="text-align:right;">
+0.079
+</td>
+<td style="text-align:right;">
+0.098
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+portfolio 8
+</td>
+<td style="text-align:right;">
+0.3
+</td>
+<td style="text-align:right;">
+0.7
+</td>
+<td style="text-align:right;">
+0.091
+</td>
+<td style="text-align:right;">
+0.102
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+portfolio 9
+</td>
+<td style="text-align:right;">
+0.4
+</td>
+<td style="text-align:right;">
+0.6
+</td>
+<td style="text-align:right;">
+0.103
+</td>
+<td style="text-align:right;">
+0.114
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+portfolio 10
+</td>
+<td style="text-align:right;">
+0.5
+</td>
+<td style="text-align:right;">
+0.5
+</td>
+<td style="text-align:right;">
+0.115
+</td>
+<td style="text-align:right;">
+0.132
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+portfolio 11
+</td>
+<td style="text-align:right;">
+0.6
+</td>
+<td style="text-align:right;">
+0.4
+</td>
+<td style="text-align:right;">
+0.127
+</td>
+<td style="text-align:right;">
+0.154
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+portfolio 12
+</td>
+<td style="text-align:right;">
+0.7
+</td>
+<td style="text-align:right;">
+0.3
+</td>
+<td style="text-align:right;">
+0.139
+</td>
+<td style="text-align:right;">
+0.178
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+portfolio 13
+</td>
+<td style="text-align:right;">
+0.8
+</td>
+<td style="text-align:right;">
+0.2
+</td>
+<td style="text-align:right;">
+0.151
+</td>
+<td style="text-align:right;">
+0.204
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+portfolio 14
+</td>
+<td style="text-align:right;">
+0.9
+</td>
+<td style="text-align:right;">
+0.1
+</td>
+<td style="text-align:right;">
+0.163
+</td>
+<td style="text-align:right;">
+0.231
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+portfolio 15
+</td>
+<td style="text-align:right;">
+1.0
+</td>
+<td style="text-align:right;">
+0.0
+</td>
+<td style="text-align:right;">
+0.175
+</td>
+<td style="text-align:right;">
+0.258
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+portfolio 16
+</td>
+<td style="text-align:right;">
+1.1
+</td>
+<td style="text-align:right;">
+-0.1
+</td>
+<td style="text-align:right;">
+0.187
+</td>
+<td style="text-align:right;">
+0.286
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+portfolio 17
+</td>
+<td style="text-align:right;">
+1.2
+</td>
+<td style="text-align:right;">
+-0.2
+</td>
+<td style="text-align:right;">
+0.199
+</td>
+<td style="text-align:right;">
+0.314
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+portfolio 18
+</td>
+<td style="text-align:right;">
+1.3
+</td>
+<td style="text-align:right;">
+-0.3
+</td>
+<td style="text-align:right;">
+0.211
+</td>
+<td style="text-align:right;">
+0.343
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+portfolio 19
+</td>
+<td style="text-align:right;">
+1.4
+</td>
+<td style="text-align:right;">
+-0.4
+</td>
+<td style="text-align:right;">
+0.223
+</td>
+<td style="text-align:right;">
+0.372
+</td>
+</tr>
+</tbody>
+
+</table>
+<p>Portfolios 1-4 and 16-19 are the long-short portfolios and portfolios 5-15 are the long-only portfolios. In R, the risk-return properties of this set of feasible portfolios can be visualized using:</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>cex.val <span class="ot">=</span> <span class="fl">1.5</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sig.p, mu.p, <span class="at">type=</span><span class="st">"b"</span>, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">cex=</span>cex.val,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(mu.p)), <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(sig.p)), </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="fu">expression</span>(sigma[p]), <span class="at">ylab=</span><span class="fu">expression</span>(mu[p]),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">cex.lab=</span><span class="fl">1.5</span>, <span class="at">col=</span><span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"blue"</span>, <span class="dv">4</span>), <span class="fu">rep</span>(<span class="st">"black"</span>, <span class="dv">2</span>),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>                        <span class="st">"green"</span>, <span class="fu">rep</span>(<span class="st">"black"</span>, <span class="dv">8</span>), <span class="fu">rep</span>(<span class="st">"blue"</span>, <span class="dv">4</span>)))</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span>sig.A, <span class="at">y=</span>mu.A, <span class="at">labels=</span><span class="st">"Asset A"</span>, <span class="at">pos=</span><span class="dv">4</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span>sig.B, <span class="at">y=</span>mu.B, <span class="at">labels=</span><span class="st">"Asset B"</span>, <span class="at">pos=</span><span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-IntroPortEfficientPort" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="10-introductionPortfolioTheory-new_files/figure-html/fig-IntroPortEfficientPort-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;10.2: Portfolio frontier of example data.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<p>Notice that the plot in (<span class="math inline">\(\mu_{p},\sigma_{p})\)</span>-space looks like a parabola turned on its side (in fact, it is one side of a hyperbola). The plot is often referred to as the <em>Markowitz bullet</em> as it resembles the shape of a bullet speeding toward the y-axis. The black dots plus the green dot represent the long-only portfolios, and the blue dots represent long-short portfolios. The black dot labeled “Asset A” is the portfolio <span class="math inline">\((x_{A}=1, x_{B}=0)\)</span>, and the black dot labeled “Asset B” is the portfolio <span class="math inline">\((x_{A}=0, x_{B}=1)\)</span>.</p>
+<p>The bullet shape of the feasible set shows that portfolio risk can be reduced through diversification. Risk reduction through diversification can be understood as follows. Suppose an investor is initially invested 100% in asset B (i.e., portfolio 5). Diversification involves rebalancing the portfolio to include asset A. For example, portfolio 6 is <span class="math inline">\((x_{A}=0.1, x_{B}=0.9)\)</span>. This portfolio has both a higher expected return and a lower standard deviation than portfolio 5. This is the benefit from diversification. Portfolio expected return increases and risk decreases until portfolio 7 is reached, which is at the tip of the Markowitz bullet (green dot). This portfolio has the property that it has the smallest variance/volatility among all feasible portfolios. Accordingly, this portfolio is called the <em>global minimum variance portfolio</em>. Continuing from portfolio 8 through portfolio 19, you see that both expected return and risk increase.</p>
+</section>
+<section id="computing-the-global-minimum-variance-portfolio" class="level3" data-number="10.2.4">
+<h3 data-number="10.2.4" class="anchored" data-anchor-id="computing-the-global-minimum-variance-portfolio"><span class="header-section-number">10.2.4</span> Computing the global minimum variance portfolio</h3>
+<p>The global minimum variance portfolio plays a key role in mean-variance portfolio theory and it is important to know how to determine its weights. Here, I show that it is a simple exercise in calculus to find the global minimum variance portfolio weights. I solve the <em>constrained optimization</em> problem<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a>:</p>
+<p><span class="math display">\[\begin{align*}
+\underset{x_{A},x_{B}}{\min}\sigma_{p}^{2} &amp; =x_{A}^{2}\sigma_{A}^{2}+x_{B}^{2}\sigma_{B}^{2}+2x_{A}x_{B}\sigma_{AB}\\
+~s.t.~x_{A}+x_{B} &amp; =1.
+\end{align*}\]</span></p>
+<p>This constrained optimization problem can be solved using two methods. The first method, called the <em>method of substitution</em>, uses the constraint to substitute out one of the variables to transform the constrained optimization problem in two variables into an unconstrained optimization problem in one variable. The second method, called the <em>method of Lagrange multipliers</em>, introduces an auxiliary variable called the <em>Lagrange multiplier</em> and transforms the constrained optimization problem in two variables into an unconstrained optimization problem in three variables.</p>
+<p>The substitution method is straightforward. Substituting <span class="math inline">\(x_{B}=1-x_{A}\)</span> into the formula for <span class="math inline">\(\sigma_{p}^{2}\)</span> reduces the problem to: <span class="math display">\[
+\min_{x_{A}}\sigma_{p}^{2}=x_{A}^{2}\sigma_{A}^{2}+(1-x_{A})^{2}\sigma_{B}^{2}+2x_{A}(1-x_{A})\sigma_{AB}.
+\]</span> The first order conditions for a minimum, via the chain rule, are: <span class="math display">\[
+0=\frac{d\sigma_{p}^{2}}{dx_{A}}=2x_{A}^{\min}\sigma_{A}^{2}-2(1-x_{A}^{\min})\sigma_{B}^{2}+2\sigma_{AB}(1-2x_{A}^{\min}),
+\]</span> and straightforward calculations yield,</p>
+<p><span id="eq-minvar-port"><span class="math display">\[
+x_{A}^{\min}=\frac{\sigma_{B}^{2}-\sigma_{AB}}{\sigma_{A}^{2}+\sigma_{B}^{2}-2\sigma_{AB}},~x_{B}^{\min}=1-x_{A}^{\min}.
+\tag{10.10}\]</span></span></p>
+<p>The method of Lagrange multipliers involves two steps. In the first step, the constraint <span class="math inline">\(x_{A}+x_{B}=1\)</span> is put into homogenous form <span class="math inline">\(x_{A}+x_{B}-1=0\)</span>. In the second step, the Lagrangian function is formed by adding to <span class="math inline">\(\sigma_{p}^{2}\)</span> the homogenous constraint multiplied by an auxiliary variable <span class="math inline">\(\lambda\)</span> (the Lagrange multiplier) giving: <span class="math display">\[
+L(x_{A},x_{B},\lambda)=x_{A}^{2}\sigma_{A}^{2}+x_{B}^{2}\sigma_{B}^{2}+2x_{A}x_{B}\sigma_{AB}+\lambda(x_{A}+x_{B}-1).
+\]</span> This function is then minimized with respect to <span class="math inline">\(x_{A},\)</span> <span class="math inline">\(x_{B}\)</span>, and <span class="math inline">\(\lambda\)</span>. The first order conditions are:</p>
+<p><span class="math display">\[\begin{align*}
+0 &amp; =\frac{\partial L(x_{A},x_{B},\lambda)}{\partial x_{A}}=2x_{A}\sigma_{A}^{2}+2x_{B}\sigma_{AB}+\lambda,\\
+0 &amp; =\frac{\partial L(x_{A},x_{B},\lambda)}{\partial x_{B}}=2x_{B}\sigma_{B}^{2}+2x_{A}\sigma_{AB}+\lambda,\\
+0 &amp; =\frac{\partial L(x_{A},x_{B},\lambda)}{\partial\lambda}=x_{A}+x_{B}-1.
+\end{align*}\]</span></p>
+<p>The first two equations can be rearranged to give: <span class="math display">\[
+x_{B}=x_{A}\left(\frac{\sigma_{A}^{2}-\sigma_{AB}}{\sigma_{B}^{2}-\sigma_{AB}}\right).
+\]</span> Substituting this value for <span class="math inline">\(x_{B}\)</span> into the third equation and rearranging gives the solution <a href="#eq-minvar-port">Equation&nbsp;<span>10.10</span></a>.</p>
+<div id="exm-global-minimum-variance-portfolio-for-example-data" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 10.6 (Global minimum variance portfolio for example data) </strong></span>Using the data in <a href="#tbl-TableExampleData">Table&nbsp;<span>10.1</span></a> and <a href="#eq-minvar-port">Equation&nbsp;<span>10.10</span></a> you have: <span class="math display">\[
+x_{A}^{\min}=\frac{0.01323-(-0.004866)}{0.06656+0.01323-2(-0.004866)}=0.2021,~x_{B}^{\min}=0.7979.
+\]</span> Hence, the global minimum variance portfolio is essentially portfolio 7 in <a href="#fig-IntroPortEfficientPort">Figure&nbsp;<span>10.2</span></a> and indeed lies at the tip of the Markowitz bullet.</p>
+<p>The expected return, variance and standard deviation of this portfolio are:</p>
+<p><span class="math display">\[\begin{align*}
+\mu_{p} &amp; =(0.2021)\cdot(0.175)+(0.7979)\cdot(0.055)=0.07925\\
+\sigma_{p}^{2} &amp; =(0.2021)^{2}\cdot(0.067)+(0.7979)^{2}\cdot(0.013)\\
+&amp; +2\cdot(0.2021)(0.7979)(-0.004875)\\
+&amp; =0.00975\\
+\sigma_{p} &amp; =\sqrt{0.00975}=0.09782.
+\end{align*}\]</span></p>
+<p>In R, the calculations to compute the global minimum variance portfolio weights and its expected return and volatility are:</p>
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>xA.min <span class="ot">=</span> (sig2.B <span class="sc">-</span> sig.AB)<span class="sc">/</span>(sig2.A <span class="sc">+</span> sig2.B <span class="sc">-</span> <span class="dv">2</span><span class="sc">*</span>sig.AB)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>xB.min <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> xA.min</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>mu.p.min <span class="ot">=</span> xA.min<span class="sc">*</span>mu.A <span class="sc">+</span> xB.min<span class="sc">*</span>mu.B</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>sig2.p.min <span class="ot">=</span> xA.min<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.A <span class="sc">+</span> xB.min<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.B <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>xA.min<span class="sc">*</span>xB.min<span class="sc">*</span>sig.AB</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>sig.p.min <span class="ot">=</span> <span class="fu">sqrt</span>(sig2.p.min)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>data.tbl <span class="ot">=</span> <span class="fu">as.data.frame</span>(<span class="fu">t</span>(<span class="fu">c</span>(xA.min, xB.min, mu.p.min, sig.p.min)))</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>col.names <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"$x_{A}^{</span><span class="sc">\\</span><span class="st">min}$"</span>,<span class="st">"$x_{B}^{</span><span class="sc">\\</span><span class="st">min}$"</span>, <span class="st">"$</span><span class="sc">\\</span><span class="st">mu_{p}^{</span><span class="sc">\\</span><span class="st">min}$"</span>, </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>              <span class="st">"$</span><span class="sc">\\</span><span class="st">sigma_{p}^{</span><span class="sc">\\</span><span class="st">min}$"</span> )</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>tbl.data <span class="ot">=</span> <span class="fu">kbl</span>(data.tbl, <span class="at">col.names=</span>col.names) <span class="sc">%&gt;%</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>   <span class="fu">kable_styling</span>(<span class="at">full_width=</span><span class="cn">FALSE</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(tbl.data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+<span class="math inline">\(x_{A}^{\min}\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(x_{B}^{\min}\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(\mu_{p}^{\min}\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(\sigma_{p}^{\min}\)</span>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0.202
+</td>
+<td style="text-align:right;">
+0.798
+</td>
+<td style="text-align:right;">
+0.079
+</td>
+<td style="text-align:right;">
+0.098
+</td>
+</tr>
+</tbody>
+
+</table>
+<p><span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+<section id="correlation-and-the-shape-of-the-portfolio-frontier" class="level3" data-number="10.2.5">
+<h3 data-number="10.2.5" class="anchored" data-anchor-id="correlation-and-the-shape-of-the-portfolio-frontier"><span class="header-section-number">10.2.5</span> Correlation and the shape of the portfolio frontier</h3>
+<p>The shape of the investment possibilities set is very sensitive to the correlation between assets A and B given the other parameters. I illustrate this sensitivity by computing portfolio frontiers for the example data for <span class="math inline">\(\rho_{AB} = -0.9, -0.5, 0, 0.5, 0.9\)</span>. <a href="#fig-IntroPortCorShape">Figure&nbsp;<span>10.3</span></a> shows these portfolio frontiers.</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-IntroPortCorShape" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="10-introductionPortfolioTheory-new_files/figure-html/fig-IntroPortCorShape-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;10.3: Portfolio frontier as a function of correlation.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The curvature of the portfolio frontier is determined by the value of <span class="math inline">\(\rho_{AB}\)</span>. The closer <span class="math inline">\(\rho_{AB}\)</span> is to -1 the more curved is the frontier toward the y-axis and the higher is the possible diversification benefit. What is perhaps surprising from <a href="#fig-IntroPortCorShape">Figure&nbsp;<span>10.3</span></a> is that there is noticeable curvature even for positive values of <span class="math inline">\(\rho_{AB}\)</span>.</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-IntroPortCorrelation" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="10-introductionPortfolioTheory-new_files/figure-html/fig-IntroPortCorrelation-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;10.4: Portfolios with <span class="math inline">\(\rho_{AB}=1\)</span> and <span class="math inline">\(\rho_{AB}=-1\)</span>.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>If <span class="math inline">\(\rho_{AB}\)</span> is close to 1 then the portfolio frontier approaches a straight line connecting the portfolio with all wealth invested in asset B, <span class="math inline">\((x_{A},x_{B})=(0,1)\)</span>, to the portfolio with all wealth invested in asset A, <span class="math inline">\((x_{A},x_{B})=(1,0)\)</span>. If <span class="math inline">\(\rho_{AB}=-1\)</span> then the set actually touches the <span class="math inline">\(\mu_{p}\)</span> axis. What this means is that if assets A and B are perfectly negatively correlated then there exists a portfolio of A and B that has positive expected return and zero variance! These cases are illustrated in <a href="#fig-IntroPortCorrelation">Figure&nbsp;<span>10.4</span></a>.</p>
+<p>To find the portfolio with <span class="math inline">\(\sigma_{p}^{2}=0\)</span> when <span class="math inline">\(\rho_{AB}=-1\)</span> I use <a href="#eq-minvar-port">Equation&nbsp;<span>10.10</span></a> and the fact that <span class="math inline">\(\sigma_{AB}=\rho_{AB}\sigma_{A}\sigma_{B}\)</span> to give: <span class="math display">\[
+x_{A}^{\min}=\frac{\sigma_{B}}{\sigma_{A}+\sigma_{B}},~x_{B}^{\min}=1-x_{A}.
+\]</span></p>
+</section>
+</section>
+<section id="sec-Efficient-portfolios-with-two-risky-assets" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="sec-Efficient-portfolios-with-two-risky-assets"><span class="header-section-number">10.3</span> Efficient portfolios with two risky assets</h2>
+<p></p>
+<p>Given the assumptions on returns and investor risk preferences, I now characterize the set of <em>efficient portfolios</em> and <em>inefficient portfolios</em>.</p>
+<div id="def-efficient-portfolios" class="definition theorem definition">
+<p><span class="theorem-title"><strong>Definition 10.1 (Efficient Portfolios) </strong></span><em>Efficient portfolios</em> are the feasible portfolios that have the highest expected return for a given level of risk as measured by portfolio standard deviation. These are the portfolios that investors are most interested in holding. Graphically, these are the portfolios starting with the global minimum variance portfolio that are above and to the right of the global minimum variance portfolio.</p>
+</div>
+<div id="def-inefficient-portfolios" class="definition theorem definition">
+<p><span class="theorem-title"><strong>Definition 10.2 (Inefficient Portfolios) </strong></span><em>Inefficient portfolios</em> are the portfolios such that there is another feasible portfolio that has the same risk but a higher expected return. Graphically, these are the portfolios that are below and to the right of the global minimum variance portfolio.</p>
+</div>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-IntroPortEfficientPorts" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="10-introductionPortfolioTheory-new_files/figure-html/fig-IntroPortEfficientPorts-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;10.5: Efficient and inefficient portfolios for example data.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="exm-efficient-and-inefficient-portfolios-for-example-data" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 10.7 (Efficient and inefficient portfolios for example data) </strong></span><a href="#fig-IntroPortEfficientPorts">Figure&nbsp;<span>10.5</span></a> shows the efficient and inefficient portfolios from the example data in <a href="#tbl-TableExampleData">Table&nbsp;<span>10.1</span></a>. The efficient portfolios are those that have the highest expected return for a given standard deviation value. These portfolios are the green dots starting with the global minimum variance portfolio at the tip of the Markowitz bullet. The inefficient portfolios are the red dots below the global minimum variance portfolio. For example, <a href="#fig-IntroPortEfficientPorts">Figure&nbsp;<span>10.5</span></a> shows two feasible portfolios, portfolio 3 and portfolio 11, with the same standard deviation value but different expected return values. Portfolio 11 has the highest expected return and so is the efficient portfolio. Portfolio 3, with the lower expected return, is the inefficient portfolio.<br>
+<span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<section id="optimal-portfolios" class="level3" data-number="10.3.1">
+<h3 data-number="10.3.1" class="anchored" data-anchor-id="optimal-portfolios"><span class="header-section-number">10.3.1</span> Optimal portfolios</h3>
+<p> Given the efficient set of portfolios as described in <a href="#fig-IntroPortEfficientPort">Figure&nbsp;<span>10.2</span></a>, which portfolio will an investor choose? Of the efficient portfolios, investors will choose the one that accords with their <em>risk preferences</em>. Very risk averse investors will want a portfolio that has low volatility (risk) and will choose a portfolio very close to the global minimum variance portfolio. In contrast, very risk tolerant investors will ignore volatility and seek portfolios with high expected returns. Hence, these investors will choose portfolios with large amounts of asset A which may involve short-selling asset B.</p>
+</section>
+</section>
+<section id="sec-Efficient-portfolios-with-a-risk-free-asset" class="level2" data-number="10.4">
+<h2 data-number="10.4" class="anchored" data-anchor-id="sec-Efficient-portfolios-with-a-risk-free-asset"><span class="header-section-number">10.4</span> Efficient portfolios with a risk-free asset</h2>
+<p>In the preceding section I constructed the efficient set of portfolios involving two risky assets. Now I consider what happens when you introduce a <em>risk-free</em> asset. In the present context, a risk-free asset is equivalent to a default-free pure discount bond that matures at the end of the assumed investment horizon.<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a> The <em>risk-free rate</em>, <span class="math inline">\(r_{f}\)</span>, is then the nominal return on the bond. For example, if the investment horizon is one month then the risk-free asset is a 30-day U.S. Treasury bill (T-bill) and the risk-free rate is the nominal rate of return on the T-bill.<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a> If our holdings of the risk-free asset is positive then you are “lending money” to the government at the risk-free rate, and if our holdings are negative then you are “borrowing” from the government at the risk-free rate.</p>
+<p>The assumption that investors can borrow and lend at the same risk-free rate is unrealistic in the real world due to differing credit worthiness of investors. Investors can certainly buy T-Bills and receive the risk-free rate. However, most investors can only borrow funds at rates much higher than the T-Bill rate.</p>
+<section id="portfolios-with-one-risky-asset-and-one-risk-free-asset" class="level3" data-number="10.4.1">
+<h3 data-number="10.4.1" class="anchored" data-anchor-id="portfolios-with-one-risky-asset-and-one-risk-free-asset"><span class="header-section-number">10.4.1</span> Portfolios with one risky asset and one risk-free asset</h3>
+<p>In this sub-section, I consider portfolios of a single risky asset with random return <span class="math inline">\(R \sim N(\mu, \sigma^2)\)</span> and a risk-free asset with non-random return <span class="math inline">\(r_{f}\)</span>. Since the risk-free rate is fixed over the investment horizon it is not a random variable. As a result, it has some special properties summarized in the following Proposition.</p>
+<div id="prp-properties-of-risk-free-rate" class="proposition theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 10.2 (Properties of Risk-Free Rate) </strong></span>Let <span class="math inline">\(r_{f}\)</span> denote the fixed non-random risk-free rate, and let <span class="math inline">\(R\)</span> denote the random return on a risky asset with <span class="math inline">\(E[R]=\mu\)</span> and <span class="math inline">\(\mathrm{var}(R)=\sigma^{2}\)</span>. Then <span class="math display">\[\begin{align*}
+E[r_{f}] &amp;= r_{f},\\
+\mathrm{var}(r_{f}) &amp; = E[(r_{f}-E[r_{f}])^2] = 0,\\
+\mathrm{cov}(R,r_{f}) &amp;= E[(r_{f}-E[r_{f}])(R - E[R])] =0.
+\end{align*}\]</span></p>
+</div>
+<p>Consider an investment in the risky asset and the risk-free asset (henceforth referred to as a T-bill). Let <span class="math inline">\(x\)</span> denote the share of wealth in the risky asset, and <span class="math inline">\(x_{f}\)</span> denote the share of wealth in T-bills such that <span class="math inline">\(x + x_{f}=1\)</span>. Using <span class="math inline">\(x_f = 1 - x\)</span>, the portfolio return can be written as: <span id="eq-RBplusTbillsReturn"><span class="math display">\[
+R_{p}=x_{f}r_{f}+xR = (1-x)r_{f}+xR=r_{f}+x(R-r_{f}).
+\tag{10.11}\]</span></span> The quantity <span class="math inline">\(R-r_{f}\)</span> is called the <em>excess return</em> (over the return on T-bills) on the risky asset. The portfolio expected return is then:</p>
+<p><span id="eq-muTbillsPlusRisky"><span class="math display">\[
+\mu_{p}=r_{f}+x(E[R]-r_{f})=r_{f}+x(\mu-r_{f}),
+\tag{10.12}\]</span></span></p>
+<p>where the quantity <span class="math inline">\((\mu-r_{f})\)</span> is called the <em>expected excess return</em> or <em>risk premium</em> on the risky asset. The risk premium is typically positive indicating that investors expect a higher return on the risky asset than the safe asset (otherwise, why would investors hold the risky asset?). You may express the risk premium on the portfolio in terms of the risk premium on the risky asset: <span class="math display">\[
+\mu_{p}-r_{f}=x(\mu-r_{f}).
+\]</span> The more you invest in the risky asset the higher the risk premium on the portfolio of T-Bills and the risky asset.</p>
+<p>Because the risk-free rate is constant, the portfolio variance only depends on the variability of the risky asset and is given by: <span class="math display">\[
+\sigma_{p}^{2}= \mathrm{var(R_{p})} = \mathrm{var(xR)}= x^{2}\sigma^{2}.
+\]</span> The portfolio standard deviation is therefore proportional to the standard deviation on the risky asset:<a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a></p>
+<p><span id="eq-sigmaTbillsPlusRisky"><span class="math display">\[
+\sigma_{p}=|x|\sigma.
+\tag{10.13}\]</span></span></p>
+<div id="exm-portfolios-of-t-bills-and-asset-b-for-example-data" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 10.8 (Portfolios of T-Bills and asset B for example data) </strong></span>To illustrate the risk-return properties of portfolios of a T-Bill and a single risky asset, consider forming portfolios of T-Bills and asset B. Let <span class="math inline">\(x_{B}\)</span> and <span class="math inline">\(1-x_{B}\)</span> denote the shares of wealth in asset B and T-Bills, respectively. Assume the T-Bill rate is <span class="math inline">\(r_f = 0.03\)</span>. Then the risk premium on asset B is <span class="math inline">\(\mu_{B}-r_{r} = 0.055 - 0.03 = 0.025\)</span>, the expected return on portfolios of T-Bills and asset B is <span class="math inline">\(\mu_{p} = 0.03 + x_{B}\times 0.025\)</span>, and the portfolio standard deviation is <span class="math inline">\(\sigma_{p} = |x_{B}|\times 0.115\)</span>. <a href="#fig-IntroPortTbillsPlusRisky">Figure&nbsp;<span>10.6</span></a> plots <span class="math inline">\(\mu_{p}\)</span> vs.&nbsp;<span class="math inline">\(\sigma_{p}\)</span> for portfolios with <span class="math inline">\(x_{B} = -1.4, -1.3, \ldots 1.4\)</span>.</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-IntroPortTbillsPlusRisky" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="10-introductionPortfolioTheory-new_files/figure-html/fig-IntroPortTbillsPlusRisky-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;10.6: Portfolios of T-Bills and asset B for example data.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Notice that the set of feasible portfolios lie on two straight lines, one with a positive slope and one with a negative slope. The line with a positive slope represents portfolios with long positions in asset B, and the line with a negative slope represents portfolios with short positions in asset B. The blue dots represent portfolios with short positions and the black dots represent long-only portfolios. The blue dots above the point labeled “Asset B” represent long-short portfolios where the T-Bill is shorted to finance additional investment in asset B. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<p>If you assume that <span class="math inline">\(x &gt; 0\)</span> (do not short the risky asset), you can use <a href="#eq-sigmaTbillsPlusRisky">Equation&nbsp;<span>10.13</span></a> to solve for <span class="math inline">\(x\)</span>: <span id="eq-solveForx"><span class="math display">\[
+x=\frac{\sigma_{p}}{\sigma}.
+\tag{10.14}\]</span></span> Substituting <a href="#eq-solveForx">Equation&nbsp;<span>10.14</span></a> into <a href="#eq-muTbillsPlusRisky">Equation&nbsp;<span>10.12</span></a> gives the following equation:</p>
+<p><span id="eq-CAL"><span class="math display">\[
+\mu_{p}=r_{f}+\frac{\mu-r_{f}}{\sigma}\cdot\sigma_{p},
+\tag{10.15}\]</span></span></p>
+<p>Equation <a href="#eq-CAL">Equation&nbsp;<span>10.15</span></a> describes a straight line in (<span class="math inline">\(\mu_{p},\sigma_{p}\)</span>)-space with intercept <span class="math inline">\(r_{f}\)</span> and slope <span class="math inline">\((\mu-r_{f})/\sigma\)</span>. This line characterizes the linear risk-return tradeoff of portfolios of T-Bills and a risky asset when the risky asset is not shorted. This line has a positive slope provided the risk premium is positive.</p>
+<p>This line described by <a href="#eq-CAL">Equation&nbsp;<span>10.15</span></a> is often called the <em>capital allocation line</em> (CAL) as it describes how investment capital is allocated between T-Bills and the risky asset. Points on the line close to the y-axis represent portfolios mostly allocated to T-Bills, and points far away from the y-axis represent portfolios mostly allocated to the risky asset. The slope of the CAL is called the <em>Sharpe ratio</em> (SR) (named after the economist William Sharpe), and it measures the risk premium on the asset per unit of risk (as measured by the standard deviation of the asset). From <a href="#eq-CAL">Equation&nbsp;<span>10.15</span></a> you get <span class="math display">\[
+\frac{d\mu_{p}}{d\sigma_{p}}=\frac{\mu-r_{f}}{\sigma}=SR.
+\]</span></p>
+<div id="exm-portfolios-of-t-bills-and-risky-assets-for-example-data" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 10.9 (Portfolios of T-Bills and risky assets for example data) </strong></span>Consider creating portfolios of asset A and T-bills and asset B and T-Bills with <span class="math inline">\(r_{f}=0.03\)</span>:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>r.f <span class="ot">=</span> <span class="fl">0.03</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>x.A <span class="ot">=</span> <span class="fu">seq</span>(<span class="at">from=</span><span class="dv">0</span>, <span class="at">to=</span><span class="fl">1.4</span>, <span class="at">by=</span><span class="fl">0.1</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>mu.p.A <span class="ot">=</span> r.f <span class="sc">+</span> x.A<span class="sc">*</span>(mu.A <span class="sc">-</span> r.f)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>sig.p.A <span class="ot">=</span> x.A<span class="sc">*</span>sig.A</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>x.B <span class="ot">=</span> <span class="fu">seq</span>(<span class="at">from=</span><span class="dv">0</span>, <span class="at">to=</span><span class="fl">1.4</span>, <span class="at">by=</span><span class="fl">0.1</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>mu.p.B <span class="ot">=</span> r.f <span class="sc">+</span> x.B<span class="sc">*</span>(mu.B <span class="sc">-</span> r.f)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>sig.p.B <span class="ot">=</span> x.B<span class="sc">*</span>sig.B</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The risk-return properties of these portfolios are illustrated in <a href="#fig-IntroPortTbills">Figure&nbsp;<span>10.7</span></a>.</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-IntroPortTbills" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="10-introductionPortfolioTheory-new_files/figure-html/fig-IntroPortTbills-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;10.7: Portfolios of T-Bills and risky assets.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In <a href="#fig-IntroPortTbills">Figure&nbsp;<span>10.7</span></a> the point labeled “<span class="math inline">\(r_{f}\)</span>” represents a portfolio that is 100% invested in T-bills. The points labeled “Asset A” and “Asset B” represent portfolios that are 100% invested in assets A and B, respectively. A point half-way between “<span class="math inline">\(r_{f}\)</span>” and “Asset A” is a portfolio that is 50% invested in T-bills and 50% invested in asset A. A point above and to the right of “Asset A” is a levered portfolio where more than 100% of asset A is financed by borrowing at the T-bill rate. Notice that as leverage increases (i.e, borrowing more at the T-Bill rate), portfolio volatility increases.</p>
+<p>The portfolios which are combinations of asset A and T-bills have expected returns uniformly higher than the portfolios consisting of asset B and T-bills. This occurs because the Sharpe ratio for asset A is higher than the ratio for asset B:</p>
+<p><span class="math display">\[\begin{align*}
+\mathrm{SR}_{A} &amp; =\frac{\mu_{A}-r_{f}}{\sigma_{A}}=\frac{0.175-0.03}{0.258}=0.562,\\
+\mathrm{SR}_{B} &amp; =\frac{\mu_{B}-r_{f}}{\sigma_{B}}=\frac{0.055-0.03}{0.115}=0.217.
+\end{align*}\]</span> Hence, portfolios of asset A and T-bills are <em>efficient</em> relative to portfolios of asset B and T-bills. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<p>The previous example shows that the Sharpe ratio can be used to rank the risk return properties of individual assets. Assets with a high Sharpe ratio have a better risk-return tradeoff than assets with a low Sharpe ratio. Accordingly, investment analysts routinely rank assets based on their Sharpe ratios.</p>
+</section>
+<section id="portfolios-with-one-risky-asset-and-one-risk-free-asset-with-different-borrowing-and-lending-rates" class="level3" data-number="10.4.2">
+<h3 data-number="10.4.2" class="anchored" data-anchor-id="portfolios-with-one-risky-asset-and-one-risk-free-asset-with-different-borrowing-and-lending-rates"><span class="header-section-number">10.4.2</span> Portfolios with one risky asset and one risk-free asset with different borrowing and lending rates</h3>
+<p>TBD</p>
+</section>
+</section>
+<section id="sec-Efficient-portfolios-with-two-risky-assets-and-a-risk-free-asset" class="level2" data-number="10.5">
+<h2 data-number="10.5" class="anchored" data-anchor-id="sec-Efficient-portfolios-with-two-risky-assets-and-a-risk-free-asset"><span class="header-section-number">10.5</span> Efficient portfolios with two risky assets and a risk-free asset</h2>
+<p>Now I expand on the previous results by allowing our investor to form portfolios of assets A, B and T-bills. The efficient set of portfolios in this case will still be a straight line in (<span class="math inline">\(\mu_{p},\sigma_{p})\)</span>-space with intercept <span class="math inline">\(r_{f}\)</span>. The slope of the efficient set, the maximum Sharpe ratio, is such that it is tangent to the portfolio frontier constructed just using the two risky assets A and B. <a href="#fig-IntroPortTangency">Figure&nbsp;<span>10.8</span></a> illustrates why this is so.</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-IntroPortTangency" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="10-introductionPortfolioTheory-new_files/figure-html/fig-IntroPortTangency-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;10.8: Efficient portfolios of two risky assets and T-bills. Black dots represent portfolios of assets A and B; blue dots represent portfolios of T-bills and asset B; red dots represent portfolios of T-bills and asset A; green dots represent portfolios of the tangency portfolio and T-bills.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>If you invest in only in asset B and T-bills then the Sharpe ratio is <span class="math inline">\(\mathrm{SR}_{B}=\frac{\mu_{B}-r_{f}}{\sigma_{B}}=0.217\)</span>, and the CAL intersects the set of risky asset portfolios at point B. This is clearly not the efficient set of portfolios. For example, you could do uniformly better if you instead invest only in asset A and T-bills. This gives us a Sharpe ratio of <span class="math inline">\(\mathrm{SR}_{A}=\frac{\mu_{A}-r_{f}}{\sigma_{A}}=0.562\)</span>, and the new CAL intersects the set of risky asset portfolios at point A. However, you could do better still if you invest in T-bills and some combination of assets A and B. Geometrically, it is easy to see that the best you can do is obtained for the combination of assets A and B such that the CAL is just tangent to the set of risky asset portfolios. This point is labeled “Tangency” on the graph and represents the <em>tangency portfolio</em> of assets A and B. Portfolios of T-Bills and the tangency portfolio are the set of efficient portfolios consisting of T-Bills, asset A and asset B.</p>
+<section id="solving-for-the-tangency-portfolio" class="level3" data-number="10.5.1">
+<h3 data-number="10.5.1" class="anchored" data-anchor-id="solving-for-the-tangency-portfolio"><span class="header-section-number">10.5.1</span> Solving for the Tangency Portfolio</h3>
+<p>You can determine the proportions of each asset in the tangency portfolio by finding the values of <span class="math inline">\(x_{A}\)</span> and <span class="math inline">\(x_{B}\)</span> that maximize the Sharpe ratio of a portfolio that is on the envelope of the Markowitz bullet. Formally, you solve the constrained maximization problem:</p>
+<p><span class="math display">\[\begin{align*}
+&amp; \underset{x_{A},x_{B}}{\max}~\mathrm{SR}_{p}=\frac{\mu_{p}-r_{f}}{\sigma_{p}}~s.t.\\
+\mu_{p} &amp; =x_{A}\mu_{A}+x_{B}\mu_{B},\\
+\sigma_{p}^{2} &amp; =x_{A}^{2}\sigma_{A}^{2}+x_{B}^{2}\sigma_{B}^{2}+2x_{A}x_{B}\sigma_{AB},\\
+1 &amp; =x_{A}+x_{B}.
+\end{align*}\]</span></p>
+<p>Using the method of substitution with <span class="math inline">\(x_{B} = 1 - x_{A}\)</span> and rearranging, the above problem can be reduced to solving the unconstrained maximization: <span class="math display">\[
+\underset{x_{A}}{\max}~\frac{x_{A}(\mu_{A}-r_{f})+(1-x_{A})(\mu_{B}-r_{f})}{\left(x_{A}^{2}\sigma_{A}^{2}+(1-x_{A})^{2}\sigma_{B}^{2}+2x_{A}(1-x_{A})\sigma_{AB}\right)^{1/2}}.
+\]</span> This is a straightforward, albeit very tedious, calculus problem and the solution can be shown to be (see Exercises): <span id="eq-tangency-port"><span class="math display">\[
+\begin{aligned}
+x_{A}^{tan} &amp; =\frac{(\mu_{A}-r_{f})\sigma_{B}^{2}-(\mu_{B}-r_{f})\sigma_{AB}}{(\mu_{A}-r_{f})\sigma_{B}^{2}+(\mu_{B}-r_{f})\sigma_{A}^{2}-(\mu_{A}-r_{f}+\mu_{B}-r_{f})\sigma_{AB}},\\
+x_{B}^{tan} &amp; =1-x_{T}^{A}.
+\end{aligned}
+\tag{10.16}\]</span></span></p>
+<div id="exm-tangency-portfolio-for-example-data" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 10.10 (Tangency portfolio for example data) </strong></span>For the example data in <a href="#tbl-TableExampleData">Table&nbsp;<span>10.1</span></a> using <a href="#eq-tangency-port">Equation&nbsp;<span>10.16</span></a> with <span class="math inline">\(r_{f}=0.03,\)</span> you get <span class="math inline">\(x_{A}^{tan}=0.4625\)</span> and <span class="math inline">\(x_{B}^{tan}=0.5375.\)</span> The expected return, variance, standard deviation, and Sharpe ratio of the tangency portfolio are:</p>
+<p><span class="math display">\[\begin{align*}
+\mu_{tan}&amp;=x_{A}^{tan}\mu_{A}+x_{B}^{tan}\mu_{B}\\
+&amp;=(0.4625)(0.175)+(0.5375)(0.055)=0.1105,\\
+\sigma_{tan}^{2}&amp;=\left(x_{A}^{tan}\right)^{2}\sigma_{A}^{2}+\left(x_{B}^{tan}\right)^{2}\sigma_{B}^{2}+2x_{A}^{tan} x_{B}^{tan}\sigma_{AB}\\
+&amp;=(0.4625)^{2}(0.06656)+(0.5375)^{2}(0.01323)+ 2(0.4625)(0.5375)(-0.004866)=0.01564,\\
+\sigma_{tan}&amp;=\sqrt{0.01564}=0.1251,\\
+SR_{tan}&amp;=\frac{\mu_{tan}-r_{f}}{\sigma_{tan}}=\frac{0.1105-0.03}{0.1251}=0.6434
+\end{align*}\]</span></p>
+<p>In R, the computations to compute the tangency portfolio are:</p>
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compute portfolio weights</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>top <span class="ot">=</span> (mu.A <span class="sc">-</span> r.f)<span class="sc">*</span>sig2.B <span class="sc">-</span> (mu.B <span class="sc">-</span> r.f)<span class="sc">*</span>sig.AB</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>bot <span class="ot">=</span> (mu.A <span class="sc">-</span> r.f)<span class="sc">*</span>sig2.B <span class="sc">+</span> (mu.B <span class="sc">-</span> r.f)<span class="sc">*</span>sig2.A <span class="sc">-</span> (mu.A <span class="sc">-</span> r.f <span class="sc">+</span> mu.B <span class="sc">-</span> r.f)<span class="sc">*</span>sig.AB</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>x.A.tan <span class="ot">=</span> top<span class="sc">/</span>bot</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>x.B.tan <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> x.A.tan</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>mu.p.tan <span class="ot">=</span> x.A.tan<span class="sc">*</span>mu.A <span class="sc">+</span> x.B.tan<span class="sc">*</span>mu.B</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>sig2.p.tan <span class="ot">=</span> x.A.tan<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.A <span class="sc">+</span> x.B.tan<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.B <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x.A.tan<span class="sc">*</span>x.B.tan<span class="sc">*</span>sig.AB</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>sig.p.tan <span class="ot">=</span> <span class="fu">sqrt</span>(sig2.p.tan)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>SR.tan <span class="ot">=</span> (mu.p.tan <span class="sc">-</span> r.f)<span class="sc">/</span>sig.p.tan</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>data.tbl <span class="ot">=</span> <span class="fu">as.data.frame</span>(<span class="fu">t</span>(<span class="fu">c</span>(x.A.tan,x.B.tan,<span class="fu">c</span>(mu.p.tan,sig.p.tan,SR.tan))))</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>col.names <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"$x_{A}^{tan}$"</span>,<span class="st">"$x_{B}^{tan}$"</span>, <span class="st">"$</span><span class="sc">\\</span><span class="st">mu_{tan}$"</span>, </span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>              <span class="st">"$</span><span class="sc">\\</span><span class="st">sigma_{tan}$"</span>,<span class="st">"$</span><span class="sc">\\</span><span class="st">mathrm{SR}_{tan}$"</span> )</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>tbl.data <span class="ot">=</span> <span class="fu">kbl</span>(data.tbl, <span class="at">col.names=</span>col.names) <span class="sc">%&gt;%</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>   <span class="fu">kable_styling</span>(<span class="at">full_width=</span><span class="cn">FALSE</span>)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(tbl.data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+<span class="math inline">\(x_{A}^{tan}\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(x_{B}^{tan}\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(\mu_{tan}\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(\sigma_{tan}\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(\mathrm{SR}_{tan}\)</span>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0.463
+</td>
+<td style="text-align:right;">
+0.537
+</td>
+<td style="text-align:right;">
+0.111
+</td>
+<td style="text-align:right;">
+0.125
+</td>
+<td style="text-align:right;">
+0.644
+</td>
+</tr>
+</tbody>
+
+</table>
+<p><span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+<section id="mutual-fund-separation" class="level3" data-number="10.5.2">
+<h3 data-number="10.5.2" class="anchored" data-anchor-id="mutual-fund-separation"><span class="header-section-number">10.5.2</span> Mutual Fund Separation</h3>
+<p> The efficient portfolios are combinations of the tangency portfolio (risky asset) and the T-bill. Accordingly, using <a href="#eq-muTbillsPlusRisky">Equation&nbsp;<span>10.12</span></a> and <a href="#eq-sigmaTbillsPlusRisky">Equation&nbsp;<span>10.13</span></a> the expected return and standard deviation of any efficient portfolio are given by: <span id="eq-mup-efficient"><span class="math display">\[
+\mu_{p}^{e} =r_{f}+x_{T}(\mu_{tan}-r_{f}),
+\tag{10.17}\]</span></span> <span id="eq-sigp-efficient"><span class="math display">\[
+\sigma_{p}^{e} =x_{T}\sigma_{tan},
+\tag{10.18}\]</span></span> where <span class="math inline">\(x_{T}\)</span> represents the fraction of wealth invested in the tangency portfolio, <span class="math inline">\(1-x_{T}\)</span> represents the fraction of wealth invested in T-Bills, and <span class="math inline">\(\mu_{tan}\)</span> and <span class="math inline">\(\sigma_{tan}\)</span> are the expected return and standard deviation of the tangency portfolio, respectively. This important result is known as the <em>mutual fund separation theorem</em>. The tangency portfolio can be considered as a mutual fund (i.e.&nbsp;portfolio) of the two risky assets, where the shares of the two assets in the mutual fund are determined by the tangency portfolio weights (<span class="math inline">\(x_{A}^{tan}\)</span> and <span class="math inline">\(x_{B}^{tan}\)</span> determined from <a href="#eq-tangency-port">Equation&nbsp;<span>10.16</span></a>, and the T-bill can be considered as a mutual fund of risk-free assets. The expected return-risk trade-off of these portfolios is given by the line connecting the risk-free rate to the tangency point on the efficient frontier of risky asset only portfolios.</p>
+<p>The optimal combination of the tangency portfolio and the T-bill an investor will choose depends on the investor’s risk preferences. If the investor is very risk averse, then she will choose a portfolio with low volatility which will be a portfolio with very little weight in the tangency portfolio and a lot of weight in the T-bill. This will produce a portfolio with an expected return close to the risk-free rate and a variance that is close to zero. If the investor can tolerate a large amount of risk, then she would prefer a portfolio with highest expected return regardless of the volatility. This portfolio may involve borrowing at the risk-free rate (leveraging) and investing the proceeds in the tangency portfolio to achieve a high expected return.</p>
+<div id="exm-efficient-portfolios-chosen-by-risk-averse-and-risk-tolerant-investors" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 10.11 (Efficient portfolios chosen by risk averse and risk tolerant investors) </strong></span>A highly risk averse investor may choose to put <span class="math inline">\(10\%\)</span> of her wealth in the tangency portfolio and <span class="math inline">\(90\%\)</span> in the T-bill. Then she will hold (<span class="math inline">\(10\%)\times(46.25\%)=4.625\%\)</span> of her wealth in asset A, <span class="math inline">\((10\%)\times(53.75\%)=5.375\%\)</span> of her wealth in asset B, and <span class="math inline">\(90\%\)</span> of her wealth in the T-bill. The expected return on this portfolio is: <span class="math display">\[
+\mu_{p}^{e}=r_{f}+0.10(\mu_{tan}-r_{f})=0.03+0.10(0.1105-0.03)=0.03805,
+\]</span> and the standard deviation is, <span class="math display">\[
+\sigma_{p}^{e}=0.10\sigma_{tan}=0.10(0.1251)=0.01251.
+\]</span> In <a href="#fig-IntroPortSafeRisky">Figure&nbsp;<span>10.9</span></a>, this efficient portfolio is labeled “Safe” . A very risk tolerant investor may actually borrow at the risk-free rate and use these funds to leverage her investment in the tangency portfolio. For example, suppose the risk tolerant investor borrows 100% of her wealth at the risk-free rate and uses the proceed to purchase 200% of her wealth in the tangency portfolio. Then she would hold <span class="math inline">\((200\%)\times(46.25\%)=92.50\%\)</span> of her wealth in asset A, <span class="math inline">\((200\%)\times(53.75\%)=107.5\%\)</span> in asset B, and she would owe <span class="math inline">\(100\%\)</span> of her wealth to her lender. The expected return and standard deviation on this portfolio is: <span class="math display">\[\begin{align*}
+\mu_{p}^{e} &amp; =0.03+2(0.1105-0.03)=0.1910,\\
+\sigma_{p}^{e} &amp; =2(0.1251)=0.2501.
+\end{align*}\]</span> In <a href="#fig-IntroPortSafeRisky">Figure&nbsp;<span>10.9</span></a>, this efficient portfolio is labeled “Risky” . <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-IntroPortSafeRisky" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="10-introductionPortfolioTheory-new_files/figure-html/fig-IntroPortSafeRisky-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;10.9: The efficient portfolio labeled safe has 10% invested in the tangency portfolio and 90% invested in T-Bills; the efficient portfolio labeled risky has 200% invested in the tangency portfolio and -100% invested in T-Bills.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="interpreting-efficient-portfolios" class="level3" data-number="10.5.3">
+<h3 data-number="10.5.3" class="anchored" data-anchor-id="interpreting-efficient-portfolios"><span class="header-section-number">10.5.3</span> Interpreting Efficient Portfolios</h3>
+<p>As you have seen, efficient portfolios are those portfolios that have the highest expected return for a given level of risk as measured by portfolio standard deviation. For portfolios with expected returns above the T-bill rate, efficient portfolios can also be characterized as those portfolios that have minimum risk (as measured by portfolio standard deviation) for a given target expected return.</p>
+<div id="exm-finding-efficient-portfolios-with-target-expected-return-and-target-risk" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 10.12 (Finding efficient portfolios with target expected return and target risk) </strong></span>To illustrate, consider <a href="#fig-IntroPortEfficientB">Figure&nbsp;<span>10.10</span></a> which shows the portfolio frontier for two risky assets and the efficient frontier for two risky assets plus T-Bills. Suppose an investor initially holds all of his wealth in asset B. The expected return on this portfolio is <span class="math inline">\(\mu_{B}=0.055\)</span>, and the standard deviation (risk) is <span class="math inline">\(\sigma_{B}=0.115\)</span>. An efficient portfolio (combinations of the tangency portfolio and T-bills) that has the same standard deviation (risk) as asset B is given by the portfolio on the efficient frontier that is directly above <span class="math inline">\(\sigma_{B}=0.115\)</span>. To find the shares in the tangency portfolio and T-bills in this portfolio recall from <a href="#eq-sigp-efficient">Equation&nbsp;<span>10.18</span></a> that the standard deviation of an efficient portfolio with <span class="math inline">\(x_{T}\)</span> invested in the tangency portfolio and <span class="math inline">\(1-x_{T}\)</span> invested in T-bills is <span class="math inline">\(\sigma_{p}^{e}=x_{T}\sigma_{tan}\)</span>. Since you want to find the efficient portfolio with <span class="math inline">\(\sigma_{p}^{e}=\sigma_{B}=0.115\)</span>, you solve: <span class="math display">\[
+x_{T}=\frac{\sigma_{B}}{\sigma_{tan}}=\frac{0.115}{0.1251}=0.9195,~x_{f}=1-x_{T}=0.08049.
+\]</span> That is, if you invest <span class="math inline">\(91.95\%\)</span> of our wealth in the tangency portfolio and <span class="math inline">\(8.049\%\)</span> in T-bills you will have a portfolio with the same standard deviation as asset B. Since this is an efficient portfolio, the expected return should be higher than the expected return on asset B. Indeed it is since: <span class="math display">\[
+\mu_{p}^{e}=r_{f}+x_{T}(\mu_{tan}-r_{f})=0.03+0.9195(0.1105-0.03)=0.1040.
+\]</span> Notice that by diversifying our holding into assets A, B and T-bills you can obtain a portfolio with the same risk as asset B but with almost twice the expected return! By moving from asset B into an efficient portfolio you raise the Sharpe ratio of the investment from <span class="math inline">\(SR_{B}=0.217\)</span> to <span class="math inline">\(SR_{tan}=0.6434\)</span>.</p>
+<p>Next, consider finding an efficient portfolio that has the same expected return as asset B. Visually, this involves finding the combination of the tangency portfolio and T-bills that corresponds with the intersection of a horizontal line with intercept <span class="math inline">\(\mu_{B}=0.055\)</span> and the line representing efficient combinations of T-bills and the tangency portfolio. To find the shares in the tangency portfolio and T-bills in this portfolio recall from <a href="#eq-mup-efficient">Equation&nbsp;<span>10.17</span></a> that the expected return of an efficient portfolio with <span class="math inline">\(x_{T}\)</span> invested in the tangency portfolio and <span class="math inline">\(1-x_{T}\)</span> invested in T-bills has expected return equal to <span class="math inline">\(\mu_{p}^{e}=r_{f}+x_{T}(\mu_{tan}-r_{f})\)</span>. Since you want to find the efficient portfolio with <span class="math inline">\(\mu_{p}^{e}=\mu_{B}=0.055\)</span> you solve: <span class="math display">\[
+x_{T}=\frac{\mu_{p}^{e}-r_{f}}{\mu_{tan}-r_{f}}=\frac{0.055-0.03}{0.1105-0.03}=0.3105,~x_{f}=1-x_{T}=0.6895.
+\]</span> That is, if you invest <span class="math inline">\(31.05\%\)</span> of wealth in the tangency portfolio and <span class="math inline">\(68.95\%\)</span> of our wealth in T-bills you have a portfolio with the same expected return as asset B. Since this is an efficient portfolio, the standard deviation (risk) of this portfolio should be lower than the standard deviation on asset B. Indeed it is since: <span class="math display">\[
+\sigma_{p}^{e}=x_{T}\sigma_{tan}=0.3105(0.124)=0.03884.
+\]</span> Notice how large the risk reduction is by forming an efficient portfolio. The standard deviation on the efficient portfolio is almost three times smaller than the standard deviation of asset B! Again, by moving from asset B into an efficient portfolio you raise the Sharpe ratio of the investment from <span class="math inline">\(SR_{B}=0.217\)</span> to <span class="math inline">\(SR_{tan}=0.6434\)</span> <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<p>The above example illustrates two ways to interpret the benefits from forming efficient portfolios. Starting from some benchmark portfolio, you can fix standard deviation (risk) at the value for the benchmark and then determine the gain in expected return from forming a diversified portfolio<a href="#fn14" class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a>. The gain in expected return has concrete meaning. Alternatively, you can fix expected return at the value for the benchmark and then determine the reduction in standard deviation (risk) from forming a diversified portfolio. The meaning to an investor of the reduction in standard deviation is not as clear as the meaning to an investor of the increase in expected return. It would be helpful if the risk reduction benefit can be translated into a number that is more interpretable than the standard deviation. The concept of Value-at-Risk (VaR) provides such a translation.</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-IntroPortEfficientB" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="10-introductionPortfolioTheory-new_files/figure-html/fig-IntroPortEfficientB-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;10.10: The point e1 represents an efficient portfolio with the same standard deviation as asset B; the point e2 represents an efficient portfolio with the same expected returns as asset B.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="efficient-portfolios-and-value-at-risk" class="level3" data-number="10.5.4">
+<h3 data-number="10.5.4" class="anchored" data-anchor-id="efficient-portfolios-and-value-at-risk"><span class="header-section-number">10.5.4</span> Efficient Portfolios and Value-at-Risk</h3>
+<p>Recall, the VaR of an investment is the (lower bound of) loss in investment value over a given horizon with a stated probability. For example, consider an investor who invests <span class="math inline">\(W_{0}=\)</span> <span class="math inline">\(\$100,000\)</span> in asset B over the next year. Assuming that <span class="math inline">\(R_{B}\sim N(0.055,(0.115)^{2})\)</span> represents the annual simple return on asset B, the 5% VaR is: <span class="math display">\[
+\mathrm{VaR}_{B,0.05}=-q_{0.05}^{R_{B}}W_{0}=(0.055+0.115(-1.645))\cdot\$100,000=\$13,416.
+\]</span> If an investor holds $100,000 in asset B over the next year, then there is a 5% probability that he will lose $13,416 or more.</p>
+<p>Now suppose the investor chooses to hold an efficient portfolio with the same expected return as asset B. This portfolio consists of <span class="math inline">\(31.05\%\)</span> in the tangency portfolio and <span class="math inline">\(68.95\%\)</span> in T-bills and has a standard deviation equal to <span class="math inline">\(0.03884\)</span>. Then <span class="math inline">\(R_{p}\sim N(0.055,0.03884)\)</span> and the 5% VaR on the portfolio is: <span class="math display">\[
+\mathrm{VaR}_{p,0.05}=-q_{0.05}^{R_{p}}W_{0}=(0.055+0.03884(-1.645))\cdot\$100,000=\$884.
+\]</span> Notice that the 5% VaR for the efficient portfolio is almost fifteen times smaller than the 5% VaR for the investment in asset B. Since VaR translates risk into a dollar figure, it is more interpretable than standard deviation as a measure of investment risk.</p>
+</section>
+</section>
+<section id="sec-Application-to-Real" class="level2" data-number="10.6">
+<h2 data-number="10.6" class="anchored" data-anchor-id="sec-Application-to-Real"><span class="header-section-number">10.6</span> Application to Real World Portfolios</h2>
+<p>The portfolio theory for two risky assets and a risk-free asset developed in this chapter is not as limited as you might think if you realize that a single risky asset can also be a portfolio of many assets, such as a mutual fund of stocks or bonds, or an exchange traded fund (ETF) of stocks or bonds. In particular, a very common asset allocation for retirement portfolios is a simple two asset portfolio of in which one risky asset is a mutual fund of stocks and the other (less) risky asset is a mutual fund of U.S. Treasury bonds.</p>
+<p>In the <strong>introcompfinr</strong> package there is a data object called <code>VanguardPrices</code> that contains monthly adjusted closing prices on six Vanguard mutual funds over the period January, 1995 through December, 2014.<a href="#fn15" class="footnote-ref" id="fnref15" role="doc-noteref"><sup>15</sup></a> The fund VFINX is a low cost fund designed to track the performance of the S&amp;P 500 index. The S&amp;P 500 index is a value-weighted index of the 500 largest stocks (by market capitalization) traded on the NYSE.<a href="#fn16" class="footnote-ref" id="fnref16" role="doc-noteref"><sup>16</sup></a> I will use this as my stock portfolio. The fund VBLTX is a low cost fund constructed to track the performance of a portfolio of long term (maturities greater than 10 years) U.S. Government Bonds.<a href="#fn17" class="footnote-ref" id="fnref17" role="doc-noteref"><sup>17</sup></a> I will use this as my bond portfolio. I will use the U.S. 3-month T-Bill rate as the risk-free asset. The following code creates the monthly simple return data for this example:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>VanguardPrices <span class="ot">=</span> <span class="fu">as.xts</span>(VanguardPrices) </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>stockBondPrices <span class="ot">=</span> VanguardPrices[, <span class="fu">c</span>(<span class="st">"vfinx"</span>, <span class="st">"vbltx"</span>)] </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>stockBondRetS <span class="ot">=</span> <span class="fu">na.omit</span>(<span class="fu">Return.calculate</span>(stockBondPrices, <span class="at">method=</span><span class="st">"simple"</span>)) </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(stockBondRetS, <span class="at">n=</span><span class="dv">3</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           vfinx  vbltx</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Feb 1995 0.0389 0.0280</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Mar 1995 0.0295 0.0102</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Apr 1995 0.0293 0.0202</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>I will construct efficient portfolios using the GWN model estimates of expected returns, variances, and covariances over four sub-periods: January, 1995 to January 2000; January, 2000 to January, 2005; January, 2005 to January, 2010; January, 2010 to December, 2014. The approximate annualized T-Bill rates at the end of these periods are 0.05, 0.025, 0.001, and 0.001, respectively.<a href="#fn18" class="footnote-ref" id="fnref18" role="doc-noteref"><sup>18</sup></a></p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define sub-periods</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>smpl1 <span class="ot">=</span> <span class="st">"1995-1::2000-1"</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>smpl2 <span class="ot">=</span> <span class="st">"2000-1::2005-1"</span> </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>smpl3 <span class="ot">=</span> <span class="st">"2005-1::2010-1"</span> </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>smpl4 <span class="ot">=</span> <span class="st">"2010-1::2014-12"</span> </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Monthly risk-free rates for sub-periods </span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>r.f <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.025</span>, <span class="fl">0.001</span>, <span class="fl">0.001</span>)<span class="sc">/</span><span class="dv">12</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Historical performance of the stock and bond portfolios over the four sub-periods is illustrated in <a href="#fig-IntroPortStockBondPerf">Figure&nbsp;<span>10.11</span></a>, created using:<a href="#fn19" class="footnote-ref" id="fnref19" role="doc-noteref"><sup>19</sup></a></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>)) </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">chart.CumReturns</span>(stockBondRetS[smpl1], <span class="at">main=</span><span class="st">""</span>, <span class="at">wealth.index =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">legend.loc =</span> <span class="st">"topleft"</span>) </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">chart.CumReturns</span>(stockBondRetS[smpl2], <span class="at">main=</span><span class="st">""</span>, <span class="at">wealth.index =</span> <span class="cn">TRUE</span>) </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">chart.CumReturns</span>(stockBondRetS[smpl3], <span class="at">main=</span><span class="st">""</span>, <span class="at">wealth.index =</span> <span class="cn">TRUE</span>) </span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">chart.CumReturns</span>(stockBondRetS[smpl4], <span class="at">main=</span><span class="st">""</span>, <span class="at">wealth.index =</span> <span class="cn">TRUE</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-IntroPortStockBondPerf" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="10-introductionPortfolioTheory-new_files/figure-html/fig-IntroPortStockBondPerf-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;10.11: Equity curves for stock (vfinx) and bond (vbltx) portfolios over sub-periods.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The performance of stocks and bonds varies substantially over the four sub-periods. In the first and fourth sub-periods, which cover the dot-com boom and the recovery from the 2009 financial crisis, stocks substantially outperformed bonds. However, in the second and third sub-periods, which cover the dot-com bust and the 2009 financial crisis, bonds outperformed stocks.</p>
+<p>The GWN model estimates of the monthly expected returns, volatilities, and Sharpe ratios on the stock and bond portfolios are computed and annualized using the square-root-of-time rule with the <strong>PerformanceAnalytics</strong> function <code>table.AnnualizedReturns()</code>.</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># smpl1 = "1995-1::2000-1"</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table.AnnualizedReturns</span>(stockBondRetS[smpl1], <span class="at">Rf =</span> r.f[<span class="dv">1</span>], <span class="at">geometric =</span> <span class="cn">FALSE</span>) </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                           vfinx  vbltx</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Annualized Return         0.248 0.0846</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Annualized Std Dev        0.143 0.0756</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Annualized Sharpe (Rf=5%) 1.381 0.4581</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># smpl2 = "2000-1::2005-1"</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="fu">table.AnnualizedReturns</span>(stockBondRetS[smpl2], <span class="at">Rf =</span> r.f[<span class="dv">2</span>], <span class="at">geometric =</span> <span class="cn">FALSE</span>) </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                               vfinx  vbltx</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Annualized Return           -0.0155 0.1069</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Annualized Std Dev           0.1628 0.0871</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Annualized Sharpe (Rf=2.5%) -0.2490 0.9399</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="co"># smpl3 = "2005-1::2010-1" </span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="fu">table.AnnualizedReturns</span>(stockBondRetS[smpl3], <span class="at">Rf =</span> r.f[<span class="dv">3</span>], <span class="at">geometric =</span> <span class="cn">FALSE</span>) </span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                              vfinx  vbltx</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Annualized Return           0.0092 0.0576</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Annualized Std Dev          0.1600 0.1021</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Annualized Sharpe (Rf=0.1%) 0.0514 0.5547</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="co"># smpl4 = "2010-1::2014-12" </span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="fu">table.AnnualizedReturns</span>(stockBondRetS[smpl4], <span class="at">Rf =</span> r.f[<span class="dv">4</span>], <span class="at">geometric =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                             vfinx  vbltx</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Annualized Return           0.151 0.0965</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Annualized Std Dev          0.130 0.0864</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Annualized Sharpe (Rf=0.1%) 1.157 1.1050</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The annualized estimates confirm the relative performance of bonds and stocks in the four sub-periods. In general, stock returns are about twice as volatile as bond returns. Bonds performed well in all sub-periods, with annualized mean returns between 6% and 11%. In contrast, stocks only performed well in sub-periods 1 and 4 and had negative annualized mean returns in periods 2 and 3. In terms of Sharpe ratios, stocks had annualized Sharpe ratios a bit over 1 in sub-periods 1 and 4 and bonds had annualized Sharpe ratios of 0.9 and 0.55 in sub-periods 2 and 3.<a href="#fn20" class="footnote-ref" id="fnref20" role="doc-noteref"><sup>20</sup></a></p>
+<p>The sample correlations between the monthly stock and bond returns, by sub-period, are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># smpl1 = "1995-1::2000-1"</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(stockBondRetS[smpl1])[<span class="dv">1</span>,<span class="dv">2</span>] </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.2</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># smpl2 = "2000-1::2005-1"</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(stockBondRetS[smpl2])[<span class="dv">1</span>,<span class="dv">2</span>] </span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -0.185</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># smpl3 = "2005-1::2010-1" </span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(stockBondRetS[smpl3])[<span class="dv">1</span>,<span class="dv">2</span>] </span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.24</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co"># smpl4 = "2010-1::2014-12" </span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(stockBondRetS[smpl4])[<span class="dv">1</span>,<span class="dv">2</span>]</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -0.435</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Interestingly, the estimated correlation between stocks and bonds also varies by sub-period. In sub-periods one and three, the estimated correlations are positive, and, in sub-periods two and four, the estimated correlations are negative. The observed low to negative correlation between stock and bond returns suggests good risk reduction possibilities through diversification.</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-IntroPortStockBondPortfolios" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="10-introductionPortfolioTheory-new_files/figure-html/fig-IntroPortStockBondPortfolios-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;10.12: Mean-variance efficient portfolios of stocks and bonds by sub-period. Efficient portfolios are shown in green and inefficient portfolios are shown in red.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Using the sub-period GWN model estimates, I compute risky asset only efficient portfolios and efficient portfolios of T-Bills (risk-free asset) and the tangency portfolios. The resulting portfolios are illustrated in <a href="#fig-IntroPortStockBondPortfolios">Figure&nbsp;<span>10.12</span></a>. In sub-periods one and four, stocks are on the risky asset only efficient frontier and, in sub-periods two and three, bonds are on the risky asset only efficient frontier. The sub-period global minimum variance and tangency portfolios are listed in Tables <a href="#tbl-tableStocksBondsMin">Table&nbsp;<span>10.2</span></a> and <a href="#tbl-tableStocksBondsTan">Table&nbsp;<span>10.3</span></a>. The global minimum variance portfolios are similar across sub-periods, with higher weights in bonds than stocks. The tangency portfolios, however, are quite different across sub-periods. In sub-periods one and four, stocks have weights 79% and 40%, respectively. In sub-periods two and three bonds essentially have 100% weights, respectively, and stocks are slighly shorted.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-tableStocksBondsMin" class="anchored">
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Table&nbsp;10.2: Sub-period global minimum variance portfolios</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">\(x_{stock}\)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">\(x_{bond}\)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">\(\mu_{min}\)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">\(\sigma_{min}\)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">\(SR_{min}\)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1995-1::2000-1</td>
+<td style="text-align: right;">0.162</td>
+<td style="text-align: right;">0.838</td>
+<td style="text-align: right;">0.111</td>
+<td style="text-align: right;">0.072</td>
+<td style="text-align: right;">0.851</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2000-1::2005-1</td>
+<td style="text-align: right;">0.260</td>
+<td style="text-align: right;">0.740</td>
+<td style="text-align: right;">0.075</td>
+<td style="text-align: right;">0.070</td>
+<td style="text-align: right;">0.713</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2005-1::2010-1</td>
+<td style="text-align: right;">0.231</td>
+<td style="text-align: right;">0.769</td>
+<td style="text-align: right;">0.046</td>
+<td style="text-align: right;">0.094</td>
+<td style="text-align: right;">0.481</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2010-1::2014-12</td>
+<td style="text-align: right;">0.362</td>
+<td style="text-align: right;">0.638</td>
+<td style="text-align: right;">0.116</td>
+<td style="text-align: right;">0.055</td>
+<td style="text-align: right;">2.108</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-tableStocksBondsTan" class="anchored">
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Table&nbsp;10.3: Sub-period tangency portfolios</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">\(x_{stock}\)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">\(x_{bond}\)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">\(\mu_{tan}\)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">\(\sigma_{tan}\)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">\(SR_{tan}\)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1995-1::2000-1</td>
+<td style="text-align: right;">0.789</td>
+<td style="text-align: right;">0.211</td>
+<td style="text-align: right;">0.213</td>
+<td style="text-align: right;">0.117</td>
+<td style="text-align: right;">1.393</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2000-1::2005-1</td>
+<td style="text-align: right;">-0.047</td>
+<td style="text-align: right;">1.047</td>
+<td style="text-align: right;">0.113</td>
+<td style="text-align: right;">0.093</td>
+<td style="text-align: right;">0.943</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2005-1::2010-1</td>
+<td style="text-align: right;">-0.107</td>
+<td style="text-align: right;">1.107</td>
+<td style="text-align: right;">0.063</td>
+<td style="text-align: right;">0.110</td>
+<td style="text-align: right;">0.561</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2010-1::2014-12</td>
+<td style="text-align: right;">0.404</td>
+<td style="text-align: right;">0.596</td>
+<td style="text-align: right;">0.119</td>
+<td style="text-align: right;">0.055</td>
+<td style="text-align: right;">2.128</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+</div>
+</div>
+<p>This example shows the clear gains that can be made by forming efficient portfolios relative to holding stock or bonds by themselves. The results, however, are a bit misleading because the efficient portfolios formed in each sub-period use all of the data over the sub-period to estimate expected returns, volatilities, and covariances. This means that the computed efficient portfolios cannot be computed at the beginning of each sub-period. A more practical exercise would use the previous sub-period to compute GWN model estimates to be used in the subsequent sub-period. This method is explored in the end-of-chapter exercises.</p>
+</section>
+<section id="further-reading-introduction-to-portfolio-theory" class="level2" data-number="10.7">
+<h2 data-number="10.7" class="anchored" data-anchor-id="further-reading-introduction-to-portfolio-theory"><span class="header-section-number">10.7</span> Further Reading: Introduction to Portfolio Theory</h2>
+<p>Markowitz’s mean-variance portfolio theory is described in detail in <span class="citation" data-cites="markowitz-1959">(<a href="references.html#ref-markowitz-1959" role="doc-biblioref">Markowitz 1959</a>)</span>, <span class="citation" data-cites="markowitz-1987">(<a href="references.html#ref-markowitz-1987" role="doc-biblioref">Markowitz 1987</a>)</span>. Most MBA level corporate finance and investments textbooks have chapters on mean-variance portfolio theory. Good intermediate level treatments of portfolio theory from a quantitative perspective are given in <span class="citation" data-cites="benninga-2000">(<a href="references.html#ref-benninga-2000" role="doc-biblioref">Benninga 2000</a>)</span>, <span class="citation" data-cites="bkm-2013">(<a href="references.html#ref-bkm-2013" role="doc-biblioref">Bodie, Kane, and Marcus 2013</a>)</span> and <span class="citation" data-cites="egbg-2014">(<a href="references.html#ref-egbg-2014" role="doc-biblioref">Elton et al. 2014</a>)</span>.</p>
+</section>
+<section id="appendix-review-of-optimization-and-constrained-optimization" class="level2" data-number="10.8">
+<h2 data-number="10.8" class="anchored" data-anchor-id="appendix-review-of-optimization-and-constrained-optimization"><span class="header-section-number">10.8</span> Appendix: Review of Optimization and Constrained Optimization</h2>
+<p>Consider the function of a single variable: <span class="math display">\[
+y=f(x)=x^{2}.
+\]</span> Clearly the minimum of this function occurs at the point <span class="math inline">\(x=0\)</span>. Using calculus, you find the minimum by solving: <span class="math display">\[
+\min_{x}~y=x^{2}.
+\]</span> The first order (necessary) condition for a minimum is: <span class="math display">\[
+0=\frac{d}{dx}f(x)=\frac{d}{dx}x^{2}=2x
+\]</span> and solving for <span class="math inline">\(x\)</span> gives <span class="math inline">\(x=0\)</span>. The second order condition for a minimum is, <span class="math display">\[
+0&lt;\frac{d^{2}}{dx}f(x),
+\]</span> and this condition is clearly satisfied for <span class="math inline">\(f(x)=x^{2}\)</span>.</p>
+<p>Next, consider the function of two variables: <span id="eq-f-xz"><span class="math display">\[
+y=f(x,z)=x^{2}+z^{2}
+\tag{10.19}\]</span></span> This function looks like a salad bowl whose bottom is at <span class="math inline">\(x=0\)</span> and <span class="math inline">\(z=0\)</span>. To find the minimum of <a href="#eq-f-xz">Equation&nbsp;<span>10.19</span></a>, you solve: <span class="math display">\[
+\min_{x,z}y=x^{2}+z^{2},
+\]</span> and the first order necessary conditions are, <span class="math display">\[\begin{align*}
+0 &amp; =\frac{\partial y}{\partial x}=2x,\\
+0 &amp; =\frac{\partial y}{\partial z}=2z.
+\end{align*}\]</span> Solving these two linear equations gives <span class="math inline">\(x=0\)</span> and <span class="math inline">\(z=0\)</span>.</p>
+<p>Now suppose you want to minimize <a href="#eq-f-xz">Equation&nbsp;<span>10.19</span></a> subject to the linear constraint: <span id="eq-restriction"><span class="math display">\[
+x+z=1.
+\tag{10.20}\]</span></span> The minimization problem is now a * constrained minimization*: <span class="math display">\[\begin{align*}
+\min_{x,z}y &amp; =x^{2}+z^{2}\textrm{ subject to }(s.t.)\\
+x+z &amp; =1.
+\end{align*}\]</span> Given the constraint <span class="math inline">\(x+z=1\)</span>, the function <a href="#eq-f-xz">Equation&nbsp;<span>10.19</span></a> is no longer minimized at the point <span class="math inline">\((x,z)=(0,0)\)</span> because this point does not satisfy <span class="math inline">\(x+z=1\)</span>. One simple way to solve this problem is to substitute the restriction <a href="#eq-restriction">Equation&nbsp;<span>10.20</span></a> into the function <a href="#eq-f-xz">Equation&nbsp;<span>10.19</span></a> and reduce the problem to a minimization over one variable. To illustrate, use the restriction <a href="#eq-restriction">Equation&nbsp;<span>10.20</span></a> to solve for <span class="math inline">\(z\)</span> as: <span id="eq-z"><span class="math display">\[
+z=1-x.
+\tag{10.21}\]</span></span> Now substitute <a href="#eq-z">Equation&nbsp;<span>10.21</span></a> into <a href="#eq-f-xz">Equation&nbsp;<span>10.19</span></a> giving: <span id="eq-res-fun"><span class="math display">\[
+y=f(x,z)=f(x,1-x)=x^{2}+(1-x)^{2}.
+\tag{10.22}\]</span></span> The function <a href="#eq-res-fun">Equation&nbsp;<span>10.22</span></a> satisfies the restriction <a href="#eq-restriction">Equation&nbsp;<span>10.20</span></a> by construction. The constrained minimization problem now becomes: <span class="math display">\[
+\min_{x}y=x^{2}+(1-x)^{2}.
+\]</span> The first order conditions for a minimum are: <span class="math display">\[
+0=\frac{d}{dx}(x^{2}+(1-x)^{2})=2x-2(1-x)=4x-2,
+\]</span> and solving for <span class="math inline">\(x\)</span> gives <span class="math inline">\(x=1/2\)</span>. To solve for <span class="math inline">\(z\)</span>, use <a href="#eq-z">Equation&nbsp;<span>10.21</span></a> to give <span class="math inline">\(z=1-(1/2)=1/2\)</span>. Hence, the solution to the constrained minimization problem is <span class="math inline">\((x,z)=(1/2,1/2)\)</span>.</p>
+<p>Another way to solve the constrained minimization is to use the method of <em>Lagrange multipliers</em>. This method augments the function to be minimized with a linear function of the constraint in homogeneous form. The constraint <a href="#eq-restriction">Equation&nbsp;<span>10.20</span></a> in homogenous form is: <span class="math display">\[
+x+z-1=0.
+\]</span> The augmented function to be minimized is called the <em>Lagrangian</em> and is given by: <span class="math display">\[
+L(x,z,\lambda)=x^{2}+z^{2}-\lambda(x+z-1).
+\]</span> The coefficient on the constraint in homogeneous form, <span class="math inline">\(\lambda\)</span>, is called the <em>Lagrange multiplier</em>. It measures the cost, or shadow price, of imposing the constraint relative to the unconstrained problem. The constrained minimization problem to be solved is now: <span class="math display">\[
+\min_{x,z,\lambda}~L(x,z,\lambda)=x^{2}+z^{2}+\lambda(x+z-1).
+\]</span> The first order conditions for a minimum are: <span class="math display">\[\begin{align*}
+0 &amp; =\frac{\partial L(x,z,\lambda)}{\partial x}=2x+\lambda,\\
+0 &amp; =\frac{\partial L(x,z,\lambda)}{\partial z}=2z+\lambda,\\
+0 &amp; =\frac{\partial L(x,z,\lambda)}{\partial\lambda}=x+z-1.
+\end{align*}\]</span> The first order conditions give three linear equations in three unknowns. Notice that the first order condition with respect to <span class="math inline">\(\lambda\)</span> imposes the constraint. The first two conditions give: <span class="math display">\[
+2x=2z=-\lambda,
+\]</span> or, <span class="math display">\[
+x=z.
+\]</span> Substituting <span class="math inline">\(x=z\)</span> into the third condition gives: <span class="math display">\[
+2z-1=0
+\]</span> or, <span class="math display">\[
+z=1/2.
+\]</span> The final solution is <span class="math inline">\((x,y,\lambda)=(1/2,1/2,-1)\)</span>.</p>
+<p>The Lagrange multiplier, <span class="math inline">\(\lambda\)</span>, measures the marginal cost, in terms of the value of the objective function, of imposing the constraint. Here, <span class="math inline">\(\lambda=-1\)</span> which indicates that imposing the constraint <span class="math inline">\(x+z=1\)</span> reduces the objective function. To understand the role of the Lagrange multiplier better, consider imposing the constraint <span class="math inline">\(x+z=0\)</span>. Notice that the unconstrained minimum achieved at <span class="math inline">\(x=0,z=0\)</span> satisfies this constraint. Hence, imposing <span class="math inline">\(x+z=0\)</span> does not cost anything and so the Lagrange multiplier associated with this constraint should be zero. To confirm this, you solve the problem: <span class="math display">\[
+\min_{x,z,\lambda}~L(x,z,\lambda)=x^{2}+z^{2}+\lambda(x+z-0).
+\]</span> The first order conditions for a minimum are: <span class="math display">\[\begin{align*}
+0 &amp; =\frac{\partial L(x,z,\lambda)}{\partial x}=2x-\lambda,\\
+0 &amp; =\frac{\partial L(x,z,\lambda)}{\partial z}=2z-\lambda,\\
+0 &amp; =\frac{\partial L(x,z,\lambda)}{\partial\lambda}=x+z.
+\end{align*}\]</span> The first two conditions give: <span class="math display">\[
+2x=2z=-\lambda
+\]</span> or, <span class="math display">\[
+x=z.
+\]</span> Substituting <span class="math inline">\(x=z\)</span> into the third condition gives: <span class="math display">\[
+2z=0,
+\]</span> or, <span class="math display">\[
+z=0.
+\]</span> The final solution is <span class="math inline">\((x,y,\lambda)=(0,0,0)\)</span>. Notice that the Lagrange multiplier, <span class="math inline">\(\lambda\)</span>, is equal to zero in this case.</p>
+</section>
+<section id="exercises" class="level2" data-number="10.9">
+<h2 data-number="10.9" class="anchored" data-anchor-id="exercises"><span class="header-section-number">10.9</span> Exercises</h2>
+<div id="exr-01" class="exercise theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 10.1 </strong></span>Annual estimates of the GWN model parameters for Boeing and Microsoft are given in the table below:</p>
+<table class="table">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 15%">
+<col style="width: 19%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Boeing</th>
+<th>Microsoft</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\mu\)</span></td>
+<td>0.149</td>
+<td>0.331</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\sigma^{2}\)</span></td>
+<td>0.069</td>
+<td>0.136</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\rho\)</span></td>
+<td>-0.008</td>
+<td>-0.008</td>
+</tr>
+</tbody>
+</table>
+<ol type="1">
+<li>Create the following portfolios.
+<ul>
+<li>Combinations of Boeing and Microsoft (with <span class="math inline">\(x_{\text{{boeing}}}=-1,-0.9,...,2\)</span> and <span class="math inline">\(x_{\text{{msft}}}=1-x_{\text{{boeing}}}\)</span>)</li>
+<li>Combinations of Boeing and T-bills (with <span class="math inline">\(x_{\text{{boeing}}}=0,0.1,...,2\)</span>)</li>
+<li>Combinations of Microsoft and T-bills (with <span class="math inline">\(x_{\text{{msft}}}=0,0.1,...,2\)</span>)</li>
+<li>Use an annual risk-free rate of <span class="math inline">\(3\%\)</span> per year for the T-bill. For each portfolio, compute <span class="math inline">\(E(R_{p})\)</span>, var<span class="math inline">\((R_{p})\)</span> and SD<span class="math inline">\((R_{p})\)</span> using the appropriate formulas. For each portfolio, plot <span class="math inline">\(E(R_{p})\)</span> vs.&nbsp;SD<span class="math inline">\((R_{p})\)</span> and put these values on the same graph. Compute the Sharpe’s slope for Boeing and Microsoft. Which asset has the highest slope value?</li>
+</ul></li>
+<li>Compute the global minimum variance portfolio using the analytical formula <a href="#eq-minvar-port">Equation&nbsp;<span>10.10</span></a>.
+<ul>
+<li>Make a bar chart showing the weights of Boeing and Microsoft in global minimum variance portfolio.</li>
+<li>Compute <span class="math inline">\(E(R_{p})\)</span>, var<span class="math inline">\((R_{p})\)</span> and SD<span class="math inline">\((R_{p})\)</span> for the tangency portfolio.</li>
+<li>Compute Sharpe’s slope for the tangency portfolio.</li>
+<li>Indicate the location of the tangency portfolio on the graph you created previously in question 1.</li>
+</ul></li>
+<li>Using a risk-free rate of <span class="math inline">\(3\%\)</span> per year for the T-bill, compute the tangency portfolio using the analytic formula <a href="#eq-tangency-port">Equation&nbsp;<span>10.16</span></a>.
+<ul>
+<li>Make a bar chart showing the weights of Boeing and Microsoft in the tangency portfolio.</li>
+<li>Compute <span class="math inline">\(E(R_{p})\)</span>, var<span class="math inline">\((R_{p})\)</span> and SD<span class="math inline">\((R_{p})\)</span> for the tangency portfolio.</li>
+<li>Compute the Sharpe’s slope for the tangency portfolio.</li>
+<li>Indicate the location of the tangency portfolio on the graph you created previously in question 1.</li>
+</ul></li>
+<li>Consider a portfolio that has <span class="math inline">\(10\%\)</span> in the tangency portfolio and <span class="math inline">\(90\%\)</span> in T-bills.
+<ul>
+<li>In this portfolio, what is the percent invested in Boeing and what is the percent invested in Microsoft? Give a bar chart showing the percents invested in T-bills, Boeing and Microsoft.</li>
+<li>Compute <span class="math inline">\(E(R_{p})\)</span>, var<span class="math inline">\((R_{p})\)</span> and SD<span class="math inline">\((R_{p})\)</span> for this portfolio.</li>
+<li>Compute Sharpe’s slope for this portfolio.</li>
+<li>Indicate the location of the tangency portfolio on the graph you created previously in question 1.</li>
+</ul></li>
+<li>Find the efficicient portfolio (combination of T-bills and tangency portfolio) that has the same risk (SD) as Microsoft.
+<ul>
+<li>In this portfolio, what is the percent invested in Boeing and what is the percent invested in Microsoft? Give a bar chart showing the percent invested in T-bills, Boeing and Microsoft.</li>
+<li>Compute <span class="math inline">\(E(R_{p})\)</span>, var<span class="math inline">\((R_{p})\)</span> and SD<span class="math inline">\((R_{p})\)</span> for this portfolio.</li>
+<li>Compute Sharpe’s slope for this portfolio.</li>
+<li>Indicate the location of the tangency portfolio on the graph you created previoulsy in question 1.</li>
+</ul></li>
+</ol>
+</div>
+<div id="exr-real-world-portfolios-revisited" class="exercise theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 10.2 (Real world portfolios revisited) </strong></span>&nbsp;</p>
+<ul>
+<li>Re-do the real-world portfolio analysis using forward looking estimates: For each 5-year period use the previous 5-year period to estimate GWN model parameters and then do asset allocation.</li>
+</ul>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-benninga-2000" class="csl-entry" role="listitem">
+Benninga, S. 2000. <em>Financial Modeling. Second Edition.</em> Cambridge, MA: MIT Press.
+</div>
+<div id="ref-bkm-2013" class="csl-entry" role="listitem">
+Bodie, Z., A. Kane, and A. J. Marcus. 2013. <em>Investments. 10th Edition</em>. McGraw-Hill Education.
+</div>
+<div id="ref-egbg-2014" class="csl-entry" role="listitem">
+Elton, E., G. Gruber, S. J. Brown, and W. N. Goetzmann. 2014. <em>Modern Portfolio Theory and Investment Analysis. 9th Edition</em>. New York: Wiley.
+</div>
+<div id="ref-markowitz-1959" class="csl-entry" role="listitem">
+Markowitz, H. 1959. <em>Portfolio Selection: Efficient Diversification of Investments</em>. New York: Wiley.
+</div>
+<div id="ref-markowitz-1987" class="csl-entry" role="listitem">
+———. 1987. <em>Mean-Variance Analysis in Portfolio Choice and Capital Markets</em>. Cambridge, MA: Basil Blackwell.
+</div>
+<div id="ref-sharpe-1999" class="csl-entry" role="listitem">
+Sharpe, W. 1999. <em>Investments. 6th Edition</em>. Prentice Hall.
+</div>
+</div>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>The mean-variance frame is described in detail in <span class="citation" data-cites="markowitz-1959">(<a href="references.html#ref-markowitz-1959" role="doc-biblioref">Markowitz 1959</a>)</span>, <span class="citation" data-cites="markowitz-1987">(<a href="references.html#ref-markowitz-1987" role="doc-biblioref">Markowitz 1987</a>)</span>. Harry Markowitz was awarded the Nobel Prize in Economics in 1990, along with Merton Miller and William Sharpe, for his work on portfolio theory.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>If the stocks pay a dividend then returns are computed as total returns.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>The small negative correlation between the two stock returns is a bit unusual, as most stock returns are positively correlated. The negative correlation is assumed so that certain figures produced later look nice and are easy to read. <a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>I use the <strong>kableExtra</strong> function <code>kbl()</code> to print out nice formatted tables from a <code>data.frame</code> of information.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>To short an asset one borrows the asset, usually from a broker, and then sells it. The proceeds from the short sale are usually kept on account with a broker and there may be restrictions on the use of these funds for the purchase of other assets. The short position is closed out when the asset is repurchased and then returned to original owner. If the asset drops in value then a gain is made on the short sale and if the asset increases in value a loss is made. See Chapter <a href="12-portfolioTheoryNoShortSales-new.html"><span>Chapter&nbsp;12</span></a> for more details on short selling assets<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>In formal terms, the portfolio problem is to find the values of <span class="math inline">\(x_{A}\)</span> and <span class="math inline">\(x_{B}\)</span> that maximizes the investor’s expected utility over end-of-period wealth<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>See chapter <a href="02-probReview-new.html"><span>Chapter&nbsp;2</span></a> section <a href="02-probReview-new.html#sec-Random-Variables"><span>Section&nbsp;2.1</span></a>.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>Leverage refers to an investment that is financed through borrowing. Here, the short sale of asset B produces borrowed funds used to purchase more of asset A. This increases the risk (portfolio standard deviation) of the investment.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>If <span class="math inline">\(R_{p}\)</span> is a continuously compounded return then the implied simple return quantile is <span class="math inline">\(q_{\alpha}^{R_{p}}=\exp(\mu_{p}+\sigma_{p}q_{\alpha}^{z})-1\)</span>.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>A review of optimization and constrained optimization is given in the appendix to this chapter.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p>In the finance industry the risk-free asset is often referred to as “cash”. In general, “cash” doesn’t refer to holding dollars in your pocket but rather investing dollars in a very low risk asset that pays a stable rate of return.<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn12"><p>The default-free assumption of U.S. debt is often taken for granted. However, this assumption has been questioned due to the inability of the U.S. congress to address the long-term debt problems of the U.S. government.<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn13"><p>Here, you can allow <span class="math inline">\(x\)</span> to be positive or negative but <span class="math inline">\(\sigma\)</span> is always positive. <a href="#fnref13" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn14"><p>The gain in expected return by investing in an efficient portfolio abstracts from the costs associated with selling the benchmark portfolio and buying the efficient portfolio.<a href="#fnref14" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn15"><p>Details about these funds are available at (finance.yahoo.com). <a href="#fnref15" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn16"><p>ETF alternatives to VFINX include State Street’s SPY, Vanguard’s VOO, and iShares IVV. See <code>www.eft.com</code>.<a href="#fnref16" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn17"><p>ETF alternatives to VBLTX include iShares TLT and GOVT, and State Street SPTL. See <code>www.eft.com</code>.<a href="#fnref17" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn18"><p>Historical data on U.S. T-Bill rates is obtained from the Federal Reserve Economic Data (FRED) available at the St.&nbsp;Louis Fed. See <code>fred.stlouisfed.org</code><a href="#fnref18" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn19"><p>The <strong>PerformanceAnalytics</strong> function <code>chart.CumReturns()</code> is used to compute the equity curves for each asset.<a href="#fnref19" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn20"><p>Investments with annualized Sharpe ratios greater than one are typically considered good investments.<a href="#fnref20" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./09-hypothesisTestingGWNModel-new.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Hypothesis Testing in the GWN Model</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./11-PortfolioTheoryMatrix-new.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Portfolio Theory with Matrix Algebra</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
