@@ -26,17 +26,17 @@ do this if the time series data come from a *stationary* time series
 process. 
 
 This chapter reviews some basic times series concepts that are essential
-for describing and modeling financial time series. Section @sec-Stochastic-Processes
+for describing and modeling financial time series. @sec-Stochastic-Processes
 defines univariate time series processes and introduces the important
 concepts of stationarity and ergodicity. Covariance stationary time
 series processes are defined, which gives meaning to measuring linear
 time dependence using autocorrelation. The benchmark Gaussian White
 Noise process and related processes are introduced and illustrated
 using R. Some common non-stationary time series processes are also
-discussed including the famous random walk model. Section @sec-Multivariate-Time-Series
+discussed including the famous random walk model. @sec-Multivariate-Time-Series
 introduces covariance stationary multivariate time series process.
 Such processes allow for dynamic interactions among groups of time
-series variables. Section @sec-Time-Series-Models discusses
+series variables. @sec-Time-Series-Models discusses
 time series model building and introduces the class of univariate
 autoregressive-moving average time series models and multivariate
 vector autoregression models. The properties of some simple models
@@ -199,7 +199,7 @@ a covariance stationary process need not be strictly stationary.
 The autocovariances and autocorrelations are measures of the linear
 temporal dependence in a covariance stationary stochastic process.
 A graphical summary of this temporal dependence is given by the plot
-of $\rho_{j}$ against $j$, and is called the *autocorrelation function* (ACF). Figure @fig-TimeSeriesConceptsACF illustrates
+of $\rho_{j}$ against $j$, and is called the *autocorrelation function* (ACF). @fig-TimeSeriesConceptsACF illustrates
 an ACF for a hypothetical covariance stationary time series with $\rho_{j}=(0.9)^{j}$
 for $j=1,2,\ldots,10$ created with 
 
@@ -264,7 +264,7 @@ random number generator using the seed value 123. Every time the random
 number generator seed is set to a particular value, the random number
 generator produces the same set of random numbers. This allows different
 people to create the same set of random numbers so that results are
-reproducible. The simulated data is illustrated in Figure @fig-TimeSeriesConcpetsGWN
+reproducible. The simulated data is illustrated in @fig-TimeSeriesConcpetsGWN
 created using:
 
 ```{r}
@@ -283,7 +283,7 @@ abline(h=0)
 The function `ts.plot()` creates a time series line plot with
 a dummy time index. An equivalent plot can be created using the generic
 `plot()` function with optional argument `type="l"`.
-The data in Figure @fig-TimeSeriesConcpetsGWN fluctuate
+The data in @fig-TimeSeriesConcpetsGWN fluctuate
 randomly about the mean value zero and exhibit a constant volatility
 of one (typical magnitude of a fluctuation about zero). There is no
 visual evidence of any predictable pattern in the data. 
@@ -318,7 +318,7 @@ abline(h=c(0,0.01,-0.04,0.06), lwd=2,
        col=c("black", "red", "red", "red"))
 ```
 
-and are illustrated in Figure @fig-TimeSeriesConceptsGWNreturns.
+and are illustrated in @fig-TimeSeriesConceptsGWNreturns.
 Notice that the returns fluctuate around the mean value of $0.01$ (solid red line)
 and the size of a typical deviation from the mean is about $0.05$. The red dotted lines
 show the values $0.1 \pm 0.05$ .
@@ -341,7 +341,7 @@ with mean zero and variance $\sigma^{2}.$ To illustrate, suppose
 $Y_{t}=\frac{1}{\sqrt{3}}\times t_{3}$ where $t_{3}$ denotes a Student's
 t distribution with $3$ degrees of freedom. This process has $E[Y_{t}]=0$
 and $\mathrm{var}(Y_{t})=1.$\footnote{Recall, if $Y_{t}\sim t_{v}$ then $\mathrm{var}(Y_{t})=\frac{v}{v-2}$
-for $v>2.$} Figure @fig-TimeSeriesConceptsIWN shows simulated observations
+for $v>2.$} @fig-TimeSeriesConceptsIWN shows simulated observations
 from this process created using the R commands
 
 ```{r}
@@ -359,7 +359,7 @@ ts.plot(y, main="Independent White Noise Process", xlab="time", ylab="y(t)",
 abline(h=0)
 ```
 
-The simulated IWN process resembles the GWN in Figure @fig-TimeSeriesConceptsIWN
+The simulated IWN process resembles the GWN in @fig-TimeSeriesConceptsIWN
 but has more extreme observations. 
 \hfill{}$\blacksquare$
 :::
@@ -393,7 +393,7 @@ on $t$:
 $$
 E[Y_{t}]=\beta_{0}+\beta_{1}t.
 $$
-Figure @fig-TimeSeriesConceptsTrend shows a realization
+@fig-TimeSeriesConceptsTrend shows a realization
 of this process with $\beta_{0}=0,\beta_{1}=0.1$ and $\sigma_{\varepsilon}^{2}=1$
 created using the R commands:
 
@@ -443,7 +443,7 @@ $$
 $$
 which depends on $t$, and so $\{Y_{t}\}$ is not stationary. 
 
-Figure @fig-TimeSeriesConceptsRW shows a realization of
+@fig-TimeSeriesConceptsRW shows a realization of
 the RW process with $Y_{0}=0$ and $\sigma_{\varepsilon}^{2}=1$ created
 using the R commands:
 
@@ -462,11 +462,9 @@ ts.plot(y.rw, lwd=2, col="blue", main="Random Walk")
 abline(h=0)
 ```
 
-The RW process looks much different from the GWN process in Figure
-@fig-TimeSeriesConcpetsGWN. As the variance of the process
-increases linearly with time, the uncertainty about where the process
+The RW process looks much different from the GWN process in @fig-TimeSeriesConcpetsGWN. 
+As the variance of the process increases linearly with time, the uncertainty about where the process
 will be at a given point in time increases with time. 
-
 
 Although $\{Y_{t}\}$ is non-stationary, a simple first-differencing
 transformation, however, yields a covariance stationary process: 
@@ -687,7 +685,7 @@ legend("topleft", legend=c("Y1", "Y2"),
        lwd=2, col=c("black", "blue"), lty=1)
 ```
 
-The simulated values are shown on the same plot in Figure @fig-TimeSeriesMultivariateGWN.
+The simulated values are shown on the same plot in @fig-TimeSeriesMultivariateGWN.
 Both series fluctuate randomly about zero, and the first series (black
 line) has larger fluctuations (volatility) than the second series
 (blue line). The two series are contemporaneously correlated $(\rho_{12}=0.5)$
@@ -909,7 +907,7 @@ ma1.acf = ARMAacf(ar=0, ma=0.9, lag.max=10)
 ma1.acf
 ```
 
-Figure @fig-TimeSeriesConceptsMA1 shows the simulated data
+@fig-TimeSeriesConceptsMA1 shows the simulated data
 and the theoretical ACF created using:
 
 ```{r}
@@ -1228,8 +1226,8 @@ ACF for an AR(1) model as follows
 ar1.acf = ARMAacf(ar = 0.9, ma = 0, lag.max = 10)
 ```
 
-The simulated AR(1) values and the ACF are shown in Figure @fig-TimeSeriesConceptsAR1.
-Compared to the MA(1) process in Figure @fig-TimeSeriesConceptsMA1,
+The simulated AR(1) values and the ACF are shown in @fig-TimeSeriesConceptsAR1.
+Compared to the MA(1) process in @fig-TimeSeriesConceptsMA1,
 the realizations from the AR(1) process are much smoother. That is,
 when $Y_{t}$ wanders high above its mean it tends to stay above the
 mean for a while and when it wanders low below the mean it tends to

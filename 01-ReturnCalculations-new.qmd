@@ -15,13 +15,11 @@ that make mathematical and statistical modeling difficult. Continuously compound
 contrast, have nicer aggregation properties that make mathematical and statistical
 modeling easier.
 
-This chapter is organized as follows. Section @sec-TimeValueMoney covers
-basic time value of money calculations. Section
-@sec-AssetReturnCalculations covers asset return calculations, including
-both simple and continuously compounded returns. Section
-@sec-portfolios-and-portfolio-returns defines portfolios and details
-portfolio return calculations. Section @sec-ReturnCalculationsR
-illustrates asset return calculations using R.
+This chapter is organized as follows. In @sec-TimeValueMoney I cover
+basic time value of money calculations. In @sec-AssetReturnCalculations I cover 
+asset return calculations, including both simple and continuously compounded returns. 
+I define portfolios and detail portfolio return calculations in @sec-portfolios-and-portfolio-returns. In @sec-ReturnCalculationsR I
+illustrate asset return calculations using R.
 
 In this chapter I use the following R packages: **ggplot2**, **introcompfinr**,
 **methods**, **PerformanceAnalytics**, **quantmod**, **xts**, and **zoo**. 
@@ -414,7 +412,7 @@ $$
 R(t_{0},t_{1})=\frac{P_{t_{1}}-P_{t_{0}}}{P_{t_{0}}}.
 $$ {#eq-holding-period-return} 
 The time between $t_{0}$ and $t_{1}$ is called the *holding period* \index{Holding period} 
-and equation @eq-holding-period-return is called the *holding period return*\index{Holding period return}. 
+and @eq-holding-period-return is called the *holding period return*\index{Holding period return}. 
 In principle, the holding period can be any amount of time: one second, five minutes, 
 eight hours, two days six minutes and two seconds, fifteen years, etc.. To simplify
 matters, in this chapter and throughout the book I will assume that the holding period is some
@@ -1198,9 +1196,10 @@ $$
 #### Adjusting for taxes
 
 Using @eq-afterTaxReturn, the continuously compounded return adjusted
-for taxes is \begin{equation}
+for taxes is 
+$$
 r_{t}^{Atax} = ln \left(R_{t}(1-\tau) \right) = ln(R_{t}) + ln(1-\tau) = r_{t} + ln(1-\tau)
-\end{equation}
+$$
 
 #### Return on a foreign investment
 
@@ -1223,12 +1222,18 @@ continuously compounded monthly returns. I illustrate using monthly
 continuously compounded returns. First, if your investment horizon is one
 year and you observe 12 monthly continuously compounded returns then the
 annual continuously compounded return is just the sum of the twelve
-monthly continuously compounded returns: \begin{align*}
+monthly continuously compounded returns: 
+$$
+\begin{aligned}
 r_{A} & =r_{t}(12)=r_{t}+r_{t-1}+\cdots+r_{t-11}\\
  & =\sum_{j=0}^{11}r_{t-j}.
-\end{align*} The average continuously compounded monthly return is
+\end{aligned}
+$$
+The average continuously compounded monthly return is
 defined as:
-$$\overline{r}_{m}=\frac{1}{12}\sum_{j=0}^{11}r_{t-j}.$$
+$$
+\overline{r}_{m}=\frac{1}{12}\sum_{j=0}^{11}r_{t-j}.
+$$
 Notice that:
 $$12\cdot\overline{r}_{m}=\sum_{j=0}^{11}r_{t-j}$$
 so that you may alternatively express $r_{A}$ as:
@@ -1250,7 +1255,9 @@ $$r_{A} = 6\cdot r(2).$$
 Finally, suppose you have a 2-year continuously compounded return
 $r(24)$. Then the continuously compounded annual return can be defined
 using
-$$2\cdot r_{A} = r(24) \Longrightarrow  r_{A} = \frac{r(24)}{2}.$$
+$$
+2\cdot r_{A} = r(24) \Longrightarrow  r_{A} = \frac{r(24)}{2}.
+$$
 
 ## Portfolios and Portfolio Returns {#sec-portfolios-and-portfolio-returns}
 
@@ -1985,9 +1992,8 @@ head(weekdays(index(msftWeeklyPrices)),3)
 
 Time plots of `xts` objects can be created with the generic `plot()`
 function as there is a method function in the **xts** package for
-objects of class `xts`. For example, Figure
-@fig-MsftSbuxMonthlyPricesXts shows a basic time plot of the monthly
-closing prices of Microsoft and Starbucks created with:
+objects of class `xts`. For example, @fig-MsftSbuxMonthlyPricesXts shows a basic 
+time plot of the monthly closing prices of Microsoft and Starbucks created with:
 
 ```{r}
 #| label: fig-MsftSbuxMonthlyPricesXts
@@ -2001,9 +2007,7 @@ plot(msftSbuxMonthlyPrices, main="Monthly Closing Prices",
 ```
 
 The default plot style in `plot.xts()` is a single-panel plot with
-multiple series. You can also create multi-panel plots, as in Figure
-@fig-MsftSbuxPricesXtsMultiple, by setting the optional argument
-`multi.panel = TRUE` in the call to `plot.xts()`
+multiple series. You can also create multi-panel plots, as in @fig-MsftSbuxPricesXtsMultiple, by setting the optional argument `multi.panel = TRUE` in the call to `plot.xts()`
 
 ```{r}
 #| label: fig-MsftSbuxPricesXtsMultiple
@@ -2021,7 +2025,7 @@ objects.
 
 Because the `xts` class inherits from the `zoo` class, the **zoo**
 method function `plot.zoo()` can also be used to plot `xts` objects.
-Figure @fig-MsftSbuxPricesZoo is created with
+@fig-MsftSbuxPricesZoo is created with
 
 ```{r}
 #| label: fig-MsftSbuxPricesZoo
@@ -2038,7 +2042,7 @@ legend(x="topleft", legend=colnames(msftSbuxMonthlyPrices),
       lwd = 2, col=c("black", "red"))
 ```
 
-A muti-panel plot, shown in Figure @fig-MsftSbuxPricesZooMultiple,
+A muti-panel plot, shown in @fig-MsftSbuxPricesZooMultiple,
 can be created using
 
 ```{r}
@@ -2259,7 +2263,7 @@ plot(dataToPlot, main="Monthly Equity Curves", legend.loc="topleft")
 ```
 
 The R function `cumprod()` creates the cumulative products needed for
-the equity curves. Figure @fig-DSmonthlyCumulativeReturns shows that
+the equity curves. @fig-DSmonthlyCumulativeReturns shows that
 a one dollar investment in Starbucks dominated a one dollar investment
 in Microsoft over the given period. In particular, \$1 invested in
 Microsoft grew to about only \$22 (over about 20 years) whereas \$1
@@ -2470,7 +2474,7 @@ The computation of continuously compounded returns requires the use of
 natural logarithms. The natural logarithm function, $\ln(\cdot),$ is the
 inverse of the exponential function, $e^{(\cdot)}=\exp(\cdot),$ where
 $e^{1}=2.718.$ That is, $\ln(x)$ is defined such that $x=\ln(e^{x}).$
-Figure @fig-logexp plots $e^{x}$ and $\ln(x)$. Notice that $e^{x}$
+@fig-logexp plots $e^{x}$ and $\ln(x)$. Notice that $e^{x}$
 is always positive and increasing in $x$. $\ln(x)$ is monotonically
 increasing in $x$ and is only defined for $x>0.$ Also note that
 $\ln(1)=0$ and $\ln(0)=-\infty.$

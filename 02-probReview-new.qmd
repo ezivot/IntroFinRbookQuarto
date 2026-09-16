@@ -10,18 +10,13 @@ some important risk concepts, such as value-at-risk, will be introduced.
 In the examples, I will also show how to use R for probability calculations
 and for working with probability distributions.
 
-The chapter is outlined as follows. Section @sec-Random-Variables
-reviews univariate random variables and properties of univariate probability
-distributions. Important univariate distributions, such as the normal
+The chapter is outlined as follows. In @sec-Random-Variables I
+review univariate random variables and properties of univariate probability
+distributions. I describe in detail important univariate distributions, such as the normal
 distribution, that are used throughout the book for modeling financial
-data, are described in detail. Section @sec-Bivariate-Distributions
-covers bivariate probability distributions for two random variables. The concepts 
-of dependence and independence between two random variables are discussed. The measures of linear dependence between two random variables, covariance and
-correlation, are defined and the bivariate normal distribution is
-introduced. Properties of linear combinations of two random variables
-are given and illustrated using an example to describe the return
-and risk properties of a portfolio of two assets. More than two random variables and
-Multivariate distributions are briefly discussed in section @sec-Multivariate-Distributions.
+data. In @sec-Bivariate-Distributions I cover bivariate probability distributions for two random variables. I discuss and illustrate the important concepts of dependence and independence between two random variables, and focus on the covariance and correlations measures of linear dependence between two random variables. I cover properties of linear combinations of two random variables
+and illustrate these properties using an example to describe the return
+and risk properties of a portfolio of two assets. I briefly discuss multivariate distributions and probability calculations of linear combinations of many random variables in  @sec-Multivariate-Distributions.
 
 The R packages I use in this chapter are **mvtnorm** and **sn**. Make
 sure these packages are downloaded and installed prior to replicating
@@ -140,7 +135,7 @@ points(r.msft, prob.vals, pch=16, cex=2, col="blue")
 axis(1, at=r.msft)
 ```
 
-This distribution is presented in Figure @fig-ProbRevMsftDiscreteDistn. The shape of the distribution is revealing. The center and most likely value is at
+This distribution is presented in @fig-ProbRevMsftDiscreteDistn. The shape of the distribution is revealing. The center and most likely value is at
 $0.1$ and the distribution is symmetric about this value (has the same shape to the 
 left and to the right). Most of the probability is concentrated between $0$ and $0.2$
 and there is very little probability associated with very large or small returns. 
@@ -210,10 +205,9 @@ over the interval $A$. The pdf $f(x)$ must satisfy
 (i) $f(x)\geq0$; and (ii) $\int_{-\infty}^{\infty}f(x)dx=1$. 
 :::
 
-A typical "bell-shaped" pdf is displayed in Figure
-@fig-ProbReviewAreaUnderCurve and the shaded area under
-the curve between -2 and 1 represents $\Pr(-2\leq X \leq 1)$. For a continuous
-random variable, $f(x)\neq\Pr(X=x)$ but rather gives the height of
+A typical "bell-shaped" pdf is displayed in @fig-ProbReviewAreaUnderCurve and the 
+shaded area under the curve between -2 and 1 represents $\Pr(-2\leq X \leq 1)$. 
+For a continuous random variable, $f(x)\neq\Pr(X=x)$ but rather gives the height of
 the probability curve at $x$. In fact, $\Pr(X=x)=0$ for all values
 of $x$. That is, probabilities are not defined over single points.
 They are only defined over intervals. As a result, for a continuous
@@ -310,7 +304,7 @@ the area under the standard normal curve is one:
 $$
 \int_{-\infty}^{\infty}\frac{1}{\sqrt{2\pi}}\cdot e^{-\frac{1}{2}x^{2}}dx=1.
 $$
-The standard normal distribution is illustrated in Figure @fig-probReviewStdNormalDensity. Notice that the distribution is *symmetric* about zero; i.e., the distribution has exactly the same form to the left and right of
+The standard normal distribution is illustrated in @fig-probReviewStdNormalDensity. Notice that the distribution is *symmetric* about zero; i.e., the distribution has exactly the same form to the left and right of
 zero. Because the standard normal pdf formula is used so often it
 is given its own special symbol $\phi(x)$.
 
@@ -385,7 +379,7 @@ x<-0.3\\
 x>0.5
 \end{array}
 $$
-and is illustrated in Figure @fig-figProbReviewDiscreteCDF.
+and is illustrated in @fig-figProbReviewDiscreteCDF.
 \hfill{}$\blacksquare$
 :::
 
@@ -427,7 +421,7 @@ $$ {#eq-standard-normal-cdf}
 The cdf $\Phi(x)$, however, does not have an analytic representation
 like the cdf of the uniform distribution and so the integral in @eq-standard-normal-cdf
 must be approximated using numerical techniques. A graphical representation
-of $\Phi(x)$ is given in Figure @fig-probReviewStdNormalCdf.
+of $\Phi(x)$ is given in @fig-probReviewStdNormalCdf.
 Because the standard normal pdf, $\phi(x)$, is symmetric about zero
 and bell-shaped the standard normal CDF, $\Phi(x)$, has an "S"
 shape where the middle of the "S" is at zero. 
@@ -658,7 +652,7 @@ plot(x.vals, pnorm(x.vals), type="l", lwd=2, col="blue",
 :::
 
 ::: {#exm-example212 name="Shading a region under the standard normal curve"}
-Figure @fig-ProbReviewAreaUnderCurve showing $\Pr(-2\leq X\leq1)$
+@fig-ProbReviewAreaUnderCurve showing $\Pr(-2\leq X\leq1)$
 as a red shaded area is created with the following code:
 
 ```{r}
@@ -710,7 +704,7 @@ $$
 $$ {#eq-expected-value-discrete}
 :::
 
-Equation @eq-expected-value-discrete shows that $E[X]$ is
+@eq-expected-value-discrete shows that $E[X]$ is
 a probability weighted average of the possible values of $X$.
 
 ::: {#exm-example213 name="Expected value of discrete random variable"}
@@ -907,7 +901,7 @@ Let $R$ denote the monthly return on an investment in Microsoft stock,
 and assume that it is normally distributed with mean $\mu_{R}=0.01$
 and standard deviation $\sigma_{R}=0.10$. That is, $R\sim N(0.01,(0.10)^{2})$.
 Notice that $\sigma_{R}^{2}=0.01$ and is not in units of return per
-month. Figure @fig-ProbReviewNormalReturns illustrates the
+month. @fig-ProbReviewNormalReturns illustrates the
 distribution and is created using:
 
 ```{r}
@@ -959,7 +953,7 @@ Consider the following investment problem. You can invest in two non-dividend
 paying stocks, Amazon and Boeing, over the next month. Let $R_{A}$
 denote the monthly return on Amazon and $R_{B}$ denote the monthly
 return on Boeing. Assume that $R_{A}\sim N(0.02,(0.10)^{2})$ and
-$R_{B}\sim N(0.01,(0.05)^{2})$. Figure @fig-probreviewRiskReturn
+$R_{B}\sim N(0.01,(0.05)^{2})$. @fig-probreviewRiskReturn
 shows the pdfs for the two returns. Notice that $\mu_{A}=0.02>\mu_{B}=0.01$
 but also that $\sigma_{A}=0.10>\sigma_{B}=0.05$. The return you expect
 on Amazon is bigger than the return you expect on Boeing but the variability
@@ -1071,7 +1065,7 @@ the mean and variance for $1+R_{t}$ are given by:
 \mu_{1+R} & =e^{0.05+(0.5)^{2}/2}=1.191\\
 \sigma_{1+R}^{2} & =e^{2(0.05)+(0.5)^{2}}(e^{(0.5)^{2}}-1)=0.563
 \end{align*}
-The pdfs for $r_{t}$ and $R_{t}$ are shown in Figure @fig-figNormalLognormal.
+The pdfs for $r_{t}$ and $R_{t}$ are shown in @fig-figNormalLognormal.
 \hfill{}$\blacksquare$
 :::
 
@@ -1121,7 +1115,7 @@ positive and negative values in @eq-skewness cancel out. If
 $\mathrm{skew}(X)>0$, then the distribution of $X$ has a *long
 right tail* and if $\mathrm{skew}(X)<0$ the distribution
 of $X$ has a *long left tail*. These cases are illustrated
-in Figure @fig-ProbReviewSkewedPdfs.
+in @fig-ProbReviewSkewedPdfs.
 
 
 ```{r}
@@ -1178,7 +1172,7 @@ $$
 Notice that $\mathrm{skew}(Y)$ is always positive, indicating that
 the distribution of $Y$ has a long right tail, and that it is an
 increasing function of $\sigma_{X}^{2}$. This positive skewness is
-illustrated in Figure @fig-figNormalLognormal.
+illustrated in @fig-figNormalLognormal.
 \hfill{}$\blacksquare$
 :::
 
@@ -1265,7 +1259,7 @@ The parameter $v$ controls the scale and tail thickness of the distribution.
 If $v$ is close to four, then the kurtosis is large and the tails
 are thick. If $v<4$, then $\mathrm{kurt}(X)=\infty$. As $v\rightarrow\infty$
 the Student's t pdf approaches that of a standard normal random variable
-and $\mathrm{kurt}(X)=3$. Figure @fig-ProbReviewStudentT
+and $\mathrm{kurt}(X)=3$. @fig-ProbReviewStudentT
 shows plots of the Student's t density for various values of $v$.
 
 ```{r}
@@ -1891,7 +1885,7 @@ where $\varepsilon=Y-E[Y|X]$ is called the *regression error*.
 
 ::: {#exm-example243 name="Regression line for bivariate discrete distribution"}
 For the random variables in Table @tbl-bivariateDistn,
-the regression line is plotted in Figure @fig-figProbReviewDiscreteRegression.
+the regression line is plotted in @fig-figProbReviewDiscreteRegression.
 Notice that there is a linear relationship between $E[Y|X=x]$ and
 $x$. When such a linear relationship exists you call the regression
 function a *linear regression*. Linearity of the regression function,
@@ -2178,7 +2172,7 @@ are also independent.
 
 ### Covariance and correlation
 
-Let $X$ and $Y$ be two discrete random variables. Figure @fig-ProbReviewCovariancePlots
+Let $X$ and $Y$ be two discrete random variables. @fig-ProbReviewCovariancePlots
 displays several bivariate probability scatterplots (where equal probabilities
 are given on the dots). In panel (a) you see no linear relationship
 between $X$ and $Y$. In panel (b) you see a perfect positive linear
@@ -2268,7 +2262,7 @@ The correlation coefficient, $\rho_{XY}$, is a scaled version of the covariance.
 :::
 
 To see how covariance measures the direction of linear association,
-consider the probability scatterplot in Figure @fig-ProbReviewCovariance.
+consider the probability scatterplot in @fig-ProbReviewCovariance.
 In the figure, each pair of points occurs with equal probability.
 The plot is separated into quadrants (right to left, top to bottom).
 In the first quadrant (black circles), the realized values satisfy
@@ -2280,7 +2274,7 @@ and $y<\mu_{Y}$ so that the product $(x-\mu_{X})(y-\mu_{Y})>0$.
 Finally, in the fourth quadrant (green diamonds), $x>\mu_{X}$ but
 $y<\mu_{Y}$ so that the product $(x-\mu_{X})(y-\mu_{Y})<0$. Covariance
 is then a probability weighted average all of the product terms in
-the four quadrants. For the values in Figure @fig-ProbReviewCovariance,
+the four quadrants. For the values in @fig-ProbReviewCovariance,
 this weighted average is positive because most of the values are in
 the second and third quadrants.
 
@@ -2539,7 +2533,7 @@ persp(x, y, fxy, theta=60, phi=30, expand=0.5, ticktype="detailed",
       zlab="f(x,y)",col="grey")
 ```
 
-The resulting plot is given in Figure @fig-ProbReviewBivariateNormal.
+The resulting plot is given in @fig-ProbReviewBivariateNormal.
 \hfill{}$\blacksquare$
 :::
 
