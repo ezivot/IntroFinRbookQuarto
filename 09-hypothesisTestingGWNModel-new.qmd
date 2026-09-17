@@ -4,8 +4,7 @@ Updated: September 7, 2026
 
 Copyright © Eric Zivot 2026
 
-
-The core of statistical analysis involves estimation and inference. The previous chapters considered estimation of the GWN model parameters, and the computation of standard error estimates and confidence intervals. In this chapter I discuss issues of statistical inference within the GWN model. Statistical inference is about asking questions about a model and using statistical procedures to obtain answers to these questions with a given level of confidence. For example, you might find that our estimate of the monthly mean of an asset return is positive but due to large estimation error we might ask the question: is the true monthly mean return positive?  As another example, you might find that a normal qq-plot of returns shows some evidence of non-normality and you ask the question: are returns normally distributed? As a third example, you might find that rolling estimates of the mean and volatility show some evidence of non-constant behavior and you might ask the question: are returns covariance stationary? Statistical hypothesis testing gives us a rigorous framework for answering such questions with a given level of confidence.
+The core of statistical analysis involves estimation and inference. In the previous chapters I considered estimation of the GWN model parameters, and the computation of standard error estimates and confidence intervals. In this chapter I discuss issues of statistical inference within the GWN model. Statistical inference is about asking questions about a model and using statistical procedures to obtain answers to these questions with a given level of confidence. For example, you might find that our estimate of the monthly mean of an asset return is positive but due to large estimation error you might ask the question: is the true monthly mean return positive?  As another example, you might find that a normal qq-plot of returns shows some evidence of non-normality and you ask the question: are returns normally distributed? As a third example, you might find that rolling estimates of the mean and volatility show some evidence of non-constant behavior and you might ask the question: are returns covariance stationary? Statistical hypothesis testing gives us a rigorous framework for answering such questions with a given level of confidence.
 
 The R packages used in this chapter are **introcompfinr**, **PerformanceAnalytics**, **tseries**, and **zoo**. Make sure this packages are installed and loaded before replicating the examples.
 
@@ -107,7 +106,7 @@ hypothesis that all swans are white is consistent with your data set. ]
 : Decision table for hypothesis testing {#tbl-HTdecisionTable}
 
 
-Table @tbl-HTdecisionTable shows the $2\times2$ decision
+@tbl-HTdecisionTable shows the $2\times2$ decision
 table associated with hypothesis testing. In reality there are two
 states of the world: either $H_{0}$ is true or it is not.^[It is important to emphasize that there is a "true state of the world" in this context. That is, the null hypothesis $H_{0}$ is
 either true or it is not. As a result, $\Pr\left\{H_{0}\,\textrm{is true}\right\} =1$
@@ -134,7 +133,7 @@ $$
 There is a true state of the world here: the defendant is either innocent
 or guilty. The jury must decide what the state of the world is based
 on evidence presented to them. The decision table for the jury is
-shown in Table @tbl-HTdecisionTableJury. Type I error occurs
+shown in @tbl-HTdecisionTableJury. Type I error occurs
 when the jury convicts an innocent defendant and puts that person
 on "death row". Clearly, this is a terrible mistake. To avoid
 this type of mistake the jury should have a very small (close to zero)
@@ -325,7 +324,7 @@ gwnMonthlyRetC = na.omit(Return.calculate(gwnMonthlyPrices, method="log"))
 ```
 
 The monthly continuously compounded returns, with a common y-axis,
-are illustrated in Figure @fig-HypothesisExampleReturns created
+are illustrated in @fig-HypothesisExampleReturns created
 using:
 
 ```{r}
@@ -1209,7 +1208,7 @@ Although the Sharpe ratio for Starbucks is much larger than the Sharpe ratio for
 In chapter @sec-Descriptive-Statistics-for-Financial-Data,
 I used histograms, normal QQ-plots, and boxplots to assess whether
 the normal distribution is a good characterization of the empirical
-distribution of daily and monthly returns. For example, Figure @fig-HypothesisFourPanelMSFT
+distribution of daily and monthly returns. For example, @fig-HypothesisFourPanelMSFT
 shows the four-panel plot for the monthly returns on Microsoft that
 I used to summarize the empirical distribution of returns. The histogram
 and smoothed histogram show that the empirical distribution of returns
@@ -1321,7 +1320,7 @@ $$
 $$
 where $\chi^{2}(2)$ denotes a chi-square distribution with two degrees
 of freedom (see Appendix). Hence, the critical values for the JB statistic
-are the upper quantiles of $\chi^{2}(2)$. Figure @fig-HypothesisChiSq2
+are the upper quantiles of $\chi^{2}(2)$. @fig-HypothesisChiSq2
 shows the pdf of $\chi^{2}(2)$. The 90\%, 95\% and 99\% quantiles
 can be computed using the R function `qchisq()`:
 
@@ -1445,7 +1444,7 @@ $$
 In chapter @sec-Descriptive-Statistics-for-Financial-Data,
 I used the sample autocorrelation function (SACF) to graphically
 evaluate the data evidence on autocorrelation for daily and monthly
-returns. For example, Figure @fig-HypothesisSACFsp500 shows
+returns. For example, @fig-HypothesisSACFsp500 shows
 the SACF for the monthly returns on the S\&P 500 index. Here you see
 that none of the $\hat{\rho}_{j}$values are very large. You also see
 a pair of blue dotted lines on the graph. As you shall see, these dotted
@@ -1549,7 +1548,7 @@ Estimated standard errors for $\hat{\mu}_t(n)$ and $\hat{\sigma}_t(n)$ are compu
 $$
 \widehat{\mathrm{se}}(\hat{\mu}_t(n)) = \frac{\hat{\sigma}_t(n)}{\sqrt{T}}, ~ \widehat{\mathrm{se}}(\hat{\sigma}_t(n)) = \frac{\hat{\sigma}_t(n)}{\sqrt{2T}}
 $$
-Figure @fig-HTrolling shows the rolling estimates of $\mu$ (top panel) and $\sigma$ (bottom panel) for Starbucks together with 95% confidence intervals ($\pm2\times$ standard error bands) computed using:
+@fig-HTrolling shows the rolling estimates of $\mu$ (top panel) and $\sigma$ (bottom panel) for Starbucks together with 95% confidence intervals ($\pm2\times$ standard error bands) computed using:
 
 ```{r}
 #| label: fig-HTrolling

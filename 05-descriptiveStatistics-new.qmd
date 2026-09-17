@@ -26,8 +26,8 @@ bivariate descriptive statistics including scatterplots, sample covariance and
 correlation, and sample cross-lag covariances and correlations. In @sec-Stylized-facts 
 I conclude with a summary of some stylized facts for monthly and daily returns. 
 
-The R packages I use in this chapter are **car**, **corrplot, IntroCompFinR,
-PerformanceAnalytics, sn, tseries, zoo** and **xts**.
+The R packages I use in this chapter are **car**, **corrplot**, **introcompfinR**,
+**PerformanceAnalytics**, **sn**, **tseries**, **zoo** and **xts**.
 Make sure these packages are installed and loaded before running the
 R examples in the chapter.
 
@@ -95,7 +95,7 @@ dependence in daily and monthly returns.
 ::: {#exm-example0501 name="Constructing example data"}
 Daily adjusted closing price data on Microsoft and the S\&P 500 index
 over the period January 4, 1993 through December 31, 2014 are available
-in the **IntroCompFinR** package as the `xts` objects
+in the **introcompfinr** package as the `xts` objects
 `msftDailyPrices` and `sp500DailyPrices`, respectively. 
 
 I restrict the sample period to January 2, 1998 and May 31, 2012
@@ -1161,13 +1161,13 @@ gwnMonthlyOutlier[20] = -sd(gwnMonthly)*6
 
 @fig-DSgwnOutlier shows the resulting data. Visually,
 the outlier is much smaller than a typical negative observation and
-creates a pronounced asymmetry in the histogram. Table @tbl-tableOutlier
+creates a pronounced asymmetry in the histogram. @tbl-tableOutlier
 compares the sample statistics @eq-sample-mean - @eq-sample-kurtosis
 of the unpolluted and polluted data. All of the sample statistics
 are influenced by the single outlier with the skewness and kurtosis
 being influenced the most. The mean decreases by 32\% and the variance
 and standard deviation increase by 16\% and 8\%, respectively. The
-skewness changes by 378\% and the kurtosis by 159\%. Table @tbl-tableOutlier
+skewness changes by 378\% and the kurtosis by 159\%. @tbl-tableOutlier
 also shows the median and the IQR, which are quantile-based statistics
 for the center and spread, respectively. Notice that these statistics
 are unaffected by the outlier.

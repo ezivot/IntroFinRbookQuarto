@@ -231,15 +231,15 @@ $$ {#eq-delta-method-se}
 
 The results from Chapter @sec-Estimation-of-The-GWN-Model showed, for large enough $T$, 
 
-\begin{equation*}
+$$
 \hat{\sigma}^2 \sim N(\sigma^2, \mathrm{se}(\hat{\sigma}^2)^2), ~ \hat{\sigma} \sim N(\sigma,\mathrm{se}(\hat{\sigma})^2),
-\end{equation*}
+$$
 
 where $\mathrm{se}(\sigma^2)^2 = 2\sigma^4/T$ and $\mathrm{se}(\sigma)^2 = \sigma^2/2T$. The formula for $\mathrm{se}(\hat{\sigma})^2$ is the result of the delta method for the function $f(\sigma^2)= \sqrt{\sigma^2}=\sigma$ applied to the asymptotic distribution of $\hat{\sigma}^2$. To see this, first note that by the chain rule
 
-\begin{equation*}
+$$
 f'(\sigma^2) = \frac{1}{2} (\sigma^2)^{-1/2},
-\end{equation*}
+$$
 
 so that $f'(\sigma^2)^2 = \frac{1}{4}(\sigma^2)^{-1}$. Then, 
 
@@ -250,9 +250,9 @@ so that $f'(\sigma^2)^2 = \frac{1}{4}(\sigma^2)^{-1}$. Then,
 \end{align*}
 
 The estimated squared standard error replaces $\sigma^2$ with its estimate $\hat{\sigma}^2$ and is given by
-\begin{equation*}
+$$
 \widehat{\mathrm{se}}(\hat{\sigma}^2)^2 =  \hat{\sigma}^2/2T.
-\end{equation*}
+$$
 
 \hfill{}$\blacksquare$
 :::
@@ -282,9 +282,9 @@ $$
 
 where
 
-\begin{equation*}
+$$
 \widehat{\mathrm{se}}(f(\hat{\boldsymbol{\theta}}))^{2} = \mathbf{g}(\hat{\boldsymbol{\theta}})'\widehat{\mathrm{var}}(\hat{\boldsymbol{\theta}})\mathbf{g}(\hat{\boldsymbol{\theta}}).
-\end{equation*}
+$$
 
 
 ::: {#exm-delta-method-standard-error-for-hat-q-alpha-z .example name="Delta method standard error for $\\hat{q}_{\\alpha}^Z$"}
@@ -302,7 +302,7 @@ q_{\alpha}^Z
 \end{align*}
 
 Regarding $\mathrm{var}(\hat{\boldsymbol{\theta}})$, recall from Chapter @sec-Estimation-of-The-GWN-Model, in the GWN model: 
-\begin{equation*}
+$$
 \left(\begin{array}{c}
 \hat{\mu}\\
 \hat{\sigma}^2
@@ -313,11 +313,11 @@ Regarding $\mathrm{var}(\hat{\boldsymbol{\theta}})$, recall from Chapter @sec-Es
 \mathrm{se}(\hat{\mu})^{2} & 0\\
 0 & \mathrm{se}(\hat{\sigma}^2)^{2}
 \end{array}\right)\right)
-\end{equation*}
+$$
 
 for large enough $T$. I show below, using the delta method, that 
 
-\begin{equation*}
+$$
 \left(\begin{array}{c}
 \hat{\mu}\\
 \hat{\sigma}
@@ -328,7 +328,7 @@ for large enough $T$. I show below, using the delta method, that
 \mathrm{se}(\hat{\mu})^{2} & 0\\
 0 & \mathrm{se}(\hat{\sigma})^{2}
 \end{array}\right)\right)
-\end{equation*}
+$$
 
 Hence, 
 
@@ -433,11 +433,11 @@ The corresponding standard errors are:
 
 where 
 
-\begin{equation*}
+$$
 \mathrm{se}(\hat{q}_{\alpha}^Z) = \sqrt{\frac{\sigma^{2}}{T}\left[1+\frac{1}{2}\left(q_{\alpha}^{Z}\right)^{2}\right]}.
-\end{equation*}
+$$
 
-Remarks: 
+**Remarks**: 
 
 1.  $\mathrm{se}(\widehat{\mathrm{VaR}}_{\alpha}^{N})$ and $\mathrm{se}(\widehat{\mathrm{VaR}}_{\alpha}^{LN})$ increase with $W_{0}$, $\sigma$, and $q_{\alpha}^{Z}$, and decrease with $T$. 
 
@@ -1194,7 +1194,7 @@ sd(muhat.boot)
 
 and is equal (to three decimals) to the analytic standard error estimate
 computed earlier. This confirms that the nonparametric bootstrap accurately
-computes $\widehat{\mathrm{se}}(\hat{\mu}).$ Figure @fig-BootBruteForce
+computes $\widehat{\mathrm{se}}(\hat{\mu}).$ @fig-BootBruteForce
 shows the histogram and normal QQ-plot of the bootstrap estimates
 created with: 
 
@@ -1337,8 +1337,8 @@ These statistics can be computed directly from the components of `muhat.boot`
 c(muhat.boot$t0,mean(muhat.boot$t) - muhat.boot$t0, sd(muhat.boot$t))
 ```
 
-A histogram and nornal QQ-plot of the bootstrap values, shown in Figure
-@fig-BootPlotMethod, can be created using the `plot` method
+A histogram and nornal QQ-plot of the bootstrap values, shown in @fig-BootPlotMethod, 
+can be created using the `plot` method
 
 ```{r}
 #| label: fig-BootPlotMethod
@@ -1396,7 +1396,7 @@ sigmahat.boot
 plot(sigmahat.boot)
 ```
 
-The bootstrap distribution, shown in Figure @fig-BootPlotMethodSD,
+The bootstrap distribution, shown in @fig-BootPlotMethodSD,
 looks a bit non-normal.  The 95\% confidences intervals are computed using
 
 ```{r}
@@ -1620,7 +1620,8 @@ boot.bias[sim, "f3"] = summary(f3.bs)$bootBias
 }
 ```
 
-The histograms of $f_j(\hat{\boldsymbol{\theta}})$ values are displayed in Figure @fig-CerModelEstimationMCVaR. The dotted white lines indicate the true values, $f_j(\boldsymbol{\theta})$.  
+The histograms of $f_j(\hat{\boldsymbol{\theta}})$ values are displayed in @fig-CerModelEstimationMCVaR. 
+The dotted white lines indicate the true values, $f_j(\boldsymbol{\theta})$.  
 
 
 ```{r}
