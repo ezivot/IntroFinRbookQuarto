@@ -1,0 +1,845 @@
+# Single Index Model {#sec-Single-Index-Model}
+
+Updated: September 18, 2026
+
+Copyright © Eric Zivot 2026
+
+
+## Introduction
+
+To be completed
+
+Notes:
+
+1. For consistency follow the chapter format of the GWN model
+2. Give the model in excess return form - stress the interpretation and linkage later on to the CAPM and general factor models
+
+Outline
+
+1. Monte Carlo Simulation
+1. Single Index Model and Portfolio Theory
+    a.  portfolio optimization using SI covariance matrix   
+        i.  always pd, reduces number of estimated components in matrix.
+        ii.  Compare results with sample covariance matrix - in estimation chapter
+    b.  Risk analysis of asset and portfolios: factor risk reports
+
+The R packages used in this chapter are **corrplot**, **introcompfinr**, **xts**, and
+**PerformanceAnalytics**. 
+
+```{r}
+#| include: false
+
+suppressPackageStartupMessages(library(corrplot))
+suppressPackageStartupMessages(library(introcompfinr))
+suppressPackageStartupMessages(library(xts))
+suppressPackageStartupMessages(library(PerformanceAnalytics))
+options(digits=3)
+```
+
+
+## Motivation {#sec-si-motivation}
+
+The GWN model for monthly asset returns assumes that returns are jointly
+normally distributed with a constant mean vector and covariance matrix.
+This model captures many of the stylized facts for monthly asset returns.
+While the GWN model captures the covariances and correlations between
+different asset returns it does not explain where these covariances
+and correlations come from. The single index model is an extension
+of the GWN model that explains the covariance and correlation structure
+among asset returns as resulting from common exposures to an underlying
+market index. The intuition behind the single index model can be illustrated
+by examining some example monthly returns. 
+
+
+::: {#exm-monthly-returns-for-single-index-model-examples .example name="Monthly returns for single index model examples"}
+
+For the single index model examples in this chapter, consider the
+monthly adjusted closing prices on four Northwest stocks (with tickers
+in parentheses): Boeing (BA), Nordstrom (JWN), Microsoft (MSFT), Starbucks
+(SBUX). I will also use the monthly adjusted closing prices on the
+S\&P 500 index as the proxy for the market
+index. These prices are extracted from the **introcompfinr**
+package as follows:
+
+```{r}
+#| echo: true
+
+baPrices = to.monthly(baDailyPrices, OHLC=FALSE) 
+jwnPrices = to.monthly(jwnDailyPrices, OHLC=FALSE) 
+msftPrices = to.monthly(msftDailyPrices, OHLC=FALSE) 
+sbuxPrices = to.monthly(sbuxDailyPrices, OHLC=FALSE) 
+sp500Prices = to.monthly(sp500DailyPrices, OHLC=FALSE) 
+siPrices = merge(baPrices, jwnPrices, msftPrices, 
+                 sbuxPrices, sp500Prices)
+```
+
+The data sample is from January, 1998 through May, 2012 and returns
+are simple returns:
+
+```{r}
+#| echo: true
+
+smpl = "1998-01::2012-05" 
+siPrices = siPrices[smpl] 
+siRetS = na.omit(Return.calculate(siPrices, method="simple")) 
+```
+
+```{r}
+#| label: fig-SIexamplePrices
+#| echo: false
+#| fig-cap: Monthly closing prices on four Northwest stocks and the S\&P 500 index.
+#| out-width: 80%
+#| fig-asp: 0.75
+#| fig-align: center
+
+plot(siPrices, multi.panel=TRUE, yaxis.same=FALSE, main="",
+     lwd=2, col="blue")
+```
+
+Prices are shown in @fig-SIexamplePrices. The time plots of prices show some common movements among the stocks that are similar to movements of the S\&P 500 index . During the dot-com
+boom-bust at the beginning of the sample, except for Starbucks, prices rise during the boom and fall during the bust. For all assets, prices rise during the five year boom period prior to the financial crisis, fall sharply after 2008 during the bust, and then rise afterward.
+
+@fig-SIexampleReturns shows time plots of the monthly
+returns on each stock together with the return on the S\&P 500 index.^[The `plot()` method for **xts** objects creates a plot object. Calling `lines()` adds additional series to the plot. You only want to print the final plot object.]
+
+
+```{r}
+#| label: fig-SIexampleReturns
+#| echo: false
+#| fig-cap: Monthly returns on four Northwest stocks. The orange line in each panel is
+#|   the monthly return on the stock, and the blue line is the monthly return on the
+#|   S\&P 500 index.
+#| out-width: 80%
+#| fig-asp: 0.75
+#| fig-align: center
+
+plot.obj = plot(siRetS[, 1:4], multi.panel=TRUE, lwd=2, col="blue", main="")
+plot.obj = lines(siRetS[, 5], on=1:4, col="orange",lwd=2)
+plot.obj
+```
+
+@fig-SIexampleReturns shows that the individual stock
+returns are more volatile than the S\&P 500 returns, and that the
+movement in stock returns (orange lines) tends to follow the movements
+in the S\&P 500 returns indicating positive covariances and correlations.
+
+
+The sample return covariance and correlation matrices are computed
+using:
+
+```{r}
+#| echo: true
+covmatHat = cov(siRetS)
+cormatHat = cov2cor(covmatHat)
+```
+
+The sample correlation matrix is visualized in @fig-SIsampleCorrelationMatrix
+using the **corrplot** function `corrplot.mixed()`:
+
+```{r}
+#| label: fig-SIsampleCorrelationMatrix
+#| echo: true
+#| fig-cap: Sample correlation matrix of monthly returns.
+#| out-width: 80%
+#| fig-asp: 0.75
+#| fig-align: center
+
+corrplot.mixed(cormatHat, upper="ellipse")
+```
+
+All returns are positively correlated and each stock return has the
+highest positive correlation with the S\&P 500 index. 
+
+The positive covariance and correlation of each stock return with
+the market return can also be visualized with scatterplots as illustrated
+in @fig-SIexampleScatter:
+
+```{r}
+#| label: fig-SIexampleScatter
+#| echo: false
+#| fig-cap: Monthly return scatterplots of each stock vs. the S\&P 500 index.
+#| out-width: 80%
+#| fig-asp: 0.75
+#| fig-align: center
+
+siRetSmat = coredata(siRetS) 
+par(mfrow=c(2,2)) 
+plot(siRetSmat[, "SP500"], siRetSmat[, "BA"], 
+     main="S&P 500 and Boeing", col="cornflowerblue",
+     lwd=2, pch=16, cex=1.5, xlab="S&P 500", 
+     ylab="BA", ylim=c(-0.4, 0.4)) 
+abline(h=0,v=0)
+plot(siRetSmat[, "SP500"], siRetSmat[, "JWN"], 
+     main="S&P 500 and Nordstrom", col="cornflowerblue",
+     lwd=2, pch=16, cex=1.5, xlab="S&P 500", 
+     ylab="JWN", ylim=c(-0.4, 0.4)) 
+abline(h=0,v=0)
+plot(siRetSmat[, "SP500"], siRetSmat[, "MSFT"], 
+     main="S&P 500 and Microsoft", col="cornflowerblue",
+     lwd=2, pch=16, cex=1.5, xlab="S&P 500", 
+     ylab="MSFT", ylim=c(-0.4, 0.4)) 
+abline(h=0,v=0)
+plot(siRetSmat[, "SP500"], siRetSmat[, "SBUX"], 
+     main="S&P 500 and Starbucks", col="cornflowerblue",
+     lwd=2, pch=16, cex=1.5, xlab="S&P 500", 
+     ylab="SBUX", ylim=c(-0.4, 0.4)) 
+abline(h=0,v=0)
+```
+
+The scatterplots show that as the market index return increases, the returns
+on each stock increase in a linear way. 
+\hfill{}$\blacksquare$
+:::
+
+## William Sharpe's SI Model {#sec-Sharpe-si-model}
+\index{William Sharpe's SI model}
+
+-  What is SI model used for? Extension of the GWN model to capture the stylized fact of a common component in the returns of many assets.
+    -  Provides an explanation as to why assets are correlated with each other: share an exposure to a common source. 
+    -  Provides a simplification of the covariance matrix of a large number of asset returns. 
+    -  Provides additional intuition about risk reduction through diversification. 
+-  Example of a factor model for asset returns. Factor models are used heavily in academic theories of asset pricing and in industry for explaining asset returns, portfolio construction and risk analysis. Sharpe's SI model is the most widely used. 
+-  Motivate by showing positive correlation between individual asset returns and market index (sp500)
+-  Mostly used for simple returns; but can be used for cc returns for risk analysis.
+
+
+Let $R_{it}$ denote the simple return on asset $i$ over the investment
+horizon between times $t-1$ and $t$. Let $R_{Mt}$ denote the simple
+return on a well diversified market index portfolio, such as the S\&P
+500 index. The *single index (SI) model*\index{Single index model} for $R_{it}$ has the
+form:^[The single index model is also called the* market model* or the
+*single factor model*.\index{Single factor model}]
+
+$$
+R_{it} = \beta_{i,0}+\beta_{i,M}R_{Mt}+\varepsilon_{it},
+$$ {#eq-SI-SIreturn}
+$$
+R_{Mt} \sim iid\,N(\mu_{M},\sigma_{M}^{2}),
+$$ {#eq-SI-SImarket}
+$$
+\varepsilon_{it} \sim \mathrm{GWN}\,(0,\sigma_{\varepsilon,i}^{2}),
+$$ {#eq-SI-SIerror}
+$$
+\mathrm{cov}(R_{Mt},\varepsilon_{is}) = 0, ~ for ~ all ~  t ~ and ~ s ,
+$$ {#eq-SI-SImarketError}
+$$
+\mathrm{cov}(\varepsilon_{it},\varepsilon_{js}) = 0,\,\mathrm{for\,all}\,i\neq j\,\mathrm{and\,all}\,t\,\mathrm{and}\,s.
+$$ {#eq-SI-errorAssets}
+
+
+The SI model @eq-SI-SIreturn - @eq-SI-errorAssets assumes that all individual asset returns, $R_{it},$ are: (1) iid, (2) normally distributed, (3) a linear function of the market index return, $R_{Mt},$
+and an asset specific error term, $\varepsilon_{it}.$ The market index, $R_{Mt}$ is assumed to be independent of the asset specific error term $\varepsilon_{it}$.  In contrast to the GWN model, in the SI model the asset specific error terms are assumed to be independent across assets. That is, $\mathrm{cov}(\varepsilon_{it},\varepsilon_{js}) = 0$ for all $i \ne j$. 
+
+The SI model is an important extension of the regression form of the GWN model. In the
+SI model individual asset returns are explained by two distinct sources:
+(1) a common (to all assets) market-wide source $R_{Mt}$, and (2) an
+asset specific source $\varepsilon_{it}$. $R_{Mt}$ represents common news that impacts all assets and $\varepsilon_{it}$ represents news that is only specific to asset $i$. In the SI model, different assets are contemporaneously correlated because they share an exposure to a common market index. 
+
+### Interpretation of single index model 
+\index{SI interpretation}
+
+*Interpretation of $\beta_{i,M}$*
+
+First, consider the interpretation of $\beta_{i,M}$ in @eq-SI-SIreturn.
+The coefficient $\beta_{i,M}$ is called the asset's *market exposure* \index{Market exposure}
+or *market "beta"* \index{Market beta}. It represents the slope coefficient in
+the linear relationship between $R_{it}$ and $R_{Mt}$. Because it
+is assumed that $R_{Mt}$ and $\varepsilon_{it}$ are independent, $\beta_{i,M}$
+can be interpreted as the partial derivative 
+$$
+\frac{\partial R_{it}}{\partial R_{Mt}}=\frac{\partial}{\partial R_{Mt}}(\beta_{i,0}+\beta_{i,M}R_{Mt}+\varepsilon_{it})=\beta_{i,M}.
+$$
+Then, for small changes in $R_{Mt}$ and
+holding $\varepsilon_{it}$ fixed, I have the approximation
+$$
+\frac{\Delta R_{it}}{\Delta R_{Mt}}\approx\beta_{i,M}\Rightarrow\Delta R_{it}\approx\beta_{i,M}\times\Delta R_{Mt},
+$$
+Hence, for a given change in the market return $\beta_{i,M}$ determines
+the magnitude of the response of asset $i's$ return. The larger (smaller)
+is $\beta_{i,M}$ the larger (smaller) is the response of asset $i$
+to the movement in the market return. 
+
+
+The coefficient $\beta_{i,M}$ in @eq-SI-SIreturn has another
+interpretation that is directly related to portfolio risk budgeting. To see this, assume that the market index is a diversified portfolio of $N$ assets 
+
+$$
+R_{Mt} = x_1R_1+\cdots + x_NR_N.
+$$
+
+In @sec-Risk-Budgeting I derived the following results using the $\sigma-\beta$ decomposition:
+
+
+$$
+\beta_{i,M} =\frac{\mathrm{cov}(R_{it},R_{Mt})}{\mathrm{var}(R_{Mt})}=\frac{\sigma_{iM}}{\sigma_{M}^{2}},
+$$ {#eq-SI-marketBeta} 
+$$
+\mathrm{MCR}_{i}^{\sigma_{M}}=\beta_{i,M}\sigma_{M}, 
+$$ {#eq-SI-MCR-beta}
+$$
+\mathrm{CR}_{i}^{\sigma_{M}} = x_{i}\beta_{i,M}\sigma_{M} 
+$$ {#eq-SI-CR-beta} 
+$$
+\mathrm{PCR}_{i}^{\sigma_{M}} = x_{i}\beta_{i,M} 
+$${#eq-SI-CR-beta}
+
+Here, you see that $\beta_{i,M}$ is the "beta" of asset $i$ with
+respect to the market index portfolio and is proportional to the marginal
+contribution of asset $i$ to the volatility of the market index portfolio.
+Therefore, assets with large (small) values of $\beta_{i,M}$ have large
+(small) contributions to the volatility of the market index portfolio. In
+this regard, $\beta_{i,M}$ can be thought of as a measure of an asset's portfolio
+risk. Increasing allocations to assets with high (low) $\beta_{i,M}$
+values will increase (decrease) portfolio risk (as measured by portfolio
+volatility). In particular, when $\beta_{i,M}=1$ asset $i's$ percent
+contribution to the volatility of the market portfolio is equal to its allocation
+weight. When $\beta_{i,M}>1$ asset $i's$ percent contribution to the
+volatility of the market portfolio is greater than its allocation
+weight, and when $\beta_{i,M}<1$ asset $i's$ percent contribution
+to the volatility of the market portfolio is less than its allocation
+weight.
+
+
+The derivation of @eq-SI-marketBeta using @eq-SI-SIreturn - @eq-SI-errorAssets is straightforward. Using
+@eq-SI-SIreturn I can write
+\begin{align*}
+\mathrm{cov}(R_{it},R_{Mt}) & =\mathrm{cov}(\beta_{i,0}+\beta_{i,M}R_{Mt}+\varepsilon_{it},R_{Mt})\\
+ & =\mathrm{cov}(\beta_{i,M}R_{Mt},R_{Mt})+\mathrm{cov}(\varepsilon_{it},R_{Mt})\\
+ & =\beta_{i,M}\mathrm{var}(R_{Mt})\text{ }\ (\text{since }\mathrm{cov}(\varepsilon_{it},R_{Mt})=0)\\
+ & \Rightarrow\beta_{i,M}=\frac{\mathrm{cov}(R_{it},R_{Mt})}{\mathrm{var}(R_{Mt})} = \frac{\sigma_{iM}}{\sigma_{M}^{2}}.
+\end{align*}
+
+*Interpretation of $\beta_{i,0}$*
+
+The parameter $\beta_{i,0}$ is the intercept in the linear SI model relationship between $R_{it}$ and $R_{Mt}$. To interpret $\beta_{i,0}$, use @eq-SI-SIreturn and take expectations:
+
+
+\begin{align*}
+E[R_{it}] &= \mu_{i} = \beta_{i,0} + \beta_{i,M}E[R_{Mt}] + E[\varepsilon_{it}] \\
+&= \beta_{i,0} + \beta_{i,M} \mu_{M}
+\end{align*}
+
+Solving for $\beta_{i,0}$ gives
+$$
+\beta_{i,0}=\mu_{i}-\beta_{i,M}\mu_{M}.
+$$ {#eq-SI-SIintercept}
+
+Hence, the intercept term $\beta_{i,0}$ can be interpreted as the
+average return on asset $i$ that is in excess of the average return
+due to the market. 
+
+Using @eq-SI-SIintercept, the SI model model @eq-SI-SIreturn can be re-expressed as
+$$
+\begin{aligned}
+R_{it} &= \beta_{i,0} + \beta_{i,M}R_{Mt} + \varepsilon_{it} \\
+       &= \mu_{i} - \beta_{i,M}\mu_{M} + \varepsilon_{it} \\
+       &= \mu_{i} + \beta_{i,M}(R_{Mt} - \mu_{M}) + \varepsilon_{it}. 
+\end{aligned}
+$$ {#eq-SI-SImeanAdj}
+
+*Interpretation of $R_{Mt}$ and $\varepsilon_{it}$*
+
+To aid in the interpretation of $R_{Mt}$ and $\varepsilon_{it}$ in
+@eq-SI-SIreturn, consider @eq-SI-SImeanAdj expressed in terms of asset $i's$ suprise return $R_{it}-\mu_{i}$:
+$$
+R_{it}-\mu_{i} = \beta_{i,M}(R_{Mt} - \mu_{M}) + \varepsilon_{it}.
+$$ {#eq-SI-supriseReturn}
+
+In @eq-SI-supriseReturn, you see that asset $i's$ suprise return $R_{it}-\mu_{i}$ is equal to a component proportional to the surprise return on the market index, $\beta_{i,M}(R_{Mt}-\mu_{M})$, and an asset specific surprise component, $\varepsilon_{it}$. You can think of $R_{Mt}-\mu_{M}$ as capturing unexpected "market-wide" news at time $t$ that is common to all assets,
+and $\beta_{i,M}$ captures the sensitivity or exposure of asset $i$
+to this unexpected market-wide news. @eq-SI-supriseReturn shows that an asset's surprise return is zero if the market's surprise return is zero and the asset specific surprise return is zero (or the two surprise returns exactly counter-act each other). An example of unexpected market-wide news is the release of information by the government about the national unemployment rate. If the news is good then you might expect $R_{Mt}-\mu_{M}$ to increase because
+general business conditions are good. Different assets will respond
+differently to this news and this differential impact is captured
+by $\beta_{i,M}.$ Assets with positive values of $\beta_{i,M}$ will
+see their returns increase because of good unexpected market-wide news, and assets
+with negative values of $\beta_{i,M}$ will see their returns decrease
+because of this good news. Hence, the magnitude and direction of correlation
+between asset returns can be partially explained by their exposures
+to common unexpected market-wide news. Because $\varepsilon_{it}$ is assumed to
+be independent of $R_{Mt}$ and of $\varepsilon_{jt}$, you can think
+of $\varepsilon_{it}$ as capturing unexpected specific news to asset $i$ that
+is unrelated to market news or to unexpected specific news to any other asset
+$j$. Examples of unexpected asset-specific news are company earnings reports
+and reports about corporate restructuring (e.g., CEO resigning). Hence,
+unexpected specific news for asset $i$ only effects the return on asset $i$
+and not the return on any other asset $j$. 
+
+The GWN model
+$$
+R_{it} = \mu_{i} + \varepsilon_{it}
+$$ 
+does not distinguish between overall market and asset
+specific news and so allows the unexpected news shocks $\varepsilon_{it}$
+to be correlated across assets. Some news is common to all assets
+but some is specific to a given asset and the GWN model error includes
+both types of news. In this regard, the GWN model for an asset's return
+is not a special case of the SI model when $\beta_{i,M}=0$ because
+the SI model assumes that $\varepsilon_{it}$ is uncorrelated across
+assets. 
+
+### Statistical properties of returns in the SI model
+
+\index{SI statistical properties}
+In this sub-section I present and derive the statistical properties
+of returns in the SI model @eq-SI-SIreturn - @eq-SI-errorAssets.
+I will derive two types of statistical properties: unconditional
+and conditional. The unconditional properties are based on unconditional
+or marginal distribution of returns. The conditional properties are
+based on the distribution of returns conditional on the value of the
+market return.
+
+#### Unconditional properties
+\index{SI unconditional properties}
+The unconditional properties of returns in the SI model @eq-SI-SIreturn
+- @eq-SI-errorAssets are summarized in the following Proposition:
+
+::: {#prp-unconditional-properties-of-returns-in-the-si-model .proposition name="Unconditional properties of returns in the SI model"}
+Let returns be described by the SI model @eq-SI-SIreturn
+- @eq-SI-errorAssets. Then
+:::
+$$
+E[R_{it}] =  \mu_{i}=\beta_{i,0}+\beta_{i,M}\mu_{M},
+$$ {#eq-SI-SImean}
+$$
+\mathrm{var}(R_{it})  =  \sigma_{i}^{2}=\beta_{i,M}^{2}\sigma_{M}^{2}+\sigma_{\varepsilon,i}^{2},
+$$ {#eq-SI-SIvariance}
+$$
+\mathrm{cov}(R_{it},R_{jt}) = \sigma_{ij}=\beta_{i,M}\beta_{j}\sigma_{M}^{2},
+$$ {#eq-SI-SIcovariance}
+$$
+\mathrm{cor}(R_{it},R_{jt}) = \rho_{ij}=\frac{\beta_{i,M}\beta_{j}\sigma_{M}^{2}}{\sqrt{(\beta_{i,M}^{2}\sigma_{M}^{2}+\sigma_{\varepsilon,i}^{2})(\beta_{j}^{2}\sigma_{M}^{2}+\sigma_{\varepsilon,j}^{2})}},
+$$ {#eq-SI-SIcorrelation}
+$$
+R_{it} \sim iid\,N(\mu_{i},\sigma_{i}^{2})=N(\beta_{i,0}+\beta_{i,M}\mu_{M},\beta_{i,M}^{2}\sigma_{M}^{2}+\sigma_{\varepsilon,i}^{2})
+$$ {#eq-SI-SIdistribution}
+
+The derivations of these properties are straightforward and are left as end-of-chapter exercises. 
+
+
+From property @eq-SI-SIvariance, an asset's return variance
+is additively decomposed into two independent components:
+$$
+\begin{aligned}
+\mathrm{var}(R_{it}) & = & \sigma_{i}^{2}=\beta_{i,M}^{2}\sigma_{M}^{2}+\sigma_{\varepsilon,i}^{2}\\
+\mathrm{(total\,asset\,}i\,\mathrm{variance} & = & \mathrm{market\,variance}+\mathrm{asset\,specific\,variance)}
+\end{aligned}
+$$ {#eq-SI-varianceDecomposition}
+Here, $\beta_{i,M}^{2}\sigma_{M}^{2}$ is the contribution of the market
+index return $R_{Mt}$ to the total variance of asset $i$, and $\sigma_{\varepsilon,i}^{2}$
+is the contribution of the asset specific component $\varepsilon_{it}$
+to the total return variance, respectively. If you divide both sides
+of @eq-SI-varianceDecomposition by $\sigma_{i}^{2}$ you get
+\begin{eqnarray*}
+1 & = & \frac{\beta_{i,M}^{2}\sigma_{M}^{2}}{\sigma_{i}^{2}}+\frac{\sigma_{\varepsilon,i}^{2}}{\sigma_{i}^{2}}\\
+ & = & R^2 +(1-R^{2}),
+\end{eqnarray*}
+where
+$$
+R^{2}=\frac{\beta_{i,M}^{2}\sigma_{M}^{2}}{\sigma_{i}^{2}}
+$$ {#eq-SI-R2}
+is the proportion of asset $i's$ variance that is explained by the
+variability of the market return $R_{Mt}$ and 
+$$
+1-R^{2}=\frac{\sigma_{\varepsilon,i}^{2}}{\sigma_{i}^{2}}
+$$ {#eq-SI-oneMinusR2}
+is the proportion of asset $i's$ variance that is explained by the
+variability of the asset specific component $\varepsilon_{it}.$ 
+
+-  Sharpe's rule of thumb. A typical stock has $R^{2}=0.30$. That is, 30\% of an asset's variability is explained by the market movements.  -  $R^{2}$ can be interpreted as the fraction of risk that is non-diversifiable, $1-R^{2}$ gives the fraction of risk that is diversifiable. Come back to this point after discussing the SI model and portfolios below. 
+-  This is an example of factor risk budgeting 
+
+
+Properties @eq-SI-SIcovariance and @eq-SI-SIcorrelation
+show how assets are correlated in the SI model. In particular,
+
+-  $\sigma_{ij}=0$ if $\beta_{i,M}=0$ or $\beta_{j}=0$ or both. Assets $i$ and $j$ are uncorrelated if asset $i$ or asset $j$ or both do not respond to market news.
+-  $\sigma_{ij}>0$ if $\beta_{i,M},\beta_{j}>0$ or $\beta_{i,M},\beta_{j}<0$ . Assets $i$ and $j$ are positively correlated if both assets respond to market news in the same direction. 
+-  $\sigma_{ij}<0$ if $\beta_{i,M}>0$ and $\beta_{j}<0$ or if $\beta_{i,M}<0$ and $\beta_{j}>0$. Assets $i$ and $j$ are negatively correlated if they respond to market news in opposite directions. 
+
+
+From @eq-SI-SIcorrelation, assets $i$ and $j$ are perfectly
+correlated ($\rho_{ij}=\pm1)$ only if $\sigma_{\varepsilon,i}=\sigma_{\varepsilon,j}=0$.
+
+
+Property @eq-SI-SIdistribution shows that the distribution
+of asset returns in the SI model is normal with mean and variance
+given by @eq-SI-SImean and @eq-SI-SIvariance, respectively. 
+
+In summary, the unconditional properties of returns in the SI model
+are similar to the properties of returns in the GWN model: Returns
+are covariance stationary with constant means, variances, and covariances.
+Returns on different assets can be contemporaneously correlated and
+all asset returns uncorrelated over time. The SI model puts more structure
+on the expected returns, variances and covariances than the GWN model
+and this allows for a deeper understanding of the behavior of asset
+returns.
+
+
+#### Conditional properties
+\index{SI conditional properties}
+The properties of returns in the SI model @eq-SI-SIreturn
+- @eq-SI-errorAssets conditional on $R_{Mt}=r_{Mt}$ are:
+\begin{eqnarray}
+E[R_{it}|R_{Mt} & = & r_{Mt}]=\beta_{i,0}+\beta_{i,M}r_{Mt},\\
+\mathrm{var}(R_{it}|R_{Mt} & = & r_{Mt}]=\sigma_{\varepsilon,i}^{2},\\
+\mathrm{cov}(R_{it},R_{jt}|R_{Mt} & = & r_{Mt}]=0,\\
+\mathrm{cor}(R_{it},R_{jt}|R_{Mt} & = & r_{Mt}]=0,\\
+R_{it}|R_{Mt} & \sim & iid\,N(\beta_{i,0}+\beta_{i,M}r_{Mt},\sigma_{\varepsilon,i}^{2}).
+\end{eqnarray}
+
+Recall, conditioning on a random variable means you observe its value.
+In the SI model, once you observe the market return two important things
+happen: (1) an asset's return variance reduces to its asset specific
+variance; and (2) asset returns become uncorrelated.
+
+### SI model and portfolios
+\index{SI model}
+A nice feature of the SI model for asset returns is that it also holds
+for a portfolio of asset returns. This property follows because asset
+returns are a linear function of the market return. To illustrate,
+consider a two asset portfolio with investment weights $x_{1}$and
+$x_{2}$ where each asset return is explained by the SI model:
+\begin{eqnarray*}
+R_{1t} & = & \beta_{1,0}+\beta_{1,M}R_{Mt}+\varepsilon_{1t},\\
+R_{2t} & = & \beta_{2,0}+\beta_{2,M}R_{Mt}+\varepsilon_{2t}.
+\end{eqnarray*}
+Then the portfolio return is
+$$
+\begin{aligned}
+R_{p,t} & =x_{1}R_{1t}+x_{2}R_{2t}\\
+ & =x_{1}(\beta_{1,0}+\beta_{1,M}R_{Mt}+\varepsilon_{1t})+x_{2}(\beta_{2,0}+\beta_{2,M}R_{Mt}+\varepsilon_{2t})\\
+ & =\left(x_{1}\beta_{1,0}+x_{2}\beta_{2,0}\right)+\left(x_{1}\beta_{1,M}+x_{2}\beta_{2,M}\right)R_{Mt}+\left(x_{1}\varepsilon_{1t}+x_{2}\varepsilon_{2t}\right)\\
+ & =\beta_{p,0}+\beta_{p,M}R_{Mt}+\varepsilon_{p,t}
+\end{aligned}
+$$
+where $\beta_{p,0}=x_{1}\beta_{1,0}+x_{2}\beta_{2,0}$, $\beta_{p,M}=x_{1}\beta_{1,M}+x_{2}\beta_{2,M}$,
+and $\varepsilon_{p,t}=x_{1}\varepsilon_{1t}+x_{2}\varepsilon_{2t}$. 
+
+This result easily extends to portfolios with $N$ assets. Let $R_{it} = \beta_{i,0}+\beta_{i,M}R_{Mt}+\varepsilon_{it}$ for $i=1,\ldots,N$, and let $R_{p,t}=\sum_{i=1}^Nx_{i}R_{it}$. Then
+
+$$
+R_{p,t} = \beta_{p,0}+\beta_{p,M}R_{Mt}+\varepsilon_{p,t} 
+$$ {#eq-SI-SIportfolio}
+where 
+$$
+\begin{aligned}
+\beta_{p,0} &=x_{1}\beta_{1,0}+ \cdots +x_{N}\beta_{N,0} \\
+\beta_{p,M} &= x_{1}\beta_{1,M}+ \cdots +x_{N}\beta_{N,M}
+\end{aligned}
+$$
+
+
+#### SI model and large portfolios
+
+Consider an equally weighted portfolio of $N$ assets, where $N$
+is a large number (e.g. $N=500$) whose returns are described by the
+SI model. Here, $x_{i}=1/N$ for $i=1,\ldots,N$. Then the portfolio
+return is
+$$
+\begin{aligned}
+R_{p,t} & =\sum_{i=1}^{N}x_{i}R_{it}\\
+ & =\sum_{i=1}^{N}x_{i}\left(\beta_{i,0}+\beta_{i,M}R_{Mt}+\varepsilon_{it}\right)\\
+ & =\sum_{i=1}^{N}x_{i}\beta_{i,0}+\left(\sum_{i=1}^{N}x_{i}\beta_{i,M}\right)R_{Mt}+\sum_{i=1}^{N}x_{i}\varepsilon_{it}\\
+ & =\frac{1}{N}\sum_{i=1}^{N}\beta_{i,0}+\left(\frac{1}{N}\sum_{i=1}^{N}\beta_{i,M}\right)R_{Mt}+\frac{1}{N}\sum_{i=1}^{N}\varepsilon_{it}\\
+ & =\bar{\beta_{0}}+\bar{\beta}R_{Mt}+\bar{\varepsilon}_{t},
+\end{aligned}
+$$
+where $\bar{\beta}_{i,0}=\frac{1}{N}\sum_{i=1}^{N}\beta_{i,0}$, $\bar{\beta}_{i,M}=\frac{1}{N}\sum_{i=1}^{N}\beta_{i,M}$
+and $\bar{\varepsilon}_{t}=\frac{1}{N}\sum_{i=1}^{N}\varepsilon_{it}$.
+Now, 
+$$
+\mathrm{var}(\bar{\varepsilon}_{t})=\mathrm{var}\left(\frac{1}{N}\sum_{i=1}^{N}\varepsilon_{it}\right)=\frac{1}{N^{2}}\sum_{i=1}^{N}\mathrm{var}(\varepsilon_{it})=\frac{1}{N}\left(\frac{1}{N}\sum_{i=1}^{N}\sigma_{\varepsilon,i}^{2}\right)=\frac{1}{N}\bar{\sigma}^{2}
+$$
+where $\bar{\sigma}^{2}=\frac{1}{N}\sum_{i=1}^{N}\sigma_{\varepsilon,i}^{2}$
+is the average of the asset specific variances. For large $N$, $\frac{1}{N}\bar{\sigma}^{2}\approx0$
+and you have the Law of Large Numbers result
+$$
+\bar{\varepsilon}_{t}=\frac{1}{N}\sum_{i=1}^{N}\varepsilon_{it}\approx E[\varepsilon_{it}]=0.
+$$
+As a result, in a large equally weighted portfolio you have the following:
+
+-  $R_{p,t}\approx\bar{\beta}_{i,0}+\bar{\beta}_{i,M}R_{Mt}:$ all non-market asset-specific risk is diversified away and only market risk remains.
+-  $\mathrm{var}(R_{p,t})=\bar{\beta}^{2}\mathrm{var}(R_{Mt})\Rightarrow\mathrm{SD}(R_{p,t})=|\bar{\beta}|\times\mathrm{SD}(R_{Mt}):$ portfolio volatility is proportional to market volatility where the factor of proportionality is the absolute value of portfolio beta.
+-  $R^{2}\approx1:$ Approximately 100\% of portfolio variance is due to market variance.
+-  $\bar{\beta}\approx1$. A large equally weighted portfolio resembles the market portfolio (e.g., as proxied by the S\&P 500 index) and so the beta of a well diversified portfolio will be close to the beta of the market portfolio which is one by definition.^[The S\&P 500 index is a value weighted index and so is not equal to an equally weighted portfolio of the stocks in the S\&P 500 index. However, since most stocks in the S\&P 500 index have large market capitalizations the values weights are not too different from equal weights.]
+
+
+These results help us to understand the type of risk that gets diversified
+away and the type of risk that remains when you form diversified portfolios.
+Asset specific risk, which is uncorrelated across assets, gets diversified
+away whereas market risk, which is common to all assets, does not
+get diversified away. 
+
+-  (Relate to average covariance calculation from portfolio theory chapter). 
+-  Related to asset R2 discussed earlier. R2 of an asset shows the portion of risk that cannot be diversified away when forming portfolios.
+
+
+## The SI model in matrix notation {#sec-si-model-matrix}
+
+-  Need to emphasize that the SI model covariance matrix is always positive definite. This is an important result because it allows for the mean-variance analysis of very large portfolios. 
+
+
+For $i=1,\ldots,N$ assets, stacking @eq-SI-SIreturn gives
+the SI model in matrix notation
+$$
+\left(\begin{array}{c}
+R_{1t}\\
+\vdots\\
+R_{Nt}
+\end{array}\right)=\left(\begin{array}{c}
+\beta_{1,0}\\
+\vdots\\
+\beta_{N,0}
+\end{array}\right)+\left(\begin{array}{c}
+\beta_{1,M}\\
+\vdots\\
+\beta_{N,M}
+\end{array}\right)R_{Mt}+\left(\begin{array}{c}
+\varepsilon_{1t}\\
+\vdots\\
+\varepsilon_{Nt}
+\end{array}\right),
+$$
+or
+$$
+\mathbf{R}_{t}=\boldsymbol{\beta}_{0}+\boldsymbol{\beta}_{M} R_{Mt}+\boldsymbol{\varepsilon}_{t}.
+$$ {#eq-SI-SImatrix}
+The unconditional statistical properties of returns @eq-SI-SImean,
+@eq-SI-SIvariance, @eq-SI-SIcovariance and @eq-SI-SIdistribution
+can be re-expressed using matrix notation as follows:
+$$
+E[\mathbf{R}_{t}] = \boldsymbol{\mu}=\boldsymbol{\beta}_{0}+\boldsymbol{\beta}_{M}\mu_{M},
+$$ {#eq-SI-SImatrixMean}
+$$
+\mathrm{var}(\mathbf{R}_{t}) = \boldsymbol{\Sigma}=\sigma_{M}^{2}\boldsymbol{\beta}_{M} \boldsymbol{\beta}_{M}^{\prime}+\mathbf{D},
+$$ {#eq-SI-SImatrixVariance}
+$$
+\mathbf{R}_{t} \sim  iid\,N(\boldsymbol{\mu},\boldsymbol{\Sigma})=N(\boldsymbol{\beta}_{0}+\boldsymbol{\beta}_{M}\mu_{M},\sigma_{M}^{2}\boldsymbol{\beta}_{M} \boldsymbol{\beta}_{M}^{\prime} +\mathbf{D}),
+$$ {#eq-SI-SImatrixDistribution}
+where 
+\begin{eqnarray}
+\mathbf{D} & = & \mathrm{var}(\boldsymbol{\varepsilon}_{t})=\left(\begin{array}{cccc}
+\sigma_{\varepsilon,1}^{2} & 0 & \cdots & 0\\
+0 & \sigma_{\varepsilon,2}^{2} & \cdots & 0\\
+\vdots & \vdots & \ddots & \vdots\\
+0 & 0 & \cdots & \sigma_{\varepsilon,N}^{2}
+\end{array}\right)\\
+ & = & \mathrm{diag}(\sigma_{\varepsilon,1}^{2},\sigma_{\varepsilon,1}^{2},\ldots,\sigma_{\varepsilon,N}^{2}).\nonumber 
+\end{eqnarray}
+
+The derivation of the SI model covariance matrix @eq-SI-SImatrixVariance
+is
+\begin{eqnarray*}
+\mathrm{var}(\mathbf{R}_{t}) & = & \boldsymbol{\Sigma}=\boldsymbol{\beta}_{M} \mathrm{var}(R_{Mt})\boldsymbol{\beta}_{M}^{\prime}+\mathrm{var}(\boldsymbol{\varepsilon}_{t})\\
+ & = & \sigma_{M}^{2}\boldsymbol{\beta}_{M} \boldsymbol{\beta}_{M}^{\prime}+\mathbf{D},
+\end{eqnarray*}
+which uses the assumption that the market return $R_{Mt}$ is uncorrelated
+will all asset specific error terms in $\varepsilon_{t}$. 
+
+::: {#exm-si-covariance-matrix-for-three-asset-portfolio .example name="SI covariance matrix for three asset portfolio."}
+It is useful to examine the SI covariance matrix @eq-SI-SImatrixVariance
+for a three asset portfolio. In this case, you have 
+\begin{align*}
+R_{it} & =\beta_{i,0}+\beta_{i,M}R_{Mt}+\varepsilon_{it},\text{ }i=1,2,3\\
+\sigma_{i}^{2} & =\mathrm{var}(R_{it})=\beta_{i,M}^{2}\sigma_{M}^{2}+\sigma_{\varepsilon,i}^{2}\\
+\sigma_{ij} & =\mathrm{cov}(R_{it},R_{jt})=\sigma_{M}^{2}\beta_{i,M}\beta_{j,M}
+\end{align*}
+The $3\times3$ covariance matrix is
+\begin{align*}
+\Sigma & =\left(\begin{array}{ccc}
+\sigma_{1}^{2} & \sigma_{12} & \sigma_{13}\\
+\sigma_{12} & \sigma_{2}^{2} & \sigma_{23}\\
+\sigma_{13} & \sigma_{23} & \sigma_{3}^{2}
+\end{array}\right)\\
+ & =\left(\begin{array}{ccc}
+\beta_{1,M}^{2}\sigma_{M}^{2}+\sigma_{\varepsilon,1}^{2} & \sigma_{M}^{2}\beta_{1,M}\beta_{2,M} & \sigma_{M}^{2}\beta_{1,M}\beta_{3,M}\\
+\sigma_{M}^{2}\beta_{1,M}\beta_{2,M} & \beta_{2,M}^{2}\sigma_{M}^{2}+\sigma_{\varepsilon,2}^{2} & \sigma_{M}^{2}\beta_{2,M}\beta_{3,M}\\
+\sigma_{M}^{2}\beta_{1,M}\beta_{3,M} & \sigma_{M}^{2}\beta_{2,M}\beta_{3,M} & \beta_{3,M}^{2}\sigma_{M}^{2}+\sigma_{\varepsilon,3}^{2}
+\end{array}\right)\\
+ & =\sigma_{M}^{2}\left(\begin{array}{ccc}
+\beta_{1,M}^{2} & \beta_{1,M}\beta_{2,M} & \beta_{1,M}\beta_{3,M}\\
+\beta_{1,M}\beta_{2,M} & \beta_{2,M}^{2} & \beta_{2,M}\beta_{3,M}\\
+\beta_{1,M}\beta_{3,M} & \beta_{2,M}\beta_{3,M} & \beta_{3,M}^{2}
+\end{array}\right)+\left(\begin{array}{ccc}
+\sigma_{\varepsilon,1}^{2} & 0 & 0\\
+0 & \sigma_{\varepsilon,2}^{2} & 0\\
+0 & 0 & \sigma_{\varepsilon,3}^{2}
+\end{array}\right).
+\end{align*}
+The first matrix shows the return variance and covariance contributions
+due to the market returns, and the second matrix shows the contributions
+due to the asset specific errors. Define $\boldsymbol{\beta}_{M} =(\beta_{1,M},\beta_{2,M},\beta_{3,M})^{\prime}.$
+Then 
+\begin{eqnarray*}
+\sigma_{M}^{2}\boldsymbol{\beta}_{M} \boldsymbol{\beta}_{M}^{\prime} & = & \sigma_{M}^{2}\left(\begin{array}{c}
+\beta_{1,M}\\
+\beta_{2,M}\\
+\beta_{3,M}
+\end{array}\right)\left(\begin{array}{ccc}
+\beta_{1,M} & \beta_{2,M} & \beta_{3,M}\end{array}\right)=\sigma_{M}^{2}\left(\begin{array}{ccc}
+\beta_{1,M}^{2} & \beta_{1,M}\beta_{2,M} & \beta_{1,M}\beta_{3,M}\\
+\beta_{1,M}\beta_{2,M} & \beta_{2,M}^{2} & \beta_{2,M}\beta_{3,M}\\
+\beta_{1,M}\beta_{3,M} & \beta_{2,M}\beta_{3,M} & \beta_{3,M}^{2}
+\end{array}\right),\\
+\mathbf{D} & = & \mathrm{diag}(\sigma_{\varepsilon,1}^{2},\sigma_{\varepsilon,2}^{2},\sigma_{\varepsilon,3}^{2})=\left(\begin{array}{ccc}
+\sigma_{\varepsilon,1}^{2} & 0 & 0\\
+0 & \sigma_{\varepsilon,2}^{2} & 0\\
+0 & 0 & \sigma_{\varepsilon,3}^{2}
+\end{array}\right),
+\end{eqnarray*}
+and so
+$$
+\boldsymbol{\Sigma}=\sigma_{M}^{2}\boldsymbol{\beta}_{M} \boldsymbol{\beta}_{M}^{\prime}+\mathbf{D}.
+$$
+
+The matrix form of the SI model @eq-SI-SImatrixMean - @eq-SI-SImatrixDistribution
+is useful for portfolio analysis. For example, consider a portfolio
+with $N\times1$ weight vector $\mathbf{x}=(x_{1},\ldots,x_{N})^{\prime}.$
+Using @eq-SI-SImatrix, the SI model for the portfolio return
+$R_{p,t}=\mathbf{x}^{\prime}\mathbf{R}_{t}$ is 
+\begin{eqnarray*}
+R_{p,t} & = & \mathbf{x}^{\prime}(\boldsymbol{\beta}_{0}+\boldsymbol{\beta}_{M} R_{Mt}+\boldsymbol{\varepsilon}_{t})\\
+ & = & \mathbf{x}^{\prime}\boldsymbol{\beta}_{0}+\mathbf{x}^{\prime}\boldsymbol{\beta}_{M} R_{Mt}+\mathbf{x}^{\prime}\boldsymbol{\varepsilon}_{t}\\
+ & = & \beta_{p,0}+\beta_{p,M}R_{Mt}+\varepsilon_{p,t},
+\end{eqnarray*}
+where $\beta_{p,0}=\mathbf{x}^{\prime}\boldsymbol{\beta}_{0}$, $\beta_{p}=\mathbf{x}^{\prime}\boldsymbol{\beta}_{M}$
+and $\varepsilon_{p,t}=\mathbf{x}^{\prime}\boldsymbol{\varepsilon}_{t}$.
+\hfill{}$\blacksquare$
+:::
+
+## Single index model portfolio theory {#sec-si-model-portfolio}
+
+1. Reduces the number of free parameters to estimate
+2. Give conditions for which the covariance matrix is positive definite and full rank
+3. solves the problem of less than full return covariance matrix. 
+4. Does not provide an alternative way to estimate expected returns
+
+## Monte Carlo Simulation of the SI Model {#sec-si-model-monte-carlo}
+\index{SI Monte Carlo simulation}
+To give a first step reality check for the SI model, consider simulating
+data from the SI model for a single asset. The steps to create a Monte
+Carlo simulation from the SI model are:
+
+1.  Fix values for the SI model parameters $\beta_{i,0}$, $\beta_{i,M}$, $\sigma_{\varepsilon,i}$, $\mu_{M}$ and $\sigma_{M}$
+2.  Determine the number of simulated returns, $T$, to create.
+3.  Use a computer random number generator to simulate $T$ iid values of $R_{Mt}\sim N(\mu_{M},\sigma_{M}^{2})$ and $\varepsilon_{i,t}\sim N(0,\sigma_{\varepsilon,i}^{2})$, where $R_{Mt}$ is simulated independently from $\varepsilon_{i,t}$.
+4.  Create the simulated asset returns $\tilde{R}_{it}=\beta_{i,0}+\beta_{i,M}\tilde{R}_{Mt}$+$\tilde{\varepsilon}_{it}$ for $t=1,\ldots,T$
+
+
+The following example illustrates simulating SI model returns for
+Boeing.
+
+::: {#exm-simulating-monthly-returns-from-the-si-model-for-boeing .example name="Simulating monthly returns from the SI model for Boeing"}
+
+Consider simulating monthly returns on Boeing from the SI model where
+the S\&P 500 index is used as the market index. The SI model parameters
+are calibrated from the actual monthly returns on Boeing and the S\&P
+500 index using sample statistics, as discussed in the next section,
+and are given by:
+$$
+\beta_{BA,0}=0.005,\,\beta_{BA,M}=0.98,\,\sigma_{\varepsilon,BA}=0.08,\,\mu_{M}=0.003,\,\sigma_{M}=0.048.
+$$
+These values are set in R using:
+
+```{r}
+#| echo: true
+
+alpha.BA = 0.005 
+beta.BA = 0.98 
+sd.e.BA = 0.08 
+mu.sp500 = 0.003 
+sd.sp500 = 0.048
+```
+
+The simulated returns for the S\&P 500 index and Boeing are created
+using:
+
+```{r}
+#| echo: true
+
+n.sim = nrow(siRetS) 
+set.seed(123) 
+sp500.sim = rnorm(n.sim, mu.sp500, sd.sp500) 
+e.BA.sim = rnorm(n.sim, 0, sd.e.BA) 
+BA.sim = alpha.BA + beta.BA*sp500.sim + e.BA.sim 
+BA.sim = xts(BA.sim, index(siRetS)) 
+sp500.sim = xts(sp500.sim, index(siRetS)) 
+colnames(BA.sim) = "BA.sim" 
+colnames(sp500.sim) = "SP500.sim"
+```
+
+```{r}
+#| label: fig-SIsimulatedBoeing
+#| echo: false
+#| fig-cap: Simulated SI model monthly returns on the S\&P 500 index and Boeing.
+#| out-width: 80%
+#| fig-asp: 0.75
+#| fig-align: center
+
+dataToPlot = merge(sp500.sim, BA.sim) 
+plot.zoo(dataToPlot, plot.type="single", main="Simlated S&P 500 and Boeing returns", 
+         ylab="returns", col=c("blue","orange"), lwd=c(2,2)) 
+abline(h=0)
+legend(x="topleft", legend=c("S&P 500", "Boeing"), col=c("blue","orange"), lwd=2)
+```
+
+```{r}
+#| label: fig-SIsimulatedBoeing2
+#| echo: false
+#| fig-cap: Simulated SI model monthly returns on the S\&P 500 index and Boeing. The
+#|   orange line is the equation $R_{BA,t}=\alpha_{BA}+\beta_{BA}R_{Mt}=0.005+0.98\times
+#|   R_{Mt}.$
+#| out-width: 80%
+#| fig-asp: 0.75
+#| fig-align: center
+
+plot(coredata(sp500.sim), coredata(BA.sim),       
+     col="cornflowerblue",lwd=2, pch=16, cex=2,      
+     main="Simulated S&P 500 and Boeing Returns",      
+     xlab="S&P 500", ylab="BA", ylim=c(-0.4, 0.4)) 
+abline(h=0,v=0) 
+abline(a=alpha.BA, b=beta.BA, col="orange", lwd=2)
+```
+
+The simulate returns are illustrated in @fig-SIsimulatedBoeing
+and @fig-SIsimulatedBoeing2. The time plot and scatterplot of
+the simulated returns on the S\&P 500 index look much like the corresponding
+plots of the actual returns shows in the top left panels of @fig-SIexampleReturns 
+and @fig-SIexampleScatter, respectively.
+Hence, the SI model for the S\&P 500 index and Boeing passes the first
+step reality check. In @fig-SIsimulatedBoeing2, the line
+$\beta_{i,0}+\beta_{i,M}R_{Mt}=0.005+0.98R_{Mt}$ is shown in orange.
+This line represents the predictions of Boeing's return given the
+S\&P 500 return. For example, if $R_{Mt}=0.05$ then the predicted
+return for Boeing is $R_{BA}=0.005+0.98\times(0.05)=0.054$. The differences
+between the observed Boeing returns and (blue dots) and the predicted
+returns (orange line) are the asset specific error terms. These are
+the random asset specific news components. The standard deviation
+of these components, $\sigma_{\varepsilon,BA}=0.08$, represents the
+typical magnitude of these components. Here, you would not be too surprised
+if the observed Boeing return is $0.08$ above or below the orange
+line. How close the Boeing returns are to the predicted returns is
+determined by the $R^{2}$ value given by @eq-SI-R2. Here,
+$\sigma_{BA}^{2}=\beta_{BA,M}^{2}\sigma_{M}^{2}+\sigma_{\varepsilon,BA}^{2}=(0.98)^{2}(0.048)^{2}+(0.08)^{2}=0.00861$
+and so $R^{2}=(0.98)^{2}(0.048)^{2}/0.00861=0.257$. Hence, 25.7\%
+of the variability (risk) of Boeing returns are explained by the variability
+of the S\&P 500 returns. As a result, 74.3\% $(1-R^{2}=0.743)$ of
+the variability of Boeing returns are due to the random asset specific
+terms. 
+\hfill{}$\blacksquare$
+:::
+
+## Further Reading: Single Index Model {#sec-si-model-further-reading}
+
+To be completed ...
+
+## Exercicses
+
+::: {#exr-unconditional-properties-of-returns-in-the-si-model .exercise name="Unconditional properties of returns in the SI model."}
+Derive equations @eq-SI-SImean - @eq-SI-SIcorrelation.
+:::
+
+
+{Ruppert} Ruppert, D.A.. \textit{Statistics and Data Analysis for Financial Engineering}, Springer-Verlag. 
+
+{MartinSchererYollin}Martin, R.D., Scherer, B., and Yollin, G. (2016). 

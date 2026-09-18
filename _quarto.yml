@@ -20,6 +20,7 @@ book:
     - 11-PortfolioTheoryMatrix-new.qmd
     - 12-portfolioTheoryNoShortSales-new.qmd
     - 13-riskBudgeting-new.qmd
+    - 15-singleIndexModel-new.qmd
     - references.qmd
 
 bibliography: [book.bib, packages.bib]
