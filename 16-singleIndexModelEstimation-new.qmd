@@ -1,0 +1,494 @@
+# Estimation of the Single Index Model {#sec-EstimationSingle-Index-Model}
+
+Updated: September 19, 2026
+
+Copyright © Eric Zivot 2026
+
+
+## Introduction
+
+To be completed
+
+Notes:
+
+1. For consistency follow the chapter format of the GWN model
+2. Covers estimation and hypothesis testing
+
+Outline
+
+1. Estimation using Method of Moments
+2. Estimation using Least Squares
+3. Statistical properties of method of moments/LS estimates
+4. Linear regression in R
+5. Examples, examples, examples.
+6.  Hypothesis Testing in the Single Index Model
+    a.  Tests for coefficients
+    b.  Tests for model assumptions: check to see if residual correlation matrix is diagonal!
+    c.  Diagnostics for covariance stationarity
+    d.  Rolling estimates from the single index model
+7. Single Index Model and Portfolio Theory
+    a.  portfolio optimization using SI covariance matrix   
+        i.  always pd, reduces number of estimated components in matrix.
+        ii.  Compare results with sample covariance matrix - in estimation chapter
+    b.  Risk analysis of asset and portfolios: factor risk reports
+
+
+The R packages used in this chapter are **corrplot**, **introcompfinr**, **xts**, and
+**PerformanceAnalytics**. 
+
+```{r}
+#| include: false
+
+suppressPackageStartupMessages(library(corrplot))
+suppressPackageStartupMessages(library(introcompfinr))
+suppressPackageStartupMessages(library(xts))
+suppressPackageStartupMessages(library(PerformanceAnalytics))
+options(digits=3)
+```
+
+
+## Data for examples
+
+I use the example data from \@ref() for the examples in this chapter. The data are the
+monthly adjusted closing prices on four Northwest stocks (with tickers
+in parentheses): Boeing (BA), Nordstrom (JWN), Microsoft (MSFT), Starbucks
+(SBUX), and the S\&P 500 index (SPY, proxy for the market index). These prices are extracted from the **introcompfinr** package as follows:
+
+```{r}
+#| echo: true
+baPrices = to.monthly(baDailyPrices, OHLC=FALSE) 
+jwnPrices = to.monthly(jwnDailyPrices, OHLC=FALSE) 
+msftPrices = to.monthly(msftDailyPrices, OHLC=FALSE) 
+sbuxPrices = to.monthly(sbuxDailyPrices, OHLC=FALSE) 
+sp500Prices = to.monthly(sp500DailyPrices, OHLC=FALSE) 
+siPrices = merge(baPrices, jwnPrices, msftPrices, 
+                 sbuxPrices, sp500Prices)
+```
+
+The data sample is from January, 1998 through May, 2012 and returns
+are simple returns:
+
+```{r}
+#| echo: true
+smpl = "1998-01::2012-05" 
+siPrices = siPrices[smpl] 
+siRetS = na.omit(Return.calculate(siPrices, method="simple")) 
+```
+
+## Estimation of SI Model
+
+Consider the SI model @eq-SI-SIreturn - @eq-SI-errorAssets.
+The asset specific parameters to be estimated are $\beta_{i,0}$, $\beta_{i,M}$
+and $\sigma_{\varepsilon,i}^{2}$, $(i=1,\ldots,N)$, and the market
+parameters to be estimated are $\mu_{M}$ and $\sigma_{M}^{2}$. These
+parameters can be estimated using the plug-in principle, linear regression,
+and maximum likelihood. All methods give essentially the same estimators
+for the SI model parameters.
+
+### Plug-in principle estimates
+
+Let $\{(r_{it},r_{Mt})\}_{t=1}^{T}$ denote a sample of size $T$
+of observed returns on asset $i$ and the market return which are
+assumed to be generated from the SI model. @eq-SI-SIreturn
+- @eq-SI-SIdistribution. Recall, the plug-in principle says
+to estimate population model parameters using appropriate sample statistics.
+For the market parameters, the plug-in principle estimates are the
+same as the GWN model estimates
+\begin{eqnarray*}
+\hat{\mu}_{M} & = & \frac{1}{T}\sum_{t=1}^{T}r_{Mt},\\
+\hat{\sigma}_{M}^{2} & = & \frac{1}{T-1}\sum_{t=1}^{T}(r_{Mt}-\hat{\mu}_{M})^{2}.
+\end{eqnarray*}
+From @eq-SI-SIintercept - @eq-SI-marketBeta we see
+that $\beta_{i,0}$ and $\beta_{i,M}$ are functions of population parameters
+\begin{eqnarray*}
+\beta_{i,0} & = & \mu_{i}-\beta_{i,M}\mu_{M},\\
+\beta_{i,M} & = & \frac{\mathrm{cov}(R_{it},R_{Mt})}{\mathrm{var}(R_{Mt})}=\frac{\sigma_{iM}}{\sigma_{M}^{2}}.
+\end{eqnarray*}
+The corresponding plug-in principle estimates are then:
+$$
+\hat{\beta}_{i,0}  =  \hat{\mu}_{i}-\hat{\beta}_{i,M}\hat{\mu}_{M},
+$$ {#eq-SI-pluginAlpha}
+$$
+\hat{\beta}_{i,M} = \frac{\hat{\sigma}_{iM}}{\hat{\sigma}_{M}^{2}},
+$$ {#eq-SI-pluginBeta}
+where 
+\begin{eqnarray*}
+\hat{\mu}_{i} & = & \frac{1}{T}\sum_{t=1}^{T}r_{it},\\
+\hat{\sigma}_{iM} & = & \frac{1}{T-1}\sum_{t=1}^{T}(r_{it}-\hat{\mu}_{i})(r_{Mt}-\hat{\mu}_{M}).
+\end{eqnarray*}
+
+Given the plug-in principle estimates $\hat{\beta}_{i,0}$ and $\hat{\beta}_{i,M}$,
+the plug-in principle estimate of $\varepsilon_{it}$ is 
+$$
+\hat{\varepsilon}_{it}=r_{it}-\hat{\beta}_{i,0}-\hat{\beta}_{i,M}r_{Mt},\,t=1,\ldots,T.
+$$ {#eq-SI-pluginError}
+Using @eq-SI-pluginError, the plug-in principle estimate of
+$\sigma_{\varepsilon,i}^{2}$ is the sample variance of $\{\hat{\varepsilon}_{it}\}_{t=1}^{T}$
+(adjusted for the number of degrees of freedom):
+$$
+\hat{\sigma}_{\varepsilon,i}^{2} =\frac{1}{T-2}\sum_{t=1}^{T}\hat{\varepsilon}_{t}^{2}=\frac{1}{T-2}\sum_{t=1}^{T}\left(r_{it}-\hat{\beta}_{i,0}-\hat{\beta}_{i,M}r_{Mt}\right)^{2}.
+$$ {#eq-SI-pluginErrorVariance}
+Plug-in principle estimates of $R^{2}$ based on @eq-SI-R2
+can be computed using
+$$
+\hat{R}^{2} =\frac{\hat{\beta}_{i}^{2}\hat{\sigma}_{M}^{2}}{\hat{\sigma}_{i}^{2}}=1-\frac{\hat{\sigma}_{\varepsilon,i}^{2}}{\hat{\sigma}_{i}^{2}}.
+$$ {#eq-SI-pluginR2}
+
+::: {#exm-computing-plug-in-principle-estimators-for-si-model-parameters .example name="Computing plug-in principle estimators for SI model parameters"}
+
+Consider computing the plug-in principle estimates for $\beta_{i,0},$
+$\beta_{i,M}$ and $\sigma_{\varepsilon,i}^{2}$ from the example data
+using the formulas @eq-SI-pluginAlpha, @eq-SI-pluginBeta
+and @eq-SI-pluginErrorVariance, respectively. First, extract
+the sample statistics $\hat{\mu}_{i}$, $\hat{\sigma}_{iM}$, $\hat{\mu}_{M}$,
+and $\hat{\sigma}_{M}^{2}$:
+
+```{r}
+#| echo: true
+assetNames = colnames(siRetS)[1:4] 
+muhat = colMeans(siRetS) 
+Sigmahat = var(siRetS)
+sig2hat = diag(Sigmahat)
+covAssetsSp500 = Sigmahat[assetNames, "SP500"]
+```
+
+Next, estimate $\hat{\beta}_{i,M}$ using
+
+```{r}
+#| echo: true
+betaMHat = covAssetsSp500/sig2hat["SP500"]
+betaMHat
+```
+
+Here, we see that $\hat{\beta}_{BA,M}$ and $\hat{\beta}_{SBUX,M}$ are
+very close to one and that $\hat{\beta}_{JWN,M}$ and $\hat{\beta}_{MSFT,M}$
+are slightly bigger than one. Using the estimates of $\hat{\beta}_{i,M}$
+and the sample statistics $\hat{\mu}_{i}$ and $\hat{\mu}_{M}$ the
+estimates for $\hat{\beta}_{i,0}$ are
+
+```{r}
+#| echo: true
+beta0Hat = muhat[assetNames] - betaMHat*muhat["SP500"] 
+beta0Hat
+```
+
+All of the estimates of $\hat{\beta}_{i,0}$ are close to zero. 
+
+The estimates of $\sigma_{\varepsilon,i}^{2}$ and $\sigma_{\varepsilon,i}$ can be computed using:
+
+```{r}
+#| echo: true
+sig2eHat = rep(0, length(assetNames)) 
+names(sig2eHat) = assetNames 
+for (aName in assetNames) {   
+     eHat = siRetS[, aName] - beta0Hat[aName] - betaMHat[aName]*siRetS[, "SP500"]   
+     sig2eHat[aName] = crossprod(eHat)/(length(eHat) - 2) 
+} 
+sigeHat = sqrt(sig2eHat)
+ans = rbind(sig2eHat,sigeHat)
+ans
+```
+Here, Nordstrom (JWN) has the largest asset specific volatility and Boeing (BA) has the lowest. 
+
+Lastly, the estimates of $R^{2}$ can be computed using
+
+```{r}
+#| echo: true
+
+R2 = 1 - sig2eHat/sig2hat[assetNames] 
+R2
+```
+Microsoft has the largest fraction of returns explained by the market index and Starbucks has the lowest. 
+
+The fitted SI model is visualized in the figure below created using:
+```{r}
+#| echo: true
+
+```
+
+
+
+\hfill{}$\blacksquare$
+:::
+
+### Least squares estimates
+
+The SI model representation @eq-SI-SIreturn shows that returns
+are a linear function of the market return and an asset specific error
+term
+$$
+R_{it}=\beta_{i,0}+\beta_{i,M}R_{Mt}+\varepsilon_{it},
+$$
+here $\beta_{i,0}$ is the intercept and $\beta_{i,M}$ is the slope.
+*Least squares regression*\index{Least squares regression} is a method for estimating $\beta_{i,0}$ and $\beta_{i,M}$ by finding the "best fitting" line to the scatterplot
+of returns where $R_{it}$ is on the vertical axis and $R_{Mt}$ is
+on the horizontal axis.
+
+To see how the method of least squares determines the "best fitting"
+line, consider the scatterplot of the sample returns on Boeing and
+the S\&P 500 index illustrated in Figure xxx. In the figure, the black
+line is a fitted line with initial guess $\hat{\beta}_{BA,0}=0$ and
+$\hat{\beta}_{BA,M}=0.5.$ The differences between the observed returns
+(blue dots) and the values on the fitted line are the estimated errors
+$\hat{\varepsilon}_{BA,t}=r_{BA,t}-\hat{\beta}_{BA,0}-\hat{\beta}_{BA,M}r_{Mt}=r_{BA,t}-0-0.5\times R_{Mt}.$
+Some estimated errors are big and some are small. The overall fit
+of the line can be measured using a statistic based on all $t=1,\ldots,T$
+of the estimated errors. A natural choice is the sum of the errors
+$\sum_{t=1}^{T}\hat{\varepsilon}_{t}$. However, this choice can be misleading
+due to the canceling out of large positive and negative errors. To
+avoid this problem, it is better to measure the overall fit using
+$\sum_{t=1}^{T}\hat{|\varepsilon}_{t}|$ or $\sum_{t=1}^{T}\hat{\varepsilon}_{t}^{2}.$
+Then the best fitting line can be determined by finding the intercept
+and slope values that minimize $\sum_{t=1}^{T}\hat{|\varepsilon}_{t}|$
+or $\sum_{t=1}^{T}\hat{\varepsilon}_{t}^{2}.$ 
+
+
+The method of least squares regression defines the "best fitting"
+line by finding the intercept and slope values that minimize the sum
+of squared errors
+$$ 
+\mathrm{SSE}(\hat{\beta}_{i,0},\hat{\beta}_{i,M})=\sum_{t=1}^{T}\hat{\varepsilon}_{it}^{2}=\sum_{t=1}^{T}\left(r_{it}-\hat{\beta}_{i,0}-\hat{\beta}_{i,M}r_{Mt}\right)^{2}.
+$$ {#eq-SI-SSE}
+Because $\mathrm{SSE}(\hat{\beta}_{i,0},\hat{\beta}_{i,M})$ is a continuous
+and differential function of $\hat{\beta}_{i,0}$ and $\hat{\beta}_{i,M}$,
+the minimizing values of $\hat{\beta}_{i,0}$ and $\hat{\beta}_{i,M}$
+can be determined using simple calculus. The first order conditions
+for a minimum are:
+$$
+0 =\frac{\partial\mathrm{SSE}(\hat{\beta}_{i,0},\hat{\beta}_{i,M})}{\partial\hat{\beta}_{i,0}}=-2\sum_{t=1}^{T}(r_{it}-\hat{\beta}_{i,0}-\hat{\beta}_{i,M}r_{Mt})=-2\sum_{t=1}^{T}\hat{\varepsilon}_{it},
+$$ {#eq-SI-normalEqn1}
+$$
+0 =\frac{\partial\mathrm{SSE}(\hat{\beta}_{i,0},\hat{\beta}_{i,M})}{\partial\hat{\beta}_{i,M}}=-2\sum_{t=1}^{T}(r_{it}-\hat{\beta}_{i,0}-\hat{\beta}_{i,M}r_{Mt})r_{Mt}=-2\sum_{t=1}^{T}\hat{\varepsilon}_{it}r_{Mt}.
+$$ {#eq-SI-normalEqn2}
+These are two linear equations in two unknowns which can be re-expressed
+as
+\begin{eqnarray*}
+\hat{\beta}_{i,0}T+\hat{\beta}_{i,M}\sum_{t=1}^{T}r_{Mt} & = & \sum_{t=1}^{T}r_{it},\\
+\hat{\beta}_{i,0}\sum_{t=1}^{T}r_{Mt}+\hat{\beta}_{i,M}\sum_{t=1}^{T}r_{Mt}^{2} & = & \sum_{t=1}^{T}r_{it}r_{Mt}.
+\end{eqnarray*}
+Using matrix algebra, we can write these equations as:
+$$
+\left(\begin{array}{cc}
+T & \sum_{t=1}^{T}r_{Mt}\\
+\sum_{t=1}^{T}r_{Mt} & \sum_{t=1}^{T}r_{Mt}^{2}
+\end{array}\right)\left(\begin{array}{c}
+\hat{\beta}_{i,0}\\
+\hat{\beta}_{i,M}
+\end{array}\right)=\left(\begin{array}{c}
+\sum_{t=1}^{T}r_{it}\\
+\sum_{t=1}^{T}r_{it}r_{Mt}
+\end{array}\right),
+$$ {#eq-SI-matrixSystem}
+which is of the form $\mathbf{Ax}=\mathbf{b}$ with 
+$$
+\mathbf{A}=\left(\begin{array}{cc}
+T & \sum_{t=1}^{T}r_{Mt}\\
+\sum_{t=1}^{T}r_{Mt} & \sum_{t=1}^{T}r_{Mt}^{2}
+\end{array}\right),\,\mathbf{x}=\left(\begin{array}{c}
+\hat{\beta}_{i,0}\\
+\hat{\beta}_{i,M}
+\end{array}\right),\,\mathbf{b}=\left(\begin{array}{c}
+\sum_{t=1}^{T}r_{it}\\
+\sum_{t=1}^{T}r_{it}r_{Mt}
+\end{array}\right).
+$$
+Hence, we can determine $\hat{\beta}_{i,0}$ and $\hat{\beta}_{i,M}$
+by solving $\mathbf{x}=\mathbf{A}^{-1}\mathbf{b}.$ Now,^[The matrix $\mathbf{A}$ is invertible provided $\mathrm{det}(A)\neq0.$
+This requires the sample variance of $R_{Mt}$ to be non-zero. ]
+\begin{eqnarray*}
+\mathbf{A}^{-1} & = & \frac{1}{\mathrm{det}(\mathbf{A})}\left(\begin{array}{cc}
+\sum_{t=1}^{T}r_{Mt}^{2} & -\sum_{t=1}^{T}r_{Mt}\\
+-\sum_{t=1}^{T}r_{Mt} & T
+\end{array}\right),\\
+\mathrm{det}(\mathbf{A}) & = & T\sum_{t=1}^{T}r_{Mt}^{2}-\left(\sum_{t=1}^{T}r_{Mt}\right)^{2}=T\sum_{t=1}^{T}\left(r_{Mt}-\hat{\mu}_{M}\right)^{2},\\
+\hat{\mu}_{M} & = & \frac{1}{T}\sum_{t=1}^{T}r_{Mt}.
+\end{eqnarray*}
+Consequently,
+$$
+\left(\begin{array}{c}
+\hat{\beta}_{i,0}\\
+\hat{\beta}_{i,M}
+\end{array}\right)=\frac{1}{T\sum_{t=1}^{T}\left(r_{Mt}-\hat{\mu}_{M}\right)^{2}}\left(\begin{array}{cc}
+\sum_{t=1}^{T}r_{Mt}^{2} & -\sum_{t=1}^{T}r_{Mt}\\
+-\sum_{t=1}^{T}r_{Mt} & T
+\end{array}\right)\left(\begin{array}{c}
+\sum_{t=1}^{T}r_{it}\\
+\sum_{t=1}^{T}r_{it}r_{Mt}
+\end{array}\right)
+$$ {#eq-SI-ls-solution}
+and so
+$$
+\hat{\beta}_{i,0} = \frac{\sum_{t=1}^{T}r_{Mt}^{2}\sum_{t=1}^{T}r_{it}-\sum_{t=1}^{T}r_{Mt}^{2}\sum_{t=1}^{T}r_{it}r_{Mt}}{T\sum_{t=1}^{T}\left(r_{Mt}-\hat{\mu}_{M}\right)^{2}},
+$$ {#eq-SI-ls-alpha}
+$$
+\hat{\beta}_{i,M} = \frac{T\sum_{t=1}^{T}r_{it}r_{Mt}-\sum_{t=1}^{T}r_{Mt}\sum_{t=1}^{T}r_{it}}{T\sum_{t=1}^{T}\left(r_{Mt}-\hat{\mu}_{M}\right)^{2}}.
+$$ {#eq-SI-ls-beta}
+After a little bit of algebra (see end-of-chapter exercises) it can
+be shown that
+\begin{eqnarray*}
+\hat{\beta}_{i,0} & = & \hat{\mu}_{i}-\hat{\beta}_{i}\hat{\mu}_{M},\\
+\hat{\beta}_{i,M} & = & \frac{\hat{\sigma}_{iM}}{\hat{\sigma}_{M}^{2}},
+\end{eqnarray*}
+which are plug-in estimates for $\hat{\beta}_{i,0}$ and $\hat{\beta}_{i,M}$
+determined earlier. Hence, the least squares estimates of $\hat{\beta}_{i,0}$
+and $\hat{\beta}_{i,M}$ are identical to the plug-in estimates.
+
+The solution for the least squares estimates in @eq-SI-ls-solution
+has an elegant representation using matrix algebra. To see this, define
+the $T\times1$ vectors $\mathbf{r}_{i}=(r_{i1},\ldots,r_{iT})^{\prime}$,
+$\mathbf{r}_{M}=(r_{M1},\ldots,r_{MT})^{\prime}$ and $\mathbf{1}=(1,\ldots,1)^{\prime}$.
+Then we can re-write @eq-SI-matrixSystem as
+$$
+\left(\begin{array}{cc}
+\mathbf{1}^{\prime}\mathbf{1} & \mathbf{1}^{\prime}\mathbf{r}_{M}\\
+\mathbf{1}^{\prime}\mathbf{r}_{M} & \mathbf{r}_{M}^{\prime}\mathbf{r}_{M}
+\end{array}\right)\left(\begin{array}{c}
+\hat{\beta}_{i,0}\\
+\hat{\beta}_{i,M}
+\end{array}\right)=\left(\begin{array}{c}
+\mathbf{1}^{\prime}\mathbf{r}_{i}\\
+\mathbf{r}_{M}^{\prime}\mathbf{r}_{i}
+\end{array}\right)
+$$
+or
+$$
+\mathbf{X}^{\prime}\mathbf{X}\hat{\boldsymbol{\beta}}_{i}=\mathbf{X}^{\prime}\mathbf{r}_{i}
+$$ {#eq-SI-normalEquationsMatrix}
+where $\mathbf{X}=(\begin{array}{cc}
+\mathbf{1} & \mathbf{r}_{M})\end{array}$is a $T\times2$ matrix and $\hat{\boldsymbol{\beta}}_{i}=(\hat{\beta}_{i,0},\hat{\beta}_{i,M})^{\prime}$.
+Provided $\mathbf{X}^{\prime}\mathbf{X}$ is invertible, solving @eq-SI-normalEquationsMatrix
+for $\hat{\boldsymbol{\beta}}_{i}$ gives the least squares estimates
+in matrix form:
+$$
+\hat{\boldsymbol{\beta}}_{i}=\left(\mathbf{X}^{\prime}\mathbf{X}\right)^{-1}\mathbf{X}^{\prime}\mathbf{r}_{i}.
+$$ {#eq-SI-ls-solution-matrix}
+The matrix form solution @eq-SI-ls-solution-matrix is especially
+convenient for computation in R.
+
+The least squares estimates of $\varepsilon_{t}$, $\sigma_{\varepsilon,i}^{2}$
+and $R^{2}$ are the same as the plug-in estimators @eq-SI-pluginError,
+@eq-SI-pluginErrorVariance and @eq-SI-pluginR2, respectively.
+In the context of least squares estimation, the estimate $\hat{\sigma}_{\varepsilon,i}=\sqrt{\hat{\sigma}_{\varepsilon,i}^{2}}$
+is called the *standard error of the regression*\index{Standard error} and measures
+the typical magnitude of $\hat{\varepsilon}_{t}$ (difference between
+observed return and fitted regression line). 
+
+### Simple linear regression in R
+
+-  don't do regression examples until statistical theory is discussed
+-  computing least squares estimates using matrix algebra formulas
+-  computing least squares estimates using `lm()`
+    -  See discussion from my regression chapter in MFTSR
+    -  describe structure of `lm()` function, extractor and method functions
+-  Do analysis of example data
+To be completed...
+
+
+## Statistical Properties of SI Model Estimates
+
+To determine the statistical properties of the plug-in principle/least
+squares/ML estimators $\hat{\beta}_{i,0}$, $\hat{\beta}_{i,M}$ and
+$\hat{\sigma}_{\varepsilon,i}^{2}$ in the SI model, we treat them as
+functions of the random variables $\{(R_{i,t},R_{Mt})\}_{t=1}^{T}$
+where $R_{t}$ and $R_{Mt}$ are assumed to be generated by the SI
+model @eq-SI-SIreturn - @eq-SI-errorAssets. 
+
+### Bias
+\index{SI bias}
+In the SI model, the estimators $\hat{\beta}_{i,0}$, $\hat{\beta}_{i,M}$
+and $\hat{\sigma}_{\varepsilon,i}^{2}$ (with degrees-of-freedom adjustment)
+are unbiased:
+\begin{eqnarray*}
+E[\hat{\beta}_{i,0}] & = & \beta_{i,0},\\
+E[\hat{\beta}_{i,M}] & = & \beta_{i,M},\\
+E[\hat{\sigma}_{\varepsilon,i}^{2}] & = & \sigma_{\varepsilon,i}^{2}.
+\end{eqnarray*}
+To shows that $\hat{\beta}_{i,0}$ and $\hat{\beta}_{i,M}$ are unbiased,
+it is useful to consider the SI model for asset $i$ in matrix form
+for $t=1,\ldots,T$:
+$$
+\mathbf{R}_{i}=\beta_{i,0}\mathbf{1}+\beta_{i,M}\mathbf{R}_{M}+\varepsilon_{i}=\mathbf{X}\boldsymbol{\beta}_{i}+\varepsilon_{i},
+$$
+where $\mathbf{R}_{i}=(R_{i1},\ldots,R_{iT})^{\prime},$ $\mathbf{R}_{M}=(R_{M1},\ldots,R_{MT})^{\prime}$,
+$\varepsilon_{i}=(\varepsilon_{i1},\ldots,\varepsilon_{iT})^{\prime}$,
+$\mathbf{1}=(1,\ldots,1)^{\prime}$, $\mathbf{X}=(\begin{array}{cc}
+\mathbf{1} & \mathbf{R}_{M})\end{array},$ and $\boldsymbol{\beta}_{i}=(\beta_{i,0},\beta_{i,M})^{\prime}.$ The estimator
+for $\boldsymbol{\beta}_{i}$ is
+\begin{eqnarray*}
+\hat{\boldsymbol{\beta}}_{i} & = & (\mathbf{X}^{\prime}\mathbf{X})^{-1}\mathbf{X}^{\prime}\mathbf{R}_{i}.
+\end{eqnarray*}
+Pluging in $\mathbf{R}_{i}=\mathbf{X}\boldsymbol{\beta}_{i}+\varepsilon_{i}$
+gives 
+\begin{eqnarray*}
+\hat{\boldsymbol{\beta}}_{i} & = & (\mathbf{X}^{\prime}\mathbf{X})^{-1}\mathbf{X}^{\prime}\left(\mathbf{X}\gamma_{i}+\varepsilon_{i}\right)=(\mathbf{X}^{\prime}\mathbf{X})^{-1}\mathbf{X}^{\prime}\mathbf{X}\gamma_{i}+(\mathbf{X}^{\prime}\mathbf{X})^{-1}\mathbf{X}^{\prime}\varepsilon_{i}\\
+ & = & \boldsymbol{\beta}_{i}+(\mathbf{X}^{\prime}\mathbf{X})^{-1}\mathbf{X}^{\prime}\varepsilon_{i}.
+\end{eqnarray*}
+Then
+\begin{eqnarray*}
+E[\hat{\boldsymbol{\beta}}_{i}] & = & \boldsymbol{\beta}_{i}+E\left[(\mathbf{X}^{\prime}\mathbf{X})^{-1}\mathbf{X}^{\prime}\varepsilon_{i}\right]\\
+ & = & \boldsymbol{\beta}_{i}+E\left[(\mathbf{X}^{\prime}\mathbf{X})^{-1}\mathbf{X}^{\prime}\right]E[\varepsilon_{i}]\,(\mathrm{because}\,\varepsilon_{it}\,\mathrm{is}\,\mathrm{independent}\,\mathrm{of}\,R_{Mt})\\
+ & = & \boldsymbol{\beta}_{i}\,(\mathrm{because}\,E[\varepsilon_{i}]=\mathbf{0}).
+\end{eqnarray*}
+The derivation of $E[\hat{\sigma}_{\varepsilon,i}^{2}]=\sigma_{\varepsilon,i}^{2}$
+is beyond the scope of this book and can be found in graduate econometrics
+textbooks such as Hayashi (1980). 
+
+### Precision
+\index{SI precision}
+Under the assumptions of the SI model, analytic formulas for estimates
+of the standard errors for $\hat{\beta}_{i,0}$ and $\hat{\beta}_{i,M}$
+are given by:
+$$
+\widehat{\mathrm{se}}(\hat{\beta}_{i,0})  \approx\frac{\hat{\sigma}_{\varepsilon,i}}{\sqrt{T\cdot\hat{\sigma}_{M}^{2}}}\cdot\sqrt{\frac{1}{T}\sum_{t=1}^{T}r_{Mt}^{2}},
+$$ {#eq-SI-se-alphahat}
+$$
+\widehat{\mathrm{se}}(\hat{\beta}_{i,M})  \approx\frac{\hat{\sigma}_{\varepsilon,i}}{\sqrt{T\cdot\hat{\sigma}_{M}^{2}}},
+$$ {#eq-SI-se-betahat}
+where "$\approx$" denotes an approximation based on the CLT that
+gets more accurate the larger the sample size. 
+
+**Remarks**:
+
+-  $\widehat{\mathrm{se}}(\hat{\beta}_{i,0})$ and $\widehat{\mathrm{se}}(\hat{\beta}_{i,M})$ are smaller the smaller is $\hat{\sigma}_{\varepsilon,i}$. That is, the closer are returns to the fitted regression line the smaller are the estimation errors in $\hat{\beta}_{i,0}$ and $\hat{\beta}_{i,M}$.
+-  $\widehat{\mathrm{se}}(\hat{\beta}_{i,M})$ is smaller the larger is $\hat{\sigma}_{M}^{2}$. That is, the greater the variability in the market return $R_{Mt}$ the smaller is the estimation error in the estimated slope coefficient $\hat{\beta}_{i,M}$. This is illustrated in Figure xxx. The left panel shows a data sample from the SI model with a small value of $\hat{\sigma}_{M}^{2}$ and the right panel shows a sample with a large value of $\hat{\sigma}_{M}^{2}$. The right panel shows that the high variability in $R_{Mt}$ makes it easier to identify the slope of the line. 
+-  Both $\widehat{\mathrm{se}}(\hat{\beta}_{i,0})$ and $\widehat{\mathrm{se}}(\hat{\beta}_{i,M})$ go to zero as the sample size, $T$, gets large. Since $\hat{\beta}_{i,0}$ and $\hat{\beta}_{i,M}$ are unbiased estimators, this implies that they are also consistent estimators. That is, they converge to the true values $\beta_{i,0}$ and $\beta_{i,M}$, respectively, as $T\rightarrow\infty$.
+-  In R, the standard error values @eq-SI-se-alphahat and @eq-SI-se-betahat are computed using the `summary()` function on an "`lm`" object. 
+
+
+There are no easy formulas for the estimated standard errors for $\hat{\sigma}_{\varepsilon,i}^{2}$,
+$\hat{\sigma}_{\varepsilon,i}$ and $\hat{R}^{2}$. Estimated standard
+errors for these estimators, however, can be easily computed using
+the bootstrap.
+
+::: {#exm-computing-estimated-standard-errors-for-hat-beta-i-0-and-hat-beta-i-m-in-r .example name="Computing estimated standard errors for $\\hat{\\beta}_{i,0}$ and $\\hat{\\beta}_{i,M}$ in R"}
+
+to be completed
+
+\hfill{}$\blacksquare$
+:::
+
+### Sampling distribution and confidence intervals.
+\index{SI confidence intervals}
+Using arguments based on the CLT, it can be shown that for large enough
+$T$ the estimators $\hat{\beta}_{i,0}$ and $\hat{\beta}_{i,M}$ are
+approximately normally distributed:
+\begin{eqnarray*}
+\hat{\beta}_{i,0} & \sim & N(\beta_{i,0},\widehat{\mathrm{se}}(\hat{\beta}_{i,0})^{2}),\\
+\hat{\beta}_{i,M} & \sim & N(\beta_{i,M},\widehat{\mathrm{se}}(\hat{\beta}_{i,M})^{2}),
+\end{eqnarray*}
+where $\widehat{\mathrm{se}}(\hat{\beta}_{i,0})$ and $\widehat{\mathrm{se}}(\hat{\beta}_{i,M})$
+are given by @eq-SI-se-alphahat and @eq-SI-se-betahat,
+respectively.
+
+## Further Reading: Single Index Model
+
+To be completed ...
+
+## Exercicses
+
+To be completed ... 
+
+
+{Ruppert} Ruppert, D.A.. \textit{Statistics and Data Analysis for Financial Engineering}, Springer-Verlag. 
+
+

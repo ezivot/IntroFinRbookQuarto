@@ -1,0 +1,1575 @@
+# Statistical Analysis of Portfolios {#sec-Statistical-Analysis-of-Portfolios}
+
+Updated: September 19, 2026
+
+Copyright © Eric Zivot 2026
+
+In @sec-Introduction-to-Portfolio-Theory I introduced mean-variance portfolio theory in the context of simple portfolios with two risky assets and a safe asset. The theory presented assumed that investors know the true expected returns, variances, and correlations between returns (i.e., the parameters of the GWN model of returns). Of course, the real world implementation of mean-variance portfolio theory requires investors to estimate expected returns, variances, and correlations. In this chapter I explore the implications of estimation errors in the parameters of the GWM for asset returns for the application of mean-variance portfolio theory. The quantification of estimation error in mean-variance portfolio analysis is novel and under appreciated by many practitioners, and provides  insights into some pitfalls in the practical application of mean-variance portfolio theory. Because mean-variance portfolios are functions of GWN model parameters, I use tools for the statistical analysis of functions of GWN model parameters presented in @sec-The-Bootstrap throughout this chapter. 
+
+The R packages used in this chapter are **boot**, **bootstrap**, **car**, **ellipse**, 
+**introcompfinr**, **mvtnorm**, and **PerformanceAnalytics**. Have these packages installed and 
+loaded in R before replicating the chapter examples.
+
+```{r}
+#| include: false
+suppressPackageStartupMessages(library(boot))
+suppressPackageStartupMessages(library(bootstrap))
+suppressPackageStartupMessages(library(car))
+suppressPackageStartupMessages(library(ellipse))
+suppressPackageStartupMessages(library(introcompfinr))
+suppressPackageStartupMessages(library(mvtnorm))
+suppressPackageStartupMessages(library(PerformanceAnalytics))
+options(digits=3)
+```
+
+
+## Portfolios of Two Risky Assets
+\index{Statistical analysis}
+Most of the issues involved with the statistical analysis of portfolios
+can be illustrated in the simple case of a two asset portfolio. Let
+$R_{A}$ and $R_{B}$ denote the simple returns on two risky assets
+and assume these returns are characterized by the GWN model: 
+$$
+\left(\begin{array}{c}
+R_{A}\\
+R_{B}
+\end{array}\right)\sim N\left(\left(\begin{array}{c}
+\mu_{A}\\
+\mu_{B}
+\end{array}\right),\,\left(\begin{array}{cc}
+\sigma_{A}^{2} & \sigma_{AB}\\
+\sigma_{AB} & \sigma_{B}^{2}
+\end{array}\right)\right). 
+$$ {#eq-StatisticalGWNmodel}
+
+In matrix notation:
+$$
+\mathbf{R}\sim N(\boldsymbol{\mu},\,\boldsymbol{\Sigma}),
+$$
+where 
+$$
+\mathbf{R}=\left(\begin{array}{c}
+R_{A}\\
+R_{B}
+\end{array}\right),\,\boldsymbol{\mu}=\left(\begin{array}{c}
+\mu_{A}\\
+\mu_{B}
+\end{array}\right),\,\boldsymbol{\Sigma}=\left(\begin{array}{cc}
+\sigma_{A}^{2} & \sigma_{AB}\\
+\sigma_{AB} & \sigma_{B}^{2}
+\end{array}\right).
+$$
+A portfolio with weight vector $\mathbf{x}=(x_{A},x_{B})^{\prime}$
+has return $R_{p}=\mathbf{x}^{\prime}\mathbf{R}=x_{A}R_{A}+x_{B}R_{B}$
+which is also described by the GWN model:
+\begin{eqnarray*}
+R_{p} & \sim & N(\mu_{p},\,\sigma_{p}^{2}),\\
+\mu_{p} & = & \mathbf{x}^{\prime}\mu=x_{A}\mu_{A}+x_{B}\mu_{B},\\
+\sigma_{p}^{2} & = & \mathbf{x}^{\prime}\mathbf{\varSigma}\mathbf{x}=x_{A}^{2}\sigma_{A}^{2}+x_{B}^{2}\sigma_{B}^{2}+2x_{A}x_{B}\sigma_{AB}.
+\end{eqnarray*}
+I assume that $\{\mathbf{r}_{t}\}_{t=1}^{T}$ is the observed sample of asset returns of size $T$, where $\mathbf{r}_{t}=(r_{At},r_{Bt})^{\prime}$, is
+generated from the GWN model @eq-StatisticalGWNmodel from
+which I create the sample portfolio returns $r_{p,t}=\mathbf{x}^{\prime}\mathbf{r}_{t}=x_{A}r_{At}+x_{B}r_{Bt}$. I assume that the portfolio weight vector $\mathbf{x}$ remains fixed over the observed sample and that the portfolio is rebalanced every period to maintain the fixed weights. 
+
+The true GWN model parameters are unknown in practice and must be
+estimated from the observed data. As described in @sec-Estimation-of-The-GWN-Model, the GWN model parameters are estimated using the sample statistics: 
+$$
+\begin{aligned}
+& \hat{\mu}_{i}=\frac{1}{T}\sum_{t=1}^{T}r_{it},\,\hat{\sigma}_{i}^{2}=\frac{1}{T-1}\sum_{t=1}^{T}(r_{it}-\hat{\mu}_{i})^{2}, \nonumber \\
+& \hat{\sigma}_{i}=\sqrt{\hat{\sigma}_{i}^{2}},\,\hat{\sigma}_{ij}^{2}=\frac{1}{T-1}\sum_{t=1}^{T}(r_{it}-\hat{\mu}_{i})(r_{jt}-\hat{\mu}_{j}).
+\end{aligned}
+$$ {#eq-StatisticalGWNestimatesAssets}
+These estimates are consistent, asymptotically normally distributed, and have estimation errors which can be quantified by standard error formulas:^[$\hat{\sigma}_{i}$ is asymptotically unbiased and the bias for finite $T$ is typically very small so that it is essentially unbiased for moderately sized $T$.] 
+
+$$
+\mathrm{se}(\hat{\mu}_{i})=\frac{\sigma_{i}}{\sqrt{T}},\,\mathrm{se}(\hat{\sigma}_{i}^{2}) \approx \frac{\sigma_{i}^{2}}{\sqrt{T/2}},\,\mathrm{se}(\hat{\sigma}_{i}) \approx \frac{\sigma_{i}}{\sqrt{2T}},\,\mathrm{se}(\hat{\sigma}_{ij}) \approx \frac{\sqrt{\sigma_i^2 \sigma_j^2 + \sigma_{ij}^2}}{\sqrt{T}}.
+$$ {#eq-StatisticalGWNseAssets}
+
+### Estimation of GWN Model Parameters for Portfolios
+
+You can estimate the GWN model parameters $\mu_{p}$, $\sigma_{p}^{2}$
+and $\sigma_{p}$ for the portfolio return, $R_{p}$, using two equivalent
+methods. In the first method, you use the sample portfolio returns
+$\{r_{p,t}\}_{t=1}^{T}$ and compute the sample statistics:
+$$
+\hat{\mu}_{p}=\frac{1}{T}\sum_{t=1}^{T}r_{p,t},\,\hat{\sigma}_{p}^{2}=\frac{1}{T-1}\sum_{t=1}^{T}(r_{p,t}-\hat{\mu}_{p})^{2},\,\hat{\sigma}_{p}=\sqrt{\hat{\sigma}_{p}^{2}}.
+$$ {#eq-StatisticalGWNestimatesPortfolio}
+These estimates are unbiased and asymptotically normal with standard
+errors:
+$$
+\mathrm{se}(\hat{\mu}_{p})=\frac{\sigma_{p}}{\sqrt{T}},\,\mathrm{se}(\hat{\sigma}_{p}^{2})\approx\frac{\sigma_{p}^{2}}{\sqrt{T/2}},\,\mathrm{se}(\hat{\sigma}_{p})\approx\frac{\sigma_{p}}{\sqrt{2T}}.
+$$ {#eq-StatisticalGWNsePortfolio}
+In the second method, I compute estimates of $\mu_{p}$ and $\sigma_{p}^{2}$
+directly from the individual asset estimates in @eq-StatisticalGWNestimatesAssets:
+$$
+\hat{\mu}_{p} = \mathbf{x}^{\prime}\hat{\boldsymbol{\mu}}=x_{A}\hat{\mu}_{A}+x_{B}\hat{\mu}_{B},
+$$ {#eq-StatisticalGWNestimatesPortfolioMu}
+$$
+\hat{\sigma}_{p}^{2} = \mathbf{x}^{\prime}\widehat{\boldsymbol{\Sigma}}\mathbf{x}=x_{A}^{2}\hat{\sigma}_{A}^{2}+x_{B}^{2}\hat{\sigma}_{B}^{2}+2x_{A}x_{B}\hat{\sigma}_{AB}.
+$$ {#eq-StatisticalGWNestimatesPortfolioVar}
+The estimates of $\mu_{p}$ and $\sigma_{p}^{2}$ in @eq-StatisticalGWNestimatesPortfolioMu
+and @eq-StatisticalGWNestimatesPortfolioVar, respectively,
+are numerically identical to the estimates in @eq-StatisticalGWNestimatesPortfolio.
+To see this, consider the calculation of $\hat{\mu}_{p}$ in @eq-StatisticalGWNestimatesPortfolioMu:
+\begin{eqnarray*}
+\hat{\mu}_{p} & = & x_{A}\hat{\mu}_{A}+x_{B}\hat{\mu}_{B}=x_{A}\left(\frac{1}{T}\sum_{t=1}^{T}r_{At}\right)+x_{B}\left(\frac{1}{T}\sum_{t=1}^{T}r_{Bt}\right)\\
+ & = & \frac{1}{T}\sum_{t=1}^{T}(x_{A}r_{At}+x_{B}r_{Bt})=\frac{1}{T}\sum_{t=1}^{T}r_{p,t}.
+\end{eqnarray*}
+The proof of the equivalence of $\hat{\sigma}_{p}^{2}$ in @eq-StatisticalGWNestimatesPortfolioVar
+with $\hat{\sigma}_{p}^{2}$ in @eq-StatisticalGWNestimatesPortfolio
+is left as an end-of-chapter exercise. 
+
+The standard errors of $\hat{\mu}_{p}$ and $\hat{\sigma}_{p}^{2}$
+can also be directly calculated from @eq-StatisticalGWNestimatesPortfolioMu
+and @eq-StatisticalGWNestimatesPortfolioVar. Consider the
+calculation for $\mathrm{se}(\hat{\mu}_{p})$:
+$$
+\mathrm{var}(\hat{\mu}_{p})=\mathrm{var}(x_{A}\hat{\mu}_{A}+x_{B}\hat{\mu}_{B})=x_{A}^{2}\mathrm{var}(\hat{\mu}_{A})+x_{B}^{2}\mathrm{var}(\hat{\mu}_{B})+2x_{A}x_{B}\mathrm{cov}(\hat{\mu}_{A},\hat{\mu}_{B}).
+$$ {#eq-StatisticalSEmu}
+In chapter @sec-Estimation-of-The-GWN-Model it was shown that
+$$
+\mathrm{var}(\hat{\mu}_{A})=\frac{\sigma_{A}^{2}}{T},\,\mathrm{var}(\hat{\mu}_{B})=\frac{\sigma_{B}^{2}}{T},\, \mathrm{cov}(\hat{\mu}_{A},\hat{\mu}_{B})=\frac{\sigma_{AB}}{T}. 
+$$
+Then @eq-StatisticalSEmu can be rewritten as:
+\begin{eqnarray*}
+\mathrm{var}(\hat{\mu}_{p}) & = & x_{A}\frac{\sigma_{A}^{2}}{T}+x_{B}\frac{\sigma_{B}^{2}}{T}+2x_{A}x_{B}\frac{\sigma_{AB}}{T}\\
+ & = & \frac{1}{T}\left(x_{A}^{2}\sigma_{A}^{2}+x_{B}^{2}\sigma_{B}^{2}+2x_{A}x_{B}\sigma_{AB}\right)\\
+ & = & \frac{\sigma_{p}^{2}}{T}.
+\end{eqnarray*}
+Hence, 
+$$
+\mathrm{se}(\hat{\mu}_{p})=\sqrt{\mathrm{var}(\hat{\mu}_{p})}=\frac{\sigma_{p}}{\sqrt{T}},
+$$
+which is the same formula given in @eq-StatisticalGWNsePortfolio.
+
+Unfortunately, the calculation of $\mathrm{se}(\hat{\sigma}_{p}^{2})$
+is a bit horrific and I only sketch out some of the details. Now,
+$$
+\begin{aligned}
+\mathrm{var}(\hat{\sigma}_{p}^{2}) & =  \mathrm{var}(x_{A}^{2}\hat{\sigma}_{A}^{2}+x_{B}^{2}\hat{\sigma}_{B}^{2}+2x_{A}x_{B}\hat{\sigma}_{AB})\\
+ & =  x_{A}^{4}\mathrm{var}(\hat{\sigma}_{A}^{2})+x_{B}^{4}\mathrm{var}(\hat{\sigma}_{B}^{2})+4x_{A}^{2}x_{B}^{2}\mathrm{var}(\hat{\sigma}_{AB})\nonumber \\
+ &   +2x_{A}^{2}x_{B}^{2}\mathrm{cov}(\hat{\sigma}_{A}^{2},\hat{\sigma}_{B}^{2})+4x_{A}^{3}x_{B}\mathrm{cov}(\hat{\sigma}_{A}^{2},\hat{\sigma}_{AB})\nonumber \\
+ &   +4x_{A}x_{B}^{3}\mathrm{cov}(\hat{\sigma}_{B}^{2},\hat{\sigma}_{AB})\nonumber 
+\end{aligned}
+$$ {#eq-StatisticalHorrificFormula}
+Unfortunately, there are no easy formulas for $\mathrm{var}(\hat{\sigma}_{AB})$,
+$\mathrm{cov}(\hat{\sigma}_{A}^{2},\hat{\sigma}_{B}^{2})$, $\mathrm{cov}(\hat{\sigma}_{A}^{2},\hat{\sigma}_{AB})$
+and $\mathrm{cov}(\hat{\sigma}_{B}^{2},\hat{\sigma}_{AB})$. With
+a CLT approximation and much tedious calculation it can be shown that
+@eq-StatisticalHorrificFormula is equal to the
+square of $\mathrm{se}(\hat{\sigma}_{p}^{2})$ given in @eq-StatisticalGWNsePortfolio.
+Obviously, the method of computing standard errors for $\hat{\mu}_{p}$
+and $\hat{\sigma}_{p}^{2}$ directly from the GWN model estimates
+computed from the sample portfolio returns is much easier than the
+indirect calculations based on the individual asset estimates, especially for $\hat{\sigma}_{p}^{2}$. 
+
+::: {#exm-example-data-for-two-risky-asset-portfolio .example name="Example data for two risky asset portfolio"}
+
+To be completed... table example data
+
+@tbl-TableExampleData from @sec-Introduction-to-Portfolio-Theory gives annual return distribution parameters for two hypothetical assets $A$ and $B$. I use this
+distribution but re-scale the values to represent a monthly return
+distribution. Asset $A$ is the high risk asset with a monthly return
+of $\mu_{A}=1.46\%$ and monthly standard deviation of $\sigma_{A}=7.45\%$.
+Asset B is a lower risk asset with monthly return $\mu_{B}=0.458\%$
+and monthly standard deviation of $\sigma_{B}=3.32\%$. The assets
+are assumed to be slightly negatively correlated with correlation
+coefficient $\rho_{AB}=-0.164$. Given the standard deviations and
+the correlation, the covariance can be determined from $\sigma_{AB}=\rho_{AB}\sigma_{A}\sigma_{B}=-0.0004$.
+In R, these GWN model parameters are created using:
+
+```{r}
+#| echo: true
+
+mu.A = 0.175/12
+sig.A = 0.258/sqrt(12)
+sig2.A = sig.A^2
+mu.B = 0.055/12
+sig.B = 0.115/sqrt(12)
+sig2.B = sig.B^2
+rho.AB = -0.164
+sig.AB = rho.AB*sig.A*sig.B
+sigma.mat = matrix(c(sig2.A, sig.AB, sig.AB, sig2.B),
+                   2, 2, byrow=TRUE) 
+mu.vec = c(mu.A, mu.B) 
+sd.vec = c(sig.A, sig.B) 
+names(mu.vec) = names(sd.vec) = c("asset.A", "asset.B") 
+dimnames(sigma.mat) = list(names(mu.vec), names(mu.vec))
+```
+
+For portfolio analysis, I consider an equally weighted portfolio
+of assets A and B. The GWN model parameters for this portfolio are:
+
+```{r}
+#| echo: true
+
+x1.A = 0.5 
+x1.B = 1 - x1.A 
+x1.vec = c(x1.A, x1.B) 
+names(x1.vec) = names(mu.vec)
+mu.p1 = x1.A*mu.A + x1.B*mu.B 
+sig2.p1 = x1.A^2 * sig2.A + x1.B^2 * sig2.B + 2*x1.A*x1.B*sig.AB 
+sig.p1 = sqrt(sig2.p1)
+cbind(mu.p1, sig2.p1, sig.p1)
+```
+
+I use the above GWN model parameters to simulate $T=60$ hypothetical
+returns for assets A and B and the equally weighted portfolio:
+
+```{r}
+#| echo: true
+
+n.obs = 60 
+set.seed(125) 
+returns.sim = rmvnorm(n.obs, mean=mu.vec, sigma=sigma.mat) 
+colnames(returns.sim) = names(mu.vec)
+rp1.sim = returns.sim%*%x1.vec
+```
+
+The estimates of the GWN model parameters from the simulated returns
+for the individual assets are:
+
+```{r}
+#| echo: true
+
+muhat.vals = colMeans(returns.sim) 
+sig2hat.vals = apply(returns.sim, 2, var) 
+sigmahat.vals = apply(returns.sim, 2, sd) 
+covmat.hat = cov(returns.sim) 
+covhat = covmat.hat[1,2]
+rbind(muhat.vals, sig2hat.vals, sigmahat.vals) 
+covhat 
+```
+
+The estimated standard errors and 95\% confidence intervals for $\hat{\mu}_{i}$
+and $\hat{\sigma}_{i}$ $(i=A,\,B)$ are:
+
+```{r}
+#| echo: true
+
+# estimated standard errors
+se.muhat = sigmahat.vals/sqrt(n.obs) 
+se.sigmahat = sigmahat.vals/sqrt(2*n.obs) 
+rbind(se.muhat, se.sigmahat)
+# 95% confidence intervals 
+lower.mu = muhat.vals - 2*se.muhat 
+upper.mu = muhat.vals + 2*se.muhat 
+lower.sigma = sigmahat.vals - 2*se.sigmahat 
+upper.sigma = sigmahat.vals + 2*se.sigmahat 
+cbind(lower.mu, upper.mu) 
+cbind(lower.sigma, upper.sigma)
+```
+
+Here, you see that the means are not estimated as precisely as the
+volatilities and that all of the true values are contained in the
+95\% confidence intervals. 
+
+For the equally weighted portfolio, the GWN model estimates computed
+directly from the simulated portfolio returns using @eq-StatisticalGWNestimatesPortfolio
+are:
+
+```{r}
+#| echo: true
+muhat.p1 = mean(rp1.sim) 
+sig2hat.p1 = as.numeric(var(rp1.sim)) 
+sigmahat.p1 = sd(rp1.sim) 
+cbind(muhat.p1, sig2hat.p1, sigmahat.p1)
+```
+
+The portfolio estimates computed from the asset estimates @eq-StatisticalGWNestimatesPortfolioMu
+and @eq-StatisticalGWNestimatesPortfolioVar are numerically
+equivalent:
+
+```{r}
+#| echo: true
+muhat.p1 = as.numeric(x1.A*muhat.vals[1] + x1.B*muhat.vals[2]) 
+sig2hat.p1 = as.numeric(x1.A^2 * sig2hat.vals[1] + 
+                        x1.B^2 * sig2hat.vals[2] + 
+                        2*x1.A*x1.B*covhat) 
+sighat.p1 = sqrt(sig2hat.p1) 
+cbind(muhat.p1, sig2hat.p1, sigmahat.p1)
+```
+
+The estimated standard errors for $\hat{\mu}_{p}$ and $\hat{\sigma}_{p}$,
+and 95\% confidence intervals for $\mu_{p}$ and $\sigma_{p}$ computed
+using @eq-StatisticalGWNsePortfolio are:
+
+```{r}
+#| echo: true
+
+# estimated standard errors
+se.muhat.p1 = sigmahat.p1/sqrt(n.obs) 
+se.sigmahat.p1 = sigmahat.p1/sqrt(2*n.obs) 
+cbind(se.muhat.p1, se.sigmahat.p1)
+# 95% confidence intervals 
+lower.mu = muhat.p1 - 2*se.muhat.p1 
+upper.mu = muhat.p1 + 2*se.muhat.p1 
+lower.sigma = sigmahat.p1 - 2*se.sigmahat.p1 
+upper.sigma = sigmahat.p1 + 2*se.sigmahat.p1 
+ans = rbind(c(lower.mu, upper.mu),             
+c(lower.sigma, upper.sigma)) 
+colnames(ans) = c("lower", "upper") 
+rownames(ans) = c("mu.p", "sigma.p") 
+ans
+```
+
+As with the individual assets, the portfolio mean is estimated less
+precisely than the portfolio volatility and the true values are in
+the 95\% confidence intervals. 
+\hfill{}$\blacksquare$
+:::
+
+### Estimation error in the risk-return diagram
+
+In the analysis of portfolios in @sec-Introduction-to-Portfolio-Theory, the risk return trade-off between portfolios was visualized by plotting the volatility-expected return pairs $(\hat{\sigma}_{p},\,\hat{\mu}_{p})$ of different portfolios. This was done without considering estimation error in $\hat{\sigma}_{p}$ and $\hat{\mu}_{p}$. Estimation error in $\hat{\sigma}_{p}$ and $\hat{\mu}_{p}$
+creates uncertainty about the location of the true values $(\sigma_{p},\,\mu_{p})$ in the risk-return diagram. 
+
+::: {#exm-true-and-estimated-risk-return-diagram-for-example-data .example name="True and estimated risk return diagram for example data"}
+
+@fig-StatisticalRiskReturn shows the true values and
+sample estimates of the pairs $(\sigma_{A},\mu_{A}),$ $(\sigma_{B},\mu_{B})$,
+and $(\sigma_{p},\mu_{p})$ for the equally weighted portfolio created
+using:
+
+
+```{r}
+#| label: fig-StatisticalRiskReturn
+#| echo: true
+#| fig-cap: Risk-return diagram for example data. $\mathrm{A}=(\sigma_{A},\mu_{A})$,
+#|   $\mathrm{B}=(\sigma_{B},\mu_{B})$, $\mathrm{\hat{A}}=(\hat{\sigma}_{A},~\hat{\mu}_{A})$,
+#|   $\mathrm{\hat{B}}=(\hat{\sigma}_{B},~\hat{\mu}_{B})$.
+#| out-width: 80%
+#| fig-asp: 0.75
+#| fig-align: center
+
+# true values
+plot(sd.vec, mu.vec, pch=16, col="black",       
+     ylim=c(-0.01, 0.04), xlim=c(0, 0.1),      
+     xlab=expression(sigma[p]), ylab=expression(mu[p]),      
+     cex=2) 
+abline(h=0) 
+points(sig.p1, mu.p1, pch=16, col="black", cex=2) 
+text(x=sig.A, y=mu.A, labels="A", pos=4, cex = 1.5) 
+text(x=sig.B, y=mu.B, labels="B", pos=4, cex = 1.5) 
+text(x=sig.p1, y=mu.p1, labels="P", pos=4, cex = 1.5) 
+# estimates 
+points(sigmahat.vals, muhat.vals, pch=16, col="blue", cex=2) 
+points(sigmahat.p1, muhat.p1, pch=16, col="blue", cex=2) 
+text(x=sigmahat.vals[1], y=muhat.vals[1], labels=expression(hat(A)),       
+     col="blue", pos=4, cex = 1.5) 
+text(x=sigmahat.vals[2], y=muhat.vals[2], labels=expression(hat(B)),       
+     col="blue", pos=4, cex = 1.5) 
+text(x=sigmahat.p1, y=muhat.p1, labels=expression(hat(P)),       
+     col="blue", pos=4, cex = 1.5)
+```
+
+You see that $(\hat{\sigma}_{B},\hat{\mu}_{B})$ is fairly close to
+$(\sigma_{B},\mu_{B})$ but that $(\hat{\sigma}_{A},\hat{\mu}_{A})$
+is quite far above $(\sigma_{A},\mu_{A})$ and $(\hat{\sigma}_{P},\hat{\mu}_{P})$
+is moderately far above $(\sigma_{P},\mu_{P})$. The large positive
+estimation errors in $\hat{\mu}_{P}$ and $\hat{\mu}_{A}$ greatly
+overstate the risk-return characteristics of the equally weighted
+portfolio and asset A. 
+\hfill{}$\blacksquare$
+:::
+
+
+To illustrate estimation error in the risk return diagram, the individual
+95\% confidence intervals for $\mu_{i}$ and $\sigma_{i}$ could be
+superimposed on the plot as rectangles centered at the pairs $(\hat{\sigma}_{i},\hat{\mu}_{i})$.
+However, the probability that these rectangles contain the true pairs
+$(\sigma_{i},\mu_{i})$ is not equal to 95\% because the confidence
+intervals for $\mu_{i}$ are created independently from the confidence
+intervals for $\sigma_{i}$. To create a joint confidence set that
+cover the pair $(\sigma_{i},\mu_{i})$ with probability 95\% requires
+knowing the joint probability distribution of $(\hat{\sigma}_{i},\hat{\mu}_{i})$.
+
+In @sec-Estimation-of-The-GWN-Model, it was shown that
+in the GWN model: 
+$$
+\left(\begin{array}{c}
+\hat{\sigma}_{i}\\
+\hat{\mu}_{i}
+\end{array}\right)\sim N\left(\left(\begin{array}{c}
+\sigma_{i}\\
+\mu_{i}
+\end{array}\right),\left(\begin{array}{cc}
+\mathrm{se}(\hat{\sigma}_{i})^{2} & 0\\
+0 & \mathrm{se}(\hat{\mu}_{i})^{2}
+\end{array}\right)\right), 
+$$ {#eq-StatisticalJointPdf}
+for large enough $T$. Hence, $\hat{\sigma}_{i}$ and $\hat{\mu}_{i}$
+are (asymptotically) jointly normally distributed and $\mathrm{cov}(\hat{\sigma}_{i},\hat{\mu}_{i})=0$
+which implies that they are also independent. Let $\theta=(\sigma_{i},\mu_{i})^{\prime},\,$$\hat{\theta}=(\hat{\sigma}_{i},\hat{\mu}_{i})^{\prime}$
+and $\mathbf{V}=\mathrm{diag}(\mathrm{se}(\hat{\sigma}_{i})^{2},\mathrm{se}(\hat{\mu}_{i})^{2})$.
+Then @eq-StatisticalJointPdf can be expressed as $\hat{\theta}\sim N(\theta,\,\mathbf{V})$.
+It follows that the quadratic form $\left(\hat{\theta}-\theta\right)^{\prime}\mathbf{V}^{-1}\left(\hat{\theta}-\theta\right)\sim\chi^{2}(2),$
+and so 
+$$
+Pr\left\{ \left(\hat{\theta}-\theta\right)^{\prime}
+\mathbf{V}^{-1}\left(\hat{\theta}-\theta\right)\leq q_{.95}^{\chi^{2}(2)}\right\}  
+=0.95
+$$ {#eq-StatisticalJointCI}
+
+where $q_{.95}^{\chi^{2}(2)}$ is the 95\% quantile of the $\chi^{2}(2)$
+distribution. The equation $\left(\hat{\theta}-\theta\right)^{\prime}\mathbf{V}^{-1}\left(\hat{\theta}-\theta\right)=q_{.95}^{\chi^{2}(2)}$
+defines an un-tilted ellipse in $\sigma_{i}-\mu_{i}$ space centered
+at $(\hat{\sigma}_{i},\hat{\mu}_{i})$ with axes proportional to $\mathrm{se}(\hat{\sigma}_{i})$
+and $\mathrm{se}(\hat{\mu}_{i})$, respectively. This ellipse is the
+joint 95\% confidence set for $(\sigma_{i},\mu_{i})$. 
+
+
+::: {#exm-true-and-estimated-risk-return-diagram-with-confidence-ellipses-for-example-data .example name="True and estimated risk return diagram with confidence ellipses for example data"}
+
+@fig-StatisticalRiskReturnCI repeats @fig-StatisticalRiskReturn
+with the addition of the joint confidence sets for $(\sigma_{A},\mu_{A}),$
+$(\sigma_{B},\mu_{B})$, and $(\sigma_{p},\mu_{p})$ , created using
+
+```{r}
+#| label: fig-StatisticalRiskReturnCI
+#| echo: false
+#| fig-cap: Risk return tradeoff with 95\% confidence ellipses
+#| out-width: 80%
+#| fig-asp: 0.75
+#| fig-align: center
+
+plot(sd.vec, mu.vec, pch=16, col="black",       
+     ylim=c(-0.01, 0.06), xlim=c(0, 0.1),      
+     xlab=expression(sigma[p]), ylab=expression(mu[p]),cex=2) 
+abline(h=0) 
+points(sig.p1, mu.p1, pch=16, col="black", cex=2) 
+text(x=sig.A, y=mu.A, labels="A", pos=4, cex = 1.5) 
+text(x=sig.B, y=mu.B, labels="B", pos=4, cex = 1.5) 
+text(x=sig.p1, y=mu.p1, labels="P", pos=4, cex = 1.5) 
+points(sigmahat.vals, muhat.vals, 
+       pch=16, col="blue", cex=2)
+points(sigmahat.p1, muhat.p1, pch=16, col="blue", cex=2) 
+text(x=sigmahat.vals[1], y=muhat.vals[1], labels=expression(hat(A)),       
+   col="blue", pos=4, cex = 1.5) 
+text(x=sigmahat.vals[2], y=muhat.vals[2], labels=expression(hat(B)),       
+     col="blue", pos=4, cex = 1.5) 
+text(x=sigmahat.p1, y=muhat.p1, labels=expression(hat(P)),   
+     col="blue", pos=4, cex = 1.5)
+# Create asymptotic variances 
+V.A = matrix(c(se.sigmahat[1]^2, 0 ,0, 
+               se.muhat[1]^2), 2, 2, byrow=TRUE) 
+V.B = matrix(c(se.sigmahat[2]^2, 0 ,0, 
+               se.muhat[2]^2), 2, 2, byrow=TRUE) 
+V.P = matrix(c(se.sigmahat.p1^2, 0 ,0, 
+               se.muhat.p1^2), 2, 2, byrow=TRUE)
+# plot confidence ellipses 
+lines(ellipse(V.A, centre=c(sigmahat.vals[1], 
+                            muhat.vals[1]), level=0.95), 
+      col="red" , lwd=2) 
+lines(ellipse(V.B, centre=c(sigmahat.vals[2], 
+                            muhat.vals[2]), level=0.95),         
+      col="red", lwd=2 ) 
+lines(ellipse(V.P, centre=c(sigmahat.p1, 
+                            muhat.p1), level=0.95),         
+      col="red", lwd=2 )
+```
+
+
+The `ellipse()` function from the R package **ellipse**
+is used to draw the 95\% confidence sets. The confidence ellipses
+are longer in the $\mu_{i}$ direction because $\mathrm{se}(\hat{\mu}_{i})$
+is larger than $\mathrm{se}(\hat{\sigma}_{i})$ and indicate more
+uncertainty about the true values of $\mu_{i}$ than the true values
+of $\sigma_{i}.$ The ellipse for $(\sigma_{A},\mu_{A})$ is much
+bigger than the ellipses for $(\sigma_{B},\mu_{B})$ and $(\sigma_{p},\mu_{p})$
+and indicates a wide range of possible values for $(\sigma_{A},\mu_{A})$
+. For all pairs, the true values are inside the 95\% confidence ellipses.^[Notice, however, that the pair $(\sigma_{p},\mu_{p})$ is inside the
+confidence ellipse for $(\sigma_{B},\mu_{B})$ but that $(\sigma_{B},\mu_{B})$
+is not in the confidence ellipse for $(\sigma_{p},\mu_{p})$. ] 
+\hfill{}$\blacksquare$
+:::
+
+The estimation errors in the points $(\hat{\sigma}_{i},\hat{\mu}{}_{i})$
+can also be illustrated using the bootstrap. You simply sample with
+replacement from the observed returns $B$ times and compute estimates
+of $(\sigma_{i},\mu_{i})$ from each bootstrap sample. You can then
+plot the $B$ bootstrap pairs $(\hat{\sigma}_{i}^{*},\hat{\mu}_{i}^{*})$
+on the risk return diagram instead of the confidence ellipses. 
+
+::: {#exm-true-and-estimated-risk-return-diagram-with-bootstrap-estimates-for-example-data .example name="True and estimated risk return diagram with bootstrap estimates for example data"}
+
+The following R code creates $B=500$ bootstrap estimates of $(\sigma_{i},\mu_{i})$
+for $i=A,B,P$:
+
+```{r}
+#| echo: true
+
+n.boot = 500 
+mu.boot = matrix(0, n.boot, 3) 
+sd.boot = matrix(0, n.boot, 3) 
+colnames(mu.boot) = colnames(sd.boot) = c("A", "B", "P")
+set.seed(123) 
+for (i in 1:n.boot) {   
+   boot.idx = sample(n.obs, replace=TRUE)   
+   ret.boot = returns.sim[boot.idx, ]    
+   rp1.boot = ret.boot%*%x1.vec   
+   ret.boot = cbind(ret.boot, rp1.boot)   
+   mu.boot[i, ] = colMeans(ret.boot)   
+   sd.boot[i, ] = apply(ret.boot, 2, sd)  
+}
+```
+
+@fig-StatisticalRiskReturnBoot repeats @fig-StatisticalRiskReturnCI
+and adds the bootstrap estimates of $(\sigma_{i},\mu_{i})$ for $i=A,B,P$.
+Notice that the bootstrap estimates for each asset produce a scatter
+that fills the 95\% confidence ellipses with just a few estimates
+lying outside the ellipses. Hence, the bootstrap is an easy and effective
+way to illustrate estimation error in the risk-return diagram.
+\hfill{}$\blacksquare$
+:::
+
+```{r}
+#| label: fig-StatisticalRiskReturnBoot
+#| echo: false
+#| fig-cap: Risk return trade off with bootstrap estimates.
+#| out-width: 80%
+#| fig-asp: 0.75
+#| fig-align: center
+
+# show estimates with 95% confidence intervals 
+plot(sd.vec, mu.vec, type="n",  ylim=c(-0.01, 0.06), xlim=c(0, 0.1),      
+     xlab=expression(sigma[p]), ylab=expression(mu[p])) 
+# bootstrap estimates 
+points(sd.boot[, "A"], mu.boot[, "A"], pch=16, col="lightblue") 
+points(sd.boot[, "B"], mu.boot[, "B"], pch=16, col="grey") 
+points(sd.boot[, "P"], mu.boot[, "P"], pch=16, col="pink") 
+points(sd.vec, mu.vec, pch=16, col="black", cex=2) 
+abline(h=0) 
+points(sig.p1, mu.p1, pch=16, col="black", cex=2) 
+text(x=sig.A, y=mu.A, labels="A", pos=4, cex = 1.5) 
+text(x=sig.B, y=mu.B, labels="B", pos=4, cex = 1.5) 
+text(x=sig.p1, y=mu.p1, labels="P", pos=4, cex = 1.5) 
+points(sigmahat.vals, muhat.vals, pch=16, col="blue", cex=2) 
+points(sigmahat.p1, muhat.p1, pch=16, col="blue", cex=2) 
+text(x=sigmahat.vals[1], y=muhat.vals[1], labels="A Hat",       
+    col="blue", pos=4, cex = 1.5) 
+text(x=sigmahat.vals[2], y=muhat.vals[2], labels="B Hat",       
+    col="blue", pos=4, cex = 1.5) 
+text(x=sigmahat.p1, y=muhat.p1, labels="P Hat",       
+     col="blue", pos=4, cex = 1.5) 
+# plot confidence ellipses 
+lines( ellipse(V.A, centre=c(sigmahat.vals[1], muhat.vals[1]), level=0.95),         
+      col="red" , lwd=2) 
+lines( ellipse(V.B, centre=c(sigmahat.vals[2], muhat.vals[2]), level=0.95),         
+      col="red", lwd=2 ) 
+lines( ellipse(V.P, centre=c(sigmahat.p1, muhat.p1), level=0.95),         
+     col="red", lwd=2 ) 
+```
+
+
+### Estimation error in the portfolio frontier
+
+In the case of two risky assets, the portfolio frontier is a plot
+of the risk-return characteristics of all feasible portfolios. From
+this frontier, you can readily determine the set of efficient portfolios
+which are those portfolios that have the highest expected return for
+a given risk level. If you construct the portfolio frontier from portfolio
+risk and return estimates from the GWN model, then the estimation
+error in these estimates leads to estimation error in the entire portfolio
+frontier. 
+
+::: {#exm-true-and-estimated-portfolio-frontier-for-example-data .example name="True and estimated portfolio frontier for example data"}
+
+Using the example data, you can construct the true unobservable portfolio
+frontier as well as an estimate of this frontier from the simulated
+returns. For example, consider creating the true and estimated portfolio
+frontiers for the following portfolios:
+
+```{r}
+#| echo: true
+
+x.A = seq(from=-0.4, to=1.4, by=0.1) 
+x.B = 1 - x.A
+```
+
+The risk-return characteristics of the portfolios on the true portfolio
+frontier are:
+
+```{r}
+#| echo: true
+
+mu.p = x.A*mu.A + x.B*mu.B 
+sig2.p = x.A^2 * sig2.A + x.B^2 * sig2.B + 2*x.A*x.B*sig.AB 
+sig.p = sqrt(sig2.p)
+```
+
+The risk-return characteristics of the portfolios on the estimated
+frontier are:
+
+```{r}
+#| echo: true
+
+muhat.p = x.A*muhat.vals["asset.A"] + x.B*muhat.vals["asset.B"] 
+sig2hat.p = x.A^2 * sig2hat.vals["asset.A"] + 
+   x.B^2 * sig2hat.vals["asset.B"] + 2*x.A*x.B*covhat 
+sighat.p = sqrt(sig2hat.p)
+```
+
+The true and estimated portfolios are illustrated in @fig-StatisticalFrontier,
+created with
+
+```{r}
+#| label: fig-StatisticalFrontier
+#| echo: true
+#| fig-cap: True and estimated portfolio frontiers
+#| out-width: 80%
+#| fig-asp: 0.75
+#| fig-align: center
+
+plot(sig.p, mu.p, pch=16, type="b", col="black",       
+     ylim=c(-0.01, 0.041), xlim=c(0, 0.125),      
+     xlab=expression(sigma[p]), ylab=expression(mu[p]), cex=1) 
+abline(h=0) 
+points(sd.vec, mu.vec, pch=16, col="black", cex=2) 
+text(x=sig.A, y=mu.A, labels="A", pos=3, cex = 1.5) 
+text(x=sig.B, y=mu.B, labels="B", pos=3, cex = 1.5) 
+# estimated assets and frontier 
+points(sighat.p, muhat.p, type="b", pch=16, col="blue", cex=1) 
+points(sigmahat.vals, muhat.vals, pch=16, col="blue", cex=2) 
+text(x=sigmahat.vals[1], y=muhat.vals[1], labels="A Hat",       
+     col="blue", pos=3, cex = 1.5) 
+text(x=sigmahat.vals[2], y=muhat.vals[2], labels="B Hat",       
+     col="blue", pos=2, cex = 1.5)
+```
+
+Due to the large estimation error in $\hat{\mu}_{A}$, the estimated
+frontier is considerably higher than the true frontier. As a result,
+portfolios on the estimated frontier appear to have higher reward-to-risk
+properties than they actually do. 
+\hfill{}$\blacksquare$
+:::
+
+Sampling uncertainty about the estimated frontier can be easily computed
+using the bootstrap. The process is the same as in the case of a single
+asset. For each bootstrap sample, estimate the expected return and
+volatility of each portfolio on the frontier and then plot these bootstrap
+pairs on the plot showing the estimated frontier from the sample returns.
+
+::: {#exm-true-and-estimated-risk-portfolio-frontier-with-bootstrap-estimates-for-example-data .example name="True and estimated risk portfolio frontier with bootstrap estimates for example data"}
+
+The R code to create $B=1000$ bootstrap estimates of risk and return
+pairs for the frontier portfolios is
+
+```{r}
+#| echo: true
+
+# initialize matrices 
+n.boot = 1000 
+mu.boot = matrix(0, n.boot, length(x.A)) 
+sd.boot = matrix(0, n.boot, length(x.A)) 
+colnames(mu.boot) = colnames(sd.boot) = 
+      paste("P", 1:length(x.A), sep=".") 
+# bootstrap loop 
+set.seed(123) 
+for (i in 1:n.boot) {   
+   boot.idx = sample(n.obs, replace=TRUE)   
+   ret.boot = returns.sim[boot.idx, ]    
+# GWN model estimates   
+   muhat.boot = colMeans(ret.boot)   
+   sig2hat.boot = apply(ret.boot, 2, var)   
+   sigmahat.boot = sqrt(sig2hat.boot)   
+   covhat.boot = cov(ret.boot)[1,2]   
+# portfolio risk return estimates   
+   mu.boot[i, ] = x.A*muhat.boot[1] + x.B*muhat.boot[2]   
+   sig2.boot = x.A^2 * sig2hat.boot[1] + 
+      x.B^2 * sig2hat.boot[2] + 2*x.A*x.B*covhat.boot   
+   sd.boot[i, ] = sqrt(sig2.boot) 
+}
+```
+
+The true and estimated frontier together with the bootstrap risk-return
+pairs for each portfolio on the estimated frontier is illustrated
+in @fig-StatisticalFrontierBoot, create using
+
+```{r}
+#| label: fig-StatisticalFrontierBoot
+#| echo: true
+#| fig-cap: Estimated frontier with bootstrap estimates.
+#| out-width: 80%
+#| fig-asp: 0.75
+#| fig-align: center
+
+# set up plot area
+plot(sig.p, mu.p, type="n", ylim=c(-0.02, 0.07), xlim=c(0, 0.13),      
+     xlab=expression(sigma[p]), ylab=expression(mu[p])) 
+# plot bootstrap estimates 
+for (i in 1:length(x.A)) {   
+   points(sd.boot[, i], mu.boot[, i], pch=16, col="lightblue") 
+}
+# plot true frontier
+points(sig.p, mu.p, pch=16, type="b", col="black", cex=1) 
+abline(h=0) 
+# plot true assets
+points(sd.vec, mu.vec, pch=16, col="black", cex=2) 
+text(x=sig.A, y=mu.A, labels="A", pos=3, cex = 1.5) 
+text(x=sig.B, y=mu.B, labels="B", pos=3, cex = 1.5) 
+# plot estimated frontier 
+points(sighat.p, muhat.p, type="b", pch=16, col="blue", cex=1) 
+# plot estimated assets
+points(sigmahat.vals, muhat.vals, pch=16, col="blue", cex=2) 
+text(x=sigmahat.vals[1], y=muhat.vals[1], labels="A Hat",       
+     col="blue", pos=3, cex = 1.5) 
+text(x=sigmahat.vals[2], y=muhat.vals[2], labels="B Hat",       
+     col="blue", pos=2, cex = 1.5)
+```
+
+The true frontier portfolios are the black dots, the estimated frontier
+portfolios are the dark blue dots and the bootstrap risk-return pairs
+are the light blue dots. The bootstrap estimates form a light blue
+cloud around the estimated frontier. The bootstrap cloud can be interpreted
+as approximating a confidence interval around estimated frontier.
+From @eq-StatisticalJointCI, this confidence interval can
+be thought of the union of all of the confidence ellipses about the
+portfolios on the frontier. The true frontier of portfolios (black
+dots) is within the blue cloud. 
+\hfill{}$\blacksquare$
+:::
+
+### Statistical properties of the global minimum variance portfolio
+
+For portfolios of two risky assets, the global minimum variance portfolio
+weights satisfy
+$$
+x_{A}^{\min}=\frac{\sigma_{B}^{2}-\sigma_{AB}}{\sigma_{A}^{2}+\sigma_{B}^{2}-2\sigma_{AB}},~x_{B}^{\min}=1-x_{A}^{\min}=\frac{\sigma_{A}^{2}-\sigma_{AB}}{\sigma_{A}^{2}+\sigma_{B}^{2}-2\sigma_{AB}}.
+$$ {#eq-StatisticalGlobalMin}
+The expected return and variance of the global minimum variance portfolio
+are
+\begin{eqnarray*}
+\mu_{p,\mathrm{min}} & = & x_{A}^{\mathrm{min}}\mu_{A}+x_{B}^{\mathrm{min}}\mu_{B},\\
+\sigma_{p,\mathrm{min}}^{2} & = & \left(x_{A}^{\mathrm{min}}\right)^{2}\sigma_{A}^{2}+\left(x_{B}^{\mathrm{min}}\right)^{2}\sigma_{B}^{2}+2x_{A}^{\mathrm{min}}x_{B}^{\mathrm{min}}\sigma_{AB}.
+\end{eqnarray*}
+
+The estimated global minimum variance portfolio weights are then
+$$
+\hat{x}_{A}^{\min}=\frac{\hat{\sigma}_{B}^{2}-\hat{\sigma}_{AB}}{\hat{\sigma}_{A}^{2}+\hat{\sigma}{}_{B}^{2}-2\hat{\sigma}_{AB}},~x_{B}^{\min}=1-\hat{x}{}_{A}^{\min}=\frac{\hat{\sigma}{}_{A}^{2}-\hat{\sigma}{}_{AB}}{\hat{\sigma}_{A}^{2}+\hat{\sigma}_{B}^{2}-2\hat{\sigma}{}_{AB}}.
+$$ {#eq-StatisticalGlobalMinHat}
+From @eq-StatisticalGlobalMinHat you see that estimation error
+in the global minimum variance weights is related to estimation error
+in the asset variances and the covariance in a complicated nonlinear
+way. However, the estimation error does not depend on estimation error
+in the expected returns. The estimated expected returns and variance
+of the global minimum variance portfolio are
+$$
+\hat{\mu}_{p,\mathrm{min}} = \hat{x}{}_{A}^{\mathrm{min}}\hat{\mu}_{A}+\hat{x}{}_{B}^{\mathrm{min}}\hat{\mu}_{B},
+$$ {#eq-StatisticalGlobalMinMuHat}
+$$
+\hat{\sigma}_{p,\mathrm{min}}^{2} =  \left(\hat{x}{}_{A}^{\mathrm{min}}\right)^{2}\hat{\sigma}_{A}^{2}+\left(\hat{x}{}_{B}^{\mathrm{min}}\right)^{2}\hat{\sigma}_{B}^{2}+2\hat{x}{}_{A}^{\mathrm{min}}\hat{x}_{B}^{\mathrm{min}}\hat{\sigma}_{AB}
+$$ {#eq-StatisticalGlobalMinSig2Hat}
+
+Here, estimation error in $\hat{\mu}_{p,\mathrm{min}}$ depends on
+two sources: estimation error in the global minimum variance weights
+(which depend on estimation error in the asset variances and the covariance),
+and estimation error in the asset expected returns. However, estimation
+error in $\hat{\sigma}_{p,\mathrm{min}}^{2}$ only depends on estimation
+error in the asset variances and the covariance. Because there is
+more estimation error in the asset expected returns than the asset
+variances $\hat{\mu}_{p,\mathrm{min}}$, will be estimated more imprecisely
+than $\hat{\sigma}_{p,\mathrm{min}}^{2}$. 
+
+::: {#exm-true-and-estimated-global-minimum-variance-portfolio-for-example-data .example name="True and estimated global minimum variance portfolio for example data"}
+
+For the example data, the true and estimated global minimum variance
+portfolio are:
+
+```{r}
+#| echo: true
+
+# True global min variance portfolio weights
+xA.min = (sig2.B - sig.AB)/(sig2.A + sig2.B - 2*sig.AB) 
+xB.min = 1 - xA.min 
+c(xA.min, xB.min)
+# Estimated min variance portfolio weights
+xA.min.hat = (sig2hat.vals[2] - covhat)/
+             (sig2hat.vals[1] + sig2hat.vals[2] - 2*covhat) 
+xB.min.hat = 1 - xA.min.hat 
+c(xA.min.hat, xB.min.hat)
+```
+
+The estimated weights are close to the true weights. The true and
+estimated expected return and volatility of the global minimum variance
+portfolio are:
+
+```{r}
+#| echo: true
+
+# Expected return and volatility of true global minimum variance portfolio 
+mu.p.min = xA.min*mu.A + xB.min*mu.B 
+sig2.p.min = xA.min^2 * sig2.A + xB.min^2 * sig2.B + 
+               2*xA.min*xB.min*sig.AB 
+sig.p.min = sqrt(sig2.p.min) 
+c(mu.p.min, sig.p.min)
+# Expected return and volatility of estimated global 
+# minimum variance portfolio 
+mu.p.min.hat = as.numeric(xA.min.hat*muhat.vals[1] + 
+                             xB.min.hat*muhat.vals[2]) 
+sig2.p.min.hat = xA.min.hat^2 * sig2hat.vals[1] + 
+                 xB.min.hat^2 * sig2hat.vals[2] + 
+                 2*xA.min.hat*xB.min.hat*covhat 
+sig.p.min.hat = as.numeric(sqrt(sig2.p.min.hat)) 
+c(mu.p.min.hat, sig.p.min.hat)
+```
+
+The estimated volatility of the global minimum variance portfolio
+is close to the true volatility but the estimated expected return
+is much larger than the true expected return. These portfolios are
+illustrated in @fig-StatisticalGlobalMin.
+\hfill{}$\blacksquare$
+:::
+
+```{r}
+#| label: fig-StatisticalGlobalMin
+#| echo: false
+#| fig-cap: True and estimated global minimum variance portfolios.
+#| out-width: 80%
+#| fig-asp: 0.75
+#| fig-align: center
+
+plot(sig.p, mu.p, pch=16, type="b", col="black",       
+ylim=c(-0.01, 0.041), xlim=c(0, 0.125),      
+xlab=expression(sigma[p]), ylab=expression(mu[p]), cex=1) 
+abline(h=0) 
+points(sd.vec, mu.vec, pch=16, col="black", cex=2) 
+text(x=sig.A, y=mu.A, labels="A", pos=3, cex = 1.5) 
+text(x=sig.B, y=mu.B, labels="B", pos=3, cex = 1.5) 
+# estimated assets and frontier 
+points(sighat.p, muhat.p, type="b", pch=16, col="blue", cex=1) 
+points(sigmahat.vals, muhat.vals, pch=16, col="blue", cex=2) 
+text(x=sigmahat.vals[1], y=muhat.vals[1], labels="A Hat",       
+col="blue", pos=3, cex = 1.5) 
+text(x=sigmahat.vals[2], y=muhat.vals[2], labels="B Hat",       
+col="blue", pos=1, cex = 1.5) 
+# true min variance portfolio 
+points(sig.p.min, mu.p.min, pch=16, col="green", cex=2) 
+text(x=sig.p.min, y=mu.p.min, labels="GMIN", col="green", pos=2, cex=1.5) 
+# estimated min variance portfolio 
+points(sig.p.min.hat, mu.p.min.hat, pch=16, col="orange", cex=2) 
+text(x=sig.p.min.hat, y=mu.p.min.hat, labels="GMIN Hat", col="orange", pos=2, cex=1.5) 
+```
+
+The statistical properties of @eq-StatisticalGlobalMinHat,
+@eq-StatisticalGlobalMinMuHat and @eq-StatisticalGlobalMinSig2Hat
+are difficult to derive analytically. For example, suppose you would
+like to evaluate the bias in the global minimum variance weights.
+You would need to evaluate 
+$$
+E\left[\hat{x}_{A}^{\min}\right]=E\left[\frac{\hat{\sigma}_{B}^{2}-\hat{\sigma}_{AB}}{\hat{\sigma}_{A}^{2}+\hat{\sigma}{}_{B}^{2}-2\hat{\sigma}_{AB}}\right].
+$$ {#eq-StatisticalGlobalMinBias}
+Now, 
+$$
+E\left[\frac{\hat{\sigma}_{B}^{2}-\hat{\sigma}_{AB}}{\hat{\sigma}_{A}^{2}+\hat{\sigma}{}_{B}^{2}-2\hat{\sigma}_{AB}}\right]\neq\frac{E\left[\hat{\sigma}_{B}^{2}\right]-E\left[\hat{\sigma}_{AB}\right]}{E\left[\hat{\sigma}_{A}^{2}\right]+E\left[\hat{\sigma}{}_{B}^{2}\right]-2E\left[\hat{\sigma}_{AB}\right]}
+$$
+because $E[g(X)]\neq g(E[X])$ for nonlinear functions $g(\cdot)$.
+Hence, @eq-StatisticalGlobalMinBias is extremely difficult
+to evaluate analytically. Similarly, suppose you would like to compute
+$\mathrm{se}(\hat{x}_{A}^{\min}).$ You would need to compute 
+$$
+\mathrm{var}\left(\hat{x}_{A}^{\min}\right)=\mathrm{var}\left(\frac{\hat{\sigma}_{B}^{2}-\hat{\sigma}_{AB}}{\hat{\sigma}_{A}^{2}+\hat{\sigma}{}_{B}^{2}-2\hat{\sigma}_{AB}}\right),
+$$
+which is a difficult and tedious calculation and can only be approximated
+based on the CLT. 
+
+
+The computations are even more difficult for evaluating bias and computing
+standard errors for @eq-StatisticalGlobalMinMuHat and @eq-StatisticalGlobalMinSig2Hat.
+For example, to evaluate the bias of $\hat{\mu}_{p,\mathrm{min}}$
+you would need to calculate 
+$$
+E\left[\hat{\mu}_{p,\mathrm{min}}\right]=E\left[\hat{x}{}_{A}^{\mathrm{min}}\hat{\mu}_{A}+\hat{x}{}_{B}^{\mathrm{min}}\hat{\mu}_{B}\right]=E\left[\hat{x}{}_{A}^{\mathrm{min}}\hat{\mu}_{A}\right]+E\left[\hat{x}{}_{B}^{\mathrm{min}}\hat{\mu}_{B}\right].
+$$ {#eq-StatisticalBiasGminMu}
+Without knowing more about the joint distributions of the asset means
+and weights you cannot simplify @eq-StatisticalBiasGminMu.
+To compute the standard error of $\hat{\mu}_{p,\mathrm{min}}$ you
+need to calculate
+\begin{align*}
+\mathrm{var}\left(\hat{\mu}_{p,\mathrm{min}}\right)&=\mathrm{var}\left(\hat{x}{}_{A}^{\mathrm{min}}\hat{\mu}_{A}+\hat{x}{}_{B}^{\mathrm{min}}\hat{\mu}_{B}\right)\\
+&=\mathrm{var}(\hat{x}{}_{A}^{\mathrm{min}}\hat{\mu}_{A})+\mathrm{var}(\hat{x}{}_{B}^{\mathrm{min}}\hat{\mu}_{B})+2\mathrm{cov}\left(\hat{x}{}_{A}^{\mathrm{min}}\hat{\mu}_{A},\,\hat{x}{}_{B}^{\mathrm{min}}\hat{\mu}_{B}\right).
+\end{align*}
+
+Again, without knowing more about the joint distributions of the asset
+means and estimated weights you cannot simplify @eq-StatisticalBiasGminMu.
+
+
+Fortunately, statistical properties of @eq-StatisticalGlobalMinHat,
+@eq-StatisticalGlobalMinMuHat and @eq-StatisticalGlobalMinSig2Hat
+can be easily quantified using the bootstrap. For each bootstrap sample
+you calculate these statistics and from the bootstrap distributions
+you can then evaluate bias and compute standard errors and confidence
+intervals. 
+
+::: {#exm-true-and-estimated-global-minimum-variance-portfolio-with-bootstrap-estimates-for-example-data .example name="True and estimated global minimum variance portfolio with bootstrap estimates for example data"}
+
+To compute $B=1000$ bootstrap estimates of @eq-StatisticalGlobalMinHat,
+@eq-StatisticalGlobalMinMuHat and @eq-StatisticalGlobalMinSig2Hat
+use:
+
+```{r}
+#| echo: true
+
+# initialize matrices 
+n.boot = 1000 
+weights.boot = matrix(0, n.boot, 2) 
+stats.boot = matrix(0, n.boot, 2) 
+colnames(weights.boot) = names(mu.vec)  
+colnames(stats.boot) = c("mu", "sigma") 
+# bootstrap loop 
+set.seed(123) 
+for (i in 1:n.boot) {   
+   boot.idx = sample(n.obs, replace=TRUE)   
+   ret.boot = returns.sim[boot.idx, ]    
+# GWN model estimates   
+   muhat.boot = colMeans(ret.boot)   
+   sig2hat.boot = apply(ret.boot, 2, var)   
+   sigmahat.boot = sqrt(sig2hat.boot)   
+   covhat.boot = cov(ret.boot)[1,2]   
+# global minimum variance portfolio weights   
+   weights.boot[i, 1] = (sig2hat.boot[2] - covhat.boot)/
+                        (sig2hat.boot[1] + sig2hat.boot[2] - 
+                            2*covhat.boot)   
+   weights.boot[i, 2] = 1 - weights.boot[i, 1]   
+# portfolio risk return estimates   
+   stats.boot[i, "mu"] = weights.boot[i, 1]*muhat.boot[1] + 
+                         weights.boot[i, 2]*muhat.boot[2]   
+   sig2.boot = (weights.boot[i, 1]^2 * sig2hat.boot[1] + 
+                weights.boot[i, 2]^2 * sig2hat.boot[2]                 
+                + 2*weights.boot[i, 1]*weights.boot[i, 2]*covhat.boot)   
+   stats.boot[i, "sigma"] = sqrt(sig2.boot) 
+}
+```
+
+The bootstrap bias estimates for the global minimum variance portfolio
+weights are:
+
+```{r}
+#| echo: true
+
+colMeans(weights.boot) - c(xA.min.hat, xB.min.hat)
+```
+
+These values are close to zero suggesting that the estimated weights
+are unbiased. Notice that the estimates are identical but opposite
+in sign. This arises because the bootstrap estimates are perfectly
+negatively correlated:
+
+```{r}
+#| echo: true
+
+cor(weights.boot)[1,2]
+```
+
+The bootstrap standard error estimates for the weights are:
+
+```{r}
+#| echo: true
+
+apply(weights.boot, 2, sd)
+```
+
+The standard errors estimates are identical and close to 0.05 which
+is not too large. Figure @fig-StatisticalBootstrapWeights shows
+histograms and normal QQ-plots for the bootstrap estimates of the
+weights. These distributions are centered at the sample estimates
+(white vertical lines) and look slightly asymmetric.
+
+
+```{r}
+#| label: fig-StatisticalBootstrapWeights
+#| echo: false
+#| fig-cap: Empirical distribution of bootstrap estimates of global minimum variance
+#|   portfolio weights.
+#| out-width: 80%
+#| fig-asp: 0.75
+#| fig-align: center
+
+par(mfrow=c(2,2))   
+   hist(weights.boot[, 1], main="Asset A", xlab="Asset A weights", col="slateblue1")   
+   abline(v=xA.min.hat, col="white", lwd=2)   
+   hist(weights.boot[, 2], main="Asset B", xlab="Asset B weights", col="slateblue1")   
+   abline(v=xB.min.hat, col="white", lwd=2)   
+   qqnorm(weights.boot[, 1])   
+   qqline(weights.boot[, 1])   
+   qqnorm(weights.boot[, 2])   
+   qqline(weights.boot[, 2]) 
+par(mfrow=c(1,1))
+```
+
+
+The bootstrap estimates of bias for the estimated expected return
+and volatility of the global minimum variance portfolio are:
+
+```{r}
+#| echo: true
+
+colMeans(stats.boot) - c(mu.p.min.hat, sig.p.min.hat)
+```
+
+These small values indicate that the estimates are roughly unbiased.
+The bootstrap standard error estimates are:
+
+```{r}
+#| echo: true
+
+apply(stats.boot, 2, sd)
+```
+
+Here, the bootstrap standard error estimate for $\hat{\mu}_{p,\mathrm{min}}$
+is larger than the estimate for $\hat{\sigma}_{p,\mathrm{min}}$ indicating
+more uncertainty about the mean of the global minimum variance portfolio
+than the volatility of the portfolio. Interestingly, the bootstrap
+standard error estimates are close to the naive analytical standard
+error formulas based on the CLT that ignore estimation error in the
+weights:
+
+```{r}
+#| echo: true
+
+sig.p.min.hat/sqrt(n.obs) 
+sig.p.min.hat/sqrt(2*n.obs)
+```
+
+That is, 
+$$
+\mathrm{se_{boot}}(\hat{\mu}_{p,\mathrm{min}})\approx\frac{\hat{\sigma}_{p,\mathrm{min}}}{\sqrt{T}},\,\mathrm{se_{boot}}\left(\hat{\sigma}_{p,\mathrm{min}}\right)\approx\frac{\hat{\sigma}_{p,\mathrm{min}}}{\sqrt{2\cdot T}}.
+$$
+The histograms and normal QQ-plots of the bootstrap estimates of $\mu_{p,min}$
+and $\sigma_{p,min}$ are illustrated in @fig-StatisticalBootstrapGmin,
+and look like normal distributions. 
+
+
+```{r}
+#| label: fig-StatisticalBootstrapGmin
+#| echo: false
+#| fig-cap: Empirical distribution of bootstrap estimates of $\mu_{p,min}$ and $\sigma_{p,min}$.
+#| out-width: 80%
+#| fig-asp: 0.75
+#| fig-align: center
+
+par(mfrow=c(2,2))   
+   hist(stats.boot[, 1], main="mu", xlab="bootstrap estimates of mu", col="slateblue1")   
+   abline(v=mu.p.min.hat, col="white", lwd=2)   
+   hist(stats.boot[, 2], main="sigma", xlab="bootstrap estimates of sigma", col="slateblue1")   
+   abline(v=sig.p.min.hat, col="white", lwd=2)   
+   qqnorm(stats.boot[, "mu"])   
+   qqline(stats.boot[, "mu"])   
+   qqnorm(stats.boot[, "sigma"])   
+   qqline(stats.boot[, "sigma"]) 
+par(mfrow=c(1,1))
+```
+
+The sampling uncertainty in $\hat{\mu}_{p,\mathrm{min}}$ and $\hat{\sigma}_{p,\mathrm{min}}$
+can be visualized by plotting the bootstrap estimates of $\mu_{p,min}$
+and $\sigma_{p,min}$ on the risk return diagram, as shown in 
+@fig-StatisticalBootstrapGminRiskReturn. Clearly there is much
+more uncertainty about the location of $\mu_{p,min}$ than the location
+of $\sigma_{p,min}$ . 
+\hfill{}$\blacksquare$
+:::
+
+To sum up, for the global minimum variance portfolio you have roughly
+unbiased estimates of the weights, expected return and variance. You
+have a fairly precise estimate of volatility but an imprecise estimate
+of expected return.
+
+
+```{r}
+#| label: fig-StatisticalBootstrapGminRiskReturn
+#| echo: false
+#| fig-cap: Estimation error in estimates of the global minimum variance portfolio.
+#| out-width: 80%
+#| fig-asp: 0.75
+#| fig-align: center
+
+plot(sig.p, mu.p, pch=16, type="n", ylim=c(-0.01, 0.041), xlim=c(0, 0.125),      
+     xlab=expression(sigma[p]), ylab=expression(mu[p])) 
+# bootstrap estimates 
+points(stats.boot[, "sigma"], stats.boot[, "mu"], pch=16, col="lightgoldenrod2") 
+# true frontier 
+points(sig.p, mu.p, pch=16, type="b", col="black", cex=1) 
+abline(h=0) 
+points(sd.vec, mu.vec, pch=16, col="black", cex=2) 
+text(x=sig.A, y=mu.A, labels="A", pos=3, cex = 1.5) 
+text(x=sig.B, y=mu.B, labels="B", pos=3, cex = 1.5) 
+# estimated assets and frontier 
+points(sighat.p, muhat.p, type="b", pch=16, col="blue", cex=1) 
+points(sigmahat.vals, muhat.vals, pch=16, col="blue", cex=2) 
+text(x=sigmahat.vals[1], y=muhat.vals[1], labels="A Hat",       
+     col="blue", pos=3, cex = 1.5) 
+text(x=sigmahat.vals[2], y=muhat.vals[2], labels="B Hat",       
+     col="blue", pos=1, cex = 1.5) 
+# true min variance portfolio 
+points(sig.p.min, mu.p.min, pch=16, col="green", cex=2) 
+text(x=sig.p.min, y=mu.p.min, labels="GMIN", col="green", pos=2, cex=1.5) 
+# estimated min variance portfolio 
+points(sig.p.min.hat, mu.p.min.hat, pch=16, col="orange", cex=2) 
+text(x=sig.p.min.hat, y=mu.p.min.hat, labels="GMIN Hat", col="orange", pos=2, cex=1.5) 
+```
+
+
+### Statistical properties of the Sharpe ratio 
+
+Let $r_{f}$ denote the rate of return on a risk free asset with maturity
+equal to the investment horizon of the return $R_{i}$ on risky asset
+$i$. Recall from @sec-Introduction-to-Portfolio-Theory,
+the Shapre ratio of asset $i$ is defined as 
+$$
+\mathrm{SR}_{i}=\frac{\mu_{i}-r_{f}}{\sigma_{i}},
+$$
+and is a measure of risk-adjusted expected return. Graphically in
+the risk-return diagram, $\mathrm{S}\mathrm{R}_{i}$ is the slope
+of a straight line from the risk-free rate that passes through the
+point $(\sigma_{i},\mu_{i})$ and represents the risk-return tradeoff
+of portfolios of the risk-free asset and the risky asset. The estimated
+Sharpe ratio is 
+$$
+\widehat{\mathrm{SR}}_{i}=\frac{\hat{\mu}_{i}-r_{f}}{\hat{\sigma}_{i}},
+$$
+which inherits estimation error from $\hat{\mu}_{i}$ and $\hat{\sigma}_{i}$
+in a nonlinear way. As a result, analytically computing the bias and
+standard error for $\widehat{\mathrm{SR}}_{i}$ is complicated and
+typically involves approximations based on the CLT. However, computing
+numerical estimates of the bias and the standard error for $\widehat{\mathrm{SR}}_{i}$
+using the bootstrap is simple. 
+
+
+::: {#exm-true-and-estimated-sharpe-ratios-for-example-data .example name="True and estimated Sharpe ratios for example data"}
+
+For the example data, assume a monthly risk-free rate of $r_{f}=0.03/12=0.0025.$
+The true Sharpe ratios are:
+
+```{r}
+#| echo: true
+
+r.f = 0.03/12
+SR.true = (mu.vec - r.f)/sd.vec 
+SR.true
+```
+
+Here, asset A has a much higher Sharpe ratio than asset B. For the
+simulated data, the estimated Sharpe ratios are:
+
+```{r}
+#| echo: true
+
+SR.hat = (muhat.vals - r.f)/sigmahat.vals 
+SR.hat
+```
+
+For both assets the estimated Sharpe ratios are quite different from
+the true Sharpe ratios and are highly misleading. The estimated Sharpe
+ratio for asset A is more than two times larger than the true Sharpe
+ratio and indicates a much higher risk adjusted preformance than is
+actually available. For asset B, the estimated Sharpe ratio is slightly
+negative when, in fact, the true Sharpe ratio is slightly positive.
+The true and estimated Sharpe ratios are illustrated in Figure @fig-StatisticalSharpeRatios.
+The slopes of the black lines are the true Sharpe ratios, and the
+slopes of the blues lines are the estimated Sharpe ratios. 
+\hfill{}$\blacksquare$
+:::
+
+```{r}
+#| label: fig-StatisticalSharpeRatios
+#| echo: false
+#| fig-cap: True and estimated Sharpe ratios.
+#| out-width: 80%
+#| fig-asp: 0.75
+#| fig-align: center
+
+plot(sd.vec, mu.vec, pch=16, col="black",       
+     ylim=c(-0.01, 0.04), xlim=c(0, 0.1),      
+     xlab=expression(sigma[p]), ylab=expression(mu[p]), cex=2) 
+abline(h=0) 
+points(0, r.f, pch=16, col="green", cex=2) 
+text(0, r.f, labels=expression(r[f]), cex=1.5, pos=2) 
+abline(a=r.f, b=SR.true[1], col="black") 
+abline(a=r.f, b=SR.true[2], col="black")
+text(x=sig.A, y=mu.A, labels="A", pos=4, cex = 1.5) 
+text(x=sig.B, y=mu.B, labels="B", pos=4, cex = 1.5) 
+# estimates 
+points(sigmahat.vals, muhat.vals, pch=16, col="blue", cex=2) 
+text(x=sigmahat.vals[1], y=muhat.vals[1], labels="A Hat",       
+col="blue", pos=4, cex = 1.5) 
+text(x=sigmahat.vals[2], y=muhat.vals[2], labels="B Hat",       
+col="blue", pos=4, cex = 1.5) 
+abline(a=r.f, b=SR.hat[1], col="blue") 
+abline(a=r.f, b=SR.hat[2], col="blue")
+```
+
+
+
+::: {#exm-delta-method-standard-errors-for-estimated-sharpe-ratio .example name="Delta method standard errors for estimated Sharpe ratio"}
+
+Let $\boldsymbol{\theta} = (\mu, \sigma)'$. Then the Sharpe ratio can be considered as a function of $\boldsymbol{\theta}$: 
+
+$$
+\mathrm{SR}(\boldsymbol{\theta}) = \frac{\mu - r_f}{\sigma}
+$$
+
+Since $\hat{\boldsymbol{\theta}}$ is asymptotically normally distributed with covariance given by (), the delta method can be used to obtain an analytic standard error for $\widehat{\mathrm{SR}} = \mathrm{SR}(\hat{\boldsymbol{\theta}})$. It is straightforward to show (see end-of-chapter exercises) that the gradient function is: 
+
+$$
+\mathbf{g}(\boldsymbol{\theta}) = \frac{\partial \mathrm{SR}(\boldsymbol{\theta})}{\partial \boldsymbol{\theta}} = \left( \begin{array}{c} 
+\frac{-1}{\sigma} \\ 
+-(\sigma)^{-2}(\mu - r_f)
+\end{array} \right).
+$$
+
+The delta method variance is then:
+
+$$
+\mathbf{g}(\boldsymbol{\theta})'\mathrm{var}(\hat{\boldsymbol{\theta}})\mathbf{g}(\boldsymbol{\theta}) = \frac{1}{T}\left( 1 + \frac{1}{2}\mathrm{SR}^2 \right ) = \mathrm{se}(\widehat{\mathrm{SR}})^2,
+$$
+
+The corresponding standard error is:
+
+$$
+\mathrm{se}(\widehat{\mathrm{SR}}) = \sqrt{\frac{1}{T}\left( 1 + \frac{1}{2}\mathrm{SR}^2 \right ) }
+$$ {#eq-se-Sharpe-ratio}
+
+Notice that $\mathrm{se}(\widehat{\mathrm{SR}})$ increases with $\mathrm{SR}^2$ and decreases with $T$. The practically useful estimated standard error replace the unknown value of $\mathrm{SR}$ with its estimated value $\widehat{\mathrm{SR}}$ and is given by
+
+$$
+\mathrm{\widehat{se}}(\widehat{\mathrm{SR}}) = \sqrt{\frac{1}{T}\left( 1 + \frac{1}{2}\widehat{\mathrm{SR}}^2 \right ) } 
+$$ {#eq-estimated-se-Sharpe-ratio}
+\hfill{}$\blacksquare$
+:::
+
+
+::: {#exm-applying-the-analytic-delta-method-to-the-sharpe-ratio .example name="Applying the analytic delta method to the Sharpe Ratio"}
+
+The estimated monthly SRs for assets A and B (using $r_f = 0.03/12$), their standard errors, and 95% confidence intervals are computed using:
+
+```{r}
+seSR.hat = sqrt((1/n.obs)*(1 + 0.5*(SR.hat^2)))
+lower.SR = SR.hat - 2*seSR.hat
+upper.SR = SR.hat + 2*seSR.hat
+width.SR = upper.SR - lower.SR
+ans = rbind(SR.hat, seSR.hat, lower.SR, upper.SR, width.SR)
+colnames(ans) = c("Asset A", "Asset B")
+rownames(ans) = c("Estimate", "Std Error", "Lower", "Upper", "Width")
+ans
+```
+The estimated monthly SRs for assets A and B are close to zero, with a large estimated standard errors and a 95\% confidence interval containing both negative and positive values. Clearly, the SR is not estimated very well.
+\hfill{}$\blacksquare$
+:::
+
+::: {#exm-applying-the-numerical-delta-method-to-the-sharpe-ratio .example name="Applying the numerical delta method to the Sharpe Ratio"}
+
+I first create the named inputs $\hat{\boldsymbol{\theta}}$ and $\widehat{\mathrm{var}}(\hat{\boldsymbol{\theta}})$ from the GWN model for simple returns:
+
+```{r}
+thetahat = c(muhat.vals[1], sigmahat.vals[1])
+names(thetahat) = c("mu", "sigma")
+var.thetahat = matrix(c(se.muhat[1]^2,0,0,se.sigmahat[1]^2), 2, 2, byrow=TRUE)
+rownames(var.thetahat) = colnames(var.thetahat) = names(thetahat)
+thetahat
+var.thetahat
+```
+
+I use the **car** function `deltaMethod()` to compute the numerical delta method for the estimated Sharpe ratio $\mathrm{SR}(\hat{\boldsymbol{\theta}})$ for asset A as follows:
+
+```{r}
+dmSR.A = deltaMethod(thetahat, "(mu-r.f)/sigma", var.thetahat)
+dmSR.A
+```
+The numerical delta method estimated standard error exactly matches the analytic standard error. The 95\% confidence interval returned by the function `deltaMethod()` uses the formula $\hat{\theta} \pm 1.96 \times \hat{\mathrm{se}}(\hat{\theta})$ as so is slightly different than the analytic result given above.  Using similar computations, The numerical delta method for asset B is
+
+```{r}
+#| echo: false
+thetahat = c(muhat.vals[2], sigmahat.vals[2])
+names(thetahat) = c("mu", "sigma")
+var.thetahat = matrix(c(se.muhat[2]^2,0,0,se.sigmahat[2]^2), 2, 2, byrow=TRUE)
+rownames(var.thetahat) = colnames(var.thetahat) = names(thetahat)
+dmSR.B = deltaMethod(thetahat, "(mu-r.f)/sigma", var.thetahat)
+dmSR.B
+```
+\hfill{}$\blacksquare$
+:::
+
+::: {#exm-delta-method-for-joint-distribution-of-two-shapre-ratios .example name="Delta method for joint distribution of two Shapre ratios"}
+
+Let $\boldsymbol{\theta}$ = $(\mu_1,\mu_2,\sigma_1,\sigma_2)'$ and define the $2 \times 1$ vector of Sharpe ratios:
+
+$$
+\boldsymbol{\eta} = f(\boldsymbol{\theta}) = \begin{pmatrix} \frac{\mu_A - r_f}{\sigma_A} \\
+\frac{\mu_B - r_f}{\sigma_B} \end{pmatrix} = \begin{pmatrix} \mathrm{SR}_A(\boldsymbol{\theta}) \\
+\mathrm{SR}_B(\boldsymbol{\theta}) \end{pmatrix},
+$$
+
+so that $\eta_A = \mathrm{SR}_A(\boldsymbol{\theta})$ and $\eta_B = \mathrm{SR}_B(\boldsymbol{\theta})$ where $r_f$ denotes the constant risk-free rate. Consider the $\boldsymbol{\theta} =(\mu_A,\mu_B, \sigma_A, \sigma_B)'$ and  $\boldsymbol{\eta} = \mathbf{\mathrm{SR}}(\boldsymbol{\theta})=(\mathrm{SR}_A(\boldsymbol{\theta}), \mathrm{SR}_B(\boldsymbol{\theta}))'$ where
+$$
+\mathrm{SR}_A(\boldsymbol{\theta}) = \frac{\mu_A - r_f}{\sigma_A}, ~ \mathrm{SR}_B(\boldsymbol{\theta}) = \frac{\mu_B - r_f}{\sigma_B}.
+$$
+
+Here, I want to use the delta method to get the joint distribution of $\boldsymbol{\eta}$. Now, using the chain-rule:
+
+\begin{align*}
+\frac{\partial \mathrm{SR}_A(\boldsymbol{\theta})}{\partial \mu_A} & = \sigma_A^{-1}, ~ \frac{\partial \mathrm{SR}_A(\boldsymbol{\theta})}{\partial \mu_B} = 0, ~ & \frac{\partial \mathrm{SR}_A(\boldsymbol{\theta})}{\partial \sigma_1} = -\sigma_1^{-2}(\mu_1 - r_f), ~ & \frac{\partial \mathrm{SR}_A(\boldsymbol{\theta})}{\partial \sigma_2} = 0, \\
+\frac{\partial \mathrm{SR}_B(\boldsymbol{\theta})}{\partial \mu_1} & = 0, ~ \frac{\partial \mathrm{SR}_B(\boldsymbol{\theta})}{\partial \mu_2} = \sigma_2^{-1}, ~ & \frac{\partial \mathrm{SR}_B(\boldsymbol{\theta})}{\partial \sigma_1} = 0, ~ & \frac{\partial \mathrm{SR}_B(\boldsymbol{\theta})}{\partial \sigma_2} = -\sigma_1^{-2}(\mu_1 - r_f).
+\end{align*}
+
+Then, using $\mathrm{SR}_{i} = (\mu_i - r_f)/\sigma_i ~ (i=A,B)$, I have:
+
+$$
+\mathbf{G}(\boldsymbol{\theta})' = \begin{pmatrix} \sigma_A^{-1} & 0 & -\sigma_A^{-1} \mathrm{SR}_A & 0 \\ 0 & \sigma_B^{-1} & 0 & -\sigma_B^{-1}\mathrm{SR}_B & 0
+\end{pmatrix}
+$$
+
+Using Proposition 7.10 and the results from the previous example I have:
+
+$$
+\mathrm{var}(\hat{\boldsymbol{\theta}}) = \frac{1}{T} \begin{pmatrix} \sigma_A^2 & \sigma_{AB} & 0 & 0 \\
+\sigma_{AB} & \sigma_B^2 & 0 & 0 \\
+0 & 0 & \frac{1}{2}\sigma_A^2 & \frac{1}{2} \sigma_{AB}^2 \sigma_A^{-1} \sigma_B^{-1} \\
+0 & 0 & \frac{1}{2} \sigma_{AB}^2 \sigma_A^{-1} \sigma_B^{-1} & \frac{1}{2}\sigma_B^2 \end{pmatrix}.
+$$
+
+Then, after some straightforward matrix algebra calculations (see end-of-chapter exercises)
+I get:
+
+$$
+\begin{aligned}
+\widehat{\mathrm{var}}(\hat{\eta}) & = \mathbf{G}(\hat{\boldsymbol{\theta}})'\widehat{\mathrm{var}}(\hat{\boldsymbol{\theta}})\mathbf{G}(\hat{\boldsymbol{\theta}}) \\
+&= \begin{pmatrix} \widehat{\mathrm{var}}(\widehat{\mathrm{SR}}_A) & \widehat{\mathrm{cov}}(\widehat{\mathrm{SR}}_A, \widehat{\mathrm{SR}}_B) \\ \widehat{\mathrm{cov}}(\widehat{\mathrm{SR}}_A, \widehat{\mathrm{SR}}_B) & \widehat{\mathrm{var}}(\widehat{\mathrm{SR}}_B) \end{pmatrix} \\
+& = \begin{pmatrix} \frac{1}{T}(1+\frac{1}{2}\widehat{\mathrm{SR}}_A^2) & \frac{\hat{\rho}_{AB}}{T}(1 + \frac{1}{2}\hat{\rho}_{AB}\widehat{\mathrm{SR}}_A \widehat{\mathrm{SR}}_B) \\ \frac{\hat{\rho}_{AB}}{T}(1 + \frac{1}{2}\hat{\rho}_{AB} \widehat{\mathrm{SR}}_A\widehat{\mathrm{SR}}_B) & \frac{1}{T}(1+\frac{1}{2}\widehat{\mathrm{SR}}_B^2) \end{pmatrix}.
+\end{aligned}
+$$
+
+The diagonal elements match the delta method variances for the estimated Sharpe ratio derived earlier. The off-diagonal covariance term shows that the two estimated Sharpe ratios are correlated. You explore this correlation in more depth in the end-of-chapter exercises. 
+\hfill{}$\blacksquare$
+:::
+
+::: {#exm-jackknife-standard-error-for-estimated-sharpe-ratio .example name="Jackknife standard error for estimated Sharpe ratio"}
+
+I use the **bootstrap** function `jackknife()` to compute the jacknife estimated standard for the Sharpe ratio for assets A and B:
+
+```{r}
+theta.SR = function(x, xdata, r.f) {
+  mu.hat = mean(xdata[x, ])
+  sigma.hat = sd(xdata[x, ])
+  fun.hat = (mu.hat-r.f)/sigma.hat
+  fun.hat
+}
+SR.jack = jackknife(1:n.obs, theta=theta.SR, 
+                    returns.sim[,"asset.A",drop=FALSE], r.f)
+ans = cbind(SR.jack$jack.se, dmSR.A$SE)
+colnames(ans) = c("Jackknife", "Delta Method")
+rownames(ans) = "SR.A"
+ans
+```
+
+```{r}
+#| echo: false
+theta.SR = function(x, xdata, r.f) {
+  mu.hat = mean(xdata[x, ])
+  sigma.hat = sd(xdata[x, ])
+  fun.hat = (mu.hat-r.f)/sigma.hat
+  fun.hat
+}
+SR.jack = jackknife(1:n.obs, theta=theta.SR, 
+                    returns.sim[,"asset.B",drop=FALSE], r.f)
+ans = cbind(SR.jack$jack.se, dmSR.B$SE)
+colnames(ans) = c("Jackknife", "Delta Method")
+rownames(ans) = "SR.B"
+ans
+```
+
+\hfill{}$\blacksquare$
+:::
+
+::: {#exm-bootstraped-sharpe-ratios-for-example-data .example name="Bootstraped Sharpe ratios for example data"}
+
+To illustrate the magnitude of the estimation errors in the estimated
+Sharpe ratios, @fig-StatisticalBootstrapSRplot shows
+500 bootstrap estimates of the risk-return pairs $(\sigma_{A},\mu_{A})$
+and $(\sigma_{B},\mu_{B})$ along with the maximum and minimum bootstrap
+Sharpe ratio estimates for each asset. The bootstrap Sharpe ratio
+estimates are computed using:
+
+```{r}
+#| echo: true
+
+n.boot = 500 
+mu.boot = matrix(0, n.boot, 2) 
+sd.boot = matrix(0, n.boot, 2) 
+SR.boot = matrix(0, n.boot, 2) 
+colnames(mu.boot) = colnames(sd.boot) = colnames(SR.boot) = c("Asset.A", "Asset.B")
+set.seed(123) 
+for (i in 1:n.boot) {   
+   boot.idx = sample(n.obs, replace=TRUE)   
+   ret.boot = returns.sim[boot.idx, ]    
+   mu.boot[i, ] = colMeans(ret.boot)   
+   sd.boot[i, ] = apply(ret.boot, 2, sd)    
+   SR.boot[i, ] = (mu.boot[i, ] - r.f)/sd.boot[i, ] 
+} 
+# find index of max and min bootstrap Sharpe ratios
+maxSRidx.A = which(SR.boot[, 1] == max(SR.boot[, 1])) 
+minSRidx.A = which(SR.boot[, 1] == min(SR.boot[, 1])) 
+maxSRidx.B = which(SR.boot[, 2] == max(SR.boot[, 2])) 
+minSRidx.B = which(SR.boot[, 2] == min(SR.boot[, 2]))
+```
+
+```{r}
+#| label: fig-StatisticalBootstrapSRplot
+#| echo: false
+#| fig-cap: Bootstrap risk-return estimates with maximum and minimum Sharpe ratios.
+#| out-width: 80%
+#| fig-asp: 0.75
+#| fig-align: center
+
+# layout plot
+plot(sd.vec, mu.vec, type="n",  ylim=c(-0.01, 0.06), xlim=c(0, 0.1),      
+     xlab=expression(sigma[p]), ylab=expression(mu[p])) 
+# bootstrap estimates 
+points(sd.boot[, "Asset.A"], mu.boot[, "Asset.A"], pch=16, col="lightblue") 
+points(sd.boot[, "Asset.B"], mu.boot[, "Asset.B"], pch=16, col="grey")
+abline(h=0) 
+# sample estimates 
+points(sigmahat.vals, muhat.vals, pch=16, col="blue", cex=2) 
+text(x=sigmahat.vals[1], y=muhat.vals[1], labels="A Hat",       
+     col="blue", pos=4, cex = 1.5) 
+text(x=sigmahat.vals[2], y=muhat.vals[2], labels="B Hat",       
+     col="blue", pos=4, cex = 1.5)
+# Min and max Sharpe ratios 
+abline(a=r.f, b=SR.boot[maxSRidx.A, "Asset.A"], col="lightblue", lwd=2) 
+abline(a=r.f, b=SR.boot[minSRidx.A, "Asset.A"], col="lightblue", lwd=2) 
+abline(a=r.f, b=SR.boot[maxSRidx.B, "Asset.B"], col="grey", lwd=2) 
+abline(a=r.f, b=SR.boot[minSRidx.B, "Asset.B"], col="grey", lwd=2) 
+# Risk free rate 
+points(0, r.f, pch=16, col="green", cex=2) 
+text(0, r.f, labels=expression(r[f]), cex=1.5, pos=2) 
+```
+
+The maximum and minimum bootstrap Sharpe ratio estimates for asset
+B are the two grey straight lines from the risk-free rate that have
+the highest and lowest slopes, respectively. The maximum and minimum
+bootstrap Sharpe ratio estimates for asset A are the two light blue
+lines with the highest and lowest slopes, respectively. These maximum
+and minimum estimates are:
+
+```{r}
+#| echo: true
+
+apply(SR.boot, 2, max) 
+apply(SR.boot, 2, min)
+```
+
+For each asset the difference in the maximum and minimum slopes is
+substantial and indicates a large about of estimation error in the
+estimated Sharpe ratios. 
+
+
+The statistical properties of the estimated Sharpe ratios can be estimated
+from the bootstrap samples. The bootstrap estimates of bias are:
+
+```{r}
+#| echo: true
+
+# bias
+biasSR.boot = colMeans(SR.boot) - c(SR.true) 
+biasSR.boot 
+# bias relative to true values
+biasSR.boot/SR.true
+```
+
+Here you see there is a substantial upward bias in $\widehat{\mathrm{SR}}_{A}$
+(bias relative to true Sharpe ratio is 141\%) and a substantial downward
+bias in $\widehat{\mathrm{SR}}_{B}$ (bias relative to true Sharpe
+ratio is -105\%). A crude bias adjusted Sharpe ratio estimate, which
+substracts the estimated bias from the sample estimate, gives results
+much closer to the true Sharpe ratios:
+
+```{r}
+#| echo: true
+
+SR.hat.biasAdjust = SR.hat - biasSR.boot 
+SR.hat.biasAdjust
+SR.true
+```
+
+The bootstrap estimated standard errors for both assets are big and
+indicate that the Sharpe ratios are not estimated well:
+
+```{r}
+#| echo: true
+
+apply(SR.boot, 2, sd)
+```
+
+@fig-StatisticalBootstrapSR shows the histograms and
+normal QQ-plots of the bootstrap distributions for the estimated Sharpe
+ratios. The histograms for both assets show the wide dispersion of
+the bootstrap Sharpe ratio estimates that was illustrated in 
+@fig-StatisticalBootstrapSRplot. The histogram and QQ-plot for
+asset A shows a positive skewness whereas the histogram and QQ-plot
+for asset B show a more symmetric distribution. The quantile-based
+95\% confidence intervals for the true Sharpe ratios are:
+
+```{r}
+#| echo: true
+
+# 95% CI for SR.A
+quantile(SR.boot[, 1], probs=c(0.025, 0.975)) 
+# 95% CI for SR.B
+quantile(SR.boot[, 2], probs=c(0.025, 0.975))
+```
+
+These intervals are quite large and indicate much uncertainty about
+the true Sharpe ratio values.
+\hfill{}$\blacksquare$
+:::
+
+```{r}
+#| label: fig-StatisticalBootstrapSR
+#| echo: false
+#| fig-cap: Bootstrap distributions of estimated Sharpe ratios.
+#| out-width: 80%
+#| fig-asp: 0.75
+#| fig-align: center
+
+par(mfrow=c(2,2))   
+  hist(SR.boot[, 1], main="Asset A", xlab="bootstrap estimates of SR", col="slateblue1")   
+  abline(v=SR.hat[1], col="white", lwd=2)   
+  hist(SR.boot[, 2], main="Asset B", xlab="bootstrap estimates of SR", col="slateblue1")   
+  abline(v=SR.hat[2], col="white", lwd=2)   
+  qqnorm(SR.boot[, 1])   
+  qqline(SR.boot[, 1])   
+  qqnorm(SR.boot[, 2])   
+  qqline(SR.boot[, 2]) 
+par(mfrow=c(1,1))
+```
+
+
+## Hypothesis Testing for Sharpe Ratio
+To be completed
+
+## Rolling Analysis of Portfolios
+To be completed...
+
+## Further Reading: Statistical Analysis of Portfolios
+
+-  Mention other quadratic programming packages: ROI etc. See Doug's book
+-  Mention Pfaff's R book
+-  Mention Grilli's book etc.
+-  Broadie, M. (1993). "Computing efficient frontiers using estimated parameters", Annals of Operations Research 45, 21-58. Describes the logic behind actual frontiers
+- Jorion, P. (1992). "Portfolio Optimization in Practice. Financial Analysts Journal", 48(1), 68–74.
+-  Michaud (2008), *Efficient Asset Management: A Practical Guide to Stock Portfolio Optimization and Asset Allocation*, Second Edition. 
+To be completed...
+
+## Exercises
+
+::: {#exr-01 .exercise}
+Show that $\hat{\sigma}_{p}^{2}$ in @eq-StatisticalGWNestimatesPortfolioVar
+with $\hat{\sigma}_{p}^{2}$ in @eq-StatisticalGWNestimatesPortfolio are the same when the sample covariance matrix is used in @eq-StatisticalGWNestimatesPortfolioVar.
+:::
+
+
+{Ruppert} Ruppert, D.A.. \textit{Statistics and Data Analysis for Financial Engineering}, Springer-Verlag. 
+
+{MartinSchererYollin}Martin, R.D., Scherer, B., and Yollin, G. (2016). 
+
+
+
