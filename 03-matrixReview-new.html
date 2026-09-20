@@ -240,6 +240,24 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./14-statisticalAnalysisPortfolios-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Statistical Analysis of Portfolios</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15-singleIndexModel-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Single Index Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16-singleIndexModelEstimation-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Estimation of the Single Index Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">References</span></a>
   </div>
@@ -313,7 +331,8 @@ div.csl-indent {
 <p>Updated: September 3, 2026</p>
 <p>Copyright © Eric Zivot 2026</p>
 <p>This chapter reviews some basic matrix algebra concepts that we will use throughout the book. Many of the formulas that involve multiple variables that we derive in the book can be simplified using matrix algebra. This aids in understanding general concepts. For example, portfolio risk and return calculations for portfolios with more than two assets is easy to express using matrix algebra. If returns are jointly normally distributed, then this multivariate normal distribution can be expressed concisely using matrix algebra. The first order conditions involving the portfolio weights for mean-variance optimized portfolios is a system of linear equations that can be set-up and solved using matrix algebra. In addition, R is a matrix programming language. Pretty much anything that you can represent in matrix algebra you can evaluate in R using matrix calculations that have a syntax very much like the matrix algebra representation. Lastly, many R calculations can be efficiently evaluated if they are <em>vectorized</em> - that is, if they operate on vectors of elements instead of looping over individual elements.</p>
-<p>This chapter is organized as follows. Section <a href="#sec-Matrices-and-Vectors"><span>Section&nbsp;3.1</span></a> gives definitions of matrices and vectors and shows how to represent these objects in R. Section <a href="#sec-Basic-Matrix-Operations"><span>Section&nbsp;3.2</span></a> reviews basic matrix operations (addition, subtraction, multiplication), and section <a href="#sec-Representing-Summation-Using-Matrix-Notation"><span>Section&nbsp;3.3</span></a> shows how common summation calculations can be represented using matrix notation. Section <a href="#sec-Systems-of-Linear-Equations"><span>Section&nbsp;3.4</span></a> covers systems of linear equations and shows how the inverse of a matrix is related to the solutions to a system of linear equations. Section <a href="#sec-Positive-Definite-Matrices"><span>Section&nbsp;3.5</span></a> discusses positive definite matrices and Cholesky decomposition. The use of matrix algebra for representing multivariate probability distributions is presented in section <a href="#sec-Multivariate-Probability-Distributions-Using-Matrix-Algebra"><span>Section&nbsp;3.6</span></a>, and portfolio calculations using matrix algebra is presented in section <a href="#sec-Portfolio-Math-Using-Matrix-Algebra"><span>Section&nbsp;3.7</span></a>. Section <a href="#sec-Derivatives-of-Simple-Matrix-Functions"><span>Section&nbsp;3.8</span></a> concludes with a discussion of derivatives of some simple matrix functions.</p>
+<p>This chapter is organized as follows. <a href="#sec-Matrices-and-Vectors"><span>Section&nbsp;3.1</span></a> gives definitions of matrices and vectors and shows how to represent these objects in R. <a href="#sec-Basic-Matrix-Operations"><span>Section&nbsp;3.2</span></a> reviews basic matrix operations (addition, subtraction, multiplication), and <a href="#sec-Representing-Summation-Using-Matrix-Notation"><span>Section&nbsp;3.3</span></a> shows how common summation calculations can be represented using matrix notation. <a href="#sec-Systems-of-Linear-Equations"><span>Section&nbsp;3.4</span></a> covers systems of linear equations and shows how the inverse of a matrix is related to the solutions to a system of linear equations. <a href="#sec-Positive-Definite-Matrices"><span>Section&nbsp;3.5</span></a> discusses positive definite matrices and Cholesky decomposition. The use of matrix algebra for representing multivariate probability distributions is presented in <a href="#sec-Multivariate-Probability-Distributions-Using-Matrix-Algebra"><span>Section&nbsp;3.6</span></a>, and portfolio calculations using matrix algebra is presented in<br>
+<a href="#sec-Portfolio-Math-Using-Matrix-Algebra"><span>Section&nbsp;3.7</span></a>. <a href="#sec-Derivatives-of-Simple-Matrix-Functions"><span>Section&nbsp;3.8</span></a> concludes with a discussion of derivatives of some simple matrix functions.</p>
 <p>The R packages used in this chapter are <strong>Matrix</strong> and <strong>mvtnorm</strong>. Make sure these packages are downloaded and installed prior to replicating the R examples in this chapter.</p>
 <section id="sec-Matrices-and-Vectors" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="sec-Matrices-and-Vectors"><span class="header-section-number">3.1</span> Matrices and Vectors</h2>
@@ -1048,7 +1067,7 @@ x+y=1,
 \tag{3.3}\]</span></span> <span id="eq-eq2"><span class="math display">\[
 2x-y =1.
 \tag{3.4}\]</span></span></p>
-<p>As shown in Figure <a href="#fig-MatrixReview2eqns">Figure&nbsp;<span>3.1</span></a>, equations <a href="#eq-eq1">Equation&nbsp;<span>3.3</span></a> and <a href="#eq-eq2">Equation&nbsp;<span>3.4</span></a> represent two straight lines which intersect at the point <span class="math inline">\(x=2/3\)</span> and <span class="math inline">\(y=1/3\)</span>. This point of intersection is determined by solving for the values of <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> such that <span class="math inline">\(x+y=2x-y\)</span><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p>As shown in <a href="#fig-MatrixReview2eqns">Figure&nbsp;<span>3.1</span></a>, equations <a href="#eq-eq1">Equation&nbsp;<span>3.3</span></a> and <a href="#eq-eq2">Equation&nbsp;<span>3.4</span></a> represent two straight lines which intersect at the point <span class="math inline">\(x=2/3\)</span> and <span class="math inline">\(y=1/3\)</span>. This point of intersection is determined by solving for the values of <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> such that <span class="math inline">\(x+y=2x-y\)</span><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
 <div class="cell" data-layout-align="center" data-fig.asp="0.75">
 <div class="cell-output-display">
 <div id="fig-MatrixReview2eqns" class="quarto-figure quarto-figure-center anchored">
@@ -1930,7 +1949,7 @@ x_{2}
 <p><span class="math inline">\(\blacksquare\)</span></p>
 </div>
 <div id="exm-finding-the-global-minimum-variance-portfolio" class="example theorem example">
-<p><span class="theorem-title"><strong>Example 3.19 (Finding the global minimum variance portfolio) </strong></span>Let <span class="math inline">\(\mathbf{R}\)</span> denote an <span class="math inline">\(n\times1\)</span> random vector of asset returns with <span class="math inline">\(E[\mathbf{R}]=\mu\)</span> and <span class="math inline">\(\mathrm{var}(\mathbf{R})=\boldsymbol{\Sigma}\)</span>. The global minimum variance portfolio (see Chapter <a href="10-introductionPortfolioTheory-new.html"><span>Chapter&nbsp;10</span></a>, Section <a href="10-introductionPortfolioTheory-new.html#sec-Efficient-portfolios-with-two-risky-assets"><span>Section&nbsp;10.3</span></a>) <span class="math inline">\(\mathbf{m}\)</span> solves the constrained minimization problem: <span id="eq-global-min-matrix-1"><span class="math display">\[
+<p><span class="theorem-title"><strong>Example 3.19 (Finding the global minimum variance portfolio) </strong></span>Let <span class="math inline">\(\mathbf{R}\)</span> denote an <span class="math inline">\(n\times1\)</span> random vector of asset returns with <span class="math inline">\(E[\mathbf{R}]=\mu\)</span> and <span class="math inline">\(\mathrm{var}(\mathbf{R})=\boldsymbol{\Sigma}\)</span>. The global minimum variance portfolio (see Chapter <a href="10-introductionPortfolioTheory-new.html"><span>Chapter&nbsp;10</span></a>, <a href="10-introductionPortfolioTheory-new.html#sec-Efficient-portfolios-with-two-risky-assets"><span>Section&nbsp;10.3</span></a>) <span class="math inline">\(\mathbf{m}\)</span> solves the constrained minimization problem: <span id="eq-global-min-matrix-1"><span class="math display">\[
 \min_{\mathbf{m}}~\sigma_{p,m}^{2}=\mathbf{m}^{\prime}\boldsymbol{\Sigma} \mathbf{m}\text{ s.t. }\mathbf{m}^{\prime}\mathbf{1}=1.
 \tag{3.22}\]</span></span> The Lagrangian function is: <span class="math display">\[
 L(\mathbf{m},\lambda)=\mathbf{m}^{\prime}\boldsymbol{\Sigma} \mathbf{m}+\lambda\mathbf{(m}^{\prime}\mathbf{1}-1).

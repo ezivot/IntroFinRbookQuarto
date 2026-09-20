@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Introduction to Computational Finance and Financial Econometrics with R - 14&nbsp; Statistical Analysis of Portfolios</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./15-singleIndexModel-new.html" rel="next">
+<link href="./13-riskBudgeting-new.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./14-statisticalAnalysisPortfolios-new.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Statistical Analysis of Portfolios</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Introduction to Computational Finance and Financial Econometrics with R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-ReturnCalculations-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Return Calculations</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-probReview-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Review of Random Variables</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-matrixReview-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Algebra Review</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-timeSeriesConcepts-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Time Series Concepts</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-descriptiveStatistics-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Descriptive Statistics for Financial Data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-GWNModel-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">The Gaussian White Noise Return Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-GWNModelEstimation-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Estimation of The GWN Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-bootstrap-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Estimating Functions of GWN Model Parameters</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-hypothesisTestingGWNModel-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Hypothesis Testing in the GWN Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-introductionPortfolioTheory-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introduction to Portfolio Theory</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-PortfolioTheoryMatrix-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Portfolio Theory with Matrix Algebra</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-portfolioTheoryNoShortSales-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Portfolio Theory with Short Sales Constraints</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-riskBudgeting-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Portfolio Risk Budgeting</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14-statisticalAnalysisPortfolios-new.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Statistical Analysis of Portfolios</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15-singleIndexModel-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Single Index Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16-singleIndexModelEstimation-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Estimation of the Single Index Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#portfolios-of-two-risky-assets" id="toc-portfolios-of-two-risky-assets" class="nav-link active" data-scroll-target="#portfolios-of-two-risky-assets"><span class="header-section-number">14.1</span> Portfolios of Two Risky Assets</a>
+  <ul class="collapse">
+  <li><a href="#estimation-of-gwn-model-parameters-for-portfolios" id="toc-estimation-of-gwn-model-parameters-for-portfolios" class="nav-link" data-scroll-target="#estimation-of-gwn-model-parameters-for-portfolios"><span class="header-section-number">14.1.1</span> Estimation of GWN Model Parameters for Portfolios</a></li>
+  <li><a href="#estimation-error-in-the-risk-return-diagram" id="toc-estimation-error-in-the-risk-return-diagram" class="nav-link" data-scroll-target="#estimation-error-in-the-risk-return-diagram"><span class="header-section-number">14.1.2</span> Estimation error in the risk-return diagram</a></li>
+  <li><a href="#estimation-error-in-the-portfolio-frontier" id="toc-estimation-error-in-the-portfolio-frontier" class="nav-link" data-scroll-target="#estimation-error-in-the-portfolio-frontier"><span class="header-section-number">14.1.3</span> Estimation error in the portfolio frontier</a></li>
+  <li><a href="#statistical-properties-of-the-global-minimum-variance-portfolio" id="toc-statistical-properties-of-the-global-minimum-variance-portfolio" class="nav-link" data-scroll-target="#statistical-properties-of-the-global-minimum-variance-portfolio"><span class="header-section-number">14.1.4</span> Statistical properties of the global minimum variance portfolio</a></li>
+  <li><a href="#statistical-properties-of-the-sharpe-ratio" id="toc-statistical-properties-of-the-sharpe-ratio" class="nav-link" data-scroll-target="#statistical-properties-of-the-sharpe-ratio"><span class="header-section-number">14.1.5</span> Statistical properties of the Sharpe ratio</a></li>
+  </ul></li>
+  <li><a href="#hypothesis-testing-for-sharpe-ratio" id="toc-hypothesis-testing-for-sharpe-ratio" class="nav-link" data-scroll-target="#hypothesis-testing-for-sharpe-ratio"><span class="header-section-number">14.2</span> Hypothesis Testing for Sharpe Ratio</a></li>
+  <li><a href="#rolling-analysis-of-portfolios" id="toc-rolling-analysis-of-portfolios" class="nav-link" data-scroll-target="#rolling-analysis-of-portfolios"><span class="header-section-number">14.3</span> Rolling Analysis of Portfolios</a></li>
+  <li><a href="#further-reading-statistical-analysis-of-portfolios" id="toc-further-reading-statistical-analysis-of-portfolios" class="nav-link" data-scroll-target="#further-reading-statistical-analysis-of-portfolios"><span class="header-section-number">14.4</span> Further Reading: Statistical Analysis of Portfolios</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">14.5</span> Exercises</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-Statistical-Analysis-of-Portfolios" class="quarto-section-identifier"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Statistical Analysis of Portfolios</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Updated: September 19, 2026</p>
+<p>Copyright © Eric Zivot 2026</p>
+<p>In <a href="10-introductionPortfolioTheory-new.html"><span>Chapter&nbsp;10</span></a> I introduced mean-variance portfolio theory in the context of simple portfolios with two risky assets and a safe asset. The theory presented assumed that investors know the true expected returns, variances, and correlations between returns (i.e., the parameters of the GWN model of returns). Of course, the real world implementation of mean-variance portfolio theory requires investors to estimate expected returns, variances, and correlations. In this chapter I explore the implications of estimation errors in the parameters of the GWM for asset returns for the application of mean-variance portfolio theory. The quantification of estimation error in mean-variance portfolio analysis is novel and under appreciated by many practitioners, and provides insights into some pitfalls in the practical application of mean-variance portfolio theory. Because mean-variance portfolios are functions of GWN model parameters, I use tools for the statistical analysis of functions of GWN model parameters presented in <a href="08-bootstrap-new.html"><span>Chapter&nbsp;8</span></a> throughout this chapter.</p>
+<p>The R packages used in this chapter are <strong>boot</strong>, <strong>bootstrap</strong>, <strong>car</strong>, <strong>ellipse</strong>, <strong>introcompfinr</strong>, <strong>mvtnorm</strong>, and <strong>PerformanceAnalytics</strong>. Have these packages installed and loaded in R before replicating the chapter examples.</p>
+<section id="portfolios-of-two-risky-assets" class="level2" data-number="14.1">
+<h2 data-number="14.1" class="anchored" data-anchor-id="portfolios-of-two-risky-assets"><span class="header-section-number">14.1</span> Portfolios of Two Risky Assets</h2>
+<p> Most of the issues involved with the statistical analysis of portfolios can be illustrated in the simple case of a two asset portfolio. Let <span class="math inline">\(R_{A}\)</span> and <span class="math inline">\(R_{B}\)</span> denote the simple returns on two risky assets and assume these returns are characterized by the GWN model: <span id="eq-StatisticalGWNmodel"><span class="math display">\[
+\left(\begin{array}{c}
+R_{A}\\
+R_{B}
+\end{array}\right)\sim N\left(\left(\begin{array}{c}
+\mu_{A}\\
+\mu_{B}
+\end{array}\right),\,\left(\begin{array}{cc}
+\sigma_{A}^{2} &amp; \sigma_{AB}\\
+\sigma_{AB} &amp; \sigma_{B}^{2}
+\end{array}\right)\right).
+\tag{14.1}\]</span></span></p>
+<p>In matrix notation: <span class="math display">\[
+\mathbf{R}\sim N(\boldsymbol{\mu},\,\boldsymbol{\Sigma}),
+\]</span> where <span class="math display">\[
+\mathbf{R}=\left(\begin{array}{c}
+R_{A}\\
+R_{B}
+\end{array}\right),\,\boldsymbol{\mu}=\left(\begin{array}{c}
+\mu_{A}\\
+\mu_{B}
+\end{array}\right),\,\boldsymbol{\Sigma}=\left(\begin{array}{cc}
+\sigma_{A}^{2} &amp; \sigma_{AB}\\
+\sigma_{AB} &amp; \sigma_{B}^{2}
+\end{array}\right).
+\]</span> A portfolio with weight vector <span class="math inline">\(\mathbf{x}=(x_{A},x_{B})^{\prime}\)</span> has return <span class="math inline">\(R_{p}=\mathbf{x}^{\prime}\mathbf{R}=x_{A}R_{A}+x_{B}R_{B}\)</span> which is also described by the GWN model: <span class="math display">\[\begin{eqnarray*}
+R_{p} &amp; \sim &amp; N(\mu_{p},\,\sigma_{p}^{2}),\\
+\mu_{p} &amp; = &amp; \mathbf{x}^{\prime}\mu=x_{A}\mu_{A}+x_{B}\mu_{B},\\
+\sigma_{p}^{2} &amp; = &amp; \mathbf{x}^{\prime}\mathbf{\varSigma}\mathbf{x}=x_{A}^{2}\sigma_{A}^{2}+x_{B}^{2}\sigma_{B}^{2}+2x_{A}x_{B}\sigma_{AB}.
+\end{eqnarray*}\]</span> I assume that <span class="math inline">\(\{\mathbf{r}_{t}\}_{t=1}^{T}\)</span> is the observed sample of asset returns of size <span class="math inline">\(T\)</span>, where <span class="math inline">\(\mathbf{r}_{t}=(r_{At},r_{Bt})^{\prime}\)</span>, is generated from the GWN model <a href="#eq-StatisticalGWNmodel">Equation&nbsp;<span>14.1</span></a> from which I create the sample portfolio returns <span class="math inline">\(r_{p,t}=\mathbf{x}^{\prime}\mathbf{r}_{t}=x_{A}r_{At}+x_{B}r_{Bt}\)</span>. I assume that the portfolio weight vector <span class="math inline">\(\mathbf{x}\)</span> remains fixed over the observed sample and that the portfolio is rebalanced every period to maintain the fixed weights.</p>
+<p>The true GWN model parameters are unknown in practice and must be estimated from the observed data. As described in <a href="07-GWNModelEstimation-new.html"><span>Chapter&nbsp;7</span></a>, the GWN model parameters are estimated using the sample statistics: <span id="eq-StatisticalGWNestimatesAssets"><span class="math display">\[
+\begin{aligned}
+&amp; \hat{\mu}_{i}=\frac{1}{T}\sum_{t=1}^{T}r_{it},\,\hat{\sigma}_{i}^{2}=\frac{1}{T-1}\sum_{t=1}^{T}(r_{it}-\hat{\mu}_{i})^{2}, \nonumber \\
+&amp; \hat{\sigma}_{i}=\sqrt{\hat{\sigma}_{i}^{2}},\,\hat{\sigma}_{ij}^{2}=\frac{1}{T-1}\sum_{t=1}^{T}(r_{it}-\hat{\mu}_{i})(r_{jt}-\hat{\mu}_{j}).
+\end{aligned}
+\tag{14.2}\]</span></span> These estimates are consistent, asymptotically normally distributed, and have estimation errors which can be quantified by standard error formulas:<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p><span id="eq-StatisticalGWNseAssets"><span class="math display">\[
+\mathrm{se}(\hat{\mu}_{i})=\frac{\sigma_{i}}{\sqrt{T}},\,\mathrm{se}(\hat{\sigma}_{i}^{2}) \approx \frac{\sigma_{i}^{2}}{\sqrt{T/2}},\,\mathrm{se}(\hat{\sigma}_{i}) \approx \frac{\sigma_{i}}{\sqrt{2T}},\,\mathrm{se}(\hat{\sigma}_{ij}) \approx \frac{\sqrt{\sigma_i^2 \sigma_j^2 + \sigma_{ij}^2}}{\sqrt{T}}.
+\tag{14.3}\]</span></span></p>
+<section id="estimation-of-gwn-model-parameters-for-portfolios" class="level3" data-number="14.1.1">
+<h3 data-number="14.1.1" class="anchored" data-anchor-id="estimation-of-gwn-model-parameters-for-portfolios"><span class="header-section-number">14.1.1</span> Estimation of GWN Model Parameters for Portfolios</h3>
+<p>You can estimate the GWN model parameters <span class="math inline">\(\mu_{p}\)</span>, <span class="math inline">\(\sigma_{p}^{2}\)</span> and <span class="math inline">\(\sigma_{p}\)</span> for the portfolio return, <span class="math inline">\(R_{p}\)</span>, using two equivalent methods. In the first method, you use the sample portfolio returns <span class="math inline">\(\{r_{p,t}\}_{t=1}^{T}\)</span> and compute the sample statistics: <span id="eq-StatisticalGWNestimatesPortfolio"><span class="math display">\[
+\hat{\mu}_{p}=\frac{1}{T}\sum_{t=1}^{T}r_{p,t},\,\hat{\sigma}_{p}^{2}=\frac{1}{T-1}\sum_{t=1}^{T}(r_{p,t}-\hat{\mu}_{p})^{2},\,\hat{\sigma}_{p}=\sqrt{\hat{\sigma}_{p}^{2}}.
+\tag{14.4}\]</span></span> These estimates are unbiased and asymptotically normal with standard errors: <span id="eq-StatisticalGWNsePortfolio"><span class="math display">\[
+\mathrm{se}(\hat{\mu}_{p})=\frac{\sigma_{p}}{\sqrt{T}},\,\mathrm{se}(\hat{\sigma}_{p}^{2})\approx\frac{\sigma_{p}^{2}}{\sqrt{T/2}},\,\mathrm{se}(\hat{\sigma}_{p})\approx\frac{\sigma_{p}}{\sqrt{2T}}.
+\tag{14.5}\]</span></span> In the second method, I compute estimates of <span class="math inline">\(\mu_{p}\)</span> and <span class="math inline">\(\sigma_{p}^{2}\)</span> directly from the individual asset estimates in <a href="#eq-StatisticalGWNestimatesAssets">Equation&nbsp;<span>14.2</span></a>: <span id="eq-StatisticalGWNestimatesPortfolioMu"><span class="math display">\[
+\hat{\mu}_{p} = \mathbf{x}^{\prime}\hat{\boldsymbol{\mu}}=x_{A}\hat{\mu}_{A}+x_{B}\hat{\mu}_{B},
+\tag{14.6}\]</span></span> <span id="eq-StatisticalGWNestimatesPortfolioVar"><span class="math display">\[
+\hat{\sigma}_{p}^{2} = \mathbf{x}^{\prime}\widehat{\boldsymbol{\Sigma}}\mathbf{x}=x_{A}^{2}\hat{\sigma}_{A}^{2}+x_{B}^{2}\hat{\sigma}_{B}^{2}+2x_{A}x_{B}\hat{\sigma}_{AB}.
+\tag{14.7}\]</span></span> The estimates of <span class="math inline">\(\mu_{p}\)</span> and <span class="math inline">\(\sigma_{p}^{2}\)</span> in <a href="#eq-StatisticalGWNestimatesPortfolioMu">Equation&nbsp;<span>14.6</span></a> and <a href="#eq-StatisticalGWNestimatesPortfolioVar">Equation&nbsp;<span>14.7</span></a>, respectively, are numerically identical to the estimates in <a href="#eq-StatisticalGWNestimatesPortfolio">Equation&nbsp;<span>14.4</span></a>. To see this, consider the calculation of <span class="math inline">\(\hat{\mu}_{p}\)</span> in <a href="#eq-StatisticalGWNestimatesPortfolioMu">Equation&nbsp;<span>14.6</span></a>: <span class="math display">\[\begin{eqnarray*}
+\hat{\mu}_{p} &amp; = &amp; x_{A}\hat{\mu}_{A}+x_{B}\hat{\mu}_{B}=x_{A}\left(\frac{1}{T}\sum_{t=1}^{T}r_{At}\right)+x_{B}\left(\frac{1}{T}\sum_{t=1}^{T}r_{Bt}\right)\\
+&amp; = &amp; \frac{1}{T}\sum_{t=1}^{T}(x_{A}r_{At}+x_{B}r_{Bt})=\frac{1}{T}\sum_{t=1}^{T}r_{p,t}.
+\end{eqnarray*}\]</span> The proof of the equivalence of <span class="math inline">\(\hat{\sigma}_{p}^{2}\)</span> in <a href="#eq-StatisticalGWNestimatesPortfolioVar">Equation&nbsp;<span>14.7</span></a> with <span class="math inline">\(\hat{\sigma}_{p}^{2}\)</span> in <a href="#eq-StatisticalGWNestimatesPortfolio">Equation&nbsp;<span>14.4</span></a> is left as an end-of-chapter exercise.</p>
+<p>The standard errors of <span class="math inline">\(\hat{\mu}_{p}\)</span> and <span class="math inline">\(\hat{\sigma}_{p}^{2}\)</span> can also be directly calculated from <a href="#eq-StatisticalGWNestimatesPortfolioMu">Equation&nbsp;<span>14.6</span></a> and <a href="#eq-StatisticalGWNestimatesPortfolioVar">Equation&nbsp;<span>14.7</span></a>. Consider the calculation for <span class="math inline">\(\mathrm{se}(\hat{\mu}_{p})\)</span>: <span id="eq-StatisticalSEmu"><span class="math display">\[
+\mathrm{var}(\hat{\mu}_{p})=\mathrm{var}(x_{A}\hat{\mu}_{A}+x_{B}\hat{\mu}_{B})=x_{A}^{2}\mathrm{var}(\hat{\mu}_{A})+x_{B}^{2}\mathrm{var}(\hat{\mu}_{B})+2x_{A}x_{B}\mathrm{cov}(\hat{\mu}_{A},\hat{\mu}_{B}).
+\tag{14.8}\]</span></span> In chapter <a href="07-GWNModelEstimation-new.html"><span>Chapter&nbsp;7</span></a> it was shown that <span class="math display">\[
+\mathrm{var}(\hat{\mu}_{A})=\frac{\sigma_{A}^{2}}{T},\,\mathrm{var}(\hat{\mu}_{B})=\frac{\sigma_{B}^{2}}{T},\, \mathrm{cov}(\hat{\mu}_{A},\hat{\mu}_{B})=\frac{\sigma_{AB}}{T}.
+\]</span> Then <a href="#eq-StatisticalSEmu">Equation&nbsp;<span>14.8</span></a> can be rewritten as: <span class="math display">\[\begin{eqnarray*}
+\mathrm{var}(\hat{\mu}_{p}) &amp; = &amp; x_{A}\frac{\sigma_{A}^{2}}{T}+x_{B}\frac{\sigma_{B}^{2}}{T}+2x_{A}x_{B}\frac{\sigma_{AB}}{T}\\
+&amp; = &amp; \frac{1}{T}\left(x_{A}^{2}\sigma_{A}^{2}+x_{B}^{2}\sigma_{B}^{2}+2x_{A}x_{B}\sigma_{AB}\right)\\
+&amp; = &amp; \frac{\sigma_{p}^{2}}{T}.
+\end{eqnarray*}\]</span> Hence, <span class="math display">\[
+\mathrm{se}(\hat{\mu}_{p})=\sqrt{\mathrm{var}(\hat{\mu}_{p})}=\frac{\sigma_{p}}{\sqrt{T}},
+\]</span> which is the same formula given in <a href="#eq-StatisticalGWNsePortfolio">Equation&nbsp;<span>14.5</span></a>.</p>
+<p>Unfortunately, the calculation of <span class="math inline">\(\mathrm{se}(\hat{\sigma}_{p}^{2})\)</span> is a bit horrific and I only sketch out some of the details. Now, <span id="eq-StatisticalHorrificFormula"><span class="math display">\[
+\begin{aligned}
+\mathrm{var}(\hat{\sigma}_{p}^{2}) &amp; =  \mathrm{var}(x_{A}^{2}\hat{\sigma}_{A}^{2}+x_{B}^{2}\hat{\sigma}_{B}^{2}+2x_{A}x_{B}\hat{\sigma}_{AB})\\
+&amp; =  x_{A}^{4}\mathrm{var}(\hat{\sigma}_{A}^{2})+x_{B}^{4}\mathrm{var}(\hat{\sigma}_{B}^{2})+4x_{A}^{2}x_{B}^{2}\mathrm{var}(\hat{\sigma}_{AB})\nonumber \\
+&amp;   +2x_{A}^{2}x_{B}^{2}\mathrm{cov}(\hat{\sigma}_{A}^{2},\hat{\sigma}_{B}^{2})+4x_{A}^{3}x_{B}\mathrm{cov}(\hat{\sigma}_{A}^{2},\hat{\sigma}_{AB})\nonumber \\
+&amp;   +4x_{A}x_{B}^{3}\mathrm{cov}(\hat{\sigma}_{B}^{2},\hat{\sigma}_{AB})\nonumber
+\end{aligned}
+\tag{14.9}\]</span></span> Unfortunately, there are no easy formulas for <span class="math inline">\(\mathrm{var}(\hat{\sigma}_{AB})\)</span>, <span class="math inline">\(\mathrm{cov}(\hat{\sigma}_{A}^{2},\hat{\sigma}_{B}^{2})\)</span>, <span class="math inline">\(\mathrm{cov}(\hat{\sigma}_{A}^{2},\hat{\sigma}_{AB})\)</span> and <span class="math inline">\(\mathrm{cov}(\hat{\sigma}_{B}^{2},\hat{\sigma}_{AB})\)</span>. With a CLT approximation and much tedious calculation it can be shown that <a href="#eq-StatisticalHorrificFormula">Equation&nbsp;<span>14.9</span></a> is equal to the square of <span class="math inline">\(\mathrm{se}(\hat{\sigma}_{p}^{2})\)</span> given in <a href="#eq-StatisticalGWNsePortfolio">Equation&nbsp;<span>14.5</span></a>. Obviously, the method of computing standard errors for <span class="math inline">\(\hat{\mu}_{p}\)</span> and <span class="math inline">\(\hat{\sigma}_{p}^{2}\)</span> directly from the GWN model estimates computed from the sample portfolio returns is much easier than the indirect calculations based on the individual asset estimates, especially for <span class="math inline">\(\hat{\sigma}_{p}^{2}\)</span>.</p>
+<div id="exm-example-data-for-two-risky-asset-portfolio" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 14.1 (Example data for two risky asset portfolio) </strong></span>To be completed… table example data</p>
+<p><a href="10-introductionPortfolioTheory-new.html#tbl-TableExampleData">Table&nbsp;<span>10.1</span></a> from <a href="10-introductionPortfolioTheory-new.html"><span>Chapter&nbsp;10</span></a> gives annual return distribution parameters for two hypothetical assets <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>. I use this distribution but re-scale the values to represent a monthly return distribution. Asset <span class="math inline">\(A\)</span> is the high risk asset with a monthly return of <span class="math inline">\(\mu_{A}=1.46\%\)</span> and monthly standard deviation of <span class="math inline">\(\sigma_{A}=7.45\%\)</span>. Asset B is a lower risk asset with monthly return <span class="math inline">\(\mu_{B}=0.458\%\)</span> and monthly standard deviation of <span class="math inline">\(\sigma_{B}=3.32\%\)</span>. The assets are assumed to be slightly negatively correlated with correlation coefficient <span class="math inline">\(\rho_{AB}=-0.164\)</span>. Given the standard deviations and the correlation, the covariance can be determined from <span class="math inline">\(\sigma_{AB}=\rho_{AB}\sigma_{A}\sigma_{B}=-0.0004\)</span>. In R, these GWN model parameters are created using:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>mu.A <span class="ot">=</span> <span class="fl">0.175</span><span class="sc">/</span><span class="dv">12</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>sig.A <span class="ot">=</span> <span class="fl">0.258</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">12</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>sig2.A <span class="ot">=</span> sig.A<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>mu.B <span class="ot">=</span> <span class="fl">0.055</span><span class="sc">/</span><span class="dv">12</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>sig.B <span class="ot">=</span> <span class="fl">0.115</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">12</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>sig2.B <span class="ot">=</span> sig.B<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>rho.AB <span class="ot">=</span> <span class="sc">-</span><span class="fl">0.164</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>sig.AB <span class="ot">=</span> rho.AB<span class="sc">*</span>sig.A<span class="sc">*</span>sig.B</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>sigma.mat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(sig2.A, sig.AB, sig.AB, sig2.B),</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                   <span class="dv">2</span>, <span class="dv">2</span>, <span class="at">byrow=</span><span class="cn">TRUE</span>) </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>mu.vec <span class="ot">=</span> <span class="fu">c</span>(mu.A, mu.B) </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>sd.vec <span class="ot">=</span> <span class="fu">c</span>(sig.A, sig.B) </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(mu.vec) <span class="ot">=</span> <span class="fu">names</span>(sd.vec) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"asset.A"</span>, <span class="st">"asset.B"</span>) </span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">dimnames</span>(sigma.mat) <span class="ot">=</span> <span class="fu">list</span>(<span class="fu">names</span>(mu.vec), <span class="fu">names</span>(mu.vec))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>For portfolio analysis, I consider an equally weighted portfolio of assets A and B. The GWN model parameters for this portfolio are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>x1.A <span class="ot">=</span> <span class="fl">0.5</span> </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>x1.B <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> x1.A </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>x1.vec <span class="ot">=</span> <span class="fu">c</span>(x1.A, x1.B) </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(x1.vec) <span class="ot">=</span> <span class="fu">names</span>(mu.vec)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>mu.p1 <span class="ot">=</span> x1.A<span class="sc">*</span>mu.A <span class="sc">+</span> x1.B<span class="sc">*</span>mu.B </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>sig2.p1 <span class="ot">=</span> x1.A<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.A <span class="sc">+</span> x1.B<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.B <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x1.A<span class="sc">*</span>x1.B<span class="sc">*</span>sig.AB </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>sig.p1 <span class="ot">=</span> <span class="fu">sqrt</span>(sig2.p1)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(mu.p1, sig2.p1, sig.p1)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        mu.p1 sig2.p1 sig.p1</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,] 0.00958 0.00146 0.0382</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>I use the above GWN model parameters to simulate <span class="math inline">\(T=60\)</span> hypothetical returns for assets A and B and the equally weighted portfolio:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>n.obs <span class="ot">=</span> <span class="dv">60</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">125</span>) </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>returns.sim <span class="ot">=</span> <span class="fu">rmvnorm</span>(n.obs, <span class="at">mean=</span>mu.vec, <span class="at">sigma=</span>sigma.mat) </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(returns.sim) <span class="ot">=</span> <span class="fu">names</span>(mu.vec)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>rp1.sim <span class="ot">=</span> returns.sim<span class="sc">%*%</span>x1.vec</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The estimates of the GWN model parameters from the simulated returns for the individual assets are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>muhat.vals <span class="ot">=</span> <span class="fu">colMeans</span>(returns.sim) </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>sig2hat.vals <span class="ot">=</span> <span class="fu">apply</span>(returns.sim, <span class="dv">2</span>, var) </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>sigmahat.vals <span class="ot">=</span> <span class="fu">apply</span>(returns.sim, <span class="dv">2</span>, sd) </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>covmat.hat <span class="ot">=</span> <span class="fu">cov</span>(returns.sim) </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>covhat <span class="ot">=</span> covmat.hat[<span class="dv">1</span>,<span class="dv">2</span>]</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(muhat.vals, sig2hat.vals, sigmahat.vals) </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;               asset.A asset.B</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; muhat.vals    0.03077 0.00212</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; sig2hat.vals  0.00539 0.00127</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; sigmahat.vals 0.07344 0.03560</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>covhat </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -0.000848</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The estimated standard errors and 95% confidence intervals for <span class="math inline">\(\hat{\mu}_{i}\)</span> and <span class="math inline">\(\hat{\sigma}_{i}\)</span> <span class="math inline">\((i=A,\,B)\)</span> are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># estimated standard errors</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>se.muhat <span class="ot">=</span> sigmahat.vals<span class="sc">/</span><span class="fu">sqrt</span>(n.obs) </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>se.sigmahat <span class="ot">=</span> sigmahat.vals<span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">2</span><span class="sc">*</span>n.obs) </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(se.muhat, se.sigmahat)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             asset.A asset.B</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; se.muhat    0.00948 0.00460</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; se.sigmahat 0.00670 0.00325</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 95% confidence intervals </span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>lower.mu <span class="ot">=</span> muhat.vals <span class="sc">-</span> <span class="dv">2</span><span class="sc">*</span>se.muhat </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>upper.mu <span class="ot">=</span> muhat.vals <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>se.muhat </span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>lower.sigma <span class="ot">=</span> sigmahat.vals <span class="sc">-</span> <span class="dv">2</span><span class="sc">*</span>se.sigmahat </span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>upper.sigma <span class="ot">=</span> sigmahat.vals <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>se.sigmahat </span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(lower.mu, upper.mu) </span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         lower.mu upper.mu</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; asset.A  0.01181   0.0497</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; asset.B -0.00707   0.0113</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(lower.sigma, upper.sigma)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         lower.sigma upper.sigma</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; asset.A      0.0600      0.0869</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; asset.B      0.0291      0.0421</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Here, you see that the means are not estimated as precisely as the volatilities and that all of the true values are contained in the 95% confidence intervals.</p>
+<p>For the equally weighted portfolio, the GWN model estimates computed directly from the simulated portfolio returns using <a href="#eq-StatisticalGWNestimatesPortfolio">Equation&nbsp;<span>14.4</span></a> are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>muhat.p1 <span class="ot">=</span> <span class="fu">mean</span>(rp1.sim) </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>sig2hat.p1 <span class="ot">=</span> <span class="fu">as.numeric</span>(<span class="fu">var</span>(rp1.sim)) </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>sigmahat.p1 <span class="ot">=</span> <span class="fu">sd</span>(rp1.sim) </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(muhat.p1, sig2hat.p1, sigmahat.p1)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      muhat.p1 sig2hat.p1 sigmahat.p1</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]   0.0164    0.00124      0.0352</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The portfolio estimates computed from the asset estimates <a href="#eq-StatisticalGWNestimatesPortfolioMu">Equation&nbsp;<span>14.6</span></a> and <a href="#eq-StatisticalGWNestimatesPortfolioVar">Equation&nbsp;<span>14.7</span></a> are numerically equivalent:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>muhat.p1 <span class="ot">=</span> <span class="fu">as.numeric</span>(x1.A<span class="sc">*</span>muhat.vals[<span class="dv">1</span>] <span class="sc">+</span> x1.B<span class="sc">*</span>muhat.vals[<span class="dv">2</span>]) </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>sig2hat.p1 <span class="ot">=</span> <span class="fu">as.numeric</span>(x1.A<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2hat.vals[<span class="dv">1</span>] <span class="sc">+</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                        x1.B<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2hat.vals[<span class="dv">2</span>] <span class="sc">+</span> </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                        <span class="dv">2</span><span class="sc">*</span>x1.A<span class="sc">*</span>x1.B<span class="sc">*</span>covhat) </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>sighat.p1 <span class="ot">=</span> <span class="fu">sqrt</span>(sig2hat.p1) </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(muhat.p1, sig2hat.p1, sigmahat.p1)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      muhat.p1 sig2hat.p1 sigmahat.p1</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]   0.0164    0.00124      0.0352</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The estimated standard errors for <span class="math inline">\(\hat{\mu}_{p}\)</span> and <span class="math inline">\(\hat{\sigma}_{p}\)</span>, and 95% confidence intervals for <span class="math inline">\(\mu_{p}\)</span> and <span class="math inline">\(\sigma_{p}\)</span> computed using <a href="#eq-StatisticalGWNsePortfolio">Equation&nbsp;<span>14.5</span></a> are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># estimated standard errors</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>se.muhat.p1 <span class="ot">=</span> sigmahat.p1<span class="sc">/</span><span class="fu">sqrt</span>(n.obs) </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>se.sigmahat.p1 <span class="ot">=</span> sigmahat.p1<span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">2</span><span class="sc">*</span>n.obs) </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(se.muhat.p1, se.sigmahat.p1)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      se.muhat.p1 se.sigmahat.p1</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]     0.00455        0.00322</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 95% confidence intervals </span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>lower.mu <span class="ot">=</span> muhat.p1 <span class="sc">-</span> <span class="dv">2</span><span class="sc">*</span>se.muhat.p1 </span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>upper.mu <span class="ot">=</span> muhat.p1 <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>se.muhat.p1 </span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>lower.sigma <span class="ot">=</span> sigmahat.p1 <span class="sc">-</span> <span class="dv">2</span><span class="sc">*</span>se.sigmahat.p1 </span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>upper.sigma <span class="ot">=</span> sigmahat.p1 <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>se.sigmahat.p1 </span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>ans <span class="ot">=</span> <span class="fu">rbind</span>(<span class="fu">c</span>(lower.mu, upper.mu),             </span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(lower.sigma, upper.sigma)) </span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(ans) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"lower"</span>, <span class="st">"upper"</span>) </span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(ans) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"mu.p"</span>, <span class="st">"sigma.p"</span>) </span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>ans</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           lower  upper</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; mu.p    0.00735 0.0255</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; sigma.p 0.02880 0.0417</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>As with the individual assets, the portfolio mean is estimated less precisely than the portfolio volatility and the true values are in the 95% confidence intervals. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+<section id="estimation-error-in-the-risk-return-diagram" class="level3" data-number="14.1.2">
+<h3 data-number="14.1.2" class="anchored" data-anchor-id="estimation-error-in-the-risk-return-diagram"><span class="header-section-number">14.1.2</span> Estimation error in the risk-return diagram</h3>
+<p>In the analysis of portfolios in <a href="10-introductionPortfolioTheory-new.html"><span>Chapter&nbsp;10</span></a>, the risk return trade-off between portfolios was visualized by plotting the volatility-expected return pairs <span class="math inline">\((\hat{\sigma}_{p},\,\hat{\mu}_{p})\)</span> of different portfolios. This was done without considering estimation error in <span class="math inline">\(\hat{\sigma}_{p}\)</span> and <span class="math inline">\(\hat{\mu}_{p}\)</span>. Estimation error in <span class="math inline">\(\hat{\sigma}_{p}\)</span> and <span class="math inline">\(\hat{\mu}_{p}\)</span> creates uncertainty about the location of the true values <span class="math inline">\((\sigma_{p},\,\mu_{p})\)</span> in the risk-return diagram.</p>
+<div id="exm-true-and-estimated-risk-return-diagram-for-example-data" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 14.2 (True and estimated risk return diagram for example data) </strong></span><a href="#fig-StatisticalRiskReturn">Figure&nbsp;<span>14.1</span></a> shows the true values and sample estimates of the pairs <span class="math inline">\((\sigma_{A},\mu_{A}),\)</span> <span class="math inline">\((\sigma_{B},\mu_{B})\)</span>, and <span class="math inline">\((\sigma_{p},\mu_{p})\)</span> for the equally weighted portfolio created using:</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># true values</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sd.vec, mu.vec, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="st">"black"</span>,       </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.01</span>, <span class="fl">0.04</span>), <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.1</span>),      </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="fu">expression</span>(sigma[p]), <span class="at">ylab=</span><span class="fu">expression</span>(mu[p]),      </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">cex=</span><span class="dv">2</span>) </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">0</span>) </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(sig.p1, mu.p1, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="st">"black"</span>, <span class="at">cex=</span><span class="dv">2</span>) </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span>sig.A, <span class="at">y=</span>mu.A, <span class="at">labels=</span><span class="st">"A"</span>, <span class="at">pos=</span><span class="dv">4</span>, <span class="at">cex =</span> <span class="fl">1.5</span>) </span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span>sig.B, <span class="at">y=</span>mu.B, <span class="at">labels=</span><span class="st">"B"</span>, <span class="at">pos=</span><span class="dv">4</span>, <span class="at">cex =</span> <span class="fl">1.5</span>) </span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span>sig.p1, <span class="at">y=</span>mu.p1, <span class="at">labels=</span><span class="st">"P"</span>, <span class="at">pos=</span><span class="dv">4</span>, <span class="at">cex =</span> <span class="fl">1.5</span>) </span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co"># estimates </span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(sigmahat.vals, muhat.vals, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">cex=</span><span class="dv">2</span>) </span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(sigmahat.p1, muhat.p1, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">cex=</span><span class="dv">2</span>) </span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span>sigmahat.vals[<span class="dv">1</span>], <span class="at">y=</span>muhat.vals[<span class="dv">1</span>], <span class="at">labels=</span><span class="fu">expression</span>(<span class="fu">hat</span>(A)),       </span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">pos=</span><span class="dv">4</span>, <span class="at">cex =</span> <span class="fl">1.5</span>) </span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span>sigmahat.vals[<span class="dv">2</span>], <span class="at">y=</span>muhat.vals[<span class="dv">2</span>], <span class="at">labels=</span><span class="fu">expression</span>(<span class="fu">hat</span>(B)),       </span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>     <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">pos=</span><span class="dv">4</span>, <span class="at">cex =</span> <span class="fl">1.5</span>) </span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span>sigmahat.p1, <span class="at">y=</span>muhat.p1, <span class="at">labels=</span><span class="fu">expression</span>(<span class="fu">hat</span>(P)),       </span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>     <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">pos=</span><span class="dv">4</span>, <span class="at">cex =</span> <span class="fl">1.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-StatisticalRiskReturn" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="14-statisticalAnalysisPortfolios-new_files/figure-html/fig-StatisticalRiskReturn-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;14.1: Risk-return diagram for example data. <span class="math inline">\(\mathrm{A}=(\sigma_{A},\mu_{A})\)</span>, <span class="math inline">\(\mathrm{B}=(\sigma_{B},\mu_{B})\)</span>, <span class="math inline">\(\mathrm{\hat{A}}=(\hat{\sigma}_{A},~\hat{\mu}_{A})\)</span>, <span class="math inline">\(\mathrm{\hat{B}}=(\hat{\sigma}_{B},~\hat{\mu}_{B})\)</span>.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>You see that <span class="math inline">\((\hat{\sigma}_{B},\hat{\mu}_{B})\)</span> is fairly close to <span class="math inline">\((\sigma_{B},\mu_{B})\)</span> but that <span class="math inline">\((\hat{\sigma}_{A},\hat{\mu}_{A})\)</span> is quite far above <span class="math inline">\((\sigma_{A},\mu_{A})\)</span> and <span class="math inline">\((\hat{\sigma}_{P},\hat{\mu}_{P})\)</span> is moderately far above <span class="math inline">\((\sigma_{P},\mu_{P})\)</span>. The large positive estimation errors in <span class="math inline">\(\hat{\mu}_{P}\)</span> and <span class="math inline">\(\hat{\mu}_{A}\)</span> greatly overstate the risk-return characteristics of the equally weighted portfolio and asset A. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<p>To illustrate estimation error in the risk return diagram, the individual 95% confidence intervals for <span class="math inline">\(\mu_{i}\)</span> and <span class="math inline">\(\sigma_{i}\)</span> could be superimposed on the plot as rectangles centered at the pairs <span class="math inline">\((\hat{\sigma}_{i},\hat{\mu}_{i})\)</span>. However, the probability that these rectangles contain the true pairs <span class="math inline">\((\sigma_{i},\mu_{i})\)</span> is not equal to 95% because the confidence intervals for <span class="math inline">\(\mu_{i}\)</span> are created independently from the confidence intervals for <span class="math inline">\(\sigma_{i}\)</span>. To create a joint confidence set that cover the pair <span class="math inline">\((\sigma_{i},\mu_{i})\)</span> with probability 95% requires knowing the joint probability distribution of <span class="math inline">\((\hat{\sigma}_{i},\hat{\mu}_{i})\)</span>.</p>
+<p>In <a href="07-GWNModelEstimation-new.html"><span>Chapter&nbsp;7</span></a>, it was shown that in the GWN model: <span id="eq-StatisticalJointPdf"><span class="math display">\[
+\left(\begin{array}{c}
+\hat{\sigma}_{i}\\
+\hat{\mu}_{i}
+\end{array}\right)\sim N\left(\left(\begin{array}{c}
+\sigma_{i}\\
+\mu_{i}
+\end{array}\right),\left(\begin{array}{cc}
+\mathrm{se}(\hat{\sigma}_{i})^{2} &amp; 0\\
+0 &amp; \mathrm{se}(\hat{\mu}_{i})^{2}
+\end{array}\right)\right),
+\tag{14.10}\]</span></span> for large enough <span class="math inline">\(T\)</span>. Hence, <span class="math inline">\(\hat{\sigma}_{i}\)</span> and <span class="math inline">\(\hat{\mu}_{i}\)</span> are (asymptotically) jointly normally distributed and <span class="math inline">\(\mathrm{cov}(\hat{\sigma}_{i},\hat{\mu}_{i})=0\)</span> which implies that they are also independent. Let <span class="math inline">\(\theta=(\sigma_{i},\mu_{i})^{\prime},\,\)</span><span class="math inline">\(\hat{\theta}=(\hat{\sigma}_{i},\hat{\mu}_{i})^{\prime}\)</span> and <span class="math inline">\(\mathbf{V}=\mathrm{diag}(\mathrm{se}(\hat{\sigma}_{i})^{2},\mathrm{se}(\hat{\mu}_{i})^{2})\)</span>. Then <a href="#eq-StatisticalJointPdf">Equation&nbsp;<span>14.10</span></a> can be expressed as <span class="math inline">\(\hat{\theta}\sim N(\theta,\,\mathbf{V})\)</span>. It follows that the quadratic form <span class="math inline">\(\left(\hat{\theta}-\theta\right)^{\prime}\mathbf{V}^{-1}\left(\hat{\theta}-\theta\right)\sim\chi^{2}(2),\)</span> and so <span id="eq-StatisticalJointCI"><span class="math display">\[
+Pr\left\{ \left(\hat{\theta}-\theta\right)^{\prime}
+\mathbf{V}^{-1}\left(\hat{\theta}-\theta\right)\leq q_{.95}^{\chi^{2}(2)}\right\}  
+=0.95
+\tag{14.11}\]</span></span></p>
+<p>where <span class="math inline">\(q_{.95}^{\chi^{2}(2)}\)</span> is the 95% quantile of the <span class="math inline">\(\chi^{2}(2)\)</span> distribution. The equation <span class="math inline">\(\left(\hat{\theta}-\theta\right)^{\prime}\mathbf{V}^{-1}\left(\hat{\theta}-\theta\right)=q_{.95}^{\chi^{2}(2)}\)</span> defines an un-tilted ellipse in <span class="math inline">\(\sigma_{i}-\mu_{i}\)</span> space centered at <span class="math inline">\((\hat{\sigma}_{i},\hat{\mu}_{i})\)</span> with axes proportional to <span class="math inline">\(\mathrm{se}(\hat{\sigma}_{i})\)</span> and <span class="math inline">\(\mathrm{se}(\hat{\mu}_{i})\)</span>, respectively. This ellipse is the joint 95% confidence set for <span class="math inline">\((\sigma_{i},\mu_{i})\)</span>.</p>
+<div id="exm-true-and-estimated-risk-return-diagram-with-confidence-ellipses-for-example-data" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 14.3 (True and estimated risk return diagram with confidence ellipses for example data) </strong></span><a href="#fig-StatisticalRiskReturnCI">Figure&nbsp;<span>14.2</span></a> repeats <a href="#fig-StatisticalRiskReturn">Figure&nbsp;<span>14.1</span></a> with the addition of the joint confidence sets for <span class="math inline">\((\sigma_{A},\mu_{A}),\)</span> <span class="math inline">\((\sigma_{B},\mu_{B})\)</span>, and <span class="math inline">\((\sigma_{p},\mu_{p})\)</span> , created using</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-StatisticalRiskReturnCI" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="14-statisticalAnalysisPortfolios-new_files/figure-html/fig-StatisticalRiskReturnCI-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;14.2: Risk return tradeoff with 95% confidence ellipses</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The <code>ellipse()</code> function from the R package <strong>ellipse</strong> is used to draw the 95% confidence sets. The confidence ellipses are longer in the <span class="math inline">\(\mu_{i}\)</span> direction because <span class="math inline">\(\mathrm{se}(\hat{\mu}_{i})\)</span> is larger than <span class="math inline">\(\mathrm{se}(\hat{\sigma}_{i})\)</span> and indicate more uncertainty about the true values of <span class="math inline">\(\mu_{i}\)</span> than the true values of <span class="math inline">\(\sigma_{i}.\)</span> The ellipse for <span class="math inline">\((\sigma_{A},\mu_{A})\)</span> is much bigger than the ellipses for <span class="math inline">\((\sigma_{B},\mu_{B})\)</span> and <span class="math inline">\((\sigma_{p},\mu_{p})\)</span> and indicates a wide range of possible values for <span class="math inline">\((\sigma_{A},\mu_{A})\)</span> . For all pairs, the true values are inside the 95% confidence ellipses.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<p>The estimation errors in the points <span class="math inline">\((\hat{\sigma}_{i},\hat{\mu}{}_{i})\)</span> can also be illustrated using the bootstrap. You simply sample with replacement from the observed returns <span class="math inline">\(B\)</span> times and compute estimates of <span class="math inline">\((\sigma_{i},\mu_{i})\)</span> from each bootstrap sample. You can then plot the <span class="math inline">\(B\)</span> bootstrap pairs <span class="math inline">\((\hat{\sigma}_{i}^{*},\hat{\mu}_{i}^{*})\)</span> on the risk return diagram instead of the confidence ellipses.</p>
+<div id="exm-true-and-estimated-risk-return-diagram-with-bootstrap-estimates-for-example-data" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 14.4 (True and estimated risk return diagram with bootstrap estimates for example data) </strong></span>The following R code creates <span class="math inline">\(B=500\)</span> bootstrap estimates of <span class="math inline">\((\sigma_{i},\mu_{i})\)</span> for <span class="math inline">\(i=A,B,P\)</span>:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>n.boot <span class="ot">=</span> <span class="dv">500</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>mu.boot <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, n.boot, <span class="dv">3</span>) </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>sd.boot <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, n.boot, <span class="dv">3</span>) </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(mu.boot) <span class="ot">=</span> <span class="fu">colnames</span>(sd.boot) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"P"</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n.boot) {   </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>   boot.idx <span class="ot">=</span> <span class="fu">sample</span>(n.obs, <span class="at">replace=</span><span class="cn">TRUE</span>)   </span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>   ret.boot <span class="ot">=</span> returns.sim[boot.idx, ]    </span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>   rp1.boot <span class="ot">=</span> ret.boot<span class="sc">%*%</span>x1.vec   </span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>   ret.boot <span class="ot">=</span> <span class="fu">cbind</span>(ret.boot, rp1.boot)   </span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>   mu.boot[i, ] <span class="ot">=</span> <span class="fu">colMeans</span>(ret.boot)   </span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>   sd.boot[i, ] <span class="ot">=</span> <span class="fu">apply</span>(ret.boot, <span class="dv">2</span>, sd)  </span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><a href="#fig-StatisticalRiskReturnBoot">Figure&nbsp;<span>14.3</span></a> repeats <a href="#fig-StatisticalRiskReturnCI">Figure&nbsp;<span>14.2</span></a> and adds the bootstrap estimates of <span class="math inline">\((\sigma_{i},\mu_{i})\)</span> for <span class="math inline">\(i=A,B,P\)</span>. Notice that the bootstrap estimates for each asset produce a scatter that fills the 95% confidence ellipses with just a few estimates lying outside the ellipses. Hence, the bootstrap is an easy and effective way to illustrate estimation error in the risk-return diagram. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-StatisticalRiskReturnBoot" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="14-statisticalAnalysisPortfolios-new_files/figure-html/fig-StatisticalRiskReturnBoot-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;14.3: Risk return trade off with bootstrap estimates.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="estimation-error-in-the-portfolio-frontier" class="level3" data-number="14.1.3">
+<h3 data-number="14.1.3" class="anchored" data-anchor-id="estimation-error-in-the-portfolio-frontier"><span class="header-section-number">14.1.3</span> Estimation error in the portfolio frontier</h3>
+<p>In the case of two risky assets, the portfolio frontier is a plot of the risk-return characteristics of all feasible portfolios. From this frontier, you can readily determine the set of efficient portfolios which are those portfolios that have the highest expected return for a given risk level. If you construct the portfolio frontier from portfolio risk and return estimates from the GWN model, then the estimation error in these estimates leads to estimation error in the entire portfolio frontier.</p>
+<div id="exm-true-and-estimated-portfolio-frontier-for-example-data" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 14.5 (True and estimated portfolio frontier for example data) </strong></span>Using the example data, you can construct the true unobservable portfolio frontier as well as an estimate of this frontier from the simulated returns. For example, consider creating the true and estimated portfolio frontiers for the following portfolios:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>x.A <span class="ot">=</span> <span class="fu">seq</span>(<span class="at">from=</span><span class="sc">-</span><span class="fl">0.4</span>, <span class="at">to=</span><span class="fl">1.4</span>, <span class="at">by=</span><span class="fl">0.1</span>) </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>x.B <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> x.A</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The risk-return characteristics of the portfolios on the true portfolio frontier are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>mu.p <span class="ot">=</span> x.A<span class="sc">*</span>mu.A <span class="sc">+</span> x.B<span class="sc">*</span>mu.B </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>sig2.p <span class="ot">=</span> x.A<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.A <span class="sc">+</span> x.B<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.B <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x.A<span class="sc">*</span>x.B<span class="sc">*</span>sig.AB </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>sig.p <span class="ot">=</span> <span class="fu">sqrt</span>(sig2.p)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The risk-return characteristics of the portfolios on the estimated frontier are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>muhat.p <span class="ot">=</span> x.A<span class="sc">*</span>muhat.vals[<span class="st">"asset.A"</span>] <span class="sc">+</span> x.B<span class="sc">*</span>muhat.vals[<span class="st">"asset.B"</span>] </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>sig2hat.p <span class="ot">=</span> x.A<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2hat.vals[<span class="st">"asset.A"</span>] <span class="sc">+</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>   x.B<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2hat.vals[<span class="st">"asset.B"</span>] <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x.A<span class="sc">*</span>x.B<span class="sc">*</span>covhat </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>sighat.p <span class="ot">=</span> <span class="fu">sqrt</span>(sig2hat.p)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The true and estimated portfolios are illustrated in <a href="#fig-StatisticalFrontier">Figure&nbsp;<span>14.4</span></a>, created with</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sig.p, mu.p, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">type=</span><span class="st">"b"</span>, <span class="at">col=</span><span class="st">"black"</span>,       </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.01</span>, <span class="fl">0.041</span>), <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.125</span>),      </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="fu">expression</span>(sigma[p]), <span class="at">ylab=</span><span class="fu">expression</span>(mu[p]), <span class="at">cex=</span><span class="dv">1</span>) </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">0</span>) </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(sd.vec, mu.vec, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="st">"black"</span>, <span class="at">cex=</span><span class="dv">2</span>) </span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span>sig.A, <span class="at">y=</span>mu.A, <span class="at">labels=</span><span class="st">"A"</span>, <span class="at">pos=</span><span class="dv">3</span>, <span class="at">cex =</span> <span class="fl">1.5</span>) </span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span>sig.B, <span class="at">y=</span>mu.B, <span class="at">labels=</span><span class="st">"B"</span>, <span class="at">pos=</span><span class="dv">3</span>, <span class="at">cex =</span> <span class="fl">1.5</span>) </span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co"># estimated assets and frontier </span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(sighat.p, muhat.p, <span class="at">type=</span><span class="st">"b"</span>, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">cex=</span><span class="dv">1</span>) </span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(sigmahat.vals, muhat.vals, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">cex=</span><span class="dv">2</span>) </span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span>sigmahat.vals[<span class="dv">1</span>], <span class="at">y=</span>muhat.vals[<span class="dv">1</span>], <span class="at">labels=</span><span class="st">"A Hat"</span>,       </span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">pos=</span><span class="dv">3</span>, <span class="at">cex =</span> <span class="fl">1.5</span>) </span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span>sigmahat.vals[<span class="dv">2</span>], <span class="at">y=</span>muhat.vals[<span class="dv">2</span>], <span class="at">labels=</span><span class="st">"B Hat"</span>,       </span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">pos=</span><span class="dv">2</span>, <span class="at">cex =</span> <span class="fl">1.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-StatisticalFrontier" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="14-statisticalAnalysisPortfolios-new_files/figure-html/fig-StatisticalFrontier-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;14.4: True and estimated portfolio frontiers</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Due to the large estimation error in <span class="math inline">\(\hat{\mu}_{A}\)</span>, the estimated frontier is considerably higher than the true frontier. As a result, portfolios on the estimated frontier appear to have higher reward-to-risk properties than they actually do. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<p>Sampling uncertainty about the estimated frontier can be easily computed using the bootstrap. The process is the same as in the case of a single asset. For each bootstrap sample, estimate the expected return and volatility of each portfolio on the frontier and then plot these bootstrap pairs on the plot showing the estimated frontier from the sample returns.</p>
+<div id="exm-true-and-estimated-risk-portfolio-frontier-with-bootstrap-estimates-for-example-data" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 14.6 (True and estimated risk portfolio frontier with bootstrap estimates for example data) </strong></span>The R code to create <span class="math inline">\(B=1000\)</span> bootstrap estimates of risk and return pairs for the frontier portfolios is</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># initialize matrices </span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>n.boot <span class="ot">=</span> <span class="dv">1000</span> </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>mu.boot <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, n.boot, <span class="fu">length</span>(x.A)) </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>sd.boot <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, n.boot, <span class="fu">length</span>(x.A)) </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(mu.boot) <span class="ot">=</span> <span class="fu">colnames</span>(sd.boot) <span class="ot">=</span> </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">paste</span>(<span class="st">"P"</span>, <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(x.A), <span class="at">sep=</span><span class="st">"."</span>) </span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># bootstrap loop </span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n.boot) {   </span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>   boot.idx <span class="ot">=</span> <span class="fu">sample</span>(n.obs, <span class="at">replace=</span><span class="cn">TRUE</span>)   </span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>   ret.boot <span class="ot">=</span> returns.sim[boot.idx, ]    </span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="co"># GWN model estimates   </span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>   muhat.boot <span class="ot">=</span> <span class="fu">colMeans</span>(ret.boot)   </span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>   sig2hat.boot <span class="ot">=</span> <span class="fu">apply</span>(ret.boot, <span class="dv">2</span>, var)   </span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>   sigmahat.boot <span class="ot">=</span> <span class="fu">sqrt</span>(sig2hat.boot)   </span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>   covhat.boot <span class="ot">=</span> <span class="fu">cov</span>(ret.boot)[<span class="dv">1</span>,<span class="dv">2</span>]   </span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="co"># portfolio risk return estimates   </span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>   mu.boot[i, ] <span class="ot">=</span> x.A<span class="sc">*</span>muhat.boot[<span class="dv">1</span>] <span class="sc">+</span> x.B<span class="sc">*</span>muhat.boot[<span class="dv">2</span>]   </span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>   sig2.boot <span class="ot">=</span> x.A<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2hat.boot[<span class="dv">1</span>] <span class="sc">+</span> </span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>      x.B<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2hat.boot[<span class="dv">2</span>] <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x.A<span class="sc">*</span>x.B<span class="sc">*</span>covhat.boot   </span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>   sd.boot[i, ] <span class="ot">=</span> <span class="fu">sqrt</span>(sig2.boot) </span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The true and estimated frontier together with the bootstrap risk-return pairs for each portfolio on the estimated frontier is illustrated in <a href="#fig-StatisticalFrontierBoot">Figure&nbsp;<span>14.5</span></a>, create using</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set up plot area</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sig.p, mu.p, <span class="at">type=</span><span class="st">"n"</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.02</span>, <span class="fl">0.07</span>), <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.13</span>),      </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="fu">expression</span>(sigma[p]), <span class="at">ylab=</span><span class="fu">expression</span>(mu[p])) </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># plot bootstrap estimates </span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(x.A)) {   </span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>   <span class="fu">points</span>(sd.boot[, i], mu.boot[, i], <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="st">"lightblue"</span>) </span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co"># plot true frontier</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(sig.p, mu.p, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">type=</span><span class="st">"b"</span>, <span class="at">col=</span><span class="st">"black"</span>, <span class="at">cex=</span><span class="dv">1</span>) </span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">0</span>) </span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="co"># plot true assets</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(sd.vec, mu.vec, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="st">"black"</span>, <span class="at">cex=</span><span class="dv">2</span>) </span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span>sig.A, <span class="at">y=</span>mu.A, <span class="at">labels=</span><span class="st">"A"</span>, <span class="at">pos=</span><span class="dv">3</span>, <span class="at">cex =</span> <span class="fl">1.5</span>) </span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span>sig.B, <span class="at">y=</span>mu.B, <span class="at">labels=</span><span class="st">"B"</span>, <span class="at">pos=</span><span class="dv">3</span>, <span class="at">cex =</span> <span class="fl">1.5</span>) </span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="co"># plot estimated frontier </span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(sighat.p, muhat.p, <span class="at">type=</span><span class="st">"b"</span>, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">cex=</span><span class="dv">1</span>) </span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="co"># plot estimated assets</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(sigmahat.vals, muhat.vals, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">cex=</span><span class="dv">2</span>) </span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span>sigmahat.vals[<span class="dv">1</span>], <span class="at">y=</span>muhat.vals[<span class="dv">1</span>], <span class="at">labels=</span><span class="st">"A Hat"</span>,       </span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>     <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">pos=</span><span class="dv">3</span>, <span class="at">cex =</span> <span class="fl">1.5</span>) </span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span>sigmahat.vals[<span class="dv">2</span>], <span class="at">y=</span>muhat.vals[<span class="dv">2</span>], <span class="at">labels=</span><span class="st">"B Hat"</span>,       </span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>     <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">pos=</span><span class="dv">2</span>, <span class="at">cex =</span> <span class="fl">1.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-StatisticalFrontierBoot" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="14-statisticalAnalysisPortfolios-new_files/figure-html/fig-StatisticalFrontierBoot-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;14.5: Estimated frontier with bootstrap estimates.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The true frontier portfolios are the black dots, the estimated frontier portfolios are the dark blue dots and the bootstrap risk-return pairs are the light blue dots. The bootstrap estimates form a light blue cloud around the estimated frontier. The bootstrap cloud can be interpreted as approximating a confidence interval around estimated frontier. From <a href="#eq-StatisticalJointCI">Equation&nbsp;<span>14.11</span></a>, this confidence interval can be thought of the union of all of the confidence ellipses about the portfolios on the frontier. The true frontier of portfolios (black dots) is within the blue cloud. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+<section id="statistical-properties-of-the-global-minimum-variance-portfolio" class="level3" data-number="14.1.4">
+<h3 data-number="14.1.4" class="anchored" data-anchor-id="statistical-properties-of-the-global-minimum-variance-portfolio"><span class="header-section-number">14.1.4</span> Statistical properties of the global minimum variance portfolio</h3>
+<p>For portfolios of two risky assets, the global minimum variance portfolio weights satisfy <span id="eq-StatisticalGlobalMin"><span class="math display">\[
+x_{A}^{\min}=\frac{\sigma_{B}^{2}-\sigma_{AB}}{\sigma_{A}^{2}+\sigma_{B}^{2}-2\sigma_{AB}},~x_{B}^{\min}=1-x_{A}^{\min}=\frac{\sigma_{A}^{2}-\sigma_{AB}}{\sigma_{A}^{2}+\sigma_{B}^{2}-2\sigma_{AB}}.
+\tag{14.12}\]</span></span> The expected return and variance of the global minimum variance portfolio are <span class="math display">\[\begin{eqnarray*}
+\mu_{p,\mathrm{min}} &amp; = &amp; x_{A}^{\mathrm{min}}\mu_{A}+x_{B}^{\mathrm{min}}\mu_{B},\\
+\sigma_{p,\mathrm{min}}^{2} &amp; = &amp; \left(x_{A}^{\mathrm{min}}\right)^{2}\sigma_{A}^{2}+\left(x_{B}^{\mathrm{min}}\right)^{2}\sigma_{B}^{2}+2x_{A}^{\mathrm{min}}x_{B}^{\mathrm{min}}\sigma_{AB}.
+\end{eqnarray*}\]</span></p>
+<p>The estimated global minimum variance portfolio weights are then <span id="eq-StatisticalGlobalMinHat"><span class="math display">\[
+\hat{x}_{A}^{\min}=\frac{\hat{\sigma}_{B}^{2}-\hat{\sigma}_{AB}}{\hat{\sigma}_{A}^{2}+\hat{\sigma}{}_{B}^{2}-2\hat{\sigma}_{AB}},~x_{B}^{\min}=1-\hat{x}{}_{A}^{\min}=\frac{\hat{\sigma}{}_{A}^{2}-\hat{\sigma}{}_{AB}}{\hat{\sigma}_{A}^{2}+\hat{\sigma}_{B}^{2}-2\hat{\sigma}{}_{AB}}.
+\tag{14.13}\]</span></span> From <a href="#eq-StatisticalGlobalMinHat">Equation&nbsp;<span>14.13</span></a> you see that estimation error in the global minimum variance weights is related to estimation error in the asset variances and the covariance in a complicated nonlinear way. However, the estimation error does not depend on estimation error in the expected returns. The estimated expected returns and variance of the global minimum variance portfolio are <span id="eq-StatisticalGlobalMinMuHat"><span class="math display">\[
+\hat{\mu}_{p,\mathrm{min}} = \hat{x}{}_{A}^{\mathrm{min}}\hat{\mu}_{A}+\hat{x}{}_{B}^{\mathrm{min}}\hat{\mu}_{B},
+\tag{14.14}\]</span></span> <span id="eq-StatisticalGlobalMinSig2Hat"><span class="math display">\[
+\hat{\sigma}_{p,\mathrm{min}}^{2} =  \left(\hat{x}{}_{A}^{\mathrm{min}}\right)^{2}\hat{\sigma}_{A}^{2}+\left(\hat{x}{}_{B}^{\mathrm{min}}\right)^{2}\hat{\sigma}_{B}^{2}+2\hat{x}{}_{A}^{\mathrm{min}}\hat{x}_{B}^{\mathrm{min}}\hat{\sigma}_{AB}
+\tag{14.15}\]</span></span></p>
+<p>Here, estimation error in <span class="math inline">\(\hat{\mu}_{p,\mathrm{min}}\)</span> depends on two sources: estimation error in the global minimum variance weights (which depend on estimation error in the asset variances and the covariance), and estimation error in the asset expected returns. However, estimation error in <span class="math inline">\(\hat{\sigma}_{p,\mathrm{min}}^{2}\)</span> only depends on estimation error in the asset variances and the covariance. Because there is more estimation error in the asset expected returns than the asset variances <span class="math inline">\(\hat{\mu}_{p,\mathrm{min}}\)</span>, will be estimated more imprecisely than <span class="math inline">\(\hat{\sigma}_{p,\mathrm{min}}^{2}\)</span>.</p>
+<div id="exm-true-and-estimated-global-minimum-variance-portfolio-for-example-data" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 14.7 (True and estimated global minimum variance portfolio for example data) </strong></span>For the example data, the true and estimated global minimum variance portfolio are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># True global min variance portfolio weights</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>xA.min <span class="ot">=</span> (sig2.B <span class="sc">-</span> sig.AB)<span class="sc">/</span>(sig2.A <span class="sc">+</span> sig2.B <span class="sc">-</span> <span class="dv">2</span><span class="sc">*</span>sig.AB) </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>xB.min <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> xA.min </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(xA.min, xB.min)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.202 0.798</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimated min variance portfolio weights</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>xA.min.hat <span class="ot">=</span> (sig2hat.vals[<span class="dv">2</span>] <span class="sc">-</span> covhat)<span class="sc">/</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>             (sig2hat.vals[<span class="dv">1</span>] <span class="sc">+</span> sig2hat.vals[<span class="dv">2</span>] <span class="sc">-</span> <span class="dv">2</span><span class="sc">*</span>covhat) </span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>xB.min.hat <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> xA.min.hat </span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(xA.min.hat, xB.min.hat)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; asset.B asset.B </span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   0.253   0.747</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The estimated weights are close to the true weights. The true and estimated expected return and volatility of the global minimum variance portfolio are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Expected return and volatility of true global minimum variance portfolio </span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>mu.p.min <span class="ot">=</span> xA.min<span class="sc">*</span>mu.A <span class="sc">+</span> xB.min<span class="sc">*</span>mu.B </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>sig2.p.min <span class="ot">=</span> xA.min<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.A <span class="sc">+</span> xB.min<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.B <span class="sc">+</span> </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>               <span class="dv">2</span><span class="sc">*</span>xA.min<span class="sc">*</span>xB.min<span class="sc">*</span>sig.AB </span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>sig.p.min <span class="ot">=</span> <span class="fu">sqrt</span>(sig2.p.min) </span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(mu.p.min, sig.p.min)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.0066 0.0282</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Expected return and volatility of estimated global </span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="co"># minimum variance portfolio </span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>mu.p.min.hat <span class="ot">=</span> <span class="fu">as.numeric</span>(xA.min.hat<span class="sc">*</span>muhat.vals[<span class="dv">1</span>] <span class="sc">+</span> </span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>                             xB.min.hat<span class="sc">*</span>muhat.vals[<span class="dv">2</span>]) </span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>sig2.p.min.hat <span class="ot">=</span> xA.min.hat<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2hat.vals[<span class="dv">1</span>] <span class="sc">+</span> </span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>                 xB.min.hat<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2hat.vals[<span class="dv">2</span>] <span class="sc">+</span> </span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>                 <span class="dv">2</span><span class="sc">*</span>xA.min.hat<span class="sc">*</span>xB.min.hat<span class="sc">*</span>covhat </span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>sig.p.min.hat <span class="ot">=</span> <span class="fu">as.numeric</span>(<span class="fu">sqrt</span>(sig2.p.min.hat)) </span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(mu.p.min.hat, sig.p.min.hat)</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.00937 0.02706</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The estimated volatility of the global minimum variance portfolio is close to the true volatility but the estimated expected return is much larger than the true expected return. These portfolios are illustrated in <a href="#fig-StatisticalGlobalMin">Figure&nbsp;<span>14.6</span></a>. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-StatisticalGlobalMin" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="14-statisticalAnalysisPortfolios-new_files/figure-html/fig-StatisticalGlobalMin-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;14.6: True and estimated global minimum variance portfolios.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The statistical properties of <a href="#eq-StatisticalGlobalMinHat">Equation&nbsp;<span>14.13</span></a>, <a href="#eq-StatisticalGlobalMinMuHat">Equation&nbsp;<span>14.14</span></a> and <a href="#eq-StatisticalGlobalMinSig2Hat">Equation&nbsp;<span>14.15</span></a> are difficult to derive analytically. For example, suppose you would like to evaluate the bias in the global minimum variance weights. You would need to evaluate <span id="eq-StatisticalGlobalMinBias"><span class="math display">\[
+E\left[\hat{x}_{A}^{\min}\right]=E\left[\frac{\hat{\sigma}_{B}^{2}-\hat{\sigma}_{AB}}{\hat{\sigma}_{A}^{2}+\hat{\sigma}{}_{B}^{2}-2\hat{\sigma}_{AB}}\right].
+\tag{14.16}\]</span></span> Now, <span class="math display">\[
+E\left[\frac{\hat{\sigma}_{B}^{2}-\hat{\sigma}_{AB}}{\hat{\sigma}_{A}^{2}+\hat{\sigma}{}_{B}^{2}-2\hat{\sigma}_{AB}}\right]\neq\frac{E\left[\hat{\sigma}_{B}^{2}\right]-E\left[\hat{\sigma}_{AB}\right]}{E\left[\hat{\sigma}_{A}^{2}\right]+E\left[\hat{\sigma}{}_{B}^{2}\right]-2E\left[\hat{\sigma}_{AB}\right]}
+\]</span> because <span class="math inline">\(E[g(X)]\neq g(E[X])\)</span> for nonlinear functions <span class="math inline">\(g(\cdot)\)</span>. Hence, <a href="#eq-StatisticalGlobalMinBias">Equation&nbsp;<span>14.16</span></a> is extremely difficult to evaluate analytically. Similarly, suppose you would like to compute <span class="math inline">\(\mathrm{se}(\hat{x}_{A}^{\min}).\)</span> You would need to compute <span class="math display">\[
+\mathrm{var}\left(\hat{x}_{A}^{\min}\right)=\mathrm{var}\left(\frac{\hat{\sigma}_{B}^{2}-\hat{\sigma}_{AB}}{\hat{\sigma}_{A}^{2}+\hat{\sigma}{}_{B}^{2}-2\hat{\sigma}_{AB}}\right),
+\]</span> which is a difficult and tedious calculation and can only be approximated based on the CLT.</p>
+<p>The computations are even more difficult for evaluating bias and computing standard errors for <a href="#eq-StatisticalGlobalMinMuHat">Equation&nbsp;<span>14.14</span></a> and <a href="#eq-StatisticalGlobalMinSig2Hat">Equation&nbsp;<span>14.15</span></a>. For example, to evaluate the bias of <span class="math inline">\(\hat{\mu}_{p,\mathrm{min}}\)</span> you would need to calculate <span id="eq-StatisticalBiasGminMu"><span class="math display">\[
+E\left[\hat{\mu}_{p,\mathrm{min}}\right]=E\left[\hat{x}{}_{A}^{\mathrm{min}}\hat{\mu}_{A}+\hat{x}{}_{B}^{\mathrm{min}}\hat{\mu}_{B}\right]=E\left[\hat{x}{}_{A}^{\mathrm{min}}\hat{\mu}_{A}\right]+E\left[\hat{x}{}_{B}^{\mathrm{min}}\hat{\mu}_{B}\right].
+\tag{14.17}\]</span></span> Without knowing more about the joint distributions of the asset means and weights you cannot simplify <a href="#eq-StatisticalBiasGminMu">Equation&nbsp;<span>14.17</span></a>. To compute the standard error of <span class="math inline">\(\hat{\mu}_{p,\mathrm{min}}\)</span> you need to calculate <span class="math display">\[\begin{align*}
+\mathrm{var}\left(\hat{\mu}_{p,\mathrm{min}}\right)&amp;=\mathrm{var}\left(\hat{x}{}_{A}^{\mathrm{min}}\hat{\mu}_{A}+\hat{x}{}_{B}^{\mathrm{min}}\hat{\mu}_{B}\right)\\
+&amp;=\mathrm{var}(\hat{x}{}_{A}^{\mathrm{min}}\hat{\mu}_{A})+\mathrm{var}(\hat{x}{}_{B}^{\mathrm{min}}\hat{\mu}_{B})+2\mathrm{cov}\left(\hat{x}{}_{A}^{\mathrm{min}}\hat{\mu}_{A},\,\hat{x}{}_{B}^{\mathrm{min}}\hat{\mu}_{B}\right).
+\end{align*}\]</span></p>
+<p>Again, without knowing more about the joint distributions of the asset means and estimated weights you cannot simplify <a href="#eq-StatisticalBiasGminMu">Equation&nbsp;<span>14.17</span></a>.</p>
+<p>Fortunately, statistical properties of <a href="#eq-StatisticalGlobalMinHat">Equation&nbsp;<span>14.13</span></a>, <a href="#eq-StatisticalGlobalMinMuHat">Equation&nbsp;<span>14.14</span></a> and <a href="#eq-StatisticalGlobalMinSig2Hat">Equation&nbsp;<span>14.15</span></a> can be easily quantified using the bootstrap. For each bootstrap sample you calculate these statistics and from the bootstrap distributions you can then evaluate bias and compute standard errors and confidence intervals.</p>
+<div id="exm-true-and-estimated-global-minimum-variance-portfolio-with-bootstrap-estimates-for-example-data" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 14.8 (True and estimated global minimum variance portfolio with bootstrap estimates for example data) </strong></span>To compute <span class="math inline">\(B=1000\)</span> bootstrap estimates of <a href="#eq-StatisticalGlobalMinHat">Equation&nbsp;<span>14.13</span></a>, <a href="#eq-StatisticalGlobalMinMuHat">Equation&nbsp;<span>14.14</span></a> and <a href="#eq-StatisticalGlobalMinSig2Hat">Equation&nbsp;<span>14.15</span></a> use:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># initialize matrices </span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>n.boot <span class="ot">=</span> <span class="dv">1000</span> </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>weights.boot <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, n.boot, <span class="dv">2</span>) </span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>stats.boot <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, n.boot, <span class="dv">2</span>) </span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(weights.boot) <span class="ot">=</span> <span class="fu">names</span>(mu.vec)  </span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(stats.boot) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"mu"</span>, <span class="st">"sigma"</span>) </span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co"># bootstrap loop </span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) </span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n.boot) {   </span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>   boot.idx <span class="ot">=</span> <span class="fu">sample</span>(n.obs, <span class="at">replace=</span><span class="cn">TRUE</span>)   </span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>   ret.boot <span class="ot">=</span> returns.sim[boot.idx, ]    </span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="co"># GWN model estimates   </span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>   muhat.boot <span class="ot">=</span> <span class="fu">colMeans</span>(ret.boot)   </span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>   sig2hat.boot <span class="ot">=</span> <span class="fu">apply</span>(ret.boot, <span class="dv">2</span>, var)   </span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>   sigmahat.boot <span class="ot">=</span> <span class="fu">sqrt</span>(sig2hat.boot)   </span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>   covhat.boot <span class="ot">=</span> <span class="fu">cov</span>(ret.boot)[<span class="dv">1</span>,<span class="dv">2</span>]   </span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="co"># global minimum variance portfolio weights   </span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>   weights.boot[i, <span class="dv">1</span>] <span class="ot">=</span> (sig2hat.boot[<span class="dv">2</span>] <span class="sc">-</span> covhat.boot)<span class="sc">/</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>                        (sig2hat.boot[<span class="dv">1</span>] <span class="sc">+</span> sig2hat.boot[<span class="dv">2</span>] <span class="sc">-</span> </span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>                            <span class="dv">2</span><span class="sc">*</span>covhat.boot)   </span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>   weights.boot[i, <span class="dv">2</span>] <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> weights.boot[i, <span class="dv">1</span>]   </span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a><span class="co"># portfolio risk return estimates   </span></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>   stats.boot[i, <span class="st">"mu"</span>] <span class="ot">=</span> weights.boot[i, <span class="dv">1</span>]<span class="sc">*</span>muhat.boot[<span class="dv">1</span>] <span class="sc">+</span> </span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>                         weights.boot[i, <span class="dv">2</span>]<span class="sc">*</span>muhat.boot[<span class="dv">2</span>]   </span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>   sig2.boot <span class="ot">=</span> (weights.boot[i, <span class="dv">1</span>]<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2hat.boot[<span class="dv">1</span>] <span class="sc">+</span> </span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>                weights.boot[i, <span class="dv">2</span>]<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2hat.boot[<span class="dv">2</span>]                 </span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>                <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>weights.boot[i, <span class="dv">1</span>]<span class="sc">*</span>weights.boot[i, <span class="dv">2</span>]<span class="sc">*</span>covhat.boot)   </span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>   stats.boot[i, <span class="st">"sigma"</span>] <span class="ot">=</span> <span class="fu">sqrt</span>(sig2.boot) </span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The bootstrap bias estimates for the global minimum variance portfolio weights are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colMeans</span>(weights.boot) <span class="sc">-</span> <span class="fu">c</span>(xA.min.hat, xB.min.hat)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   asset.A   asset.B </span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  0.000886 -0.000886</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>These values are close to zero suggesting that the estimated weights are unbiased. Notice that the estimates are identical but opposite in sign. This arises because the bootstrap estimates are perfectly negatively correlated:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(weights.boot)[<span class="dv">1</span>,<span class="dv">2</span>]</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The bootstrap standard error estimates for the weights are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(weights.boot, <span class="dv">2</span>, sd)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; asset.A asset.B </span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  0.0454  0.0454</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The standard errors estimates are identical and close to 0.05 which is not too large. Figure <a href="#fig-StatisticalBootstrapWeights">Figure&nbsp;<span>14.7</span></a> shows histograms and normal QQ-plots for the bootstrap estimates of the weights. These distributions are centered at the sample estimates (white vertical lines) and look slightly asymmetric.</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-StatisticalBootstrapWeights" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="14-statisticalAnalysisPortfolios-new_files/figure-html/fig-StatisticalBootstrapWeights-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;14.7: Empirical distribution of bootstrap estimates of global minimum variance portfolio weights.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The bootstrap estimates of bias for the estimated expected return and volatility of the global minimum variance portfolio are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colMeans</span>(stats.boot) <span class="sc">-</span> <span class="fu">c</span>(mu.p.min.hat, sig.p.min.hat)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        mu     sigma </span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  0.000382 -0.000644</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>These small values indicate that the estimates are roughly unbiased. The bootstrap standard error estimates are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(stats.boot, <span class="dv">2</span>, sd)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      mu   sigma </span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.00345 0.00234</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Here, the bootstrap standard error estimate for <span class="math inline">\(\hat{\mu}_{p,\mathrm{min}}\)</span> is larger than the estimate for <span class="math inline">\(\hat{\sigma}_{p,\mathrm{min}}\)</span> indicating more uncertainty about the mean of the global minimum variance portfolio than the volatility of the portfolio. Interestingly, the bootstrap standard error estimates are close to the naive analytical standard error formulas based on the CLT that ignore estimation error in the weights:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>sig.p.min.hat<span class="sc">/</span><span class="fu">sqrt</span>(n.obs) </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.00349</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>sig.p.min.hat<span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">2</span><span class="sc">*</span>n.obs)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.00247</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>That is, <span class="math display">\[
+\mathrm{se_{boot}}(\hat{\mu}_{p,\mathrm{min}})\approx\frac{\hat{\sigma}_{p,\mathrm{min}}}{\sqrt{T}},\,\mathrm{se_{boot}}\left(\hat{\sigma}_{p,\mathrm{min}}\right)\approx\frac{\hat{\sigma}_{p,\mathrm{min}}}{\sqrt{2\cdot T}}.
+\]</span> The histograms and normal QQ-plots of the bootstrap estimates of <span class="math inline">\(\mu_{p,min}\)</span> and <span class="math inline">\(\sigma_{p,min}\)</span> are illustrated in <a href="#fig-StatisticalBootstrapGmin">Figure&nbsp;<span>14.8</span></a>, and look like normal distributions.</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-StatisticalBootstrapGmin" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="14-statisticalAnalysisPortfolios-new_files/figure-html/fig-StatisticalBootstrapGmin-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;14.8: Empirical distribution of bootstrap estimates of <span class="math inline">\(\mu_{p,min}\)</span> and <span class="math inline">\(\sigma_{p,min}\)</span>.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The sampling uncertainty in <span class="math inline">\(\hat{\mu}_{p,\mathrm{min}}\)</span> and <span class="math inline">\(\hat{\sigma}_{p,\mathrm{min}}\)</span> can be visualized by plotting the bootstrap estimates of <span class="math inline">\(\mu_{p,min}\)</span> and <span class="math inline">\(\sigma_{p,min}\)</span> on the risk return diagram, as shown in <a href="#fig-StatisticalBootstrapGminRiskReturn">Figure&nbsp;<span>14.9</span></a>. Clearly there is much more uncertainty about the location of <span class="math inline">\(\mu_{p,min}\)</span> than the location of <span class="math inline">\(\sigma_{p,min}\)</span> . <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<p>To sum up, for the global minimum variance portfolio you have roughly unbiased estimates of the weights, expected return and variance. You have a fairly precise estimate of volatility but an imprecise estimate of expected return.</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-StatisticalBootstrapGminRiskReturn" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="14-statisticalAnalysisPortfolios-new_files/figure-html/fig-StatisticalBootstrapGminRiskReturn-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;14.9: Estimation error in estimates of the global minimum variance portfolio.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="statistical-properties-of-the-sharpe-ratio" class="level3" data-number="14.1.5">
+<h3 data-number="14.1.5" class="anchored" data-anchor-id="statistical-properties-of-the-sharpe-ratio"><span class="header-section-number">14.1.5</span> Statistical properties of the Sharpe ratio</h3>
+<p>Let <span class="math inline">\(r_{f}\)</span> denote the rate of return on a risk free asset with maturity equal to the investment horizon of the return <span class="math inline">\(R_{i}\)</span> on risky asset <span class="math inline">\(i\)</span>. Recall from <a href="10-introductionPortfolioTheory-new.html"><span>Chapter&nbsp;10</span></a>, the Shapre ratio of asset <span class="math inline">\(i\)</span> is defined as <span class="math display">\[
+\mathrm{SR}_{i}=\frac{\mu_{i}-r_{f}}{\sigma_{i}},
+\]</span> and is a measure of risk-adjusted expected return. Graphically in the risk-return diagram, <span class="math inline">\(\mathrm{S}\mathrm{R}_{i}\)</span> is the slope of a straight line from the risk-free rate that passes through the point <span class="math inline">\((\sigma_{i},\mu_{i})\)</span> and represents the risk-return tradeoff of portfolios of the risk-free asset and the risky asset. The estimated Sharpe ratio is <span class="math display">\[
+\widehat{\mathrm{SR}}_{i}=\frac{\hat{\mu}_{i}-r_{f}}{\hat{\sigma}_{i}},
+\]</span> which inherits estimation error from <span class="math inline">\(\hat{\mu}_{i}\)</span> and <span class="math inline">\(\hat{\sigma}_{i}\)</span> in a nonlinear way. As a result, analytically computing the bias and standard error for <span class="math inline">\(\widehat{\mathrm{SR}}_{i}\)</span> is complicated and typically involves approximations based on the CLT. However, computing numerical estimates of the bias and the standard error for <span class="math inline">\(\widehat{\mathrm{SR}}_{i}\)</span> using the bootstrap is simple.</p>
+<div id="exm-true-and-estimated-sharpe-ratios-for-example-data" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 14.9 (True and estimated Sharpe ratios for example data) </strong></span>For the example data, assume a monthly risk-free rate of <span class="math inline">\(r_{f}=0.03/12=0.0025.\)</span> The true Sharpe ratios are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>r.f <span class="ot">=</span> <span class="fl">0.03</span><span class="sc">/</span><span class="dv">12</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>SR.true <span class="ot">=</span> (mu.vec <span class="sc">-</span> r.f)<span class="sc">/</span>sd.vec </span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>SR.true</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; asset.A asset.B </span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  0.1622  0.0628</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Here, asset A has a much higher Sharpe ratio than asset B. For the simulated data, the estimated Sharpe ratios are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>SR.hat <span class="ot">=</span> (muhat.vals <span class="sc">-</span> r.f)<span class="sc">/</span>sigmahat.vals </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>SR.hat</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; asset.A asset.B </span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  0.3849 -0.0107</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>For both assets the estimated Sharpe ratios are quite different from the true Sharpe ratios and are highly misleading. The estimated Sharpe ratio for asset A is more than two times larger than the true Sharpe ratio and indicates a much higher risk adjusted preformance than is actually available. For asset B, the estimated Sharpe ratio is slightly negative when, in fact, the true Sharpe ratio is slightly positive. The true and estimated Sharpe ratios are illustrated in Figure <a href="#fig-StatisticalSharpeRatios">Figure&nbsp;<span>14.10</span></a>. The slopes of the black lines are the true Sharpe ratios, and the slopes of the blues lines are the estimated Sharpe ratios. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-StatisticalSharpeRatios" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="14-statisticalAnalysisPortfolios-new_files/figure-html/fig-StatisticalSharpeRatios-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;14.10: True and estimated Sharpe ratios.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="exm-delta-method-standard-errors-for-estimated-sharpe-ratio" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 14.10 (Delta method standard errors for estimated Sharpe ratio) </strong></span>Let <span class="math inline">\(\boldsymbol{\theta} = (\mu, \sigma)'\)</span>. Then the Sharpe ratio can be considered as a function of <span class="math inline">\(\boldsymbol{\theta}\)</span>:</p>
+<p><span class="math display">\[
+\mathrm{SR}(\boldsymbol{\theta}) = \frac{\mu - r_f}{\sigma}
+\]</span></p>
+<p>Since <span class="math inline">\(\hat{\boldsymbol{\theta}}\)</span> is asymptotically normally distributed with covariance given by (), the delta method can be used to obtain an analytic standard error for <span class="math inline">\(\widehat{\mathrm{SR}} = \mathrm{SR}(\hat{\boldsymbol{\theta}})\)</span>. It is straightforward to show (see end-of-chapter exercises) that the gradient function is:</p>
+<p><span class="math display">\[
+\mathbf{g}(\boldsymbol{\theta}) = \frac{\partial \mathrm{SR}(\boldsymbol{\theta})}{\partial \boldsymbol{\theta}} = \left( \begin{array}{c}
+\frac{-1}{\sigma} \\
+-(\sigma)^{-2}(\mu - r_f)
+\end{array} \right).
+\]</span></p>
+<p>The delta method variance is then:</p>
+<p><span class="math display">\[
+\mathbf{g}(\boldsymbol{\theta})'\mathrm{var}(\hat{\boldsymbol{\theta}})\mathbf{g}(\boldsymbol{\theta}) = \frac{1}{T}\left( 1 + \frac{1}{2}\mathrm{SR}^2 \right ) = \mathrm{se}(\widehat{\mathrm{SR}})^2,
+\]</span></p>
+<p>The corresponding standard error is:</p>
+<p><span id="eq-se-Sharpe-ratio"><span class="math display">\[
+\mathrm{se}(\widehat{\mathrm{SR}}) = \sqrt{\frac{1}{T}\left( 1 + \frac{1}{2}\mathrm{SR}^2 \right ) }
+\tag{14.18}\]</span></span></p>
+<p>Notice that <span class="math inline">\(\mathrm{se}(\widehat{\mathrm{SR}})\)</span> increases with <span class="math inline">\(\mathrm{SR}^2\)</span> and decreases with <span class="math inline">\(T\)</span>. The practically useful estimated standard error replace the unknown value of <span class="math inline">\(\mathrm{SR}\)</span> with its estimated value <span class="math inline">\(\widehat{\mathrm{SR}}\)</span> and is given by</p>
+<p><span id="eq-estimated-se-Sharpe-ratio"><span class="math display">\[
+\mathrm{\widehat{se}}(\widehat{\mathrm{SR}}) = \sqrt{\frac{1}{T}\left( 1 + \frac{1}{2}\widehat{\mathrm{SR}}^2 \right ) }
+\tag{14.19}\]</span></span> <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div id="exm-applying-the-analytic-delta-method-to-the-sharpe-ratio" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 14.11 (Applying the analytic delta method to the Sharpe Ratio) </strong></span>The estimated monthly SRs for assets A and B (using <span class="math inline">\(r_f = 0.03/12\)</span>), their standard errors, and 95% confidence intervals are computed using:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>seSR.hat <span class="ot">=</span> <span class="fu">sqrt</span>((<span class="dv">1</span><span class="sc">/</span>n.obs)<span class="sc">*</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fl">0.5</span><span class="sc">*</span>(SR.hat<span class="sc">^</span><span class="dv">2</span>)))</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>lower.SR <span class="ot">=</span> SR.hat <span class="sc">-</span> <span class="dv">2</span><span class="sc">*</span>seSR.hat</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>upper.SR <span class="ot">=</span> SR.hat <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>seSR.hat</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>width.SR <span class="ot">=</span> upper.SR <span class="sc">-</span> lower.SR</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>ans <span class="ot">=</span> <span class="fu">rbind</span>(SR.hat, seSR.hat, lower.SR, upper.SR, width.SR)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(ans) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Asset A"</span>, <span class="st">"Asset B"</span>)</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(ans) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Estimate"</span>, <span class="st">"Std Error"</span>, <span class="st">"Lower"</span>, <span class="st">"Upper"</span>, <span class="st">"Width"</span>)</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>ans</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           Asset A Asset B</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Estimate    0.385 -0.0107</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Std Error   0.134  0.1291</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Lower       0.117 -0.2689</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Upper       0.653  0.2475</span></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Width       0.535  0.5164</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The estimated monthly SRs for assets A and B are close to zero, with a large estimated standard errors and a 95% confidence interval containing both negative and positive values. Clearly, the SR is not estimated very well. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div id="exm-applying-the-numerical-delta-method-to-the-sharpe-ratio" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 14.12 (Applying the numerical delta method to the Sharpe Ratio) </strong></span>I first create the named inputs <span class="math inline">\(\hat{\boldsymbol{\theta}}\)</span> and <span class="math inline">\(\widehat{\mathrm{var}}(\hat{\boldsymbol{\theta}})\)</span> from the GWN model for simple returns:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>thetahat <span class="ot">=</span> <span class="fu">c</span>(muhat.vals[<span class="dv">1</span>], sigmahat.vals[<span class="dv">1</span>])</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(thetahat) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"mu"</span>, <span class="st">"sigma"</span>)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>var.thetahat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(se.muhat[<span class="dv">1</span>]<span class="sc">^</span><span class="dv">2</span>,<span class="dv">0</span>,<span class="dv">0</span>,se.sigmahat[<span class="dv">1</span>]<span class="sc">^</span><span class="dv">2</span>), <span class="dv">2</span>, <span class="dv">2</span>, <span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(var.thetahat) <span class="ot">=</span> <span class="fu">colnames</span>(var.thetahat) <span class="ot">=</span> <span class="fu">names</span>(thetahat)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>thetahat</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     mu  sigma </span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.0308 0.0734</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>var.thetahat</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             mu    sigma</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; mu    8.99e-05 0.00e+00</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; sigma 0.00e+00 4.49e-05</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>I use the <strong>car</strong> function <code>deltaMethod()</code> to compute the numerical delta method for the estimated Sharpe ratio <span class="math inline">\(\mathrm{SR}(\hat{\boldsymbol{\theta}})\)</span> for asset A as follows:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>dmSR.A <span class="ot">=</span> <span class="fu">deltaMethod</span>(thetahat, <span class="st">"(mu-r.f)/sigma"</span>, var.thetahat)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>dmSR.A</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                  Estimate    SE 2.5 % 97.5 %</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (mu - r.f)/sigma    0.385 0.134 0.123   0.65</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The numerical delta method estimated standard error exactly matches the analytic standard error. The 95% confidence interval returned by the function <code>deltaMethod()</code> uses the formula <span class="math inline">\(\hat{\theta} \pm 1.96 \times \hat{\mathrm{se}}(\hat{\theta})\)</span> as so is slightly different than the analytic result given above. Using similar computations, The numerical delta method for asset B is</p>
+<div class="cell">
+<pre><code>#&gt;                  Estimate      SE   2.5 % 97.5 %
+#&gt; (mu - r.f)/sigma  -0.0107  0.1291 -0.2638   0.24</code></pre>
+</div>
+<p><span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div id="exm-delta-method-for-joint-distribution-of-two-shapre-ratios" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 14.13 (Delta method for joint distribution of two Shapre ratios) </strong></span>Let <span class="math inline">\(\boldsymbol{\theta}\)</span> = <span class="math inline">\((\mu_1,\mu_2,\sigma_1,\sigma_2)'\)</span> and define the <span class="math inline">\(2 \times 1\)</span> vector of Sharpe ratios:</p>
+<p><span class="math display">\[
+\boldsymbol{\eta} = f(\boldsymbol{\theta}) = \begin{pmatrix} \frac{\mu_A - r_f}{\sigma_A} \\
+\frac{\mu_B - r_f}{\sigma_B} \end{pmatrix} = \begin{pmatrix} \mathrm{SR}_A(\boldsymbol{\theta}) \\
+\mathrm{SR}_B(\boldsymbol{\theta}) \end{pmatrix},
+\]</span></p>
+<p>so that <span class="math inline">\(\eta_A = \mathrm{SR}_A(\boldsymbol{\theta})\)</span> and <span class="math inline">\(\eta_B = \mathrm{SR}_B(\boldsymbol{\theta})\)</span> where <span class="math inline">\(r_f\)</span> denotes the constant risk-free rate. Consider the <span class="math inline">\(\boldsymbol{\theta} =(\mu_A,\mu_B, \sigma_A, \sigma_B)'\)</span> and <span class="math inline">\(\boldsymbol{\eta} = \mathbf{\mathrm{SR}}(\boldsymbol{\theta})=(\mathrm{SR}_A(\boldsymbol{\theta}), \mathrm{SR}_B(\boldsymbol{\theta}))'\)</span> where <span class="math display">\[
+\mathrm{SR}_A(\boldsymbol{\theta}) = \frac{\mu_A - r_f}{\sigma_A}, ~ \mathrm{SR}_B(\boldsymbol{\theta}) = \frac{\mu_B - r_f}{\sigma_B}.
+\]</span></p>
+<p>Here, I want to use the delta method to get the joint distribution of <span class="math inline">\(\boldsymbol{\eta}\)</span>. Now, using the chain-rule:</p>
+<p><span class="math display">\[\begin{align*}
+\frac{\partial \mathrm{SR}_A(\boldsymbol{\theta})}{\partial \mu_A} &amp; = \sigma_A^{-1}, ~ \frac{\partial \mathrm{SR}_A(\boldsymbol{\theta})}{\partial \mu_B} = 0, ~ &amp; \frac{\partial \mathrm{SR}_A(\boldsymbol{\theta})}{\partial \sigma_1} = -\sigma_1^{-2}(\mu_1 - r_f), ~ &amp; \frac{\partial \mathrm{SR}_A(\boldsymbol{\theta})}{\partial \sigma_2} = 0, \\
+\frac{\partial \mathrm{SR}_B(\boldsymbol{\theta})}{\partial \mu_1} &amp; = 0, ~ \frac{\partial \mathrm{SR}_B(\boldsymbol{\theta})}{\partial \mu_2} = \sigma_2^{-1}, ~ &amp; \frac{\partial \mathrm{SR}_B(\boldsymbol{\theta})}{\partial \sigma_1} = 0, ~ &amp; \frac{\partial \mathrm{SR}_B(\boldsymbol{\theta})}{\partial \sigma_2} = -\sigma_1^{-2}(\mu_1 - r_f).
+\end{align*}\]</span></p>
+<p>Then, using <span class="math inline">\(\mathrm{SR}_{i} = (\mu_i - r_f)/\sigma_i ~ (i=A,B)\)</span>, I have:</p>
+<p><span class="math display">\[
+\mathbf{G}(\boldsymbol{\theta})' = \begin{pmatrix} \sigma_A^{-1} &amp; 0 &amp; -\sigma_A^{-1} \mathrm{SR}_A &amp; 0 \\ 0 &amp; \sigma_B^{-1} &amp; 0 &amp; -\sigma_B^{-1}\mathrm{SR}_B &amp; 0
+\end{pmatrix}
+\]</span></p>
+<p>Using Proposition 7.10 and the results from the previous example I have:</p>
+<p><span class="math display">\[
+\mathrm{var}(\hat{\boldsymbol{\theta}}) = \frac{1}{T} \begin{pmatrix} \sigma_A^2 &amp; \sigma_{AB} &amp; 0 &amp; 0 \\
+\sigma_{AB} &amp; \sigma_B^2 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; \frac{1}{2}\sigma_A^2 &amp; \frac{1}{2} \sigma_{AB}^2 \sigma_A^{-1} \sigma_B^{-1} \\
+0 &amp; 0 &amp; \frac{1}{2} \sigma_{AB}^2 \sigma_A^{-1} \sigma_B^{-1} &amp; \frac{1}{2}\sigma_B^2 \end{pmatrix}.
+\]</span></p>
+<p>Then, after some straightforward matrix algebra calculations (see end-of-chapter exercises) I get:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\widehat{\mathrm{var}}(\hat{\eta}) &amp; = \mathbf{G}(\hat{\boldsymbol{\theta}})'\widehat{\mathrm{var}}(\hat{\boldsymbol{\theta}})\mathbf{G}(\hat{\boldsymbol{\theta}}) \\
+&amp;= \begin{pmatrix} \widehat{\mathrm{var}}(\widehat{\mathrm{SR}}_A) &amp; \widehat{\mathrm{cov}}(\widehat{\mathrm{SR}}_A, \widehat{\mathrm{SR}}_B) \\ \widehat{\mathrm{cov}}(\widehat{\mathrm{SR}}_A, \widehat{\mathrm{SR}}_B) &amp; \widehat{\mathrm{var}}(\widehat{\mathrm{SR}}_B) \end{pmatrix} \\
+&amp; = \begin{pmatrix} \frac{1}{T}(1+\frac{1}{2}\widehat{\mathrm{SR}}_A^2) &amp; \frac{\hat{\rho}_{AB}}{T}(1 + \frac{1}{2}\hat{\rho}_{AB}\widehat{\mathrm{SR}}_A \widehat{\mathrm{SR}}_B) \\ \frac{\hat{\rho}_{AB}}{T}(1 + \frac{1}{2}\hat{\rho}_{AB} \widehat{\mathrm{SR}}_A\widehat{\mathrm{SR}}_B) &amp; \frac{1}{T}(1+\frac{1}{2}\widehat{\mathrm{SR}}_B^2) \end{pmatrix}.
+\end{aligned}
+\]</span></p>
+<p>The diagonal elements match the delta method variances for the estimated Sharpe ratio derived earlier. The off-diagonal covariance term shows that the two estimated Sharpe ratios are correlated. You explore this correlation in more depth in the end-of-chapter exercises. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div id="exm-jackknife-standard-error-for-estimated-sharpe-ratio" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 14.14 (Jackknife standard error for estimated Sharpe ratio) </strong></span>I use the <strong>bootstrap</strong> function <code>jackknife()</code> to compute the jacknife estimated standard for the Sharpe ratio for assets A and B:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>theta.SR <span class="ot">=</span> <span class="cf">function</span>(x, xdata, r.f) {</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  mu.hat <span class="ot">=</span> <span class="fu">mean</span>(xdata[x, ])</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  sigma.hat <span class="ot">=</span> <span class="fu">sd</span>(xdata[x, ])</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  fun.hat <span class="ot">=</span> (mu.hat<span class="sc">-</span>r.f)<span class="sc">/</span>sigma.hat</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  fun.hat</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>SR.jack <span class="ot">=</span> <span class="fu">jackknife</span>(<span class="dv">1</span><span class="sc">:</span>n.obs, <span class="at">theta=</span>theta.SR, </span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>                    returns.sim[,<span class="st">"asset.A"</span>,<span class="at">drop=</span><span class="cn">FALSE</span>], r.f)</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>ans <span class="ot">=</span> <span class="fu">cbind</span>(SR.jack<span class="sc">$</span>jack.se, dmSR.A<span class="sc">$</span>SE)</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(ans) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Jackknife"</span>, <span class="st">"Delta Method"</span>)</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(ans) <span class="ot">=</span> <span class="st">"SR.A"</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>ans</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      Jackknife Delta Method</span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SR.A      0.15        0.134</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<pre><code>#&gt;      Jackknife Delta Method
+#&gt; SR.B     0.132        0.129</code></pre>
+</div>
+<p><span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div id="exm-bootstraped-sharpe-ratios-for-example-data" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 14.15 (Bootstraped Sharpe ratios for example data) </strong></span>To illustrate the magnitude of the estimation errors in the estimated Sharpe ratios, <a href="#fig-StatisticalBootstrapSRplot">Figure&nbsp;<span>14.11</span></a> shows 500 bootstrap estimates of the risk-return pairs <span class="math inline">\((\sigma_{A},\mu_{A})\)</span> and <span class="math inline">\((\sigma_{B},\mu_{B})\)</span> along with the maximum and minimum bootstrap Sharpe ratio estimates for each asset. The bootstrap Sharpe ratio estimates are computed using:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>n.boot <span class="ot">=</span> <span class="dv">500</span> </span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>mu.boot <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, n.boot, <span class="dv">2</span>) </span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>sd.boot <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, n.boot, <span class="dv">2</span>) </span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>SR.boot <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, n.boot, <span class="dv">2</span>) </span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(mu.boot) <span class="ot">=</span> <span class="fu">colnames</span>(sd.boot) <span class="ot">=</span> <span class="fu">colnames</span>(SR.boot) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Asset.A"</span>, <span class="st">"Asset.B"</span>)</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) </span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n.boot) {   </span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>   boot.idx <span class="ot">=</span> <span class="fu">sample</span>(n.obs, <span class="at">replace=</span><span class="cn">TRUE</span>)   </span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>   ret.boot <span class="ot">=</span> returns.sim[boot.idx, ]    </span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>   mu.boot[i, ] <span class="ot">=</span> <span class="fu">colMeans</span>(ret.boot)   </span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>   sd.boot[i, ] <span class="ot">=</span> <span class="fu">apply</span>(ret.boot, <span class="dv">2</span>, sd)    </span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>   SR.boot[i, ] <span class="ot">=</span> (mu.boot[i, ] <span class="sc">-</span> r.f)<span class="sc">/</span>sd.boot[i, ] </span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>} </span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a><span class="co"># find index of max and min bootstrap Sharpe ratios</span></span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>maxSRidx.A <span class="ot">=</span> <span class="fu">which</span>(SR.boot[, <span class="dv">1</span>] <span class="sc">==</span> <span class="fu">max</span>(SR.boot[, <span class="dv">1</span>])) </span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>minSRidx.A <span class="ot">=</span> <span class="fu">which</span>(SR.boot[, <span class="dv">1</span>] <span class="sc">==</span> <span class="fu">min</span>(SR.boot[, <span class="dv">1</span>])) </span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>maxSRidx.B <span class="ot">=</span> <span class="fu">which</span>(SR.boot[, <span class="dv">2</span>] <span class="sc">==</span> <span class="fu">max</span>(SR.boot[, <span class="dv">2</span>])) </span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>minSRidx.B <span class="ot">=</span> <span class="fu">which</span>(SR.boot[, <span class="dv">2</span>] <span class="sc">==</span> <span class="fu">min</span>(SR.boot[, <span class="dv">2</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-StatisticalBootstrapSRplot" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="14-statisticalAnalysisPortfolios-new_files/figure-html/fig-StatisticalBootstrapSRplot-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;14.11: Bootstrap risk-return estimates with maximum and minimum Sharpe ratios.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The maximum and minimum bootstrap Sharpe ratio estimates for asset B are the two grey straight lines from the risk-free rate that have the highest and lowest slopes, respectively. The maximum and minimum bootstrap Sharpe ratio estimates for asset A are the two light blue lines with the highest and lowest slopes, respectively. These maximum and minimum estimates are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(SR.boot, <span class="dv">2</span>, max) </span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset.A Asset.B </span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   0.952   0.429</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(SR.boot, <span class="dv">2</span>, min)</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Asset.A  Asset.B </span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  0.00467 -0.42946</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>For each asset the difference in the maximum and minimum slopes is substantial and indicates a large about of estimation error in the estimated Sharpe ratios.</p>
+<p>The statistical properties of the estimated Sharpe ratios can be estimated from the bootstrap samples. The bootstrap estimates of bias are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># bias</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>biasSR.boot <span class="ot">=</span> <span class="fu">colMeans</span>(SR.boot) <span class="sc">-</span> <span class="fu">c</span>(SR.true) </span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>biasSR.boot </span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset.A Asset.B </span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  0.2316 -0.0642</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="co"># bias relative to true values</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>biasSR.boot<span class="sc">/</span>SR.true</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset.A Asset.B </span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    1.43   -1.02</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Here you see there is a substantial upward bias in <span class="math inline">\(\widehat{\mathrm{SR}}_{A}\)</span> (bias relative to true Sharpe ratio is 141%) and a substantial downward bias in <span class="math inline">\(\widehat{\mathrm{SR}}_{B}\)</span> (bias relative to true Sharpe ratio is -105%). A crude bias adjusted Sharpe ratio estimate, which substracts the estimated bias from the sample estimate, gives results much closer to the true Sharpe ratios:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>SR.hat.biasAdjust <span class="ot">=</span> SR.hat <span class="sc">-</span> biasSR.boot </span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>SR.hat.biasAdjust</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; asset.A asset.B </span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  0.1533  0.0534</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>SR.true</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; asset.A asset.B </span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  0.1622  0.0628</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The bootstrap estimated standard errors for both assets are big and indicate that the Sharpe ratios are not estimated well:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(SR.boot, <span class="dv">2</span>, sd)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset.A Asset.B </span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   0.154   0.132</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><a href="#fig-StatisticalBootstrapSR">Figure&nbsp;<span>14.12</span></a> shows the histograms and normal QQ-plots of the bootstrap distributions for the estimated Sharpe ratios. The histograms for both assets show the wide dispersion of the bootstrap Sharpe ratio estimates that was illustrated in <a href="#fig-StatisticalBootstrapSRplot">Figure&nbsp;<span>14.11</span></a>. The histogram and QQ-plot for asset A shows a positive skewness whereas the histogram and QQ-plot for asset B show a more symmetric distribution. The quantile-based 95% confidence intervals for the true Sharpe ratios are:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 95% CI for SR.A</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(SR.boot[, <span class="dv">1</span>], <span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>)) </span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   2.5%  97.5% </span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.0964 0.7093</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 95% CI for SR.B</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(SR.boot[, <span class="dv">2</span>], <span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   2.5%  97.5% </span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; -0.261  0.263</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>These intervals are quite large and indicate much uncertainty about the true Sharpe ratio values. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-StatisticalBootstrapSR" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="14-statisticalAnalysisPortfolios-new_files/figure-html/fig-StatisticalBootstrapSR-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;14.12: Bootstrap distributions of estimated Sharpe ratios.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="hypothesis-testing-for-sharpe-ratio" class="level2" data-number="14.2">
+<h2 data-number="14.2" class="anchored" data-anchor-id="hypothesis-testing-for-sharpe-ratio"><span class="header-section-number">14.2</span> Hypothesis Testing for Sharpe Ratio</h2>
+<p>To be completed</p>
+</section>
+<section id="rolling-analysis-of-portfolios" class="level2" data-number="14.3">
+<h2 data-number="14.3" class="anchored" data-anchor-id="rolling-analysis-of-portfolios"><span class="header-section-number">14.3</span> Rolling Analysis of Portfolios</h2>
+<p>To be completed…</p>
+</section>
+<section id="further-reading-statistical-analysis-of-portfolios" class="level2" data-number="14.4">
+<h2 data-number="14.4" class="anchored" data-anchor-id="further-reading-statistical-analysis-of-portfolios"><span class="header-section-number">14.4</span> Further Reading: Statistical Analysis of Portfolios</h2>
+<ul>
+<li>Mention other quadratic programming packages: ROI etc. See Doug’s book</li>
+<li>Mention Pfaff’s R book</li>
+<li>Mention Grilli’s book etc.</li>
+<li>Broadie, M. (1993). “Computing efficient frontiers using estimated parameters”, Annals of Operations Research 45, 21-58. Describes the logic behind actual frontiers</li>
+<li>Jorion, P. (1992). “Portfolio Optimization in Practice. Financial Analysts Journal”, 48(1), 68–74.</li>
+<li>Michaud (2008), <em>Efficient Asset Management: A Practical Guide to Stock Portfolio Optimization and Asset Allocation</em>, Second Edition. To be completed…</li>
+</ul>
+</section>
+<section id="exercises" class="level2" data-number="14.5">
+<h2 data-number="14.5" class="anchored" data-anchor-id="exercises"><span class="header-section-number">14.5</span> Exercises</h2>
+<div id="exr-01" class="exercise theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 14.1 </strong></span>Show that <span class="math inline">\(\hat{\sigma}_{p}^{2}\)</span> in <a href="#eq-StatisticalGWNestimatesPortfolioVar">Equation&nbsp;<span>14.7</span></a> with <span class="math inline">\(\hat{\sigma}_{p}^{2}\)</span> in <a href="#eq-StatisticalGWNestimatesPortfolio">Equation&nbsp;<span>14.4</span></a> are the same when the sample covariance matrix is used in <a href="#eq-StatisticalGWNestimatesPortfolioVar">Equation&nbsp;<span>14.7</span></a>.</p>
+</div>
+<p>{Ruppert} Ruppert, D.A.. , Springer-Verlag.</p>
+<p>{MartinSchererYollin}Martin, R.D., Scherer, B., and Yollin, G. (2016).</p>
+
+
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p><span class="math inline">\(\hat{\sigma}_{i}\)</span> is asymptotically unbiased and the bias for finite <span class="math inline">\(T\)</span> is typically very small so that it is essentially unbiased for moderately sized <span class="math inline">\(T\)</span>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Notice, however, that the pair <span class="math inline">\((\sigma_{p},\mu_{p})\)</span> is inside the confidence ellipse for <span class="math inline">\((\sigma_{B},\mu_{B})\)</span> but that <span class="math inline">\((\sigma_{B},\mu_{B})\)</span> is not in the confidence ellipse for <span class="math inline">\((\sigma_{p},\mu_{p})\)</span>. <a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./13-riskBudgeting-new.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Portfolio Risk Budgeting</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./15-singleIndexModel-new.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Single Index Model</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

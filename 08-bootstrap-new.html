@@ -240,6 +240,24 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./14-statisticalAnalysisPortfolios-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Statistical Analysis of Portfolios</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15-singleIndexModel-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Single Index Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16-singleIndexModelEstimation-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Estimation of the Single Index Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">References</span></a>
   </div>
@@ -473,22 +491,22 @@ f(\hat{\theta}) \sim N(f(\theta),\widehat{\mathrm{se}}(f(\hat{\theta}))^{2}),
 </div>
 <div id="exm-delta-method-standard-error-for-hat-sigma" class="example theorem example">
 <p><span class="theorem-title"><strong>Example 8.4 (Delta method standard error for <span class="math inline">\(\hat{\sigma}\)</span>) </strong></span>The results from Chapter <a href="07-GWNModelEstimation-new.html"><span>Chapter&nbsp;7</span></a> showed, for large enough <span class="math inline">\(T\)</span>,</p>
-<p><span class="math display">\[\begin{equation*}
+<p><span class="math display">\[
 \hat{\sigma}^2 \sim N(\sigma^2, \mathrm{se}(\hat{\sigma}^2)^2), ~ \hat{\sigma} \sim N(\sigma,\mathrm{se}(\hat{\sigma})^2),
-\end{equation*}\]</span></p>
+\]</span></p>
 <p>where <span class="math inline">\(\mathrm{se}(\sigma^2)^2 = 2\sigma^4/T\)</span> and <span class="math inline">\(\mathrm{se}(\sigma)^2 = \sigma^2/2T\)</span>. The formula for <span class="math inline">\(\mathrm{se}(\hat{\sigma})^2\)</span> is the result of the delta method for the function <span class="math inline">\(f(\sigma^2)= \sqrt{\sigma^2}=\sigma\)</span> applied to the asymptotic distribution of <span class="math inline">\(\hat{\sigma}^2\)</span>. To see this, first note that by the chain rule</p>
-<p><span class="math display">\[\begin{equation*}
+<p><span class="math display">\[
 f'(\sigma^2) = \frac{1}{2} (\sigma^2)^{-1/2},
-\end{equation*}\]</span></p>
+\]</span></p>
 <p>so that <span class="math inline">\(f'(\sigma^2)^2 = \frac{1}{4}(\sigma^2)^{-1}\)</span>. Then,</p>
 <p><span class="math display">\[\begin{align*}
 \mathrm{se}(f(\hat{\theta}))^{2} = f'(\sigma^2)^2 \times \mathrm{se}(\hat{\sigma}^2)^2 &amp; = \frac{1}{4}(\sigma^2)^{-1} \times 2\sigma^4/T \\
 &amp; = \frac{1}{2}\sigma^2/T = \sigma^2/2T \\
 &amp; = \mathrm{se}(\hat{\sigma})^2.
 \end{align*}\]</span></p>
-<p>The estimated squared standard error replaces <span class="math inline">\(\sigma^2\)</span> with its estimate <span class="math inline">\(\hat{\sigma}^2\)</span> and is given by <span class="math display">\[\begin{equation*}
+<p>The estimated squared standard error replaces <span class="math inline">\(\sigma^2\)</span> with its estimate <span class="math inline">\(\hat{\sigma}^2\)</span> and is given by <span class="math display">\[
 \widehat{\mathrm{se}}(\hat{\sigma}^2)^2 =  \hat{\sigma}^2/2T.
-\end{equation*}\]</span></p>
+\]</span></p>
 <p><span class="math inline">\(\blacksquare\)</span></p>
 </div>
 <p>Now suppose <span class="math inline">\(\boldsymbol{\theta}\)</span> is a <span class="math inline">\(k \times 1\)</span> vector of GWN model parameters, and <span class="math inline">\(f:\mathbb{R}^k \rightarrow \mathbb{R}\)</span> is a continuous and differentiable function of <span class="math inline">\(\boldsymbol{\theta}\)</span>. Define the <span class="math inline">\(k \times 1\)</span> <em>gradient function</em> <span class="math inline">\(\mathbf{g}(\boldsymbol{\theta})\)</span> as:</p>
@@ -508,9 +526,9 @@ f'(\sigma^2) = \frac{1}{2} (\sigma^2)^{-1/2},
 f(\hat{\boldsymbol{\theta}}) \sim N(f(\boldsymbol{\theta}), \widehat{\mathrm{se}}(f(\hat{\boldsymbol{\theta}}))^{2}),
 \]</span></p>
 <p>where</p>
-<p><span class="math display">\[\begin{equation*}
+<p><span class="math display">\[
 \widehat{\mathrm{se}}(f(\hat{\boldsymbol{\theta}}))^{2} = \mathbf{g}(\hat{\boldsymbol{\theta}})'\widehat{\mathrm{var}}(\hat{\boldsymbol{\theta}})\mathbf{g}(\hat{\boldsymbol{\theta}}).
-\end{equation*}\]</span></p>
+\]</span></p>
 <div id="exm-delta-method-standard-error-for-hat-q-alpha-z" class="example theorem example">
 <p><span class="theorem-title"><strong>Example 8.5 (Delta method standard error for <span class="math inline">\(\hat{q}_{\alpha}^Z\)</span>) </strong></span>Let <span class="math inline">\(\boldsymbol{\theta} = (\mu, \sigma)'\)</span> and consider <span class="math inline">\(f_1(\boldsymbol{\theta}) = q_{\alpha}^R = \mu + \sigma q_{\alpha}^Z\)</span> (normal simple return quantile). The gradient function <span class="math inline">\(\mathbf{g}_1(\boldsymbol{\theta})\)</span> for <span class="math inline">\(f_1(\boldsymbol{\theta})\)</span> is:</p>
 <p><span class="math display">\[\begin{align*}
@@ -522,7 +540,7 @@ f(\hat{\boldsymbol{\theta}}) \sim N(f(\boldsymbol{\theta}), \widehat{\mathrm{se}
 q_{\alpha}^Z
 \end{array} \right).
 \end{align*}\]</span></p>
-<p>Regarding <span class="math inline">\(\mathrm{var}(\hat{\boldsymbol{\theta}})\)</span>, recall from Chapter <a href="07-GWNModelEstimation-new.html"><span>Chapter&nbsp;7</span></a>, in the GWN model: <span class="math display">\[\begin{equation*}
+<p>Regarding <span class="math inline">\(\mathrm{var}(\hat{\boldsymbol{\theta}})\)</span>, recall from Chapter <a href="07-GWNModelEstimation-new.html"><span>Chapter&nbsp;7</span></a>, in the GWN model: <span class="math display">\[
 \left(\begin{array}{c}
 \hat{\mu}\\
 \hat{\sigma}^2
@@ -533,9 +551,9 @@ q_{\alpha}^Z
 \mathrm{se}(\hat{\mu})^{2} &amp; 0\\
 0 &amp; \mathrm{se}(\hat{\sigma}^2)^{2}
 \end{array}\right)\right)
-\end{equation*}\]</span></p>
+\]</span></p>
 <p>for large enough <span class="math inline">\(T\)</span>. I show below, using the delta method, that</p>
-<p><span class="math display">\[\begin{equation*}
+<p><span class="math display">\[
 \left(\begin{array}{c}
 \hat{\mu}\\
 \hat{\sigma}
@@ -546,7 +564,7 @@ q_{\alpha}^Z
 \mathrm{se}(\hat{\mu})^{2} &amp; 0\\
 0 &amp; \mathrm{se}(\hat{\sigma})^{2}
 \end{array}\right)\right)
-\end{equation*}\]</span></p>
+\]</span></p>
 <p>Hence,</p>
 <p><span class="math display">\[
 \mathrm{var}(\hat{\boldsymbol{\theta}}) = \left(\begin{array}{cc}
@@ -628,10 +646,10 @@ q_{\alpha}^Z
 \mathrm{se} \left( \widehat{\mathrm{VaR}}_{\alpha}^{LN} \right ) &amp;= W_0 \exp(q_{\alpha}^R) \mathrm{se}(\hat{q}_{\alpha}^R).
 \end{align*}\]</span></p>
 <p>where</p>
-<p><span class="math display">\[\begin{equation*}
+<p><span class="math display">\[
 \mathrm{se}(\hat{q}_{\alpha}^Z) = \sqrt{\frac{\sigma^{2}}{T}\left[1+\frac{1}{2}\left(q_{\alpha}^{Z}\right)^{2}\right]}.
-\end{equation*}\]</span></p>
-<p>Remarks:</p>
+\]</span></p>
+<p><strong>Remarks</strong>:</p>
 <ol type="1">
 <li><p><span class="math inline">\(\mathrm{se}(\widehat{\mathrm{VaR}}_{\alpha}^{N})\)</span> and <span class="math inline">\(\mathrm{se}(\widehat{\mathrm{VaR}}_{\alpha}^{LN})\)</span> increase with <span class="math inline">\(W_{0}\)</span>, <span class="math inline">\(\sigma\)</span>, and <span class="math inline">\(q_{\alpha}^{Z}\)</span>, and decrease with <span class="math inline">\(T\)</span>.</p></li>
 <li><p>For fixed values of <span class="math inline">\(W_{0}\)</span>, <span class="math inline">\(\sigma\)</span>, and <span class="math inline">\(T\)</span>, <span class="math inline">\(\mathrm{se}(\widehat{\mathrm{VaR}}_{\alpha}^N)\)</span> and <span class="math inline">\(\mathrm{se}(\widehat{\mathrm{VaR}}_{\alpha}^{LN})\)</span> become very large as <span class="math inline">\(\alpha\)</span> approaches zero. That is, for very small loss probabilities you will have very imprecise estimates of <span class="math inline">\(\mathrm{VaR}_{\alpha}^N\)</span> and <span class="math inline">\(\mathrm{VaR}_{\alpha}^{LN}\)</span>.</p></li>
@@ -1296,7 +1314,7 @@ E[\hat{\theta}]-\theta.
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.00796</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>and is equal (to three decimals) to the analytic standard error estimate computed earlier. This confirms that the nonparametric bootstrap accurately computes <span class="math inline">\(\widehat{\mathrm{se}}(\hat{\mu}).\)</span> Figure <a href="#fig-BootBruteForce">Figure&nbsp;<span>8.2</span></a> shows the histogram and normal QQ-plot of the bootstrap estimates created with:</p>
+<p>and is equal (to three decimals) to the analytic standard error estimate computed earlier. This confirms that the nonparametric bootstrap accurately computes <span class="math inline">\(\widehat{\mathrm{se}}(\hat{\mu}).\)</span> <a href="#fig-BootBruteForce">Figure&nbsp;<span>8.2</span></a> shows the histogram and normal QQ-plot of the bootstrap estimates created with:</p>
 <div class="cell" data-layout-align="center" data-fig.asp="0.75">
 <details open="">
 <summary>Code</summary>
@@ -1419,7 +1437,7 @@ E[\hat{\theta}]-\theta.
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.009153 0.000482 0.007584</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>A histogram and nornal QQ-plot of the bootstrap values, shown in Figure <a href="#fig-BootPlotMethod">Figure&nbsp;<span>8.3</span></a>, can be created using the <code>plot</code> method</p>
+<p>A histogram and nornal QQ-plot of the bootstrap values, shown in <a href="#fig-BootPlotMethod">Figure&nbsp;<span>8.3</span></a>, can be created using the <code>plot</code> method</p>
 <div class="cell" data-layout-align="center" data-fig.asp="0.75">
 <details open="">
 <summary>Code</summary>
@@ -1493,7 +1511,7 @@ E[\hat{\theta}]-\theta.
 </div>
 </div>
 </div>
-<p>The bootstrap distribution, shown in Figure <a href="#fig-BootPlotMethodSD">Figure&nbsp;<span>8.4</span></a>, looks a bit non-normal. The 95% confidences intervals are computed using</p>
+<p>The bootstrap distribution, shown in <a href="#fig-BootPlotMethodSD">Figure&nbsp;<span>8.4</span></a>, looks a bit non-normal. The 95% confidences intervals are computed using</p>
 <div class="cell">
 <details open="">
 <summary>Code</summary>
@@ -1772,7 +1790,7 @@ f_3(\boldsymbol{\theta}) &amp; = \$100,000 \times \left(\exp(f_1(\boldsymbol{\th
 <span id="cb56-47"><a href="#cb56-47" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>The histograms of <span class="math inline">\(f_j(\hat{\boldsymbol{\theta}})\)</span> values are displayed in Figure <a href="#fig-CerModelEstimationMCVaR">Figure&nbsp;<span>8.8</span></a>. The dotted white lines indicate the true values, <span class="math inline">\(f_j(\boldsymbol{\theta})\)</span>.</p>
+<p>The histograms of <span class="math inline">\(f_j(\hat{\boldsymbol{\theta}})\)</span> values are displayed in <a href="#fig-CerModelEstimationMCVaR">Figure&nbsp;<span>8.8</span></a>. The dotted white lines indicate the true values, <span class="math inline">\(f_j(\boldsymbol{\theta})\)</span>.</p>
 <div class="cell" data-layout-align="center" data-fig.asp="0.75" data-hash="08-bootstrap-new_cache/html/fig-CerModelEstimationMCVaR_9617a1580a693572311b368d3296ed85">
 <div class="cell-output-display">
 <div id="fig-CerModelEstimationMCVaR" class="quarto-figure quarto-figure-center anchored">

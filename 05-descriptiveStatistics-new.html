@@ -240,6 +240,24 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./14-statisticalAnalysisPortfolios-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Statistical Analysis of Portfolios</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15-singleIndexModel-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Single Index Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16-singleIndexModelEstimation-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Estimation of the Single Index Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">References</span></a>
   </div>
@@ -309,7 +327,7 @@ div.csl-indent {
 <p>Copyright © Eric Zivot 2026</p>
 <p>In this chapter I use graphical and numerical descriptive statistics to study the distribution and dependence properties of daily and monthly asset returns on two representative assets representing a single stock and a large diversified portfolio of stocks. The purpose of this chapter is to introduce the techniques of exploratory data analysis for financial time series and to document a set of stylized facts for monthly and daily asset returns that will be used in later chapters to motivate probability models for asset returns.</p>
 <p>This chapter is organized as follows. In <a href="#sec-Univariate-Descriptive-Statistic"><span>Section&nbsp;5.1</span></a> I introduce the example data and reviews graphical and numerical descriptive statistics for univariate data. Graphical descriptive statistics include time plots, histograms, QQ-plots and boxplots. Numerical statistics are the sample statistics associated with the analagous characteristics of univariate distributions reviewed in <a href="02-probReview-new.html"><span>Chapter&nbsp;2</span></a>. In <a href="#sec-Time-Series-Descriptive"><span>Section&nbsp;5.2</span></a> I cover univariate time series descriptive statistics including sample autocovariances, autocorrelations and the sample autocorrelation function. In <a href="#sec-Bivariate-Descriptive-Statistics"><span>Section&nbsp;5.3</span></a> I present bivariate descriptive statistics including scatterplots, sample covariance and correlation, and sample cross-lag covariances and correlations. In <a href="#sec-Stylized-facts"><span>Section&nbsp;5.5</span></a> I conclude with a summary of some stylized facts for monthly and daily returns.</p>
-<p>The R packages I use in this chapter are <strong>car</strong>, <strong>corrplot, IntroCompFinR, PerformanceAnalytics, sn, tseries, zoo</strong> and <strong>xts</strong>. Make sure these packages are installed and loaded before running the R examples in the chapter.</p>
+<p>The R packages I use in this chapter are <strong>car</strong>, <strong>corrplot</strong>, <strong>introcompfinR</strong>, <strong>PerformanceAnalytics</strong>, <strong>sn</strong>, <strong>tseries</strong>, <strong>zoo</strong> and <strong>xts</strong>. Make sure these packages are installed and loaded before running the R examples in the chapter.</p>
 <section id="sec-Univariate-Descriptive-Statistic" class="level2" data-number="5.1">
 <h2 data-number="5.1" class="anchored" data-anchor-id="sec-Univariate-Descriptive-Statistic"><span class="header-section-number">5.1</span> Univariate Descriptive Statistics</h2>
 <p>Let <span class="math inline">\(\{R_{t}\}\)</span> denote a univariate time series of asset returns (simple or continuously compounded). Throughout this chapter I will assume that <span class="math inline">\(\{R_{t}\}\)</span> is a covariance stationary and ergodic stochastic process such that: <span class="math display">\[\begin{align*}
@@ -325,7 +343,7 @@ E[R_{t}] &amp; =\mu\textrm{ independent of }t,\\
 <h3 data-number="5.1.1" class="anchored" data-anchor-id="example-data"><span class="header-section-number">5.1.1</span> Example data</h3>
 <p>I illustrate the descriptive statistical analysis of financial data using daily and monthly adjusted closing prices on Microsoft stock (ticker symbol <code>msft</code>) and the S&amp;P 500 index (ticker symbol <code>^gspc</code>) over the period January 2, 1998 and May 31, 2012.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> These data are obtained from (finance.yahoo.com) and are available in the R package <strong>introcompfinr.</strong> I first use the daily and monthly data to illustrate descriptive statistical analysis and to establish a number of stylized facts about the distribution and time dependence in daily and monthly returns.</p>
 <div id="exm-example0501" class="theorem example">
-<p><span class="theorem-title"><strong>Example 5.1 (Constructing example data) </strong></span>Daily adjusted closing price data on Microsoft and the S&amp;P 500 index over the period January 4, 1993 through December 31, 2014 are available in the <strong>IntroCompFinR</strong> package as the <code>xts</code> objects <code>msftDailyPrices</code> and <code>sp500DailyPrices</code>, respectively.</p>
+<p><span class="theorem-title"><strong>Example 5.1 (Constructing example data) </strong></span>Daily adjusted closing price data on Microsoft and the S&amp;P 500 index over the period January 4, 1993 through December 31, 2014 are available in the <strong>introcompfinr</strong> package as the <code>xts</code> objects <code>msftDailyPrices</code> and <code>sp500DailyPrices</code>, respectively.</p>
 <p>I restrict the sample period to January 2, 1998 and May 31, 2012 using:</p>
 <div class="cell">
 <details open="">
@@ -981,7 +999,7 @@ x_{(1)}&lt;x_{(2)}&lt;\cdots&lt;x_{(T)}.
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>gwnMonthlyOutlier[<span class="dv">20</span>] <span class="ot">=</span> <span class="sc">-</span><span class="fu">sd</span>(gwnMonthly)<span class="sc">*</span><span class="dv">6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p><a href="#fig-DSgwnOutlier">Figure&nbsp;<span>5.18</span></a> shows the resulting data. Visually, the outlier is much smaller than a typical negative observation and creates a pronounced asymmetry in the histogram. Table <a href="#tbl-tableOutlier">Table&nbsp;<span>5.1</span></a> compares the sample statistics <a href="#eq-sample-mean">Equation&nbsp;<span>5.4</span></a> - <a href="#eq-sample-kurtosis">Equation&nbsp;<span>5.8</span></a> of the unpolluted and polluted data. All of the sample statistics are influenced by the single outlier with the skewness and kurtosis being influenced the most. The mean decreases by 32% and the variance and standard deviation increase by 16% and 8%, respectively. The skewness changes by 378% and the kurtosis by 159%. Table <a href="#tbl-tableOutlier">Table&nbsp;<span>5.1</span></a> also shows the median and the IQR, which are quantile-based statistics for the center and spread, respectively. Notice that these statistics are unaffected by the outlier.</p>
+<p><a href="#fig-DSgwnOutlier">Figure&nbsp;<span>5.18</span></a> shows the resulting data. Visually, the outlier is much smaller than a typical negative observation and creates a pronounced asymmetry in the histogram. <a href="#tbl-tableOutlier">Table&nbsp;<span>5.1</span></a> compares the sample statistics <a href="#eq-sample-mean">Equation&nbsp;<span>5.4</span></a> - <a href="#eq-sample-kurtosis">Equation&nbsp;<span>5.8</span></a> of the unpolluted and polluted data. All of the sample statistics are influenced by the single outlier with the skewness and kurtosis being influenced the most. The mean decreases by 32% and the variance and standard deviation increase by 16% and 8%, respectively. The skewness changes by 378% and the kurtosis by 159%. <a href="#tbl-tableOutlier">Table&nbsp;<span>5.1</span></a> also shows the median and the IQR, which are quantile-based statistics for the center and spread, respectively. Notice that these statistics are unaffected by the outlier.</p>
 <div class="cell" data-layout-align="center" data-fig.asp="1">
 <div class="cell-output-display">
 <div id="fig-DSgwnOutlier" class="quarto-figure quarto-figure-center anchored">

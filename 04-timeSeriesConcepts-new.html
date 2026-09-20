@@ -240,6 +240,24 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./14-statisticalAnalysisPortfolios-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Statistical Analysis of Portfolios</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15-singleIndexModel-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Single Index Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16-singleIndexModelEstimation-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Estimation of the Single Index Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">References</span></a>
   </div>
@@ -300,7 +318,7 @@ div.csl-indent {
 <p>Last updated on September 4, 2026</p>
 <p>Copyright © Eric Zivot 2026</p>
 <p>Financial variables such as asset prices and returns are naturally ordered by time. That is, these variables are <em>time series</em> variables. When we construct returns, the time index or data frequency becomes the investment horizon associated with the return. Typical data frequencies are daily, weekly, monthly and annual. In building probability models for time series variables, the time ordering of the data matters because we may think there are important temporal dependencies among the variables. For example, we might have reason to believe that the return on an asset this month is correlated with the return on the same asset in the previous month. This autocorrelation can only be defined if the time ordering of the data is preserved. A major complication in analyzing time series data is that the usual assumption of random sampling from a common population is not appropriate because it does not allow for any kind of time dependence in the time series variables. We would like to retain the notion that the observed data come from some population model, perhaps with time-invariant parameters, but we would like to allow the variables to have time dependencies. Fortunately, we can do this if the time series data come from a <em>stationary</em> time series process.</p>
-<p>This chapter reviews some basic times series concepts that are essential for describing and modeling financial time series. Section <a href="#sec-Stochastic-Processes"><span>Section&nbsp;4.1</span></a> defines univariate time series processes and introduces the important concepts of stationarity and ergodicity. Covariance stationary time series processes are defined, which gives meaning to measuring linear time dependence using autocorrelation. The benchmark Gaussian White Noise process and related processes are introduced and illustrated using R. Some common non-stationary time series processes are also discussed including the famous random walk model. Section <a href="#sec-Multivariate-Time-Series"><span>Section&nbsp;4.2</span></a> introduces covariance stationary multivariate time series process. Such processes allow for dynamic interactions among groups of time series variables. Section <a href="#sec-Time-Series-Models"><span>Section&nbsp;4.3</span></a> discusses time series model building and introduces the class of univariate autoregressive-moving average time series models and multivariate vector autoregression models. The properties of some simple models are derived and it is shown how to simulate observations from these models using R. The chapter concludes with a brief discussion of forecasting from time series models.</p>
+<p>This chapter reviews some basic times series concepts that are essential for describing and modeling financial time series. <a href="#sec-Stochastic-Processes"><span>Section&nbsp;4.1</span></a> defines univariate time series processes and introduces the important concepts of stationarity and ergodicity. Covariance stationary time series processes are defined, which gives meaning to measuring linear time dependence using autocorrelation. The benchmark Gaussian White Noise process and related processes are introduced and illustrated using R. Some common non-stationary time series processes are also discussed including the famous random walk model. <a href="#sec-Multivariate-Time-Series"><span>Section&nbsp;4.2</span></a> introduces covariance stationary multivariate time series process. Such processes allow for dynamic interactions among groups of time series variables. <a href="#sec-Time-Series-Models"><span>Section&nbsp;4.3</span></a> discusses time series model building and introduces the class of univariate autoregressive-moving average time series models and multivariate vector autoregression models. The properties of some simple models are derived and it is shown how to simulate observations from these models using R. The chapter concludes with a brief discussion of forecasting from time series models.</p>
 <p>The R packages used in this chapter are <strong>mvtnorm</strong> and <strong>vars</strong>. Make sure these packages are installed and loaded before running the R examples in this chapter.</p>
 <section id="sec-Stochastic-Processes" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="sec-Stochastic-Processes"><span class="header-section-number">4.1</span> Stochastic Processes</h2>
@@ -349,7 +367,7 @@ div.csl-indent {
 \rho_{j}=\frac{\mathrm{cov}(Y_{t},Y_{t-j})}{\sqrt{\mathrm{var}(Y_{t})\mathrm{var}(Y_{t-j})}}=\frac{\gamma_{j}}{\sigma^{2}}.
 \tag{4.1}\]</span></span></p>
 <p>The autocovariances, <span class="math inline">\(\gamma_{j},\)</span> measure the direction of linear dependence between <span class="math inline">\(Y_{t}\)</span> and <span class="math inline">\(Y_{t-j}\)</span>. The autocorrelations, <span class="math inline">\(\rho_{j}\)</span>, measure both the direction and strength of linear dependence between <span class="math inline">\(Y_{t}\)</span> and <span class="math inline">\(Y_{t-j}\)</span>. With covariance stationarity, instead of assuming the entire joint distribution of a collection of random variables is time invariant we make a weaker assumption that only the mean, variance and autocovariances of the random variables are time invariant. A strictly stationary stochastic process <span class="math inline">\(\{Y_{t}\}\)</span> such that <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma^{2}\)</span>, and <span class="math inline">\(\gamma_{ij}\)</span> exist is a <em>covariance stationary</em> stochastic process. However, a covariance stationary process need not be strictly stationary.</p>
-<p>The autocovariances and autocorrelations are measures of the linear temporal dependence in a covariance stationary stochastic process. A graphical summary of this temporal dependence is given by the plot of <span class="math inline">\(\rho_{j}\)</span> against <span class="math inline">\(j\)</span>, and is called the <em>autocorrelation function</em> (ACF). Figure <a href="#fig-TimeSeriesConceptsACF">Figure&nbsp;<span>4.1</span></a> illustrates an ACF for a hypothetical covariance stationary time series with <span class="math inline">\(\rho_{j}=(0.9)^{j}\)</span> for <span class="math inline">\(j=1,2,\ldots,10\)</span> created with</p>
+<p>The autocovariances and autocorrelations are measures of the linear temporal dependence in a covariance stationary stochastic process. A graphical summary of this temporal dependence is given by the plot of <span class="math inline">\(\rho_{j}\)</span> against <span class="math inline">\(j\)</span>, and is called the <em>autocorrelation function</em> (ACF). <a href="#fig-TimeSeriesConceptsACF">Figure&nbsp;<span>4.1</span></a> illustrates an ACF for a hypothetical covariance stationary time series with <span class="math inline">\(\rho_{j}=(0.9)^{j}\)</span> for <span class="math inline">\(j=1,2,\ldots,10\)</span> created with</p>
 <div class="cell" data-layout-align="center" data-fig.asp="0.75">
 <details open="">
 <summary>Code</summary>
@@ -383,7 +401,7 @@ E[Y_{t}] &amp; =0\textrm{ independent of }t,\\
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">250</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>The simulated iid N(0,1) values are generated using the <code>rnorm()</code> function. The command <code>set.seed(123)</code> initializes R’s internal random number generator using the seed value 123. Every time the random number generator seed is set to a particular value, the random number generator produces the same set of random numbers. This allows different people to create the same set of random numbers so that results are reproducible. The simulated data is illustrated in Figure <a href="#fig-TimeSeriesConcpetsGWN">Figure&nbsp;<span>4.2</span></a> created using:</p>
+<p>The simulated iid N(0,1) values are generated using the <code>rnorm()</code> function. The command <code>set.seed(123)</code> initializes R’s internal random number generator using the seed value 123. Every time the random number generator seed is set to a particular value, the random number generator produces the same set of random numbers. This allows different people to create the same set of random numbers so that results are reproducible. The simulated data is illustrated in <a href="#fig-TimeSeriesConcpetsGWN">Figure&nbsp;<span>4.2</span></a> created using:</p>
 <div class="cell" data-layout-align="center" data-fig.asp="0.75">
 <details open="">
 <summary>Code</summary>
@@ -400,7 +418,7 @@ E[Y_{t}] &amp; =0\textrm{ independent of }t,\\
 </div>
 </div>
 </div>
-<p>The function <code>ts.plot()</code> creates a time series line plot with a dummy time index. An equivalent plot can be created using the generic <code>plot()</code> function with optional argument <code>type="l"</code>. The data in Figure <a href="#fig-TimeSeriesConcpetsGWN">Figure&nbsp;<span>4.2</span></a> fluctuate randomly about the mean value zero and exhibit a constant volatility of one (typical magnitude of a fluctuation about zero). There is no visual evidence of any predictable pattern in the data. <span class="math inline">\(\blacksquare\)</span></p>
+<p>The function <code>ts.plot()</code> creates a time series line plot with a dummy time index. An equivalent plot can be created using the generic <code>plot()</code> function with optional argument <code>type="l"</code>. The data in <a href="#fig-TimeSeriesConcpetsGWN">Figure&nbsp;<span>4.2</span></a> fluctuate randomly about the mean value zero and exhibit a constant volatility of one (typical magnitude of a fluctuation about zero). There is no visual evidence of any predictable pattern in the data. <span class="math inline">\(\blacksquare\)</span></p>
 </div>
 <div id="exm-gwn-model-for-continuously-compounded-returns" class="example theorem example">
 <p><span class="theorem-title"><strong>Example 4.4 (GWN model for continuously compounded returns) </strong></span>Let <span class="math inline">\(r_{t}\)</span> denote the continuously compounded monthly return on Microsoft stock and assume that <span class="math inline">\(r_{t}\sim\mathrm{iid}\,N(0.01,\,(0.05)^{2})\)</span>. We can represent this distribution in terms of a GWN process as follows <span class="math display">\[
@@ -426,11 +444,11 @@ r_{t}=0.01+\varepsilon_{t},\,\varepsilon_{t}\sim\mathrm{GWN}(0,\,(0.05)^{2}).
 </div>
 </div>
 </div>
-<p>and are illustrated in Figure <a href="#fig-TimeSeriesConceptsGWNreturns">Figure&nbsp;<span>4.3</span></a>. Notice that the returns fluctuate around the mean value of <span class="math inline">\(0.01\)</span> (solid red line) and the size of a typical deviation from the mean is about <span class="math inline">\(0.05\)</span>. The red dotted lines show the values <span class="math inline">\(0.1 \pm 0.05\)</span> .</p>
+<p>and are illustrated in <a href="#fig-TimeSeriesConceptsGWNreturns">Figure&nbsp;<span>4.3</span></a>. Notice that the returns fluctuate around the mean value of <span class="math inline">\(0.01\)</span> (solid red line) and the size of a typical deviation from the mean is about <span class="math inline">\(0.05\)</span>. The red dotted lines show the values <span class="math inline">\(0.1 \pm 0.05\)</span> .</p>
 <p>An implication of the GWN assumption for monthly returns is that non-overlapping multi-period returns are also GWN. For example, consider the two-month return <span class="math inline">\(r_{t}(2)=r_{t}+r_{t-1}\)</span>. The non-overlapping process <span class="math inline">\(\{r_{t}(2)\}=\{...,r_{t-2}(2),r_{t}(2),r_{t+2}(2),...\}\)</span> is GWN with mean <span class="math inline">\(E[r_{t}(2)]=2\cdot\mu=0.02\)</span>, variance <span class="math inline">\(\mathrm{var}(r_{t}(2))=2\cdot\sigma^{2}=0.005\)</span>, and standard deviation <span class="math inline">\(\mathrm{sd}(r_{t}(2))=\sqrt{2}\sigma=0.071\)</span>. <span class="math inline">\(\blacksquare\)</span></p>
 </div>
 <div id="exm-independent-white-noise" class="example theorem example">
-<p><span class="theorem-title"><strong>Example 4.5 (Independent white noise) </strong></span>Let <span class="math inline">\(Y_{t}\sim\mathrm{iid}\)</span> <span class="math inline">\((0,\sigma^{2})\)</span>. Then <span class="math inline">\(\{Y_{t}\}\)</span> is called an <em>independent white noise</em> (IWN) process and is denoted <span class="math inline">\(Y_{t}\sim\mathrm{IWN}(0,\sigma^{2})\)</span>. The difference between GWN and IWN is that with IWN we don’t specify that all random variables are normally distributed. The random variables can have any distribution with mean zero and variance <span class="math inline">\(\sigma^{2}.\)</span> To illustrate, suppose <span class="math inline">\(Y_{t}=\frac{1}{\sqrt{3}}\times t_{3}\)</span> where <span class="math inline">\(t_{3}\)</span> denotes a Student’s t distribution with <span class="math inline">\(3\)</span> degrees of freedom. This process has <span class="math inline">\(E[Y_{t}]=0\)</span> and <span class="math inline">\(\mathrm{var}(Y_{t})=1.\)</span> Figure <a href="#fig-TimeSeriesConceptsIWN">Figure&nbsp;<span>4.4</span></a> shows simulated observations from this process created using the R commands</p>
+<p><span class="theorem-title"><strong>Example 4.5 (Independent white noise) </strong></span>Let <span class="math inline">\(Y_{t}\sim\mathrm{iid}\)</span> <span class="math inline">\((0,\sigma^{2})\)</span>. Then <span class="math inline">\(\{Y_{t}\}\)</span> is called an <em>independent white noise</em> (IWN) process and is denoted <span class="math inline">\(Y_{t}\sim\mathrm{IWN}(0,\sigma^{2})\)</span>. The difference between GWN and IWN is that with IWN we don’t specify that all random variables are normally distributed. The random variables can have any distribution with mean zero and variance <span class="math inline">\(\sigma^{2}.\)</span> To illustrate, suppose <span class="math inline">\(Y_{t}=\frac{1}{\sqrt{3}}\times t_{3}\)</span> where <span class="math inline">\(t_{3}\)</span> denotes a Student’s t distribution with <span class="math inline">\(3\)</span> degrees of freedom. This process has <span class="math inline">\(E[Y_{t}]=0\)</span> and <span class="math inline">\(\mathrm{var}(Y_{t})=1.\)</span> <a href="#fig-TimeSeriesConceptsIWN">Figure&nbsp;<span>4.4</span></a> shows simulated observations from this process created using the R commands</p>
 <div class="cell" data-layout-align="center" data-fig.asp="0.75">
 <details open="">
 <summary>Code</summary>
@@ -449,7 +467,7 @@ r_{t}=0.01+\varepsilon_{t},\,\varepsilon_{t}\sim\mathrm{GWN}(0,\,(0.05)^{2}).
 </div>
 </div>
 </div>
-<p>The simulated IWN process resembles the GWN in Figure <a href="#fig-TimeSeriesConceptsIWN">Figure&nbsp;<span>4.4</span></a> but has more extreme observations. <span class="math inline">\(\blacksquare\)</span></p>
+<p>The simulated IWN process resembles the GWN in <a href="#fig-TimeSeriesConceptsIWN">Figure&nbsp;<span>4.4</span></a> but has more extreme observations. <span class="math inline">\(\blacksquare\)</span></p>
 </div>
 <div id="exm-weak-white-noise" class="example theorem example">
 <p><span class="theorem-title"><strong>Example 4.6 (Weak white noise) </strong></span>Let <span class="math inline">\(\{Y_{t}\}\)</span> be a sequence of uncorrelated random variables each with mean zero and variance <span class="math inline">\(\sigma^{2}\)</span>. Then <span class="math inline">\(\{Y_{t}\}\)</span> is called a <em>weak white noise</em> (WWN) process and is denoted <span class="math inline">\(Y_{t}\sim\mathrm{WWN}(0,\sigma^{2})\)</span>. With a WWN process, the random variables are not independent, only uncorrelated. This allows for potential non-linear temporal dependence between the random variables in the process. <span class="math inline">\(\blacksquare\)</span></p>
@@ -464,7 +482,7 @@ Y_{t} &amp; =\beta_{0}+\beta_{1}t+\varepsilon_{t},~\varepsilon_{t}\sim\mathrm{GW
 t &amp; =0,1,2,\ldots
 \end{align*}\]</span> Then <span class="math inline">\(\{Y_{t}\}\)</span> is nonstationary because the mean of <span class="math inline">\(Y_{t}\)</span> depends on <span class="math inline">\(t\)</span>: <span class="math display">\[
 E[Y_{t}]=\beta_{0}+\beta_{1}t.
-\]</span> Figure <a href="#fig-TimeSeriesConceptsTrend">Figure&nbsp;<span>4.5</span></a> shows a realization of this process with <span class="math inline">\(\beta_{0}=0,\beta_{1}=0.1\)</span> and <span class="math inline">\(\sigma_{\varepsilon}^{2}=1\)</span> created using the R commands:</p>
+\]</span> <a href="#fig-TimeSeriesConceptsTrend">Figure&nbsp;<span>4.5</span></a> shows a realization of this process with <span class="math inline">\(\beta_{0}=0,\beta_{1}=0.1\)</span> and <span class="math inline">\(\sigma_{\varepsilon}^{2}=1\)</span> created using the R commands:</p>
 <div class="cell" data-layout-align="center" data-fig.asp="0.75">
 <details open="">
 <summary>Code</summary>
@@ -500,7 +518,7 @@ Y_{t} &amp; =Y_{t-1}+\varepsilon_{t}=Y_{0}+\varepsilon_{1}+\cdots+\varepsilon_{t
 \end{align*}\]</span> Now, <span class="math inline">\(E[Y_{t}]=Y_{0}\)</span> which is independent of <span class="math inline">\(t\)</span>. However, <span class="math display">\[
 \mathrm{var}(Y_{t})=\mathrm{var}\left(\sum_{j=1}^{t}\varepsilon_{j}\right)=\sum_{j=1}^{t}\sigma_{\varepsilon}^{2}=\sigma_{\varepsilon}^{2}\times t,
 \]</span> which depends on <span class="math inline">\(t\)</span>, and so <span class="math inline">\(\{Y_{t}\}\)</span> is not stationary.</p>
-<p>Figure <a href="#fig-TimeSeriesConceptsRW">Figure&nbsp;<span>4.6</span></a> shows a realization of the RW process with <span class="math inline">\(Y_{0}=0\)</span> and <span class="math inline">\(\sigma_{\varepsilon}^{2}=1\)</span> created using the R commands:</p>
+<p><a href="#fig-TimeSeriesConceptsRW">Figure&nbsp;<span>4.6</span></a> shows a realization of the RW process with <span class="math inline">\(Y_{0}=0\)</span> and <span class="math inline">\(\sigma_{\varepsilon}^{2}=1\)</span> created using the R commands:</p>
 <div class="cell" data-layout-align="center" data-fig.asp="0.75">
 <details open="">
 <summary>Code</summary>
@@ -519,7 +537,7 @@ Y_{t} &amp; =Y_{t-1}+\varepsilon_{t}=Y_{0}+\varepsilon_{1}+\cdots+\varepsilon_{t
 </div>
 </div>
 </div>
-<p>The RW process looks much different from the GWN process in Figure <a href="#fig-TimeSeriesConcpetsGWN">Figure&nbsp;<span>4.2</span></a>. As the variance of the process increases linearly with time, the uncertainty about where the process will be at a given point in time increases with time.</p>
+<p>The RW process looks much different from the GWN process in <a href="#fig-TimeSeriesConcpetsGWN">Figure&nbsp;<span>4.2</span></a>. As the variance of the process increases linearly with time, the uncertainty about where the process will be at a given point in time increases with time.</p>
 <p>Although <span class="math inline">\(\{Y_{t}\}\)</span> is non-stationary, a simple first-differencing transformation, however, yields a covariance stationary process: <span class="math display">\[
 X_{t}=Y_{t}-Y_{t-1}=\varepsilon_{t}\sim\mathrm{GWN}(0,\sigma_{\varepsilon}^{2}).
 \]</span></p>
@@ -626,7 +644,7 @@ E[\mathbf{Y}_{t}] &amp; = &amp; \mathbf{0},\\
 </div>
 </div>
 </div>
-<p>The simulated values are shown on the same plot in Figure <a href="#fig-TimeSeriesMultivariateGWN">Figure&nbsp;<span>4.7</span></a>. Both series fluctuate randomly about zero, and the first series (black line) has larger fluctuations (volatility) than the second series (blue line). The two series are contemporaneously correlated <span class="math inline">\((\rho_{12}=0.5)\)</span> but are both uncorrelated over time (<span class="math inline">\(\rho_{11}^{k}=\rho_{22}^{k}=0,\,k&gt;0)\)</span> and are not cross-lag correlated (<span class="math inline">\(\rho_{12}^{k}=\rho_{21}^{k}=0,\,k&gt;0\)</span>). <span class="math inline">\(\blacksquare\)</span></p>
+<p>The simulated values are shown on the same plot in <a href="#fig-TimeSeriesMultivariateGWN">Figure&nbsp;<span>4.7</span></a>. Both series fluctuate randomly about zero, and the first series (black line) has larger fluctuations (volatility) than the second series (blue line). The two series are contemporaneously correlated <span class="math inline">\((\rho_{12}=0.5)\)</span> but are both uncorrelated over time (<span class="math inline">\(\rho_{11}^{k}=\rho_{22}^{k}=0,\,k&gt;0)\)</span> and are not cross-lag correlated (<span class="math inline">\(\rho_{12}^{k}=\rho_{21}^{k}=0,\,k&gt;0\)</span>). <span class="math inline">\(\blacksquare\)</span></p>
 </div>
 </section>
 </section>
@@ -742,7 +760,7 @@ y_{1} &amp; = &amp; \mu+\varepsilon_{1}+\theta\varepsilon_{0}.
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1.000 0.497 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Figure <a href="#fig-TimeSeriesConceptsMA1">Figure&nbsp;<span>4.8</span></a> shows the simulated data and the theoretical ACF created using:</p>
+<p><a href="#fig-TimeSeriesConceptsMA1">Figure&nbsp;<span>4.8</span></a> shows the simulated data and the theoretical ACF created using:</p>
 <div class="cell" data-layout-align="center" data-fig.asp="1">
 <details open="">
 <summary>Code</summary>
@@ -925,7 +943,7 @@ u_{t} &amp; = &amp; \phi u_{t-1}+\epsilon_{t}.
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>ar1.acf <span class="ot">=</span> <span class="fu">ARMAacf</span>(<span class="at">ar =</span> <span class="fl">0.9</span>, <span class="at">ma =</span> <span class="dv">0</span>, <span class="at">lag.max =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>The simulated AR(1) values and the ACF are shown in Figure <a href="#fig-TimeSeriesConceptsAR1">Figure&nbsp;<span>4.9</span></a>. Compared to the MA(1) process in Figure <a href="#fig-TimeSeriesConceptsMA1">Figure&nbsp;<span>4.8</span></a>, the realizations from the AR(1) process are much smoother. That is, when <span class="math inline">\(Y_{t}\)</span> wanders high above its mean it tends to stay above the mean for a while and when it wanders low below the mean it tends to stay below for a while. <span class="math inline">\(\blacksquare\)</span></p>
+<p>The simulated AR(1) values and the ACF are shown in <a href="#fig-TimeSeriesConceptsAR1">Figure&nbsp;<span>4.9</span></a>. Compared to the MA(1) process in <a href="#fig-TimeSeriesConceptsMA1">Figure&nbsp;<span>4.8</span></a>, the realizations from the AR(1) process are much smoother. That is, when <span class="math inline">\(Y_{t}\)</span> wanders high above its mean it tends to stay above the mean for a while and when it wanders low below the mean it tends to stay below for a while. <span class="math inline">\(\blacksquare\)</span></p>
 </div>
 <div class="cell" data-layout-align="center" data-fig.asp="1">
 <div class="cell-output-display">

@@ -240,6 +240,24 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./14-statisticalAnalysisPortfolios-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Statistical Analysis of Portfolios</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15-singleIndexModel-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Single Index Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16-singleIndexModelEstimation-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Estimation of the Single Index Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">References</span></a>
   </div>
@@ -311,7 +329,7 @@ div.csl-indent {
 <!-- \mainmatter -->
 <p>Updated: September 1, 2026 Copyright © Eric Zivot 2026</p>
 <p>Asset returns are the fundamental object of study in this book and in this chapter I review many important definitions and properties of asset returns with an emphasis on equity returns. It is important to understand the different ways in which asset returns are calculated as they impact model choices for asset returns. For example, simple returns are most commonly used for money and portfolio calculations in practice. However, simple returns have some undesirable properties for time aggregation that make mathematical and statistical modeling difficult. Continuously compounded returns, in contrast, have nicer aggregation properties that make mathematical and statistical modeling easier.</p>
-<p>This chapter is organized as follows. Section <a href="#sec-TimeValueMoney"><span>Section&nbsp;1.1</span></a> covers basic time value of money calculations. Section <a href="#sec-AssetReturnCalculations"><span>Section&nbsp;1.2</span></a> covers asset return calculations, including both simple and continuously compounded returns. Section <a href="#sec-portfolios-and-portfolio-returns"><span>Section&nbsp;1.3</span></a> defines portfolios and details portfolio return calculations. Section <a href="#sec-ReturnCalculationsR"><span>Section&nbsp;1.4</span></a> illustrates asset return calculations using R.</p>
+<p>This chapter is organized as follows. In <a href="#sec-TimeValueMoney"><span>Section&nbsp;1.1</span></a> I cover basic time value of money calculations. In <a href="#sec-AssetReturnCalculations"><span>Section&nbsp;1.2</span></a> I cover asset return calculations, including both simple and continuously compounded returns. I define portfolios and detail portfolio return calculations in <a href="#sec-portfolios-and-portfolio-returns"><span>Section&nbsp;1.3</span></a>. In <a href="#sec-ReturnCalculationsR"><span>Section&nbsp;1.4</span></a> I illustrate asset return calculations using R.</p>
 <p>In this chapter I use the following R packages: <strong>ggplot2</strong>, <strong>introcompfinr</strong>, <strong>methods</strong>, <strong>PerformanceAnalytics</strong>, <strong>quantmod</strong>, <strong>xts</strong>, and <strong>zoo</strong>. Make sure these packages are installed and loaded before replicating the chapter examples.</p>
 <section id="sec-TimeValueMoney" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="sec-TimeValueMoney"><span class="header-section-number">1.1</span> The Time Value of Money</h2>
@@ -501,7 +519,7 @@ R =\ln(1+R_{A}).
 <h3 data-number="1.2.2" class="anchored" data-anchor-id="simple-returns"><span class="header-section-number">1.2.2</span> Simple returns</h3>
 <p> Consider purchasing one share of an asset (e.g., stock, bond, ETF, mutual fund, option, etc.) at time <span class="math inline">\(t_{0}\)</span> for the price <span class="math inline">\(P_{t_{0}}\)</span>, and then selling that share at time <span class="math inline">\(t_{1}\)</span> for the price <span class="math inline">\(P_{t_{1}}.\)</span> If there are no intermediate cash flows (e.g., dividends) between <span class="math inline">\(t_{0}\)</span> and <span class="math inline">\(t_{1}\)</span>, the rate of return over the period <span class="math inline">\(t_{0}\)</span> to <span class="math inline">\(t_{1}\)</span> is defined as the percentage change in price: <span id="eq-holding-period-return"><span class="math display">\[
 R(t_{0},t_{1})=\frac{P_{t_{1}}-P_{t_{0}}}{P_{t_{0}}}.
-\tag{1.12}\]</span></span> The time between <span class="math inline">\(t_{0}\)</span> and <span class="math inline">\(t_{1}\)</span> is called the <em>holding period</em> and equation <a href="#eq-holding-period-return">Equation&nbsp;<span>1.12</span></a> is called the <em>holding period return</em>. In principle, the holding period can be any amount of time: one second, five minutes, eight hours, two days six minutes and two seconds, fifteen years, etc.. To simplify matters, in this chapter and throughout the book I will assume that the holding period is some increment of calendar time; e.g., one day, one month or one year. In particular, I will often assume a default holding period of one month.</p>
+\tag{1.12}\]</span></span> The time between <span class="math inline">\(t_{0}\)</span> and <span class="math inline">\(t_{1}\)</span> is called the <em>holding period</em> and <a href="#eq-holding-period-return">Equation&nbsp;<span>1.12</span></a> is called the <em>holding period return</em>. In principle, the holding period can be any amount of time: one second, five minutes, eight hours, two days six minutes and two seconds, fifteen years, etc.. To simplify matters, in this chapter and throughout the book I will assume that the holding period is some increment of calendar time; e.g., one day, one month or one year. In particular, I will often assume a default holding period of one month.</p>
 <div id="def-simpleNetReturn" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 1.4 (Simple net return) </strong></span>Let <span class="math inline">\(P_{t}\)</span> denote the price at the end of month <span class="math inline">\(t\)</span> of an asset that pays no dividends and let <span class="math inline">\(P_{t-1}\)</span> denote the price at the end of month <span class="math inline">\(t-1\)</span>. Then the one-month <em>simple net return</em> on an investment in the asset between months <span class="math inline">\(t-1\)</span> and <span class="math inline">\(t\)</span> is defined as: <span id="eq-simple-net-return"><span class="math display">\[
 R_{t}=\frac{P_{t}-P_{t-1}}{P_{t-1}}=\Delta P_{t}.
@@ -885,9 +903,9 @@ r_{t}^{\textrm{Real}}=r_{t}-\pi_{t}{c}=\ln(1.0588)-\ln(1.01)=0.047.
 </section>
 <section id="adjusting-for-taxes-1" class="level4" data-number="1.2.3.5">
 <h4 data-number="1.2.3.5" class="anchored" data-anchor-id="adjusting-for-taxes-1"><span class="header-section-number">1.2.3.5</span> Adjusting for taxes</h4>
-<p>Using <a href="#eq-afterTaxReturn">Equation&nbsp;<span>1.25</span></a>, the continuously compounded return adjusted for taxes is <span class="math display">\[\begin{equation}
+<p>Using <a href="#eq-afterTaxReturn">Equation&nbsp;<span>1.25</span></a>, the continuously compounded return adjusted for taxes is <span class="math display">\[
 r_{t}^{Atax} = ln \left(R_{t}(1-\tau) \right) = ln(R_{t}) + ln(1-\tau) = r_{t} + ln(1-\tau)
-\end{equation}\]</span></p>
+\]</span></p>
 </section>
 <section id="return-on-a-foreign-investment" class="level4" data-number="1.2.3.6">
 <h4 data-number="1.2.3.6" class="anchored" data-anchor-id="return-on-a-foreign-investment"><span class="header-section-number">1.2.3.6</span> Return on a foreign investment</h4>
@@ -900,12 +918,18 @@ r_{t}^{US} &amp;= ln \left( (1+R_{t}^{US/UK})(1+R_{t}^{UK}) \right) \nonumber \\
 </section>
 <section id="annualizing-continuously-compounded-returns" class="level4" data-number="1.2.3.7">
 <h4 data-number="1.2.3.7" class="anchored" data-anchor-id="annualizing-continuously-compounded-returns"><span class="header-section-number">1.2.3.7</span> Annualizing continuously compounded returns</h4>
-<p>Just as you annualized simple monthly returns, you can also annualize continuously compounded monthly returns. I illustrate using monthly continuously compounded returns. First, if your investment horizon is one year and you observe 12 monthly continuously compounded returns then the annual continuously compounded return is just the sum of the twelve monthly continuously compounded returns: <span class="math display">\[\begin{align*}
+<p>Just as you annualized simple monthly returns, you can also annualize continuously compounded monthly returns. I illustrate using monthly continuously compounded returns. First, if your investment horizon is one year and you observe 12 monthly continuously compounded returns then the annual continuously compounded return is just the sum of the twelve monthly continuously compounded returns: <span class="math display">\[
+\begin{aligned}
 r_{A} &amp; =r_{t}(12)=r_{t}+r_{t-1}+\cdots+r_{t-11}\\
 &amp; =\sum_{j=0}^{11}r_{t-j}.
-\end{align*}\]</span> The average continuously compounded monthly return is defined as: <span class="math display">\[\overline{r}_{m}=\frac{1}{12}\sum_{j=0}^{11}r_{t-j}.\]</span> Notice that: <span class="math display">\[12\cdot\overline{r}_{m}=\sum_{j=0}^{11}r_{t-j}\]</span> so that you may alternatively express <span class="math inline">\(r_{A}\)</span> as: <span class="math display">\[r_{A}=12\cdot\overline{r}_{m}.\]</span> That is, the continuously compounded annual return is twelve times the average of the continuously compounded monthly returns.</p>
+\end{aligned}
+\]</span> The average continuously compounded monthly return is defined as: <span class="math display">\[
+\overline{r}_{m}=\frac{1}{12}\sum_{j=0}^{11}r_{t-j}.
+\]</span> Notice that: <span class="math display">\[12\cdot\overline{r}_{m}=\sum_{j=0}^{11}r_{t-j}\]</span> so that you may alternatively express <span class="math inline">\(r_{A}\)</span> as: <span class="math display">\[r_{A}=12\cdot\overline{r}_{m}.\]</span> That is, the continuously compounded annual return is twelve times the average of the continuously compounded monthly returns.</p>
 <p>Next, consider a one-month investment in an asset with continuously compounded return <span class="math inline">\(r_{t} = r\)</span>. If you assume that you receive the same return <span class="math inline">\(r\)</span> every month for the year, then the annual continuously compounded return is just 12 times the monthly continuously compounded return: <span class="math display">\[r_{A}=r_{t}(12)=r + r + \ldots + r = 12\cdot r.\]</span> If you have a two-month continuously compounded return of <span class="math inline">\(r(2)\)</span>, and you assume that you get this same return every two months for the next year, then the annualized continuously compounded return is <span class="math display">\[r_{A} = 6\cdot r(2).\]</span></p>
-<p>Finally, suppose you have a 2-year continuously compounded return <span class="math inline">\(r(24)\)</span>. Then the continuously compounded annual return can be defined using <span class="math display">\[2\cdot r_{A} = r(24) \Longrightarrow  r_{A} = \frac{r(24)}{2}.\]</span></p>
+<p>Finally, suppose you have a 2-year continuously compounded return <span class="math inline">\(r(24)\)</span>. Then the continuously compounded annual return can be defined using <span class="math display">\[
+2\cdot r_{A} = r(24) \Longrightarrow  r_{A} = \frac{r(24)}{2}.
+\]</span></p>
 </section>
 </section>
 </section>
@@ -1483,7 +1507,7 @@ r_{p,t}=\ln(1+R_{p,t})=\ln\left(1+\sum_{i=1}^{n}x_{i}R_{i,t}\right)\neq\sum_{i=1
 </section>
 <section id="plotting-xts-objects-with-plot.xts-and-plot.zoo" class="level4" data-number="1.4.1.3">
 <h4 data-number="1.4.1.3" class="anchored" data-anchor-id="plotting-xts-objects-with-plot.xts-and-plot.zoo"><span class="header-section-number">1.4.1.3</span> Plotting <code>xts</code> objects with <code>plot.xts()</code> and <code>plot.zoo</code></h4>
-<p>Time plots of <code>xts</code> objects can be created with the generic <code>plot()</code> function as there is a method function in the <strong>xts</strong> package for objects of class <code>xts</code>. For example, Figure <a href="#fig-MsftSbuxMonthlyPricesXts">Figure&nbsp;<span>1.1</span></a> shows a basic time plot of the monthly closing prices of Microsoft and Starbucks created with:</p>
+<p>Time plots of <code>xts</code> objects can be created with the generic <code>plot()</code> function as there is a method function in the <strong>xts</strong> package for objects of class <code>xts</code>. For example, <a href="#fig-MsftSbuxMonthlyPricesXts">Figure&nbsp;<span>1.1</span></a> shows a basic time plot of the monthly closing prices of Microsoft and Starbucks created with:</p>
 <div class="cell" data-layout-align="center" data-fig.asp="0.75">
 <details open="">
 <summary>Code</summary>
@@ -1499,7 +1523,7 @@ r_{p,t}=\ln(1+R_{p,t})=\ln\left(1+\sum_{i=1}^{n}x_{i}R_{i,t}\right)\neq\sum_{i=1
 </div>
 </div>
 </div>
-<p>The default plot style in <code>plot.xts()</code> is a single-panel plot with multiple series. You can also create multi-panel plots, as in Figure <a href="#fig-MsftSbuxPricesXtsMultiple">Figure&nbsp;<span>1.2</span></a>, by setting the optional argument <code>multi.panel = TRUE</code> in the call to <code>plot.xts()</code></p>
+<p>The default plot style in <code>plot.xts()</code> is a single-panel plot with multiple series. You can also create multi-panel plots, as in <a href="#fig-MsftSbuxPricesXtsMultiple">Figure&nbsp;<span>1.2</span></a>, by setting the optional argument <code>multi.panel = TRUE</code> in the call to <code>plot.xts()</code></p>
 <div class="cell" data-layout-align="center" data-fig.asp="0.75">
 <details open="">
 <summary>Code</summary>
@@ -1516,7 +1540,7 @@ r_{p,t}=\ln(1+R_{p,t})=\ln\left(1+\sum_{i=1}^{n}x_{i}R_{i,t}\right)\neq\sum_{i=1
 </div>
 </div>
 <p>See the help file for <code>plot.xts()</code> for more examples of plotting <code>xts</code> objects.</p>
-<p>Because the <code>xts</code> class inherits from the <code>zoo</code> class, the <strong>zoo</strong> method function <code>plot.zoo()</code> can also be used to plot <code>xts</code> objects. Figure <a href="#fig-MsftSbuxPricesZoo">Figure&nbsp;<span>1.3</span></a> is created with</p>
+<p>Because the <code>xts</code> class inherits from the <code>zoo</code> class, the <strong>zoo</strong> method function <code>plot.zoo()</code> can also be used to plot <code>xts</code> objects. <a href="#fig-MsftSbuxPricesZoo">Figure&nbsp;<span>1.3</span></a> is created with</p>
 <div class="cell" data-layout-align="center" data-fig.asp="0.75">
 <details open="">
 <summary>Code</summary>
@@ -1536,7 +1560,7 @@ r_{p,t}=\ln(1+R_{p,t})=\ln\left(1+\sum_{i=1}^{n}x_{i}R_{i,t}\right)\neq\sum_{i=1
 </div>
 </div>
 </div>
-<p>A muti-panel plot, shown in Figure <a href="#fig-MsftSbuxPricesZooMultiple">Figure&nbsp;<span>1.4</span></a>, can be created using</p>
+<p>A muti-panel plot, shown in <a href="#fig-MsftSbuxPricesZooMultiple">Figure&nbsp;<span>1.4</span></a>, can be created using</p>
 <div class="cell" data-layout-align="center" data-fig.asp="0.75">
 <details open="">
 <summary>Code</summary>
@@ -1752,7 +1776,7 @@ r_{p,t}=\ln(1+R_{p,t})=\ln\left(1+\sum_{i=1}^{n}x_{i}R_{i,t}\right)\neq\sum_{i=1
 </div>
 </div>
 </div>
-<p>The R function <code>cumprod()</code> creates the cumulative products needed for the equity curves. Figure <a href="#fig-DSmonthlyCumulativeReturns">Figure&nbsp;<span>1.5</span></a> shows that a one dollar investment in Starbucks dominated a one dollar investment in Microsoft over the given period. In particular, $1 invested in Microsoft grew to about only $22 (over about 20 years) whereas $1 invested in Starbucks grew over $70. Notice the huge increases and decreases in value of Microsoft during the dot-com bubble and bust over the period 1998 - 2001, and the enormous increase in value of Starbucks from 2009 - 2014.</p>
+<p>The R function <code>cumprod()</code> creates the cumulative products needed for the equity curves. <a href="#fig-DSmonthlyCumulativeReturns">Figure&nbsp;<span>1.5</span></a> shows that a one dollar investment in Starbucks dominated a one dollar investment in Microsoft over the given period. In particular, $1 invested in Microsoft grew to about only $22 (over about 20 years) whereas $1 invested in Starbucks grew over $70. Notice the huge increases and decreases in value of Microsoft during the dot-com bubble and bust over the period 1998 - 2001, and the enormous increase in value of Starbucks from 2009 - 2014.</p>
 <p><span class="math inline">\(\blacksquare\)</span></p>
 </section>
 </section>
@@ -1937,7 +1961,7 @@ r_{p,t}=\ln(1+R_{p,t})=\ln\left(1+\sum_{i=1}^{n}x_{i}R_{i,t}\right)\neq\sum_{i=1
 </section>
 <section id="appendix-properties-of-exponentials-and-logarithms" class="level2" data-number="1.6">
 <h2 data-number="1.6" class="anchored" data-anchor-id="appendix-properties-of-exponentials-and-logarithms"><span class="header-section-number">1.6</span> Appendix: Properties of Exponentials and Logarithms</h2>
-<p>The computation of continuously compounded returns requires the use of natural logarithms. The natural logarithm function, <span class="math inline">\(\ln(\cdot),\)</span> is the inverse of the exponential function, <span class="math inline">\(e^{(\cdot)}=\exp(\cdot),\)</span> where <span class="math inline">\(e^{1}=2.718.\)</span> That is, <span class="math inline">\(\ln(x)\)</span> is defined such that <span class="math inline">\(x=\ln(e^{x}).\)</span> Figure <a href="#fig-logexp">Figure&nbsp;<span>1.6</span></a> plots <span class="math inline">\(e^{x}\)</span> and <span class="math inline">\(\ln(x)\)</span>. Notice that <span class="math inline">\(e^{x}\)</span> is always positive and increasing in <span class="math inline">\(x\)</span>. <span class="math inline">\(\ln(x)\)</span> is monotonically increasing in <span class="math inline">\(x\)</span> and is only defined for <span class="math inline">\(x&gt;0.\)</span> Also note that <span class="math inline">\(\ln(1)=0\)</span> and <span class="math inline">\(\ln(0)=-\infty.\)</span></p>
+<p>The computation of continuously compounded returns requires the use of natural logarithms. The natural logarithm function, <span class="math inline">\(\ln(\cdot),\)</span> is the inverse of the exponential function, <span class="math inline">\(e^{(\cdot)}=\exp(\cdot),\)</span> where <span class="math inline">\(e^{1}=2.718.\)</span> That is, <span class="math inline">\(\ln(x)\)</span> is defined such that <span class="math inline">\(x=\ln(e^{x}).\)</span> <a href="#fig-logexp">Figure&nbsp;<span>1.6</span></a> plots <span class="math inline">\(e^{x}\)</span> and <span class="math inline">\(\ln(x)\)</span>. Notice that <span class="math inline">\(e^{x}\)</span> is always positive and increasing in <span class="math inline">\(x\)</span>. <span class="math inline">\(\ln(x)\)</span> is monotonically increasing in <span class="math inline">\(x\)</span> and is only defined for <span class="math inline">\(x&gt;0.\)</span> Also note that <span class="math inline">\(\ln(1)=0\)</span> and <span class="math inline">\(\ln(0)=-\infty.\)</span></p>
 <div class="cell" data-layout-align="center" data-fig.asp="0.75">
 <div class="cell-output-display">
 <div id="fig-logexp" class="quarto-figure quarto-figure-center anchored">
