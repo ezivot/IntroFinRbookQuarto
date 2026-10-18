@@ -1382,7 +1382,7 @@ None of the series show strong evidence for linear time dependence.
 The monthly returns have slightly larger sample autocorrelations at
 low lags than the daily returns. The dotted lines on the SACF plots
 are 5\% critical values for testing the null hypothesis that the true
-autocorrelations $\rho_{j}$ are equal to zero (see chapter @sec-Hypothesis-Testing).
+autocorrelations $\rho_{j}$ are equal to zero (see @sec-Hypothesis-Testing).
 If $\hat{\rho}_{j}$ crosses the dotted line then the null hypothesis
 that $\rho_{j}=0$ can be rejected at the 5\% significance level.
 \hfill{}$\blacksquare$
@@ -2057,7 +2057,7 @@ The rolling correlations between Microsoft and the S\&P 500 index show an intere
 \hfill{}$\blacksquare$
 :::
 
-It must be kept in mind that the rolling descriptive statistics are *informal diagnostics* for evaluating the assumption of covariance stationarity. As you have seen, there is considerably sampling variability in the rolling statistics due to the small window size which can make it difficult to untangle statistical noise from true changes in the underlying parameters. In Chapter @sec-Hypothesis-Testing I will consider formal statistical tests for constant parameters that can give better evidence for or against the assumption of covariance stationarity.
+It must be kept in mind that the rolling descriptive statistics are *informal diagnostics* for evaluating the assumption of covariance stationarity. As you have seen, there is considerably sampling variability in the rolling statistics due to the small window size which can make it difficult to untangle statistical noise from true changes in the underlying parameters. In @sec-Hypothesis-Testing I will consider formal statistical tests for constant parameters that can give better evidence for or against the assumption of covariance stationarity.
 
 ### Practical issues associated with rolling estimates
 
