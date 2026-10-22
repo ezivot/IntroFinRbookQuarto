@@ -1,6 +1,6 @@
 # Estimation of The GWN Model {#sec-Estimation-of-The-GWN-Model}
 
-Updated: September 5, 2026
+Updated: October 22, 2026
 
 Copyright © Eric Zivot 2026
 
@@ -43,7 +43,9 @@ $$ {#eq-GWN-model-matrix}
 
 Under these assumptions, you can use the observed returns $\{\mathbf{r}_{t}\}_{t=1}^{T}$
 to estimate the unknown parameters in $\boldsymbol{\mu}$ and $\boldsymbol{\Sigma}$
-of the GWN model. However, before you describe the estimation of the
+of the GWN model. 
+
+However, before I describe the estimation of the
 GWN model in detail, it is necessary to review some fundamental concepts
 in the statistical theory of estimation. This is important because
 estimates of parameters have *estimation error* and statistical theory
@@ -67,11 +69,6 @@ and I investigate the statistical properties of these estimators in
 @sec-Statistical-Properties-of-GWN-Model-Estimates. In @sec-Using-Monte-Carlo-Simulation 
 I illustrates how Monte Carlo simulation can be used to evaluate and understand the statistical
 properties of the GWN model estimators. 
-
-To be added:
-
-* Which asymptotic distribution formulas depend on the normality assumption? Make 
-clear which results depend on GWN model and which results do not.  
 
 In this chapter I use the R packages **introcompfinr**, **mvtnorm**,
 and **PerformanceAnalytics**. Make sure these packages are installed
@@ -103,7 +100,7 @@ of $T$ random returns from the GWN model, and let $\theta$ denote
 some characteristic of the model. An *estimator*\index{Estimator} of $\theta$, denoted
 $\hat{\theta}$, is a rule or algorithm for estimating $\theta$ as
 a function of the random variables $\{R_{1},\ldots,R_{T}\}$. Here,
-$\hat{\theta}$ is a random variable. 
+$\hat{\theta} = \hat{\theta}(\{R_{1},\ldots,R_{T}\})$ is a random variable. 
 :::
 
 
@@ -112,7 +109,7 @@ Let $\{r_{1},\ldots,r_{T}\}$ denote an observed
 sample of size $T$ from the GWN model, and let $\theta$ denote some
 characteristic of the model. An *estimate*\index{Estimate} of $\theta$, denoted $\hat{\theta}$,
 is simply the value of the estimator for $\theta$ based on the observed
-sample $\{r_{1},\ldots,r_{T}\}$. Here, $\hat{\theta}$ is a number.
+sample $\{r_{1},\ldots,r_{T}\}$. Here, $\hat{\theta} = \hat{\theta}(\{r_{1},\ldots,r_{T}\})$ is a number.
 :::
 
 
@@ -158,7 +155,9 @@ when $\hat{\theta} = \hat{\mu}$. In general, the
 exact form of $f(\hat{\theta})$ is often too difficult to derive
 exactly. When $f(\hat{\theta})$ is too difficult to compute you can
 often approximate $f(\hat{\theta})$ using either *Monte Carlo simulation*
-techniques or the *Central Limit Theorem* (CLT). In Monte Carlo
+techniques or the *Central Limit Theorem* (CLT). 
+
+In Monte Carlo
 simulation, you use the computer to simulate many different realizations
 of the random returns $\{R_{t}\}_{t=1}^{T}$ and on each simulated
 sample you evaluate the estimator $\hat{\theta}$. The Monte Carlo
@@ -166,6 +165,7 @@ approximation of $f(\hat{\theta})$ is the empirical distribution of
 $\hat{\theta}$ over the different simulated samples. For a given
 sample size $T$, Monte Carlo simulation gives a very accurate approximation
 to $f(\hat{\theta})$ if the number of simulated samples is very large.
+
 The CLT approximation of $f(\hat{\theta})$ is a normal distribution
 approximation that becomes more accurate as the sample size $T$ gets
 very large. An advantage of the CLT approximation is that it is often
@@ -306,6 +306,7 @@ $\hat{\theta}$ from $\theta$. If this expected deviation is small,
 then you know that $\hat{\theta}$ will almost always be close to $\theta$.
 Alternatively, if the mean squared is large then it is possible to
 see samples for which $\hat{\theta}$ is quite far from $\theta$.
+
 A useful decomposition of $\mathrm{mse}(\hat{\theta},\theta)$ is:
 $$
 \mathrm{mse}(\hat{\theta},\theta)=E[(\hat{\theta}-E[\hat{\theta}])^{2}]+\left(E[\hat{\theta}]-\theta\right)^{2}=\mathrm{var}(\hat{\theta})+\mathrm{bias}(\hat{\theta},\theta)^{2}
@@ -366,7 +367,7 @@ has a small bias @eq-bias and a small standard error @eq-se.
 ### Estimated standard errors
 
 Standard error formulas $\mathrm{se}(\hat{\theta})$ that I will derive in this chapter often depend on the unknown values of the GWN model parameters. For example, later on I will show that $\mathrm{se}(\hat{\mu}) = \sigma^2 / T$ which depends on the GWN parameter $\sigma^2$ which is unknown. Hence, the formula for $\mathrm{se}(\hat{\mu})$ is a *practically useless* quantity as I
-cannot compute its value because I don't the know the value of $\sigma^2$. Fortunately, I can create a *practically useful* formula by replacing the unknown quantity $\sigma^2$ with a good estimate $\hat{\sigma}^2$ that I compute from the data. This gives rise the *estimated standard error* $\widehat{\mathrm{se}}(\hat{\mu}) = \hat{\sigma}^2 / T$.
+cannot compute its value because I don't the know the value of $\sigma^2$. Fortunately, I can create a *practically useful* formula by replacing the unknown quantity $\sigma^2$ with a good estimate $\hat{\sigma}^2$ that I compute from the data (this is the so-called *plug-in principle* from statistics). This gives rise the *estimated standard error* $\widehat{\mathrm{se}}(\hat{\mu}) = \hat{\sigma}^2 / T$.
 
 ## Asymptotic Properties of Estimators {#sec-Asymptotic-Properties-of-Estimators}
 
@@ -377,17 +378,15 @@ size $T$ gets very large. For example, analytic calculations may
 show that the bias and mse of an estimator $\hat{\theta}$ depend
 on $T$ in a decreasing way. That is, as $T$ gets very large the
 bias and mse approach zero. So for a very large sample, $\hat{\theta}$
-is effectively unbiased with high precision. In this case I say that
+is effectively unbiased with high precision. In this case you say that
 $\hat{\theta}$ is a *consistent* estimator of $\theta$. In
 addition, for large samples the *Central Limit Theorem* (CLT) says that
 $f(\hat{\theta})$ can often be well approximated by a normal distribution.
-In this case, I say that $\hat{\theta}$ is *asymptotically normally distributed*. 
-The word "asymptotic" means" in an infinitely large sample" or "as the sample
-size $T$ goes to infinity" . Of course, in the real
-world I don't have an infinitely large sample and so the asymptotic
+In this case, you say that $\hat{\theta}$ is *asymptotically normally distributed*. 
+The word "asymptotic" means "in an infinitely large sample" or "as the sample size $T$ goes to infinity". Of course, in the real
+world you don't have an infinitely large sample and so the asymptotic
 results are only approximations. How good these approximations are
-for a given sample size $T$ depends on the context. Monte Carlo simulations
-(see @sec-Using-Monte-Carlo-Simulation) can often be
+for a given sample size $T$ depends on the context. Monte Carlo simulations (see @sec-Using-Monte-Carlo-Simulation) can often be
 used to evaluate asymptotic approximations in a given context.
 
 ### Consistency
@@ -545,7 +544,7 @@ sample statistics.
 
 ::: {#prp-plug-in-principle-estimates-for-gwn-model-parameters .proposition name="Plug-in Principle Estimates for GWN Model Parameters"}
 For the GWN model parameters, the plug-in principle estimates are
-the following sample descriptive statistics discussed in Chapter @sec-Descriptive-Statistics-for-Financial-Data:
+the following sample descriptive statistics discussed in @sec-Descriptive-Statistics-for-Financial-Data:
 
 $$
 \hat{\mu}_{i} =\frac{1}{T}\sum_{t=1}^{T}r_{it},
@@ -576,14 +575,14 @@ statistics can be computed for a collection of $N$ assets using the
 matrix sample statistics: 
 
 $$
-\underset{(N\times1)}{\hat{\mu}}  =\frac{1}{T}\sum_{t=1}^{T}\mathbf{r}_{t}=\left(\begin{array}{c}
+\underset{(N\times1)}{\hat{\boldsymbol{\mu}}}  =\frac{1}{T}\sum_{t=1}^{T}\mathbf{r}_{t}=\left(\begin{array}{c}
 \hat{\mu}_{1}\\
 \vdots\\
 \hat{\mu}_{N}
 \end{array}\right),
 $$ {#eq-muhat-vector}
 $$
-\underset{(N\times N)}{\hat{\Sigma}}  =\frac{1}{T-1}\sum_{t=1}^{T}(\mathbf{r}_{t}-\hat{\mu})(\mathbf{r}_{t}-\hat{\mu})^{\prime}=\left(\begin{array}{cccc}
+\underset{(N\times N)}{\hat{\boldsymbol{\Sigma}}}  =\frac{1}{T-1}\sum_{t=1}^{T}(\mathbf{r}_{t}-\hat{\mu})(\mathbf{r}_{t}-\hat{\mu})^{\prime}=\left(\begin{array}{cccc}
 \hat{\sigma}_{1}^{2} & \hat{\sigma}_{12} & \cdots & \hat{\sigma}_{1N}\\
 \hat{\sigma}_{12} & \hat{\sigma}_{2}^{2} & \cdots & \hat{\sigma}_{2N}\\
 \vdots & \vdots & \ddots & \vdots\\
@@ -591,11 +590,12 @@ $$
 \end{array}\right).
 $$ {#eq-Sigmahat-matrix}
 
-Here $\hat{\mu}$ is called the *sample mean vector* and $\hat{\Sigma}$
+Here $\hat{\boldsymbol{\mu}}$ is called the *sample mean vector* and $\hat{\boldsymbol{\Sigma}}$
 is called the *sample covariance matrix*. The sample variances are the
-diagonal elements of $\hat{\Sigma}$, and the sample covariances
-are the off diagonal elements of $\hat{\Sigma}.$ To get
-the sample correlations, define the $N\times N$ diagonal matrix:
+diagonal elements of $\hat{\boldsymbol{\Sigma}}$, and the sample covariances
+are the off diagonal elements of $\hat{\boldsymbol{\Sigma}}.$ 
+
+To get the sample correlations, define the $N\times N$ diagonal matrix:
 $$
 \mathbf{\hat{D}}=\left(\begin{array}{cccc}
 \hat{\sigma}_{1} & 0 & \cdots & 0\\
@@ -623,30 +623,18 @@ Here, the sample correlations are the off diagonal elements of $\mathbf{\hat{C}}
 To illustrate typical estimates of the GWN model parameters, I use
 data on monthly simple and continuously compounded (cc) returns for Microsoft, Starbucks
 and the S \& P 500 index over the period January 1998 through May
-2012 from the **introcompfinr** package. This is same data used in Chapter @sec-Descriptive-Statistics-for-Financial-Data and is constructed as follows:
+2012 from the **introcompfinr** package. This is same data used in @sec-Descriptive-Statistics-for-Financial-Data and is constructed as follows:
 
 ```{r}
 #| echo: true
-
-msftPrices = to.monthly(msftDailyPrices, OHLC=FALSE) 
-sp500Prices = to.monthly(sp500DailyPrices, OHLC=FALSE) 
-sbuxPrices = to.monthly(sbuxDailyPrices, OHLC=FALSE) 
-# set sample to match examples in other chapters
-smpl = "1998-01::2012-05" 
-msftPrices = msftPrices[smpl] 
-sp500Prices = sp500Prices[smpl] 
-sbuxPrices = sbuxPrices[smpl] 
-# calculate returns 
-msftRetS = na.omit(Return.calculate(msftPrices, method="simple"))
-sp500RetS = na.omit(Return.calculate(sp500Prices, method="simple"))
-sbuxRetS = na.omit(Return.calculate(sbuxPrices, method="simple"))
-msftRetC = log(1 + msftRetS) 
-sp500RetC = log(1 + sp500RetS) 
-sbuxRetC = log(1 + sbuxRetS) 
-# merged data set 
-gwnRetS = merge(msftRetS, sbuxRetS, sp500RetS) 
-gwnRetC = merge(msftRetC, sbuxRetC, sp500RetC) 
-colnames(gwnRetS) = colnames(gwnRetC) = c("MSFT", "SBUX", "SP500") 
+gwnDailyPrices = merge(msftDailyPrices,
+                       sbuxDailyPrices,
+                       sp500DailyPrices)
+gwnPrices = to.monthly(gwnDailyPrices, OHLC=FALSE)
+gwnPrices = gwnPrices["1998-01::2012-05"]
+gwnRetS = na.omit(Return.calculate(gwnPrices, 
+                                   method="simple"))
+gwnRetC = log(1 + gwnRetS) 
 ```
 
 These data are illustrated in @fig-CerModelEstimation3returns
@@ -686,7 +674,7 @@ plot(gwnRetC, multi.panel=TRUE, main="",
 pairs(coredata(gwnRetC), col="blue", cex=1.25, pch=16)
 ```
 
-The estimates of $\mu_{i}$ ($i=\textrm{msft,sbux,sp500})$ using
+The estimates of $\mu_{i}$ ($i=\textrm{msft, sbux, sp500})$ using
 @eq-muhat or @eq-muhat-vector can be computed using
 the R functions `apply()` and `mean()`:
 
@@ -750,6 +738,42 @@ These estimates confirm the visual results from the scatterplot matrix
 in @fig-CerModelEstimation3returnsScatter.
 
 \hfill{}$\blacksquare$
+:::
+
+::: {#exm-estimating-the-gwn-model-parameters-using_estimate_gwn_model .example name="Estimating the GWN model parameters using the introcompfin function estimate_gwn_model"}
+
+To simplify the estimation of the GWN model parameters, you can use the `estimate_gwn_model()` function from the **introcompfinr** package: 
+```{r}
+gwn_fit = estimate_gwn_model(gwnRetS)
+class(gwn_fit)
+```
+The function `estimate_gwn_model()` takes an `xts` object of asset returns and creates a `gwn_model`. This object has the following components:
+
+```{r}
+names(gwn_fit)
+```
+You extract the components using `$`. For example, 
+```{r}
+gwn_fit$muhat
+```
+You can extract the coefficient components using the `coef()` extractor function. For example, to extract the estimated correlations $\rho_{ij}$ use:
+
+```{r}
+coef(gwn_fit, which_coef="correlation")
+```
+In R, most fitting functions have `print`, `summary` and `plot` methods. The `print` method (which is invoked by just typing the object name and hitting return) prints the estimated coefficients and some other basic information about the estimation:
+
+```{r}
+gwn_fit
+```
+Here, the `print` method only shows the estimate of $\mu$ and $\sigma$. 
+
+The `summary` method shows the estimates and estimated standard errors. I will come back to this later on in the chapter. The `plot` method provides some useful visualizations. For example, to create a risk-return scatterplot use:
+
+```{r}
+plot(gwn_fit, which.plot="risk-return", ylim=c(0, 0.025), xlim=c(0, 0.15))
+```
+See the help files for `estimate_gwn_model` and the associated methods for more details. \hfill{}$\blacksquare$
 :::
 
 ## Statistical Properties of the GWN Model Estimates {#sec-Statistical-Properties-of-GWN-Model-Estimates}
@@ -838,7 +862,7 @@ Then $\mathrm{se}(\hat{\mu}_{i})=\mathrm{sd}(\hat{\mu}_{i})=\frac{\sigma_{i}}{\s
 
 The derivations of the standard errors for $\hat{\sigma}_{i}^{2},\hat{\sigma}_{i}$,
 $\hat{\sigma}_{ij}$ and $\hat{\rho}_{ij}$ are complicated, and the
-exact results are extremely messy and hard to work with. However,
+exact results are extremely messy and hard to work out^[See [@goldberger-1991] for details.]. However,
 there are simple approximate formulas for the standard errors of $\hat{\sigma}_{i}^{2},\hat{\sigma}_{i}$, $\hat{\sigma_{ij}}$, and $\hat{\rho}_{ij}$ based on the CLT under the GWN model that are valid if the sample
 size, $T$, is reasonably large. 
 
@@ -862,14 +886,15 @@ approximations are such that the approximation error goes to zero
 as the sample size $T$ gets very large. 
 :::
 
-I make the following remarks: 
 
+:::{.callout-note}
+## Remarks
 1.  As with the formula for the standard error of the sample mean, the formulas for $\mathrm{se}(\hat{\sigma}_{i}^{2})$ and $\mathrm{se}(\hat{\sigma}_{i})$ depend on $\sigma_{i}^{2}$. Larger values of $\sigma_{i}^{2}$ imply less precise estimates of $\hat{\sigma}_{i}^{2}$ and $\hat{\sigma}_{i}$. 
 2.  The formula for $\mathrm{se}(\hat{\sigma}_{ij})$ depends on $\sigma_i^2$, $\sigma_j^2$, and $\rho_{ij}^2$. Given $\sigma_i^2$ and $\sigma_j^2$, the standard error is smallest when $\rho_{ij}=0$. 
 3.  The formula for $\mathrm{se}(\hat{\rho}_{ij})$, does not depend on $\sigma_{i}^{2}$ but rather depends on $\rho_{ij}^{2}$ and is smaller the closer $\rho_{ij}^{2}$ is to unity. Intuitively, this makes sense because as $\rho_{ij}^{2}$ approaches one the linear dependence between $R_{it}$ and $R_{jt}$ becomes almost perfect and this will be easily recognizable in the data (scatterplot will almost follow a straight line). 
 4.  The formulas for the standard errors above are inversely related to the square root of the sample size, $\sqrt{T}$, which means that larger sample sizes imply smaller values of the standard errors. 
 5.  Interestingly, $\mathrm{se}(\hat{\sigma}_{i})$ goes to zero the fastest and $\mathrm{se}(\hat{\sigma}_{i}^{2})$ goes to zero the slowest. Hence, for a fixed sample size, these formulas suggest that $\sigma_{i}$ is generally estimated more precisely than $\sigma_{i}^{2}$ and $\rho_{ij}$, and $\rho_{ij}$ is estimated generally more precisely than $\sigma_{i}^{2}$.  
-
+:::
 
 The above formulas @eq-sesigma2hat - @eq-serhohat
 are not practically useful, however, because they depend on the unknown
@@ -929,7 +954,7 @@ index (a highly diversified portfolio) than it is for Microsoft and
 Starbucks stock (individual assets). 
 
 It is tempting to compare the magnitude of $\hat{\mu}_{i}$ to $\widehat{\mathrm{se}}(\hat{\mu}_{i})$ to evaluate if $\hat{\mu}_{i}$ is
-a precise estimate. A common way to do this is to compute the so-called *t-ratio*:
+a precise estimate. A common way to do this is to compute the so-called *t-ratio*, $t=\frac{\hat{\mu}_{i}}{\widehat{\mathrm{se}}(\hat{\mu}_{i})}$, using:
 
 ```{r}
 #| echo: true
@@ -1094,7 +1119,7 @@ $$
 $$
 Hence, the interval, 
 $$
- [\hat{\mu}_{i}-t_{T-1}(1-\alpha/2)\cdot\widehat{\mathrm{se}}(\hat{\mu}_{i}),~\hat{\mu}_{i}+t_{T-1}(1-\alpha/2)\cdot\widehat{\mathrm{se}}(\hat{\mu}_{i})]
+ [\hat{\mu}_{i}-t_{T-1}(1-\alpha/2)\cdot\widehat{\mathrm{se}}(\hat{\mu}_{i}),~\hat{\mu}_{i}+t_{T-1}(1-\alpha/2)\cdot\widehat{\mathrm{se}}(\hat{\mu}_{i})] \\
  = \hat{\mu}_{i}\pm t_{T-1}(1-\alpha/2)\cdot\widehat{\mathrm{se}}(\hat{\mu}_{i})
 $$ {#eq-exact-ci}
 covers the true unknown value of $\mu_{i}$ with probability $1-\alpha$.
@@ -1130,7 +1155,7 @@ is a random variable. Since the confidence interval is constructed as
 $\hat{\mu}_{i}\pm t_{T-1}(1-\alpha/2)\cdot\widehat{\mathrm{se}}(\hat{\mu}_{i})$
 it is also a random variable. An intuitive way to think about the
 coverage probability associated with the confidence interval is to
-think about the game of "horseshoes"^[Horse shoes is a game commonly played at county fairs. See (http://en.wikipedia.org/wiki/Horseshoes)
+think about the game of "horseshoes"^[Horse shoes is a game commonly played at county fairs in the U.S. See (http://en.wikipedia.org/wiki/Horseshoes)
 for a complete description of the game.]. The horseshoe is the confidence interval and the parameter $\mu_{i}$
 is the post at which the horse shoe is tossed. Think of playing the game
 100 times. If the thrower
@@ -1291,6 +1316,16 @@ The 95\% confidence intervals for $\sigma_{ij}$ $\rho_{ij}$ are not too wide and
 \hfill{}$\blacksquare$
 :::
 
+::: {#exm-computing-estimated-standard-errors .example name="Computing estmated standard errors and 95% confidence intervals from a gwn_model object"}
+
+If the GWN model is fit using the **introcompfinr** function `estimate_gwn_model()`, then estimated standard errors and 95\% confidence intervals for all estimates is produced by the `summary()` method:
+
+```{r}
+summary(gwn_fit, show_correlations=TRUE)
+```
+\hfill{}$\blacksquare$
+:::
+
 ## Using Monte Carlo Simulation to Understand the Statistical Properties of Estimators {#sec-Using-Monte-Carlo-Simulation}
 \index{Monte Carlo Simulation}
 Let $R_{t}$ be the return on a single asset described by the GWN
@@ -1368,7 +1403,7 @@ my.panel <- function(...) {
 }
 sim.ret.10 = matrix(0, n.obs, 10)
 colnames(sim.ret.10) = paste("Sim", 1:10, sep=".")
-# 10 simulation for figure figure
+# 10 simulations for figure
 set.seed(111)
 for (sim in 1:10) {
 	sim.ret.10[, sim] = rnorm(n.obs,mean=mu,sd=sigma)
@@ -1811,7 +1846,7 @@ $$
 Under the GWN model and for large enough T, the sampling distribution for the $N(N+1)/2 \times 1$ vector $\hat{\boldsymbol{\theta}} = \mathrm{vech}(\hat{\boldsymbol{\Sigma}})$ is multivariate normal:
 
 $$
-\hat{\boldsymbol{\theta}} \sim N\left(\boldsymbol{\theta}, ~ \frac{1}{T}\hat{\boldsymbol{\Omega}}\right).
+\hat{\boldsymbol{\theta}} \sim N\left(\boldsymbol{\theta}, ~ \frac{1}{T}\hat{\boldsymbol{\Omega}}\right),
 $$
 where $\frac{1}{T}\hat{\boldsymbol{\Omega}}$ is an $N(N+1)/2 \times N(N+1)/2$ matrix giving the estimated variances and covariances of the unique elements of $\hat{\boldsymbol{\Sigma}}$. The element of $\frac{1}{T}\hat{\boldsymbol{\Omega}}$ corresponding to $\widehat{\mathrm{cov}}(\hat{\sigma}_{ij},\hat{\sigma}_{lm})$ is given by $T^{-1}(\hat{\sigma}_{il}\hat{\sigma}_{jm} + \hat{\sigma}_{im}\hat{\sigma}_{jl})$ for all $i,j,l,m = 1,2,\ldots,N$, including $i=j=l=m.$  If $i=j$ and $l=m$ then 
 
@@ -1853,7 +1888,7 @@ Notice that the results for the diagonal elements of $\frac{1}{T}\hat{\boldsymbo
 
 ### Joint sampling distribution between $\hat{\boldsymbol{\mu}}$ and $\mathrm{vech}(\hat{\boldsymbol{\Sigma}})$
 
-When you study hypothesis testing in Chapter @sec-Hypothesis-Testing and the statistical analysis of portfolios in Chapter @sec-Statistical-Analysis-of-Portfolios you will need to use results on the joint sampling distribution between $\hat{\boldsymbol{\mu}}$ and $\mathrm{vech}(\hat{\boldsymbol{\Sigma}})$. The follow proposition states the result:
+When you study hypothesis testing in @sec-Hypothesis-Testing and the statistical analysis of portfolios in @sec-Statistical-Analysis-of-Portfolios you will need to use results on the joint sampling distribution between $\hat{\boldsymbol{\mu}}$ and $\mathrm{vech}(\hat{\boldsymbol{\Sigma}})$. The follow proposition states the result:
 
 ::: {#prp-joint-sampling-distribution-between-mu-and-sigma .proposition name="Joint sampling distribution between $\\hat{\\boldsymbol{\\mu}}$ and $\\mathrm{vech}(\\hat{\\boldsymbol{\\Sigma}})$"}
 Under the GWN model and for large enough T, the joint sampling distribution for the $N+N(N+1)/2 \times 1$ vector $(\hat{\boldsymbol{\mu}}', \hat{\boldsymbol{\theta}}')'$, where $\hat{\boldsymbol{\theta}} = \mathrm{vech}(\hat{\boldsymbol{\Sigma}})$ is multivariate normal
