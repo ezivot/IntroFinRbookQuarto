@@ -297,12 +297,11 @@ div.csl-indent {
   <li><a href="#bootstrap-standard-error-estimate" id="toc-bootstrap-standard-error-estimate" class="nav-link" data-scroll-target="#bootstrap-standard-error-estimate"><span class="header-section-number">8.6.2</span> Bootstrap standard error estimate</a></li>
   <li><a href="#bootstrap-confidence-intervals" id="toc-bootstrap-confidence-intervals" class="nav-link" data-scroll-target="#bootstrap-confidence-intervals"><span class="header-section-number">8.6.3</span> Bootstrap confidence intervals</a></li>
   <li><a href="#performing-the-nonparametric-bootstrap-in-r" id="toc-performing-the-nonparametric-bootstrap-in-r" class="nav-link" data-scroll-target="#performing-the-nonparametric-bootstrap-in-r"><span class="header-section-number">8.6.4</span> Performing the nonparametric bootstrap in R</a></li>
+  <li><a href="#pros-and-cons-of-the-nonparametric-bootstrap" id="toc-pros-and-cons-of-the-nonparametric-bootstrap" class="nav-link" data-scroll-target="#pros-and-cons-of-the-nonparametric-bootstrap"><span class="header-section-number">8.6.5</span> Pros and cons of the nonparametric bootstrap</a></li>
   </ul></li>
-  <li><a href="#brute-force-nonparametric-bootstrap-procedure" id="toc-brute-force-nonparametric-bootstrap-procedure" class="nav-link" data-scroll-target="#brute-force-nonparametric-bootstrap-procedure"><span class="header-section-number">8.7</span> Brute force nonparametric bootstrap procedure</a></li>
-  <li><a href="#pros-and-cons-of-the-nonparametric-bootstrap" id="toc-pros-and-cons-of-the-nonparametric-bootstrap" class="nav-link" data-scroll-target="#pros-and-cons-of-the-nonparametric-bootstrap"><span class="header-section-number">8.7.1</span> Pros and cons of the nonparametric bootstrap</a></li>
-  <li><a href="#sec-Using-Monte-Carlo" id="toc-sec-Using-Monte-Carlo" class="nav-link" data-scroll-target="#sec-Using-Monte-Carlo"><span class="header-section-number">8.8</span> Using Monte Carlo Simulation to Evaluate Delta Method, Jackknife and Bootstrap Standard Errors</a></li>
-  <li><a href="#further-reading-delta-method-and-resampling" id="toc-further-reading-delta-method-and-resampling" class="nav-link" data-scroll-target="#further-reading-delta-method-and-resampling"><span class="header-section-number">8.9</span> Further Reading: Delta Method and Resampling</a></li>
-  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">8.10</span> Exercises</a></li>
+  <li><a href="#sec-Using-Monte-Carlo" id="toc-sec-Using-Monte-Carlo" class="nav-link" data-scroll-target="#sec-Using-Monte-Carlo"><span class="header-section-number">8.7</span> Using Monte Carlo Simulation to Evaluate Delta Method, Jackknife and Bootstrap Standard Errors</a></li>
+  <li><a href="#further-reading-delta-method-and-resampling" id="toc-further-reading-delta-method-and-resampling" class="nav-link" data-scroll-target="#further-reading-delta-method-and-resampling"><span class="header-section-number">8.8</span> Further Reading: Delta Method and Resampling</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">8.9</span> Exercises</a></li>
   </ul>
 </nav>
     </div>
@@ -921,9 +920,9 @@ q_{\alpha}^Z
 <p>The delta method deduces the asymptotic distribution of <span class="math inline">\(f(\hat{\boldsymbol{\theta}})\)</span> using a first order Taylor series approximation of <span class="math inline">\(f(\hat{\boldsymbol{\theta}})\)</span> evaluated at the true value <span class="math inline">\(\boldsymbol{\theta}\)</span>. For simplicity, assume that <span class="math inline">\(\theta\)</span> is a scalar parameter. Then, the first order Taylor series expansion gives</p>
 <p><span class="math display">\[\begin{align*}
 f(\hat{\theta}) &amp; = f(\theta) + f'(\theta)(\hat{\theta} - \theta) + \text{remainder} \\
-&amp; = \approx f(\theta) + f'(\theta)(\hat{\theta} - \theta) = f(\theta) + Z,
+&amp; \approx f(\theta) + f'(\theta)(\hat{\theta} - \theta) = f(\theta) + Z,
 \end{align*}\]</span></p>
-<p>where <span class="math inline">\(Z = f'(\theta)(\hat{\theta} - \theta)\)</span>. The first order Taylor series expansion shows that <span class="math inline">\(f(\hat{\theta})\)</span> is an approximate linear function of the random variable <span class="math inline">\(Z\)</span>. The values <span class="math inline">\(\theta\)</span>, <span class="math inline">\(f(\theta)\)</span>, and <span class="math inline">\(f'(\theta)\)</span> are constants. Assuming that, for large enough T, T,</p>
+<p>where <span class="math inline">\(Z = f'(\theta)(\hat{\theta} - \theta)\)</span>. The first order Taylor series expansion shows that <span class="math inline">\(f(\hat{\theta})\)</span> is an approximate linear function of the random variable <span class="math inline">\(Z\)</span>. The values <span class="math inline">\(\theta\)</span>, <span class="math inline">\(f(\theta)\)</span>, and <span class="math inline">\(f'(\theta)\)</span> are constants. Assuming that, for large enough T,</p>
 <p><span class="math display">\[
 \hat{\theta}\sim N(\theta,\widehat{\mathrm{se}}(\hat{\theta})^{2}),
 \]</span></p>
@@ -931,7 +930,7 @@ f(\hat{\theta}) &amp; = f(\theta) + f'(\theta)(\hat{\theta} - \theta) + \text{re
 <p><span class="math display">\[
 Z = f'(\theta)(\hat{\theta} - \theta) \sim N(0, f'(\theta)^2 \times \widehat{\mathrm{se}}(\hat{\theta})^{2}).
 \]</span></p>
-<p>Hence, for large enough <span class="math inline">\(T\)</span>, the <span class="math inline">\(f(\hat{\theta})\)</span> is a linear function of the normally distributed random variable <span class="math inline">\(Z\)</span> and so is also normally distributed with distribution: <span class="math display">\[
+<p>Hence, for large enough <span class="math inline">\(T\)</span>, <span class="math inline">\(f(\hat{\theta})\)</span> is a linear function of the normally distributed random variable <span class="math inline">\(Z\)</span> and so is also normally distributed: <span class="math display">\[
 f(\hat{\theta}) \sim N(f(\theta), f'(\theta)^2 \widehat{\mathrm{se}}(\hat{\theta})^{2}).)
 \]</span></p>
 <p>Since <span class="math inline">\(\hat{\theta}\)</span> is consistent for <span class="math inline">\(\theta\)</span> you can replace <span class="math inline">\(f'(\theta)^2\)</span> with <span class="math inline">\(f'(\hat{\theta})^2\)</span> giving the practically useful result</p>
@@ -1151,11 +1150,13 @@ f(\hat{\theta}) \sim N(f(\theta), f'(\hat{\theta})^2 \widehat{\mathrm{se}}(\hat{
 \tag{8.13}\]</span></span></p>
 <p>The jackknife estimated standard errors for the elements of <span class="math inline">\(\hat{\boldsymbol{\theta}}\)</span> are given by the square root of the diagonal elements of <span class="math inline">\(\widehat{\mathrm{var}}_{jack}(\hat{\boldsymbol{\theta}})\)</span>.</p>
 </div>
-<p>The same principle works for computing the estimated variance matrix of a vector of functions of GWN model parameters. Let <span class="math inline">\(\mathbf{f}:R^k \rightarrow R^l\)</span> with <span class="math inline">\(l \le k\)</span> and define <span class="math inline">\(\boldsymbol{\eta} = \mathbf{f}(\boldsymbol{\theta})\)</span> denote a <span class="math inline">\(l \times 1\)</span> vector of functions of GWN model parameters. Let <span class="math inline">\(\hat{\eta}=f(\hat{\boldsymbol{\theta}})\)</span> denote the plug-in estimator of <span class="math inline">\(\boldsymbol{\eta}\)</span>. Let <span class="math inline">\(\hat{\boldsymbol{\eta}}_{-t}\)</span> denote the leave-one-out estimate of <span class="math inline">\(\boldsymbol{\eta}\)</span>, and <span class="math inline">\(\bar{\boldsymbol{\eta}}=T^{-1}\sum_{t=1}^T \hat{\boldsymbol{\eta}}_{-t}\)</span>. :::{#def-jackknife-estimator-of-variance-matrix-for-vector-valued-functions .definition name=“Jackknife variance matrix for vector-valued functions”} The jackknife estimate of the <span class="math inline">\(l \times l\)</span> variance matrix <span class="math inline">\(\widehat{\mathrm{var}}(\hat{\boldsymbol{\eta}})\)</span> is the scaled sample covariance of <span class="math inline">\(\{\hat{\boldsymbol{\eta}}_{-t}\}_{t=1}^T\)</span>:</p>
+<p>The same principle works for computing the estimated variance matrix of a vector of functions of GWN model parameters. Let <span class="math inline">\(\mathbf{f}:R^k \rightarrow R^l\)</span> with <span class="math inline">\(l \le k\)</span> and define <span class="math inline">\(\boldsymbol{\eta} = \mathbf{f}(\boldsymbol{\theta})\)</span> denote a <span class="math inline">\(l \times 1\)</span> vector of functions of GWN model parameters. Let <span class="math inline">\(\hat{\eta}=f(\hat{\boldsymbol{\theta}})\)</span> denote the plug-in estimator of <span class="math inline">\(\boldsymbol{\eta}\)</span>. Let <span class="math inline">\(\hat{\boldsymbol{\eta}}_{-t}\)</span> denote the leave-one-out estimate of <span class="math inline">\(\boldsymbol{\eta}\)</span>, and <span class="math inline">\(\bar{\boldsymbol{\eta}}=T^{-1}\sum_{t=1}^T \hat{\boldsymbol{\eta}}_{-t}\)</span>.</p>
+<div id="def-jackknife-estimator-of-variance-matrix-for-vector-valued-functions" class="definition theorem definition">
+<p><span class="theorem-title"><strong>Definition 8.6 (Jackknife variance matrix for vector-valued functions) </strong></span>The jackknife estimate of the <span class="math inline">\(l \times l\)</span> variance matrix <span class="math inline">\(\widehat{\mathrm{var}}(\hat{\boldsymbol{\eta}})\)</span> is the scaled sample covariance of <span class="math inline">\(\{\hat{\boldsymbol{\eta}}_{-t}\}_{t=1}^T\)</span>:</p>
 <p><span id="eq-jack-varmatrix-eta"><span class="math display">\[
 \widehat{\mathrm{var}}_{jack}(\hat{\boldsymbol{\eta}}) = \frac{T-1}{T} \sum_{t=1}^T (\hat{\boldsymbol{\eta}}_{-t} - \bar{\boldsymbol{\eta}})(\hat{\boldsymbol{\eta}}_{-t} - \bar{\boldsymbol{\eta}})'.
 \tag{8.14}\]</span></span></p>
-<p>:::</p>
+</div>
 <div id="exm-jackknife-variance-estimate-for-hat-boldsymbol-theta-hat-mu-hat-sigma-for-microsoft-simple-returns" class="example theorem example">
 <p><span class="theorem-title"><strong>Example 8.15 (Jackknife variance estimate for <span class="math inline">\(\hat{\boldsymbol{\theta}}=(\hat{\mu}, \hat{\sigma})'\)</span> for Microsoft simple returns) </strong></span>The <strong>bootstrap</strong> function <code>jackknife()</code> function only works for scalar-valued parameter estimates, so you have to compute the jackknife variance estimate by hand using a <code>for</code> loop. The R code is:</p>
 <div class="cell">
@@ -1250,7 +1251,7 @@ The Nonparametric Bootstrap Procedure
 E[\hat{\theta}]-\theta.
 \]</span></p>
 <div id="def-bootstrap-estimate-of-bias" class="definition theorem definition">
-<p><span class="theorem-title"><strong>Definition 8.6 (Bootstrap estimate of bias) </strong></span>The bootstrap estimate of bias is given by</p>
+<p><span class="theorem-title"><strong>Definition 8.7 (Bootstrap estimate of bias) </strong></span>The bootstrap estimate of bias is given by</p>
 <p><span id="eq-BootBootstrapBias"><span class="math display">\[
 \begin{aligned}
 \widehat{\mathrm{bias}}_{boot}(\hat{\theta},\theta)= \bar{\theta}^{\ast} - \hat{\theta} = \frac{1}{B}\sum_{j=1}^{\ B}\hat{\theta}_{j}^{\ast}-\hat{\theta.}\\
@@ -1269,7 +1270,7 @@ E[\hat{\theta}]-\theta.
 <h3 data-number="8.6.2" class="anchored" data-anchor-id="bootstrap-standard-error-estimate"><span class="header-section-number">8.6.2</span> Bootstrap standard error estimate</h3>
 <p> Let <span class="math inline">\(\hat{\theta}\)</span> be an estimate of the scalar parameter <span class="math inline">\(\theta\)</span>.</p>
 <div id="def-bootstrap-estimate-of-standard-error" class="definition theorem definition">
-<p><span class="theorem-title"><strong>Definition 8.7 (Bootstrap estimate of standard error) </strong></span>The bootstrap estimate of <span class="math inline">\(\widehat{\mathrm{se}}(\hat{\theta})\)</span> is given by the sample standard deviation of the bootstrap estimates {<span class="math inline">\(\hat{\theta}_{1}^{*},\ldots,\hat{\theta}_{B}^{*}\)</span>}:</p>
+<p><span class="theorem-title"><strong>Definition 8.8 (Bootstrap estimate of standard error) </strong></span>The bootstrap estimate of <span class="math inline">\(\widehat{\mathrm{se}}(\hat{\theta})\)</span> is given by the sample standard deviation of the bootstrap estimates {<span class="math inline">\(\hat{\theta}_{1}^{*},\ldots,\hat{\theta}_{B}^{*}\)</span>}:</p>
 <p><span id="eq-BootBootstrapSE"><span class="math display">\[
 \widehat{\mathrm{se}}_{boot}(\hat{\theta})=\sqrt{\frac{1}{B-1}\sum_{j=1}^{B}\left(\hat{\theta}_{j}^{\ast} - \bar{\theta}^{\ast} \right)^{2}}.
 \tag{8.17}\]</span></span></p>
@@ -1277,7 +1278,7 @@ E[\hat{\theta}]-\theta.
 </div>
 <p>Here, <span class="math inline">\(\widehat{\mathrm{se}}_{boot}(\hat{\theta})\)</span> is the size of a typical deviation of a bootstrap estimate, <span class="math inline">\(\hat{\theta}^{*}\)</span>, from the mean of the bootstrap estimates (typical deviation from the middle of the histogram of the bootstrap estimates). This is very closely related to the Monte Carlo estimate of <span class="math inline">\(\widehat{\mathrm{se}}(\hat{\theta}\)</span>), which is the sample standard deviation of the estimates of <span class="math inline">\(\theta\)</span> from the Monte Carlo samples.</p>
 <div id="def-bootstrap-estimate-of-variance" class="definition theorem definition">
-<p><span class="theorem-title"><strong>Definition 8.8 (Bootstrap estimate of variance) </strong></span>For a <span class="math inline">\(k \times 1\)</span> vector estimate <span class="math inline">\(\hat{\theta}\)</span>, the bootstrap estimate of <span class="math inline">\(\widehat{\mathrm{var}}(\hat{\theta})\)</span> is</p>
+<p><span class="theorem-title"><strong>Definition 8.9 (Bootstrap estimate of variance) </strong></span>For a <span class="math inline">\(k \times 1\)</span> vector estimate <span class="math inline">\(\hat{\theta}\)</span>, the bootstrap estimate of <span class="math inline">\(\widehat{\mathrm{var}}(\hat{\theta})\)</span> is</p>
 <p><span id="eq-BootBootstrapVar"><span class="math display">\[
 \widehat{\mathrm{var}}(\hat{\theta}) = \frac{1}{B-1}\sum_{j=1}^B (\hat{\theta}_{j}^{\ast} - \bar{\theta}^{\ast})(\hat{\theta}_{j}^{\ast} - \bar{\theta}^{\ast})'.
 \tag{8.18}\]</span></span></p>
@@ -1309,18 +1310,24 @@ E[\hat{\theta}]-\theta.
 <section id="brute-force-implementation" class="level4" data-number="8.6.4.1">
 <h4 data-number="8.6.4.1" class="anchored" data-anchor-id="brute-force-implementation"><span class="header-section-number">8.6.4.1</span> Brute force implementation</h4>
 <p>In the brute force implementation you program all parts of the bootstrap procedure. This typically involves four steps:</p>
-</section>
-</section>
-</section>
-<section id="brute-force-nonparametric-bootstrap-procedure" class="level2 {callout-note}" data-number="8.7">
-<h2 data-number="8.7" class="anchored" data-anchor-id="brute-force-nonparametric-bootstrap-procedure"><span class="header-section-number">8.7</span> Brute force nonparametric bootstrap procedure</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Brute force nonparametric bootstrap procedure
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <ol type="1">
 <li>Sample with replacement from the original data using the R function <code>sample()</code> to create <span class="math inline">\(\{r_{1}^{*},r_{2}^{*},\ldots,r_{T}^{*}\}\)</span>. Do this <span class="math inline">\(B\)</span> times.</li>
 <li>Compute <span class="math inline">\(B\)</span> values of the statistic of interest <span class="math inline">\(\hat{\theta}\)</span> from each bootstrap sample giving <span class="math inline">\(\{\hat{\theta}_{1}^{*},\ldots,\hat{\theta}_{B}^{*}\}\)</span>. Use <span class="math inline">\(B=1,000\)</span> for routine applications of the bootstrap. To minimize simulation noise it may be required to have <span class="math inline">\(B=10,000\)</span> or higher.</li>
 <li>Compute the bootstrap bias and SE values from <span class="math inline">\(\{\hat{\theta}_{1}^{*},\ldots,\hat{\theta}_{B}^{*}\}\)</span> using the R functions <code>mean()</code> and <code>sd()</code>, respectively.</li>
 <li>Compute the histogram and normal QQ-plot of <span class="math inline">\(\{\hat{\theta}_{1}^{*},\ldots,\hat{\theta}_{B}^{*}\}\)</span> using the R functions <code>hist()</code> and <code>qqnorm()</code>, respectively, to see if the bootstrap distribution looks normal.</li>
 </ol>
-</section>
+</div>
+</div>
 <p>Typically steps 1 and 2 are performed inside a <code>for</code> loop or within the R function <code>apply()</code>.</p>
 <p>In step 1, sampling with replacement for the original data is performed with the R function <code>sample()</code>. To illustrate, consider sampling with replacement from the <span class="math inline">\(5\times1\)</span> return vector <code>r</code> created using:</p>
 <div class="cell">
@@ -1434,8 +1441,9 @@ E[\hat{\theta}]-\theta.
 <p><span class="math inline">\(\blacksquare\)</span></p>
 </div>
 <p>It is important to keep in mind that the bootstrap resampling algorithm draws <em>random samples</em> from the observed data. In the example above, the random number generator in R was initially set with <code>set.seed(123)</code>. If the seed is set to a different integer, say 345, then the <span class="math inline">\(B=1,000\)</span> bootstrap samples will be different and you will get different numerical results for the bootstrap bias and estimated standard error. How different these results will be depends on number of bootstrap samples <span class="math inline">\(B\)</span> and the statistic <span class="math inline">\(\hat{\theta}\)</span> being bootstrapped. Generally, the smaller is <span class="math inline">\(B\)</span> the more variable the bootstraps results will be. It is good practice to repeat the bootstrap analysis with several different random number seeds to see how variable the results are. If the results vary considerably for different random number seeds then it is advised to increase the number of bootstrap simulations <span class="math inline">\(B\)</span>. It is common to use <span class="math inline">\(B=1,000\)</span> for routine calculations, and <span class="math inline">\(B=10,000\)</span> for final results.</p>
-<section id="r-package-boot" class="level4" data-number="8.7.0.1">
-<h4 data-number="8.7.0.1" class="anchored" data-anchor-id="r-package-boot"><span class="header-section-number">8.7.0.1</span> R package boot</h4>
+</section>
+<section id="r-package-boot" class="level4" data-number="8.6.4.2">
+<h4 data-number="8.6.4.2" class="anchored" data-anchor-id="r-package-boot"><span class="header-section-number">8.6.4.2</span> R package boot</h4>
 <p>The R package <strong>boot</strong> implements a variety of bootstrapping techniques including the basic non-parametric bootstrap described above. The <strong>boot</strong> package was written to accompany the textbook <em>Bootstrap Methods and Their Application</em> <span class="citation" data-cites="DH-1997">(<a href="references.html#ref-DH-1997" role="doc-biblioref">Davison and Hinkley 1997</a>)</span>. The two main functions in <strong>boot</strong> are <code>boot()</code> and <code>boot.ci()</code>, respectively. The <code>boot()</code> function implements the bootstrap for a statistic computed from a user-supplied function. The <code>boot.ci()</code> function computes bootstrap confidence intervals given the output from the <code>boot()</code> function.</p>
 <p>The arguments to <code>boot()</code> are:</p>
 <div class="cell">
@@ -1789,8 +1797,9 @@ E[\hat{\theta}]-\theta.
 <p><span class="math inline">\(\blacksquare\)</span></p>
 </div>
 </section>
-<section id="pros-and-cons-of-the-nonparametric-bootstrap" class="level3" data-number="8.7.1">
-<h3 data-number="8.7.1" class="anchored" data-anchor-id="pros-and-cons-of-the-nonparametric-bootstrap"><span class="header-section-number">8.7.1</span> Pros and cons of the nonparametric bootstrap</h3>
+</section>
+<section id="pros-and-cons-of-the-nonparametric-bootstrap" class="level3" data-number="8.6.5">
+<h3 data-number="8.6.5" class="anchored" data-anchor-id="pros-and-cons-of-the-nonparametric-bootstrap"><span class="header-section-number">8.6.5</span> Pros and cons of the nonparametric bootstrap</h3>
 <p>The nonparametric bootstrap is extremely useful and powerful statistical technique. The main advantages (pros) are:</p>
 <ol type="1">
 <li><p>General procedure to estimate bias and standard errors, and to compute confidence intervals, that does not rely on asymptotic distributions.</p></li>
@@ -1806,8 +1815,9 @@ E[\hat{\theta}]-\theta.
 <li><p>You have to be careful applying the bootstrap to time series data. If there is serial correlation in the data then the nonparametric bootstrap may give poor results. There are versions of the bootstrap (e.g., the block bootstrap) that work with serially correlated data. For example, the <em>tseries</em> function <code>tsbootstrap()</code> is designed to to work with serially correlated time series data.</p></li>
 </ol>
 </section>
-<section id="sec-Using-Monte-Carlo" class="level2" data-number="8.8">
-<h2 data-number="8.8" class="anchored" data-anchor-id="sec-Using-Monte-Carlo"><span class="header-section-number">8.8</span> Using Monte Carlo Simulation to Evaluate Delta Method, Jackknife and Bootstrap Standard Errors</h2>
+</section>
+<section id="sec-Using-Monte-Carlo" class="level2" data-number="8.7">
+<h2 data-number="8.7" class="anchored" data-anchor-id="sec-Using-Monte-Carlo"><span class="header-section-number">8.7</span> Using Monte Carlo Simulation to Evaluate Delta Method, Jackknife and Bootstrap Standard Errors</h2>
 <p>You have studied three ways of computing standard errors for functions of GWN model parameter: the delta method, the jackknife, and the bootstrap. All three ways give similar results for the example functions. In this section, I show how to use Monte Carlo simulation to evaluate the three methods when the GWN model is true. Because Monte Carlo simulation approximates the true finite sample distribution of any estimator, it can give the best numerical standard error with which you can compare to the delta method, jackknife and bootstrap standard errors.</p>
 <p>You can evaluate the statistical properties of <span class="math inline">\(f_j(\hat{\boldsymbol{\theta}})\)</span>, for <span class="math inline">\(j=1,\ldots,3\)</span>, by Monte Carlo simulation in the same way that you evaluated the statistical properties of <span class="math inline">\(\hat{\mu}\)</span> in <a href="07-GWNModelEstimation-new.html"><span>Chapter&nbsp;7</span></a>. You use the simulation model <a href="07-GWNModelEstimation-new.html#eq-GWN-simulation-model">Equation&nbsp;<span>7.41</span></a> and <span class="math inline">\(N=1000\)</span> simulated samples of size <span class="math inline">\(T=100\)</span> to compute the estimates <span class="math inline">\(\{\left(f_{j}(\hat{\boldsymbol{\theta}})\right)^{1},\ldots,\left(f_j(\hat{\boldsymbol{\theta}})\right)^{1000}\}\)</span>. The true values for <span class="math inline">\(f_j(\boldsymbol{\theta})\)</span> are: <span class="math display">\[\begin{align*}
 f_1(\boldsymbol{\theta}) &amp; = 0.05+(0.10)\times(-1.645)=-0.114,\\
@@ -1965,12 +1975,12 @@ f_3(\boldsymbol{\theta}) &amp; = \$100,000 \times \left(\exp(f_1(\boldsymbol{\th
 <p>Here, you see that, across the simulations, the delta method is the least variable and the jackknife and the bootstrap have similar variability that is about twice as large as the delta method variability. The variability of the bootstrap can be reduced by increasing the number of bootstrap simulations (here it is 1000).</p>
 <p>Overall, the Monte Carlo experiment confirms that the delta method, jackknife and bootstrap all produce accurate standard error estimates for the example plug-in functions.</p>
 </section>
-<section id="further-reading-delta-method-and-resampling" class="level2" data-number="8.9">
-<h2 data-number="8.9" class="anchored" data-anchor-id="further-reading-delta-method-and-resampling"><span class="header-section-number">8.9</span> Further Reading: Delta Method and Resampling</h2>
+<section id="further-reading-delta-method-and-resampling" class="level2" data-number="8.8">
+<h2 data-number="8.8" class="anchored" data-anchor-id="further-reading-delta-method-and-resampling"><span class="header-section-number">8.8</span> Further Reading: Delta Method and Resampling</h2>
 <p>Chernick and LaBudde (2011) give a comprehensive overview of the bootstrap with applications in R.</p>
 </section>
-<section id="exercises" class="level2" data-number="8.10">
-<h2 data-number="8.10" class="anchored" data-anchor-id="exercises"><span class="header-section-number">8.10</span> Exercises</h2>
+<section id="exercises" class="level2" data-number="8.9">
+<h2 data-number="8.9" class="anchored" data-anchor-id="exercises"><span class="header-section-number">8.9</span> Exercises</h2>
 <div id="exr-delta-method" class="exercise theorem exercise">
 <p><span class="theorem-title"><strong>Exercise 8.1 (Delta method) </strong></span>&nbsp;</p>
 <ul>
@@ -2008,7 +2018,7 @@ f_3(\boldsymbol{\theta}) &amp; = \$100,000 \times \left(\exp(f_1(\boldsymbol{\th
 </ul>
 </div>
 <div id="exr-bootstrap-accuracy" class="exercise theorem exercise">
-<p><span class="theorem-title"><strong>Exercise 8.8 (Bootstrap accuracy) </strong></span>Repeat the Monte Carlo simulation in <a href="#sec-Using-Monte-Carlo"><span>Section&nbsp;8.8</span></a> using 1,000 simulated samples and 10,000 bootstrap simulations for the bootstrap calculations. That is, set R=10000 in the call to <code>boot()</code> inside the Monte Carlo simulation loop.</p>
+<p><span class="theorem-title"><strong>Exercise 8.8 (Bootstrap accuracy) </strong></span>Repeat the Monte Carlo simulation in <a href="#sec-Using-Monte-Carlo"><span>Section&nbsp;8.7</span></a> using 1,000 simulated samples and 10,000 bootstrap simulations for the bootstrap calculations. That is, set R=10000 in the call to <code>boot()</code> inside the Monte Carlo simulation loop.</p>
 <ol type="1">
 <li><p>How does the increase in simulations impact the bootstrap bias estimates?</p></li>
 <li><p>How does the increase in simulations impact the bootstrap standard error estimates?</p></li>
