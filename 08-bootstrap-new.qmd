@@ -1,6 +1,6 @@
 # Estimating Functions of GWN Model Parameters {#sec-The-Bootstrap}
 
-Updated: September 5, 2026
+Updated: October 27, 2026
 
 Copyright © Eric Zivot 2026
 
@@ -58,7 +58,7 @@ Given the plug-in estimate of $\boldsymbol{\theta}$, $\hat{\boldsymbol{\theta}} 
 For the examples in this chapter, I use data on monthly continuously
 compounded and simple returns for Microsoft over the period January 1998, through
 May 2012, from the **introcompfinr** package. The data is the
-same as that used in Chapter @sec-Descriptive-Statistics-for-Financial-Data
+same as that used in @sec-Descriptive-Statistics-for-Financial-Data
 and is constructed as follows:
 
 ```{r}
@@ -70,33 +70,27 @@ msftRetS = na.omit(Return.calculate(msftPrices, method="discrete"))
 msftRetC = log(1 + msftRetS)
 ```
 
-The GWN model estimates for $\mu_{msft}$ and $\sigma_{msft}$, with estimated standard
-errors, are:
+The GWN model estimates for $\mu_{msft}$ and $\sigma_{msft}$ for both the continuously compounded returns and the simple returns are computed using the **introcompfinr** function `estimate_gwn_model():
 
 ```{r}
 #| echo: true
-n.obs = nrow(msftRetC)
-muhatC = mean(msftRetC) 
-sigmahatC = sd(msftRetC) 
-muhatS = mean(msftRetS)
-sigmahatS = sd(msftRetS)
-estimates = c(muhatC, sigmahatC, muhatS, sigmahatS)
-se.muhatC = sigmahatC/sqrt(n.obs) 
-se.muhatS = sigmahatS/sqrt(n.obs) 
-se.sigmahatC = sigmahatC/sqrt(2*n.obs) 
-se.sigmahatS = sigmahatS/sqrt(2*n.obs) 
-stdErrors = c(se.muhatC, se.sigmahatC, se.muhatS, se.sigmahatS)
-ans = rbind(estimates, stdErrors) 
-colnames(ans) = c("mu.cc", "sigma.cc", "mu.simple", "sigma.simple") 
-ans
+gwn_fit_msft_c = estimate_gwn_model(msftRetC)
+gwn_fit_msft_s = estimate_gwn_model(msftRetS)
 ```
 
+The estimates of $\mu_{msft}$ and $\sigma_{msft}$ together with their estimated standard errors and 95\% confidence intervals are:
+
+```{r}
+#| echo: true
+summary(gwn_fit_msft_c)
+summary(gwn_fit_msft_s)
+```
 \hfill{}$\blacksquare$
 :::
 
 ## Estimation of Functions of GWN Model Parameters
 
-In Chapter @sec-Estimation-of-The-GWN-Model, I used the *plug-in principle* to motivate estimators of the GWN model
+In @sec-Estimation-of-The-GWN-Model, I used the *plug-in principle* to motivate estimators of the GWN model
 parameters $\mu_i$ $\sigma_{i}^2$, $\sigma_{ij}$, and $\rho_{ij}$. I can also use the plug-in principle to estimate *functions* of the GWN model parameters.
 
 ::: {#def-plug-in-principle-for-functions-of-gwn-model-parameters .definition name="Plug-in principle for functions of GWN model parameters"}
@@ -110,9 +104,9 @@ Let $W_0 = \$100,000$, and $r_f = 0.03/12 = 0.0025$. Using the plug-in estimates
 ```{r}
 W0 = 100000
 r.f = 0.03/12
-f1.hat = muhatS + sigmahatS*qnorm(0.05)
+f1.hat = gwn_fit_msft_s$muhat + gwn_fit_msft_s$sigmahat*qnorm(0.05)
 f2.hat = -W0*f1.hat
-f3.hat = -W0*(exp(muhatC + sigmahatC*qnorm(0.05)) - 1)
+f3.hat = -W0*(exp(gwn_fit_msft_c$muhat + gwn_fit_msft_c$sigmahat*qnorm(0.05)) - 1)
 fhat.vals = cbind(f1.hat, f2.hat, f3.hat)
 colnames(fhat.vals) = c("f1", "f2", "f3")
 rownames(fhat.vals) = "Estimate"
@@ -126,7 +120,7 @@ Plug-in estimators of functions are random variables and are subject to estimati
 
 ### Bias
 
-As discussed in Chapter @sec-Estimation-of-The-GWN-Model, a desirable finite sample property of an estimator $\hat{\boldsymbol{\theta}}$ of $\boldsymbol{\theta}$ is *unbiasedness*: on average over many hypothetical samples $\hat{\boldsymbol{\theta}}$ is equal to $\boldsymbol{\theta}$. When estimating $f(\boldsymbol{\theta})$, unbiasedness of $\hat{\boldsymbol{\theta}}$ may or may not carry over to $f(\hat{\boldsymbol{\theta}})$. 
+As discussed in @sec-Estimation-of-The-GWN-Model, a desirable finite sample property of an estimator $\hat{\boldsymbol{\theta}}$ of $\boldsymbol{\theta}$ is *unbiasedness*: on average over many hypothetical samples $\hat{\boldsymbol{\theta}}$ is equal to $\boldsymbol{\theta}$. When estimating $f(\boldsymbol{\theta})$, unbiasedness of $\hat{\boldsymbol{\theta}}$ may or may not carry over to $f(\hat{\boldsymbol{\theta}})$. 
 
 Suppose $f(\boldsymbol{\theta})$ is a linear function of the elements of $\boldsymbol{\theta}$ so that
 
@@ -169,7 +163,7 @@ E[f(\hat{\theta)}] \ge f(E[\hat{\theta}]) = f(\theta).
 $$
 :::
 
-Jensen's inequality tells you that if $f$ is convex (concave) and $\hat{\theta}$ is unbiased then $f(\hat{\theta})$ is positively (negatively) biased. For example, you know from Chapter @sec-Estimation-of-The-GWN-Model that $\hat{\sigma}^2$ is unbiased for $\sigma^2$. Now, $\hat{\sigma} = f(\hat{\sigma}^2) = \sqrt{\hat{\sigma}^2}$ is a concave function of $\hat{\sigma}$. From Jensen's inequality, you know that $\hat{\sigma}$ is negatively biased (i.e., too small). 
+Jensen's inequality tells you that if $f$ is convex (concave) and $\hat{\theta}$ is unbiased then $f(\hat{\theta})$ is positively (negatively) biased. For example, you know from @sec-Estimation-of-The-GWN-Model that $\hat{\sigma}^2$ is unbiased for $\sigma^2$. Now, $\hat{\sigma} = f(\hat{\sigma}^2) = \sqrt{\hat{\sigma}^2}$ is a concave function of $\hat{\sigma}$. From Jensen's inequality, you know that $\hat{\sigma}$ is negatively biased (i.e., too small). 
 
 \hfill{}$\blacksquare$
 
@@ -196,7 +190,7 @@ All of the functions @eq-f1 - @eq-f3 are continuous at $\boldsymbol{\theta} = (\
 
 ## Asymptotic normality and the delta method
 
-Let $\theta$ denote a scalar parameter of the GWN model for returns and let $\hat{\theta}$ denote the plug-in estimator of $\theta$. In Chapter @sec-Estimation-of-The-GWN-Model you learned that $\hat{\theta}$ is asymptotically normally distributed
+Let $\theta$ denote a scalar parameter of the GWN model for returns and let $\hat{\theta}$ denote the plug-in estimator of $\theta$. In @sec-Estimation-of-The-GWN-Model you learned that $\hat{\theta}$ is asymptotically normally distributed
 
 $$
 \hat{\theta}\sim N(\theta,\widehat{\mathrm{se}}(\hat{\theta})^{2}),
@@ -229,7 +223,7 @@ $$ {#eq-delta-method-se}
 
 ::: {#exm-delta-method-standard-error-for-hat-sigma .example name="Delta method standard error for $\\hat{\\sigma}$"}
 
-The results from Chapter @sec-Estimation-of-The-GWN-Model showed, for large enough $T$, 
+The results from @sec-Estimation-of-The-GWN-Model showed, for large enough $T$, 
 
 $$
 \hat{\sigma}^2 \sim N(\sigma^2, \mathrm{se}(\hat{\sigma}^2)^2), ~ \hat{\sigma} \sim N(\sigma,\mathrm{se}(\hat{\sigma})^2),
@@ -301,7 +295,7 @@ q_{\alpha}^Z
 \end{array} \right).
 \end{align*}
 
-Regarding $\mathrm{var}(\hat{\boldsymbol{\theta}})$, recall from Chapter @sec-Estimation-of-The-GWN-Model, in the GWN model: 
+Regarding $\mathrm{var}(\hat{\boldsymbol{\theta}})$, recall from @sec-Estimation-of-The-GWN-Model, in the GWN model: 
 $$
 \left(\begin{array}{c}
 \hat{\mu}\\
@@ -385,8 +379,8 @@ The estimates of $q_{\alpha}^{R}$, $\mathrm{se}(\hat{q}_{\alpha}^{R})$, and 95% 
 
 ```{r}
 #| echo: true
-qhat = muhatS + sigmahatS*qnorm(c(0.05,0.01,0.001))
-seQhat = (sigmahatS/sqrt(n.obs))*sqrt(1 + 0.5*qnorm(c(0.05,0.01,0.001))^2)
+qhat = gwn_fit_msft_s$muhat + gwn_fit_msft_s$sigmahat*qnorm(c(0.05,0.01,0.001))
+seQhat = (gwn_fit_msft_s$sigmahat/sqrt(gwn_fit_msft_s$n.obs))*sqrt(1 + 0.5*qnorm(c(0.05,0.01,0.001))^2)
 lowerQhat = qhat - 2*seQhat
 upperQhat = qhat + 2*seQhat
 width = upperQhat - lowerQhat
@@ -478,8 +472,8 @@ The estimates of $\mathrm{VaR}_{\alpha}^{LN}$ and its standard error
 for $\alpha=0.05$ and $\alpha=0.01$ are:
 
 ```{r}
-qhat.c = muhatC + sigmahatC*qnorm(c(0.05,0.01,0.001))
-seQhat.c = (sigmahatC/sqrt(n.obs))*sqrt(1 + 0.5*qnorm(c(0.05,0.01,0.001))^2)
+qhat.c = gwn_fit_msft_c$muhat + gwn_fit_msft_c$sigmahat*qnorm(c(0.05,0.01,0.001))
+seQhat.c = (gwn_fit_msft_c$sigmahat/sqrt(gwn_fit_msft_c$n.obs))*sqrt(1 + 0.5*qnorm(c(0.05,0.01,0.001))^2)
 VaR.LN = -W0*(exp(qhat.c)-1)
 seVaR.LN = W0*exp(qhat.c)*seQhat.c
 lowerVaR.LN = VaR.LN - 2*seVaR.LN
@@ -494,6 +488,30 @@ The estimates of $\mathrm{VaR}_{\alpha}^{LN}$ (and its standard error) are sligh
 \hfill{}$\blacksquare$
 :::
 
+::: {#exm-estimating-VaR .example name="Estimating VaR using the introcompfinr function estimate_var"}
+You can estimate normal and log-normal VaR and their standard errors using the **introcompfinr** function `estimate_var()`. The arguments expected by `estimate_var()` are:
+```{r}
+args(estimate_var)
+```
+where `x` is an `xts` object of returns, `alpha` is the loss probability, and `w` is the initial investment. The argument `var_mathod` is the method used to calculate the VaR, either "normal" or "empirical". If the argument `return_type="simple` and `var_method="normal"` then normal VaR is computed. If `return_type="cc"` and `var_method="normal"` then log-normal VaR is computed. If `var_type="return"` then the VaR is computed as $-\hat{q}_{\alpha}$, and if `var_type="dollar"` then the VaR is computed as $-\hat{q}_{\alpha}\times w$. 
+
+To estimate $5\%$ normal VaR for Microsoft based on an initial investment of $\$100,000$ use:
+```{r}
+#| echo: true
+VaR_normal_05 = estimate_var(msftRetS, alpha = 0.05, w = 100000, return_type = "simple", 
+                          var_method = "normal", var_type = "dollar")
+summary(VaR_normal_05)
+```
+To estimate $5\%$ log-normal VaR use:
+
+```{r}
+#| echo: true
+VaR_lognormal_05 = estimate_var(msftRetC, alpha = 0.05, w = 100000, return_type = "cc", 
+                          var_method = "normal", var_type = "dollar")
+summary(VaR_lognormal_05)
+```
+\hfill{}$\blacksquare$
+:::
 
 ### The numerical delta method 
 
@@ -510,9 +528,9 @@ Here, `object` is the vector of named estimated parameters, $\hat{\boldsymbol{\t
 I first create the named inputs $\hat{\boldsymbol{\theta}}$ and $\widehat{\mathrm{var}}(\hat{\boldsymbol{\theta}})$ from the GWN model for simple returns:
 
 ```{r}
-thetahatS = c(muhatS, sigmahatS)
+thetahatS = c(gwn_fit_msft_s$muhat, gwn_fit_msft_s$sigmahat)
 names(thetahatS) = c("mu", "sigma")
-var.thetahatS = matrix(c(se.muhatS^2,0,0,se.sigmahatS^2), 2, 2, byrow=TRUE)
+var.thetahatS = matrix(c(gwn_fit_msft_s$se_muhat^2,0,0,gwn_fit_msft_s$se_sigmahat^2), 2, 2, byrow=TRUE)
 rownames(var.thetahatS) = colnames(var.thetahatS) = names(thetahatS)
 thetahatS
 var.thetahatS
@@ -521,9 +539,9 @@ var.thetahatS
 I do the same for the inputs from the GWN model for continuously compounded returns:
 
 ```{r}
-thetahatC = c(muhatC, sigmahatC)
+thetahatC = c(gwn_fit_msft_c$muhat, gwn_fit_msft_c$sigmahat)
 names(thetahatC) = c("mu", "sigma")
-var.thetahatC = matrix(c(se.muhatC^2,0,0,se.sigmahatC^2), 2, 2, byrow=TRUE)
+var.thetahatC = matrix(c(gwn_fit_msft_c$se_muhat^2,0,0,gwn_fit_msft_c$se_sigmahat^2), 2, 2, byrow=TRUE)
 rownames(var.thetahatC) = colnames(var.thetahatC) = names(thetahatC)
 ```
 
@@ -559,7 +577,7 @@ The delta method for the log-normal VaR function $f_3(\boldsymbol{\theta})$ is:
 dm3 = deltaMethod(thetahatC, "-W0*(exp(mu+sigma*q.05)-1)", var.thetahatC)
 dm3
 ```
-
+\hfill{}$\blacksquare$
 :::
 
 ### The delta method for vector valued functions (advanced)
@@ -590,7 +608,7 @@ $$
 \frac{\partial f_2(\boldsymbol{\theta})}{\partial \theta_1} &  \frac{\partial f_2(\boldsymbol{\theta})}{\partial \theta_2} & \cdots & \frac{\partial f_2(\boldsymbol{\theta})}{\partial \theta_k} \\
 \vdots & \vdots & \ldots & \vdots \\
 \frac{\partial f_j(\boldsymbol{\theta})}{\partial \theta_1} &  \frac{\partial f_j(\boldsymbol{\theta})}{\partial \theta_2} & \cdots & \frac{\partial f_j(\boldsymbol{\theta})}{\partial \theta_k} \\
-\end{pmatrix}
+\end{pmatrix}.
 $$ {#eq-jacob}
 Then, by the delta method, the asymptotic normal distribution of $\hat{\boldsymbol{\eta}} = \mathbf{f}(\hat{\boldsymbol{\theta}})$ is:
 $$
@@ -608,21 +626,21 @@ $$ {#eq-var-etahat}
 Consider the first example function where $\boldsymbol{\theta} = (\sigma_1^2,\sigma_2^2)'$ and $\boldsymbol{\eta} = \mathbf{f}(\boldsymbol{\theta})=(\sigma_1, \sigma_2)'$. Now, using the chain-rule:
 
 \begin{align*}
-\frac{\partial f_1(\boldsymbol{\theta})}{\partial \sigma_1^2} & = \frac{1}{2}\sigma_1^{-1}, ~ \frac{\partial f_1(\boldsymbol{\theta})}{\partial \sigma_2^2} = 0 \\
-\frac{\partial f_2(\boldsymbol{\theta})}{\partial \sigma_1^2} & = 0, ~ \frac{\partial f_2(\boldsymbol{\theta})}{\partial \sigma_2^2} = \frac{1}{2}\sigma_1^{-1}
+\frac{\partial f_1(\boldsymbol{\theta})}{\partial \sigma_1^2} & = \frac{1}{2}\sigma_1^{-1}, ~ \frac{\partial f_1(\boldsymbol{\theta})}{\partial \sigma_2^2} = 0, \\
+\frac{\partial f_2(\boldsymbol{\theta})}{\partial \sigma_1^2} & = 0, ~ \frac{\partial f_2(\boldsymbol{\theta})}{\partial \sigma_2^2} = \frac{1}{2}\sigma_1^{-1}.
 \end{align*}
 
 The Jacobian matrix is
 
 $$
 \mathbf{G}(\boldsymbol{\theta})' = \begin{pmatrix} \frac{1}{2}\sigma_1^{-1} & 0 \\
-0 & \frac{1}{2}\sigma_2^{-1} \end{pmatrix}
+0 & \frac{1}{2}\sigma_2^{-1} \end{pmatrix}.
 $$
 
-From Chapter @sec-Estimation-of-The-GWN-Model, Proposition 7.9, 
+From @sec-Estimation-of-The-GWN-Model, Proposition 7.9, 
 
 $$
-\widehat{\mathrm{var}}(\hat{\boldsymbol{\theta}}) = \frac{1}{T}\begin{pmatrix} 2\hat{\sigma}_1^4 & 2\hat{\sigma}_{12}^2 \\ 2\hat{\sigma}_{12}^2 & 2\hat{\sigma}_2^4 \end{pmatrix}
+\widehat{\mathrm{var}}(\hat{\boldsymbol{\theta}}) = \frac{1}{T}\begin{pmatrix} 2\hat{\sigma}_1^4 & 2\hat{\sigma}_{12}^2 \\ 2\hat{\sigma}_{12}^2 & 2\hat{\sigma}_2^4 \end{pmatrix}.
 $$
 Then
 
@@ -651,26 +669,30 @@ The delta method deduces the asymptotic distribution of $f(\hat{\boldsymbol{\the
 
 \begin{align*}
 f(\hat{\theta}) & = f(\theta) + f'(\theta)(\hat{\theta} - \theta) + \text{remainder} \\
-& = f(\theta) + f'(\theta)\hat{\theta} + f'(\theta)\theta + \text{remainder} \\
-& \approx  f(\theta) + f'(\theta)\hat{\theta} + f'(\theta)\theta
+& \approx f(\theta) + f'(\theta)(\hat{\theta} - \theta) = f(\theta) + Z,
 \end{align*}
 
-The first order Taylor series expansion shows that $f(\hat{\theta})$ is an approximate linear function of the random variable $\hat{\theta}$. The values $\theta$, $f(\theta)$, and $f'(\theta)$ are constants. Assuming that, for large enough T, 
+where $Z = f'(\theta)(\hat{\theta} - \theta)$. The first order Taylor series expansion shows that $f(\hat{\theta})$ is an approximate linear function of the random variable $Z$. The values $\theta$, $f(\theta)$, and $f'(\theta)$ are constants. Assuming that, for large enough T, 
 
 $$
 \hat{\theta}\sim N(\theta,\widehat{\mathrm{se}}(\hat{\theta})^{2}),
 $$
 
-it follows that
+it follows, for large enough $T$, that
 
 $$
-f(\hat{\theta}) \sim N(f(\theta), f'(\theta)^2 \widehat{\mathrm{se}}(\hat{\theta})^{2})
+Z = f'(\theta)(\hat{\theta} - \theta) \sim N(0, f'(\theta)^2 \times \widehat{\mathrm{se}}(\hat{\theta})^{2}).
+$$
+
+Hence, for large enough $T$, $f(\hat{\theta})$ is a linear function of the normally distributed random variable $Z$ and so is also normally distributed:
+$$
+f(\hat{\theta}) \sim N(f(\theta), f'(\theta)^2 \widehat{\mathrm{se}}(\hat{\theta})^{2}).)
 $$
 
 Since $\hat{\theta}$ is consistent for $\theta$ you can replace $f'(\theta)^2$ with $f'(\hat{\theta})^2$ giving the practically useful result
 
 $$
-f(\hat{\theta}) \sim N(f(\theta), f'(\hat{\theta})^2 \widehat{\mathrm{se}}(\hat{\theta})^{2})
+f(\hat{\theta}) \sim N(f(\theta), f'(\hat{\theta})^2 \widehat{\mathrm{se}}(\hat{\theta})^{2}).
 $$
 
 ## Resampling {#sec-Resampling}
@@ -694,13 +716,17 @@ Let $\theta$ denote a scalar parameter of interest. It could be a scalar paramet
 
 The jackknife resampling method utilizes $T$ resamples of the original data $\left\{ R_t \right\}_{t=1}^{T}$. The resamples are created by leaving out a single observation. For example, the first jackknife resample leaves out the first observation and is given by $\left\{ R_t \right\}_{t=2}^{T}$. This sample has $T-1$ observations. In general, the $t^{th}$ jackknife resample leaves out the $t^{th}$ return $R_{t}$ for $t \le T$. Now, on each of the $t=1,\ldots, T$ jackknife resamples you compute an estimate of $\theta$. Denote this jackknife estimate $\hat{\theta}_{-t}$ to indicate that $\theta$ is estimated using the resample that omits observation $t$. The estimator $\hat{\theta}_{-t}$ is called the *leave-one-out* \index{Leave-one-out estimator} estimator of $\theta$. Computing $\hat{\theta}_{-t}$ for $t=1,\ldots, T$ gives $T$ leave-one-out estimators $\left\{ \hat{\theta}_{-t} \right\}_{t=1}^{T}$. 
 
+:::{#def-jackknife-estimator-of-standard-error .definition name="Jackknife standard error"}
 The *jackknife estimator* of $\widehat{\mathrm{se}}(\hat{\theta})$ is the scaled standard deviation of $\left\{ \hat{\theta}_{-t} \right\}_{t=1}^{T}$:
 
 $$
 \widehat{\mathrm{se}}_{jack}(\hat{\theta}) =  \sqrt{  \frac{T-1}{T}\sum_{t=1}^T (\hat{\theta}_{-t} - \bar{\theta})^2 }, 
 $$ {#eq-se-jackknife}
 
-where $\bar{\theta} = T^{-1}\sum_{t=1}^T \hat{\theta}_{-t}$ is the sample mean of $\left\{ \hat{\theta}_{-t} \right\}_{t=1}^{T}$. The estimator @eq-se-jackknife is easy to compute and does not require any analytic calculations from the asymptotic distribution of $\hat{\theta}$.
+where $\bar{\theta} = T^{-1}\sum_{t=1}^T \hat{\theta}_{-t}$ is the sample mean of $\left\{ \hat{\theta}_{-t} \right\}_{t=1}^{T}$. 
+:::
+
+The estimator @eq-se-jackknife is easy to compute and does not require any analytic calculations from the asymptotic distribution of $\hat{\theta}$.
 
 The intuition for the jackknife standard error formula can be illustrated by considering the jackknife standard error estimate for the sample mean $\hat{\theta} = \hat{\mu}$. You know that the analytic estimated squared standard error for $\hat{\mu}$ is 
 
@@ -783,7 +809,7 @@ which is the sample mean of `msftRetS`. It is informative to plot a histogram of
 #| fig-asp: 0.75
 #| fig-align: center
 hist(muhat.loo, col="cornflowerblue", main="")
-abline(v=muhatS, col="white", lty="dotted", lwd=2)
+abline(v=gwn_fit_msft_s$muhat, col="white", lty="dotted", lwd=2)
 ```
 The white dotted line is at the point $\hat{\mu} = 0.00915$. The jackknife estimated standard error is the scaled standard deviation of the $T$ $\hat{\mu}_{-t}$ values:^[the scaling of the standard deviation of $\hat{\mu}_{-t}$ is approximately $\sqrt{T}$.]
 
@@ -795,7 +821,7 @@ se.jack.muhat
 This value is exactly the same as the analytic standard error:
 
 ```{r}
-se.muhatS
+gwn_fit_msft_s$se_muhat
 ```
 
 You can also compute jackknife estimated standard errors using the **bootstrap** function `jackknife`:
@@ -881,19 +907,27 @@ Here, the jackknife and delta method standard errors are very close.
 ### The jackknife for vector-valued estimates
 
 The jackknife can also be used to compute an estimated variance matrix of a vector-valued estimate of parameters. Let $\boldsymbol{\theta}$ denote a $k \times 1$ vector of 
-GWN model parameters (e.g., $\boldsymbol{\theta}=(\mu,\sigma)'$), and let $\hat{\boldsymbol{\theta}}$ denote the plug-in estimate of $\boldsymbol{\theta}$. Let $\hat{\boldsymbol{\theta}}_{-t}$ denote the leave-one-out estimate of $\boldsymbol{\theta}$, and $\bar{\boldsymbol{\theta}}=T^{-1}\sum_{t=1}^T \hat{\boldsymbol{\theta}}_{-t}$. Then the jackknife estimate of the $k \times k$ variance matrix  $\widehat{\mathrm{var}}(\hat{\boldsymbol{\theta}})$ is the scaled sample covariance of $\{\hat{\boldsymbol{\theta}}_{-t}\}_{t=1}^T$:
+GWN model parameters (e.g., $\boldsymbol{\theta}=(\mu,\sigma)'$), and let $\hat{\boldsymbol{\theta}}$ denote the plug-in estimate of $\boldsymbol{\theta}$. Let $\hat{\boldsymbol{\theta}}_{-t}$ denote the leave-one-out estimate of $\boldsymbol{\theta}$, and $\bar{\boldsymbol{\theta}}=T^{-1}\sum_{t=1}^T \hat{\boldsymbol{\theta}}_{-t}$. 
+
+:::{#def-jackknife-estimator-of-variance-matrix .definition name="Jackknife variance matrix"}
+The jackknife estimate of the $k \times k$ variance matrix  $\widehat{\mathrm{var}}(\hat{\boldsymbol{\theta}})$ is the scaled sample covariance of $\{\hat{\boldsymbol{\theta}}_{-t}\}_{t=1}^T$:
 
 $$
 \widehat{\mathrm{var}}_{jack}(\hat{\boldsymbol{\theta}}) = \frac{T-1}{T} \sum_{t=1}^T (\hat{\boldsymbol{\theta}}_{-t} - \bar{\boldsymbol{\theta}})(\hat{\boldsymbol{\theta}}_{-t} - \bar{\boldsymbol{\theta}})'. 
 $$ {#eq-jack-varmatrix}
 
 The jackknife estimated standard errors for the elements of $\hat{\boldsymbol{\theta}}$ are given by the square root of the diagonal elements of $\widehat{\mathrm{var}}_{jack}(\hat{\boldsymbol{\theta}})$.
+:::
 
-The same principle works for computing the estimated variance matrix of a vector of functions of GWN model parameters. Let $\mathbf{f}:R^k \rightarrow R^l$ with $l \le k$ and define $\boldsymbol{\eta} = \mathbf{f}(\boldsymbol{\theta})$ denote a $l \times 1$ vector of functions of GWN model parameters. Let $\hat{\eta}=f(\hat{\boldsymbol{\theta}})$ denote the plug-in estimator of $\boldsymbol{\eta}$. Let $\hat{\boldsymbol{\eta}}_{-t}$ denote the leave-one-out estimate of $\boldsymbol{\eta}$, and $\bar{\boldsymbol{\eta}}=T^{-1}\sum_{t=1}^T \hat{\boldsymbol{\eta}}_{-t}$. Then the jackknife estimate of the $l \times l$ variance matrix  $\widehat{\mathrm{var}}(\hat{\boldsymbol{\eta}})$ is the scaled sample covariance of $\{\hat{\boldsymbol{\eta}}_{-t}\}_{t=1}^T$:
+The same principle works for computing the estimated variance matrix of a vector of functions of GWN model parameters. Let $\mathbf{f}:R^k \rightarrow R^l$ with $l \le k$ and define $\boldsymbol{\eta} = \mathbf{f}(\boldsymbol{\theta})$ denote a $l \times 1$ vector of functions of GWN model parameters. Let $\hat{\eta}=f(\hat{\boldsymbol{\theta}})$ denote the plug-in estimator of $\boldsymbol{\eta}$. Let $\hat{\boldsymbol{\eta}}_{-t}$ denote the leave-one-out estimate of $\boldsymbol{\eta}$, and $\bar{\boldsymbol{\eta}}=T^{-1}\sum_{t=1}^T \hat{\boldsymbol{\eta}}_{-t}$. 
+
+:::{#def-jackknife-estimator-of-variance-matrix-for-vector-valued-functions .definition name="Jackknife variance matrix for vector-valued functions"}
+The jackknife estimate of the $l \times l$ variance matrix  $\widehat{\mathrm{var}}(\hat{\boldsymbol{\eta}})$ is the scaled sample covariance of $\{\hat{\boldsymbol{\eta}}_{-t}\}_{t=1}^T$:
 
 $$
 \widehat{\mathrm{var}}_{jack}(\hat{\boldsymbol{\eta}}) = \frac{T-1}{T} \sum_{t=1}^T (\hat{\boldsymbol{\eta}}_{-t} - \bar{\boldsymbol{\eta}})(\hat{\boldsymbol{\eta}}_{-t} - \bar{\boldsymbol{\eta}})'. 
 $$ {#eq-jack-varmatrix-eta}
+:::
 
 ::: {#exm-jackknife-variance-estimate-for-hat-boldsymbol-theta-hat-mu-hat-sigma-for-microsoft-simple-returns .example name="Jackknife variance estimate for $\\hat{\\boldsymbol{\\theta}}=(\\hat{\\mu}, \\hat{\\sigma})'$ for Microsoft simple returns"}
 
@@ -953,6 +987,8 @@ is generated. In a Monte Carlo experiment, the random data are computer simulate
 
 The procedure for the nonparametric bootstrap of an estimate $\hat{\theta}$ of a scalar parameter $\theta$ is as follows:
 
+:::{.callout-note}
+## The Nonparametric Bootstrap Procedure
 1.  *Resample*. Create $B$ bootstrap samples by sampling with replacement from the original data $\{r_{1},\ldots,r_{T}\}$.^[You can also bootstrap data from multiple assets by defining $r_t$ as a vector of asset returns.] Each bootstrap sample has $T$ observations (same as the original sample) 
 \begin{eqnarray*}
 \left\{r_{11}^{*},r_{12}^{*},\ldots,r_{1T}^{*}\right\}  & = & \mathrm{1st\,bootstrap\,sample}\\
@@ -961,9 +997,10 @@ The procedure for the nonparametric bootstrap of an estimate $\hat{\theta}$ of a
 \end{eqnarray*}
 2.  *Estimate* $\theta$. From each bootstrap sample estimate $\theta$ and denote the resulting estimate $\hat{\theta}^{*}$. There will be $B$ values of $\hat{\theta}^{*}$: $\left\{\hat{\theta}_{1}^{*},\ldots,\hat{\theta}_{B}^{*}\right\}$.
 3.  *Compute statistics*. Using $\left\{\hat{\theta}_{1}^{*},\ldots,\hat{\theta}_{B}^{*}\right\}$ compute estimate of bias, standard error, and approximate 95\% confidence interval. 
+:::
 
 This procedure is very similar to the procedure used to perform a
-Monte Carlo experiment described in Chapter @sec-Estimation-of-The-GWN-Model.
+Monte Carlo experiment described in @sec-Estimation-of-The-GWN-Model.
 The main difference is how the hypothetical samples are created. With
 the nonparametric bootstrap, the hypothetical samples are created
 by resampling with replacement from the original data. In this regard
@@ -993,6 +1030,7 @@ $$
 E[\hat{\theta}]-\theta.
 $$ 
 
+:::{#def-bootstrap-estimate-of-bias .definition name="Bootstrap estimate of bias"}
 The bootstrap estimate of bias is given by
 
 $$ 
@@ -1001,9 +1039,10 @@ $$
 \text{(bootstrap mean - estimate)}
 \end{aligned}
 $$ {#eq-BootBootstrapBias}
+:::
 
 The bootstrap bias estimate @eq-BootBootstrapBias is the difference between the mean of the bootstrap estimates of $\theta$ and the sample
-estimate of $\theta$. This is similar to the Monte Carlo estimate of bias discussed in Chapter @sec-Estimation-of-The-GWN-Model.
+estimate of $\theta$. This is similar to the Monte Carlo estimate of bias discussed in @sec-Estimation-of-The-GWN-Model.
 However, the Monte Carlo estimate of bias is the difference between the mean of the Monte Carlo estimates of $\theta$ and the true value
 of $\theta.$ The bootstrap estimate of bias does not require knowing the true value of $\theta$. Effectively, the bootstrap treats the
 sample estimate $\hat{\theta}$ as the population value $\theta$ and the bootstrap mean $\bar{\theta}^{\ast} = \frac{1}{B}\sum_{j=1}^{\ B}\hat{\theta}_{j}^{\ast}$ as an approximation to $E[\hat{\theta}]$. Here, $\widehat{\mathrm{bias}}_{boot}(\hat{\theta},\theta)=0$
@@ -1019,7 +1058,10 @@ if the bootstrap estimate of bias is large, it may be tempting to use the bias-a
 
 ### Bootstrap standard error estimate
 \index{Bootstrap SE}
-for a scalar estimate $\hat{\theta}$, the bootstrap estimate of $\widehat{\mathrm{se}}(\hat{\theta}$) is
+Let $\hat{\theta}$ be an estimate of the scalar parameter $\theta$. 
+
+:::{#def-bootstrap-estimate-of-standard-error .definition name="Bootstrap estimate of standard error"}
+The bootstrap estimate of $\widehat{\mathrm{se}}(\hat{\theta})$ is
 given by the sample standard deviation of the bootstrap estimates
 {$\hat{\theta}_{1}^{*},\ldots,\hat{\theta}_{B}^{*}$}:
 
@@ -1028,18 +1070,23 @@ $$
 $$ {#eq-BootBootstrapSE}
 
 where $\bar{\theta}^{\ast} = \frac{1}{B}\sum_{j=1}^{\ B}\hat{\theta}_{j}^{\ast}$. 
+:::
+
 Here, $\widehat{\mathrm{se}}_{boot}(\hat{\theta})$ is the size of
 a typical deviation of a bootstrap estimate, $\hat{\theta}^{*}$, from
 the mean of the bootstrap estimates (typical deviation from the middle
 of the histogram of the bootstrap estimates). This is very closely
 related to the Monte Carlo estimate of $\widehat{\mathrm{se}}(\hat{\theta}$), which is the sample standard deviation of the estimates of $\theta$ from the Monte Carlo samples. 
 
+:::{#def-bootstrap-estimate-of-variance .definition name="Bootstrap estimate of variance"}
 For a $k \times 1$ vector estimate $\hat{\theta}$, the bootstrap estimate of $\widehat{\mathrm{var}}(\hat{\theta})$ is
 
 $$
 \widehat{\mathrm{var}}(\hat{\theta}) = \frac{1}{B-1}\sum_{j=1}^B (\hat{\theta}_{j}^{\ast} - \bar{\theta}^{\ast})(\hat{\theta}_{j}^{\ast} - \bar{\theta}^{\ast})'.
 $$ {#eq-BootBootstrapVar}
+:::
 
+The bootstrap estimate of variance @eq-BootBootstrapVar is the sample covariance matrix of the bootstrap estimates {$\hat{\theta}_{1}^{*},\ldots,\hat{\theta}_{B}^{*}$}. The bootstrap estimated standard errors for the elements of $\hat{\theta}$ are given by the square root of the diagonal elements of $\widehat{\mathrm{var}}(\hat{\theta})$.
 
 ### Bootstrap confidence intervals
 \index{Bootstrap CI}
@@ -1067,13 +1114,11 @@ in the quantile-based interval @eq-BootPercentileBootCI. This 95\% confidence in
 
 The main advantage of @eq-BootPercentileBootCI over @eq-BootNormalBootCI is *transformation invariance*. This means that if @eq-BootPercentileBootCI is a 95\% confidence interval for $\theta$ and $f(\theta)$ is a monotonic function of $\theta$ then $[f(\hat{q}_{.025}^{*}),\,f(\hat{q}_{.975}^{*})]$ is a 95\% confidence interval for $f(\theta)$. The interval @eq-BootPercentileBootCI can also be asymmetric whereas @eq-BootNormalBootCI is symmetric.
 
-The bootstrap normal approximation and percentile 95\% confidence intervals @eq-BootNormalBootCI and @eq-BootPercentileBootCI will perform well (i.e., will have approximately correct coverage probability) if the bootstrap distribution looks normally distributed. However, if the bootstrap distribution is asymmetric then these 95\% confidence intervals may have coverage probability different from 95\%, especially if the asymmetry is substantial. The basic shape of the bootstrap distribution can be visualized by the histogram of {$\hat{\theta}_{1}^{*},\ldots,\hat{\theta}_{B}^{*}$}, and the normality of the distribution can be visually evaluated using the normal QQ-plot of {$\hat{\theta}_{1}^{*},\ldots,\hat{\theta}_{B}^{*}$}. If the histogram is asymmetric and/or not bell-shaped or if the normal QQ-plot is not linear then normality is suspect and the confidence intervals @eq-BootPercentileBootCI and @eq-BootNormalBootCI may be inaccurate. 
+The bootstrap normal approximation and percentile 95\% confidence intervals @eq-BootNormalBootCI and @eq-BootPercentileBootCI will perform well (i.e., will have approximately correct coverage probability) if the bootstrap distribution looks normally distributed. However, if the bootstrap distribution is asymmetric then these 95\% confidence intervals may have coverage probability different from 95\%, especially if the asymmetry is substantial^[It is often incorrectly assumed that the bootstrap percentile 95\% confidence interval is valid when the bootstrap distribution is asymmetric.]. 
 
-If the bootstrap distribution is asymmetric then it is recommended to use Efron's *bias and skewness adjusted bootstrap percentile confidence* (BCA) interval. The details of how to compute the BCA interval are a bit complicated, and so are omitted, and the interested reader is referred to Chapter 10 of Hansen (2011) for a good explanation.  Suffice it to say that the 95\% BCA method adjusts the 2.5\% and 97.5\% quantiles of the bootstrap distribution for bias and skewness. The BCA confidence interval can be computed using the **boot** function `boot.ci()` with optional argument `type="bca"`.^[The bootstrap percentile-t confidence interval is another bias and skewness adjusted confidence interval.] 
+The basic shape of the bootstrap distribution can be visualized by the histogram of {$\hat{\theta}_{1}^{*},\ldots,\hat{\theta}_{B}^{*}$}, and the normality of the distribution can be visually evaluated using the normal QQ-plot of {$\hat{\theta}_{1}^{*},\ldots,\hat{\theta}_{B}^{*}$}. If the histogram is asymmetric and/or not bell-shaped or if the normal QQ-plot is not linear then normality is suspect and the confidence intervals @eq-BootPercentileBootCI and @eq-BootNormalBootCI may be inaccurate. 
 
-### The bootstrap for vector-valued estimates
-
-* TBD
+If the bootstrap distribution is asymmetric then it is recommended to use Efron's *bias and skewness adjusted bootstrap percentile confidence* (BCA) interval. The details of how to compute the BCA interval are a bit complicated, and so are omitted, and the interested reader is referred to Chapter 10 of @hansen-2022 for a good explanation.  Suffice it to say that the 95\% BCA method adjusts the 2.5\% and 97.5\% quantiles of the bootstrap distribution for bias and skewness. The BCA confidence interval can be computed using the **boot** function `boot.ci()` with optional argument `type="bca"`.^[The bootstrap percentile-t confidence interval is another bias and skewness adjusted confidence interval.] 
 
 ### Performing the nonparametric bootstrap in R
 
@@ -1083,12 +1128,12 @@ you program all parts of the bootstrapping procedure. Alternatively, you can use
 #### Brute force implementation
 
 In the brute force implementation you program all parts of the bootstrap
-procedure. This typically involves three steps:
+procedure. This typically involves four steps:
 
-::: {callout-note}
+::: {.callout-note}
 ## Brute force nonparametric bootstrap procedure
 1.  Sample with replacement from the original data using the R function `sample()` to create $\{r_{1}^{*},r_{2}^{*},\ldots,r_{T}^{*}\}$. Do this $B$ times.
-2.  Compute $B$ values of the statistic of interest $\hat{\theta}$ from each bootstrap sample giving $\{\hat{\theta}_{1}^{*},\ldots,\hat{\theta}_{B}^{*}\}$. $B=1,000$ for routine applications of the bootstrap. To minimize simulation noise it may be required to have $B=10,000$ or higher. 
+2.  Compute $B$ values of the statistic of interest $\hat{\theta}$ from each bootstrap sample giving $\{\hat{\theta}_{1}^{*},\ldots,\hat{\theta}_{B}^{*}\}$. Use $B=1,000$ for routine applications of the bootstrap. To minimize simulation noise it may be required to have $B=10,000$ or higher. 
 3.  Compute the bootstrap bias and SE values from $\{\hat{\theta}_{1}^{*},\ldots,\hat{\theta}_{B}^{*}\}$ using the R functions `mean()` and `sd()`, respectively.
 4.  Compute the histogram and normal QQ-plot of $\{\hat{\theta}_{1}^{*},\ldots,\hat{\theta}_{B}^{*}\}$ using the R functions `hist()` and `qqnorm()`, respectively, to see if the bootstrap distribution looks normal.
 
@@ -1097,9 +1142,9 @@ procedure. This typically involves three steps:
 Typically steps 1 and 2 are performed inside a `for` loop or within
 the R function `apply()`. 
 
-In step 1 sampling with replacement for the original data is performed
+In step 1, sampling with replacement for the original data is performed
 with the R function `sample()`. To illustrate, consider sampling
-with replacement from the $5\times1$ return vector: 
+with replacement from the $5\times1$ return vector `r` created using: 
 
 ```{r}
 #| echo: true
@@ -1124,8 +1169,8 @@ of integers to extract the sample from `r`. The R fucntion
 `sample()` can be used to do this process. When you pass a
 positive integer value `n` to `sample()`, with the optional
 argument `replace=TRUE`, it returns a random sample from the
-set of integers from $1$ to `n`. For example, to create a
-random sample with replacement of size 5 from the integers$\{1,2,\ldots,5\}$
+set of integers from $1$ to $n$. For example, to create a
+random sample with replacement of size $5$ from the integers$\{1,2,\ldots,5\}$
 use:^[I use `set.seed(123)` to initialize the random number generator in R and allow for reproducible results.]
 
 ```{r}
@@ -1180,7 +1225,7 @@ The bootstrap bias estimate is:
 ```{r}
 #| echo: true
 
-mean(muhat.boot) - muhatS
+mean(muhat.boot) - gwn_fit_msft_s$muhat
 ```
 
 which is very close to zero and confirms that $\hat{\mu}$ is unbiased.
@@ -1208,21 +1253,21 @@ created with:
 
 par(mfrow=c(1,2))   
 hist(muhat.boot, col="cornflowerblue")   
-abline(v=muhatS, col="white", lwd=2)   
+abline(v=gwn_fit_msft_s$muhat, col="white", lwd=2)   
 qqnorm(muhat.boot, col="cornflowerblue")   
 qqline(muhat.boot) 
 ```
 
 The distribution of the bootstrap estimates looks normal. As a result,
-the bootstrap 95\% confidence interval for $\mu$ has the form:
+you can compute use the normal approximation 95\% confidence interval @eq-BootNormalBootCI for $\mu$:
 
 ```{r}
 #| echo: true
 
 se.boot = sd(muhat.boot)
-lower = muhatS + se.boot
-upper = muhatS - se.boot
-ans = cbind(muhatS, se.boot, lower, upper)
+lower = gwn_fit_msft_s$muhat + se.boot
+upper = gwn_fit_msft_s$muhat - se.boot
+ans = cbind(gwn_fit_msft_s$muhat, se.boot, lower, upper)
 colnames(ans)=c("Estimate", "Std Error", "2.5%", "97.5%")
 rownames(ans) = "mu"
 ans
@@ -1237,7 +1282,7 @@ It is important to keep in mind that the bootstrap resampling algorithm draws *r
 
 The R package **boot** implements a variety of bootstrapping
 techniques including the basic non-parametric bootstrap described
-above. The **boot** package was written to accompany the textbook *Bootstrap Methods and Their Application* by [@DH-1997].
+above. The **boot** package was written to accompany the textbook *Bootstrap Methods and Their Application* [@DH-1997].
 The two main functions in **boot** are `boot()` and
 `boot.ci()`, respectively. The `boot()` function implements
 the bootstrap for a statistic computed from a user-supplied function.
@@ -1261,7 +1306,7 @@ important for the basic non-parametric bootstrap. The function assigned
 to the argument `statistic` has to be written in a specific
 form, which is illustrated in the next example. The `boot()`
 function returns an object of class `boot` for which
-there are print and plot methods. 
+there are `print` and `plot` methods. 
 
 The arguments to `boot.ci()` are
 
@@ -1274,7 +1319,7 @@ args(boot.ci)
 where `boot.out` is an object of class `boot`,
 `conf` specifies the confidence level, and `type` is
 a subset from `c("norm", "basic", "stud", "perc", "bca")` indicating the type of confidence interval to compute.
-The choices `norm`, `perc`, and "bca" compute the
+The choices "norm", "perc", and "bca" compute the
 normal confidence interval @eq-BootNormalBootCI, the percentile
 confidence interval @eq-BootPercentileBootCI, and the BCA confidence interval, respectively. The remaining arguments are not important for the computation of these
 bootstrap confidence intervals.
@@ -1304,23 +1349,23 @@ mean.boot = function(x, idx) {
 }
 ```
 
-To implement the nonparametric bootstrap for $\hat{\mu}$ with 999
-samples use 
+To implement the nonparametric bootstrap for $\hat{\mu}$ with $B=1,000$
+samples use: 
 
 ```{r}
 #| echo: true
 
 set.seed(123)
-muhat.boot = boot(msftRetS, statistic = mean.boot, R=999) 
+muhat.boot = boot(msftRetS, statistic = mean.boot, R=1000) 
 class(muhat.boot) 
 names(muhat.boot)
 ```
 
 The returned object `muhat.boot` is of class `boot`.
 The component `t0` is the sample estimate $\hat{\mu}$, and
-the component t is a $999\times1$ matrix containing the bootstrap
-estimates $\{\hat{\mu}_{1}^{*},\ldots,\hat{\mu}_{999}^{*}\}$. The
-print method shows the sample estimate, the bootstrap bias and the
+the component t is a $1,000\times1$ matrix containing the bootstrap
+estimates $\{\hat{\mu}_{1}^{*},\ldots,\hat{\mu}_{1,000}^{*}\}$. The
+`print` method shows the sample estimate, the bootstrap bias and the
 bootstrap standard error:
 
 ```{r}
@@ -1338,7 +1383,7 @@ c(muhat.boot$t0,mean(muhat.boot$t) - muhat.boot$t0, sd(muhat.boot$t))
 ```
 
 A histogram and nornal QQ-plot of the bootstrap values, shown in @fig-BootPlotMethod, 
-can be created using the `plot` method
+can be created using the `plot` method:
 
 ```{r}
 #| label: fig-BootPlotMethod
@@ -1351,7 +1396,7 @@ can be created using the `plot` method
 plot(muhat.boot)
 ```
 
-Normal, percentile, and bias-adjusted (bca) percentile 95\% confidence intervals can be computed using
+Normal, percentile, and bias-adjusted (bca) percentile 95\% confidence intervals can be computed using:
 
 ```{r}
 #| echo: true
@@ -1362,9 +1407,7 @@ boot.ci(muhat.boot, conf=0.95, type=c("norm", "perc", "bca"))
 Because the bootstrap distribution looks normal, the normal, percentile, and bca confidence intervals are very similar. 
 
 
-The GWN model estimate $\hat{\sigma}$ can be "bootstrapped" in a similar fashion. First, I write a function to compute $\hat{\sigma}$
-for each bootstrap sample:
-
+The GWN model estimate $\hat{\sigma}$ can be "bootstrapped" in a similar fashion. First, you write a function to compute $\hat{\sigma}$ for each bootstrap sample:
 
 ```{r}
 #| echo: true
@@ -1375,13 +1418,13 @@ sd.boot = function(x, idx) {
 }
 ```
 
-Then I call `boot()` with `statistic=sd.boot`
+Then you call `boot()` with `statistic=sd.boot`:
 
 ```{r}
 #| echo: true
 
 set.seed(123)
-sigmahat.boot = boot(msftRetS, statistic = sd.boot, R=999) 
+sigmahat.boot = boot(msftRetS, statistic = sd.boot, R=1000) 
 sigmahat.boot
 ```
 
@@ -1397,7 +1440,7 @@ plot(sigmahat.boot)
 ```
 
 The bootstrap distribution, shown in @fig-BootPlotMethodSD,
-looks a bit non-normal.  The 95\% confidences intervals are computed using
+looks a bit non-normal.  The three 95\% confidences intervals for $\sigma$ are computed using `boot.ci()` as follows:
 
 ```{r}
 #| echo: true
@@ -1411,7 +1454,7 @@ You see that all of these intervals are quite similar.
 
 ::: {#exm-nonparametric-bootstrap-for-example-functions .example name="Nonparametric bootstrap for example functions"}
 
-The real power of the bootstrap procedure comes when you apply it to plug-in estimates of functions like @eq-f1-@eq-f3 for which there are no easy analytic formulas for estimating bias and standard errors. In this situation, the bootstrap procedure easily computes numerical estimates of the bias, standard error, and 95\% confidence interval. All you need is an R function for computing the plug-in function estimate in a form suitable for `boot()`. The R functions for the example functions are:
+The real power of the bootstrap procedure comes when you apply it to plug-in estimates of functions like @eq-f1 - @eq-f3 for which there are no easy analytic formulas for estimating bias and standard errors. In this situation, the bootstrap procedure easily computes numerical estimates of the bias, standard error, and 95\% confidence interval. All you need is an R function for computing the plug-in function estimate in a form suitable for `boot()`. My R functions for the theree example functions are:
 
 ```{r}
 #| echo: true
@@ -1443,7 +1486,7 @@ To compute the nonparametric bootstrap for $f_1$ with $\alpha=0.05$ use:
 #| echo: true
 
 set.seed(123)
-f1.bs = boot(msftRetS, statistic = f1.boot, R=999) 
+f1.bs = boot(msftRetS, statistic = f1.boot, R=1000) 
 f1.bs
 ```
 Here, the bootstrap estimate of bias is small and the bootstrap estimated standard error is similar to the delta method and jackknife standard errors. 
@@ -1470,7 +1513,7 @@ To compute the nonparametric bootstrap for $f_2$ with $\alpha=0.05$ and $W_0=\$1
 ```{r}
 #| echo: true
 set.seed(123)
-f2.bs = boot(msftRetS, statistic = f2.boot, R=999) 
+f2.bs = boot(msftRetS, statistic = f2.boot, R=1000) 
 f2.bs
 ```
 
@@ -1497,7 +1540,7 @@ To compute the nonparametric bootstrap for $f_3$ with $\alpha=0.05$ and $W_0=\$1
 ```{r}
 #| echo: true
 set.seed(123)
-f3.bs = boot(msftRetC, statistic = f3.boot, R=999) 
+f3.bs = boot(msftRetC, statistic = f3.boot, R=1000) 
 f3.bs
 ```
 The bias is small and the bootstrap estimated standard error is larger than the delta method standard error and is closer to the jackknife standard error. 
@@ -1526,46 +1569,37 @@ boot.ci(f3.bs, type=c("norm", "perc", "bca"))
 
 The nonparametric bootstrap is extremely useful and powerful statistical technique. The main advantages (pros) are:
 
-* General procedure to estimate bias and standard errors, and to compute confidence intervals, that does not rely on asymptotic distributions. 
+1. General procedure to estimate bias and standard errors, and to compute confidence intervals, that does not rely on asymptotic distributions. 
 
-* Can be used for scalar and vector estimates.
+2. Can be used for scalar and vector estimates.
 
-* Under general conditions, bootstrap distributions of estimators converge to the asymptotic distribution of the estimators. 
+3. Under general conditions, bootstrap distributions of estimators converge to the asymptotic distribution of the estimators. 
 
-* In certain situations, bootstrap results can be more accurate than analytic results computed from asymptotic distributions.
+4. In certain situations, bootstrap results can be more accurate than analytic results computed from asymptotic distributions.
 
 There are some things to watch out for when using the bootstrap (cons):
 
-* It be computational intensive but this is really not much of an issue with today's fast computers.
+1. It be computational intensive but this is really not much of an issue with today's fast computers.
 
-* With small $B$, bootstrap results can vary substantially across simulations with different random number seeds. 
+2. With small $B$, bootstrap results can vary substantially across simulations with different random number seeds. 
 
-* There are situations where the bootstrap does not work. A leading case is when the bootstrap is applied to a function that can be become unbounded (e.g. a ratio of means when the denominator mean is close to zero). In these cases, a trimmed version of the bootstrap is recommended. See Hansen (2011) for a discussion of this issue.
+3. There are situations where the bootstrap does not work. A leading case is when the bootstrap is applied to a function that can be become unbounded (e.g. a ratio of means when the denominator mean is close to zero). In these cases, a trimmed version of the bootstrap is recommended. See @Hansen-2011 for a discussion of this issue.
 
-* You have to be careful applying the bootstrap to time series data. If there is serial correlation in the data then the nonparametric bootstrap may give poor results. There are versions of the bootstrap (e.g. the block bootstrap) that work with serial correlated data. For example, the *tseries* function `tsbootstrap()` is designed to to work with serially correlated time series data. 
+4. You have to be careful applying the bootstrap to time series data. If there is serial correlation in the data then the nonparametric bootstrap may give poor results. There are versions of the bootstrap (e.g., the block bootstrap) that work with serially correlated data. For example, the *tseries* function `tsbootstrap()` is designed to to work with serially correlated time series data. 
 
 ## Using Monte Carlo Simulation to Evaluate Delta Method, Jackknife and Bootstrap Standard Errors {#sec-Using-Monte-Carlo}
 
-* You have studied three ways of computing standard errors for functions of GWN model parameters
-
-* Give similar results for the example functions
-
-* What are the preferred methods in practice?
-
-* Which methods are most accurate?
-
-* Use MC Simulation to evaluate the three methods in stylized model in which the GWN model is true. MC can give the best numerical standard error with which you can compare to the delta method, jackknife and bootstrap standard errors. 
+You have studied three ways of computing standard errors for functions of GWN model parameter: the delta method, the jackknife, and the bootstrap.  All three ways give similar results for the example functions. In this section, I show how to use Monte Carlo simulation to evaluate the three methods when the GWN model is true. Because Monte Carlo simulation approximates the true finite sample distribution of any estimator, it can give the best numerical standard error with which you can compare to the delta method, jackknife and bootstrap standard errors. 
 
 You can evaluate the statistical properties of $f_j(\hat{\boldsymbol{\theta}})$, for $j=1,\ldots,3$,
-by Monte Carlo simulation in the same way that you evaluated the statistical properties of $\hat{\mu}$ in Chapter @sec-Estimation-of-The-GWN-Model. You use the simulation model @eq-GWN-simulation-model and $N=1000$ simulated samples of size $T=100$ to compute the estimates $\{\left(f_{j}(\hat{\boldsymbol{\theta}})\right)^{1},\ldots,\left(f_j(\hat{\boldsymbol{\theta}})\right)^{1000}\}$
-The true values for $f_j(\boldsymbol{\theta})$ are:
+by Monte Carlo simulation in the same way that you evaluated the statistical properties of $\hat{\mu}$ in @sec-Estimation-of-The-GWN-Model. You use the simulation model @eq-GWN-simulation-model and $N=1000$ simulated samples of size $T=100$ to compute the estimates $\{\left(f_{j}(\hat{\boldsymbol{\theta}})\right)^{1},\ldots,\left(f_j(\hat{\boldsymbol{\theta}})\right)^{1000}\}$. The true values for $f_j(\boldsymbol{\theta})$ are:
 \begin{align*}
 f_1(\boldsymbol{\theta}) & = 0.05+(0.10)\times(-1.645)=-0.114,\\
 f_2(\boldsymbol{\theta}) & = - \$100,000 \times f_1(\boldsymbol{\theta}) = \$11,449, \\
 f_3(\boldsymbol{\theta}) & = \$100,000 \times \left(\exp(f_1(\boldsymbol{\theta})) -1  \right) = \$10,818.
 \end{align*}
 
-The R code for the simulation loop is:
+The R code for the Monte Carlo simulation loop is:
 
 ```{r}
 #| echo: true
@@ -1679,7 +1713,7 @@ which confirm that $f_j$ are essentially unbiased estimators. It is often useful
 ```{r}
 mc.bias/c(f1, f2, f3)
 ```
-In relative terms, the largest bias is xx\%, which occurs for the estimate of xxx.
+In relative terms, the largest bias is $0.09\%$, which occurs for the estimates of $f_1$ and $f_2$. This is extremely small.
 
 The average bootstrap estimate of bias is:
 
@@ -1687,7 +1721,12 @@ The average bootstrap estimate of bias is:
 boot.bias.vals = colMeans(boot.bias) 
 round(boot.bias.vals, digits=3)
 ```
-The bootstrap bias values are very close to the Monte Carlo estimates of bias which indicates that the bootstrap estimate of bias is very accruate in this context. 
+The average relative bias is
+```{r}
+boot.bias.vals/c(f1, f2, f3)
+```
+
+The bootstrap bias values are very close to the Monte Carlo estimates of bias which indicates that the bootstrap estimate of bias is very accurate in this context. 
 
 The sample standard deviations of the Monte Carlo estimates approximate the true standard errors of the estimated functions:
 
@@ -1707,7 +1746,7 @@ ans = rbind(dm.se/mc.se, jack.se/mc.se, boot.se/mc.se)
 rownames(ans) = c("Delta Method", "Jackknife", "Bootstrap")
 ans
 ```
-In the table above, a value of $1$ means the estimated standard error is the same as the Monte Carlo standard error (on average), and a value greater than $1$ means that the estimated standard error is larger than the Monte Carlo standard error (on average). Here, you see that all of the estimated standard errors are very close to the Monte Carlo standard errors, and overall the bootstrap estimated standard errors are the closest. The worst performance is for $f_xx(\hat{\boldsymbol{\theta}})$ where the estimated standard errors are about xx\% to xx\% larger than the Monte Carlo standard errors. 
+In the table above, a value of $1$ means the estimated standard error is the same as the Monte Carlo standard error (on average), and a value greater than $1$ means that the estimated standard error is larger than the Monte Carlo standard error (on average). Here, you see that all of the estimated standard errors are very close to the Monte Carlo standard errors, and overall the bootstrap estimated standard errors are the closest.
 
 It is also useful to look at the standard deviations of the estimated standard errors over the Monte Carlo simulations. This tells you how variable the estimated standard errors are across different simulations:
 
