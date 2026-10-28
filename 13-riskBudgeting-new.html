@@ -2,23 +2,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.18">
+<meta name="generator" content="quarto-1.3.450">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>13&nbsp; Portfolio Risk Budgeting – Introduction to Computational Finance and Financial Econometrics with R</title>
+<title>Introduction to Computational Finance and Financial Econometrics with R - 13&nbsp; Portfolio Risk Budgeting</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
+code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: 1.5em;}
-div.column{flex: auto;}
-@media screen {
-div.columns{gap: min(4vw, 1.5em);}
-div.column{overflow-x: auto;}
-}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -27,7 +21,6 @@ ul.task-list li input[type="checkbox"] {
   vertical-align: middle;
 }
 /* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -73,29 +66,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="./">
 <link href="./14-statisticalAnalysisPortfolios-new.html" rel="next">
 <link href="./12-portfolioTheoryNoShortSales-new.html" rel="prev">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-631496449bf32ff9b0bb69a6bfd9195d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 50,
-  "keyboard-shortcut": [
-    "f",
-    "/",
-    "s"
-  ],
-  "show-item-context": false,
+  "limit": 20,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -104,62 +90,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
-    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
 }</script>
-<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
 
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
 
-<body class="nav-sidebar floating quarto-light">
+<body class="nav-sidebar floating">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./13-riskBudgeting-new.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Portfolio Risk Budgeting</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-        </a>
-      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./13-riskBudgeting-new.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Portfolio Risk Budgeting</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -168,7 +125,7 @@ window.Quarto = {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Introduction to Computational Finance and Financial Econometrics with R</a> 
@@ -292,7 +249,7 @@ window.Quarto = {
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -348,9 +305,7 @@ window.Quarto = {
   </div>
   
 
-
 </header>
-
 
 <p>Updated: September 13, 2026</p>
 <p>Copyright © Eric Zivot 2026</p>
@@ -400,11 +355,11 @@ x_{i}^{2}\sigma_{i}^{2}+\sum_{j\neq i}x_{i}x_{j}\sigma_{ij}
 <section id="homogenous-functions-of-degree-one" class="level3" data-number="13.2.1">
 <h3 data-number="13.2.1" class="anchored" data-anchor-id="homogenous-functions-of-degree-one"><span class="header-section-number">13.2.1</span> Homogenous functions of degree one</h3>
 <p> First I define a homogenous function of degree one.</p>
-<div id="def-homogenous-function-of-degree-one" class="definition theorem">
-<p><span class="theorem-title"><strong>Definition 13.1 (homogenous function of degree one)</strong></span> Let <span class="math inline">\(f(x_{1},x_{2},\ldots,x_{N})\)</span> be a continuous and differentiable function of the variables <span class="math inline">\(x_{1},\,x_{2},\ldots,x_{N}\)</span>. The function <span class="math inline">\(f\)</span> is homogeneous of degree one if for any constant <span class="math inline">\(c &gt; 0,\)</span> <span class="math inline">\(f(cx_{1},cx_{2},\ldots,cx_{N})=cf(x_{1},x_{2},\ldots,x_{N}).\)</span> In matrix notation I have <span class="math inline">\(f(x_{1},\ldots,x_{N})=f(\mathbf{x})\)</span> where <span class="math inline">\(\mathbf{x}=(x_{1},\ldots,x_{N})^{\prime}\)</span>. Then <span class="math inline">\(f\)</span> is homogeneous of degree one if <span class="math inline">\(f(c\cdot\mathbf{x})=c\cdot f(\mathbf{x})\)</span>.</p>
+<div id="def-homogenous-function-of-degree-one" class="definition theorem definition">
+<p><span class="theorem-title"><strong>Definition 13.1 (homogenous function of degree one) </strong></span>Let <span class="math inline">\(f(x_{1},x_{2},\ldots,x_{N})\)</span> be a continuous and differentiable function of the variables <span class="math inline">\(x_{1},\,x_{2},\ldots,x_{N}\)</span>. The function <span class="math inline">\(f\)</span> is homogeneous of degree one if for any constant <span class="math inline">\(c &gt; 0,\)</span> <span class="math inline">\(f(cx_{1},cx_{2},\ldots,cx_{N})=cf(x_{1},x_{2},\ldots,x_{N}).\)</span> In matrix notation I have <span class="math inline">\(f(x_{1},\ldots,x_{N})=f(\mathbf{x})\)</span> where <span class="math inline">\(\mathbf{x}=(x_{1},\ldots,x_{N})^{\prime}\)</span>. Then <span class="math inline">\(f\)</span> is homogeneous of degree one if <span class="math inline">\(f(c\cdot\mathbf{x})=c\cdot f(\mathbf{x})\)</span>.</p>
 </div>
-<div id="exm-homogenous-functions-of-degree-one" class="example theorem">
-<p><span class="theorem-title"><strong>Example 13.1 (Homogenous functions of degree one)</strong></span> Consider first the function <span class="math inline">\(f(x_{1},x_{2})=x_{1}+x_{2}.\)</span> Then <span class="math display">\[
+<div id="exm-homogenous-functions-of-degree-one" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 13.1 (Homogenous functions of degree one) </strong></span>Consider first the function <span class="math inline">\(f(x_{1},x_{2})=x_{1}+x_{2}.\)</span> Then <span class="math display">\[
 f(cx_{1},cx_{2})=cx_{1}+cx_{2}=c(x_{1}+x_{2})=cf(x_{1},x_{2})
 \]</span> so that <span class="math inline">\(x_{1}+x_{2}\)</span> is homogenous of degree one. Next, let <span class="math inline">\(f(x_{1},x_{2})=x_{1}^{2}+x_{2}^{2}.\)</span> Then <span class="math display">\[
 f(cx_{1},cx_{2})=c^{2}x_{1}^{2}+c^{2}x_{2}^{2}=c^{2}(x_{1}^{2}+x_{2}^{2})\neq cf(x_{1},x_{2})
@@ -431,8 +386,8 @@ R_{p}&amp; =R_{p}(\mathbf{x})=\mathbf{x}^{\prime}\mathbf{R} \\
 q_{\alpha}^{R_{p}}(x) &amp;=\mu_{p}(\mathbf{x})+\sigma_{p}(\mathbf{x})q_{\alpha}^{Z}, \\ \mathrm{VaR}_{p,\alpha}(\mathbf{x}) &amp; = -q_{\alpha}^{R_{p}}(\mathbf{x})W_{0}.
 \end{aligned}
 \]</span></p>
-<div id="prp-portfolio-quantites-are-homogenous-of-degree-one-in-mathbf-x" class="proposition theorem">
-<p><span class="theorem-title"><strong>Proposition 13.1 (Portfolio quantites are homogenous of degree one in <span class="math inline">\(\mathbf{x}\)</span>)</strong></span> The portfolio quantities <span class="math inline">\(R_{p}(\mathbf{x})\)</span>, <span class="math inline">\(\mu_{p}(\mathbf{x})\)</span>, <span class="math inline">\(\sigma_{p}(\mathbf{x})\)</span>, the normal quantile <span class="math inline">\(q_{\alpha}^{R_{p}}(x)\)</span>, and the normal value-at-risk <span class="math inline">\(\mathrm{VaR}_{p,\alpha}(\mathbf{x})\)</span> are homogenous functions of degree one in the portfolio weight vector <span class="math inline">\(\mathbf{x}\)</span>.</p>
+<div id="prp-portfolio-quantites-are-homogenous-of-degree-one-in-mathbf-x" class="proposition theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 13.1 (Portfolio quantites are homogenous of degree one in <span class="math inline">\(\mathbf{x}\)</span>) </strong></span>The portfolio quantities <span class="math inline">\(R_{p}(\mathbf{x})\)</span>, <span class="math inline">\(\mu_{p}(\mathbf{x})\)</span>, <span class="math inline">\(\sigma_{p}(\mathbf{x})\)</span>, the normal quantile <span class="math inline">\(q_{\alpha}^{R_{p}}(x)\)</span>, and the normal value-at-risk <span class="math inline">\(\mathrm{VaR}_{p,\alpha}(\mathbf{x})\)</span> are homogenous functions of degree one in the portfolio weight vector <span class="math inline">\(\mathbf{x}\)</span>.</p>
 </div>
 <p>The result for <span class="math inline">\(R_{p}(\mathbf{x})\)</span> and <span class="math inline">\(\mu_{p}(\mathbf{x})\)</span> is trivial since they are linear functions of <span class="math inline">\(\mathbf{x}\)</span>. For example, <span class="math inline">\(R_{p}(c\mathbf{x})=(c\mathbf{x})^{\prime}\mathbf{R}=c\left(\mathbf{x}^{\prime}\mathbf{R}\right)=cR_{p}(\mathbf{x})\)</span>. The result for <span class="math inline">\(\sigma_{p}(\mathbf{x})\)</span> is straightforward to show: <span class="math display">\[\begin{align*}
 \sigma_{p}(c\cdot\mathbf{x}) &amp; =((c\cdot\mathbf{x)}^{\prime}\boldsymbol{\Sigma}\mathbf{(}c\cdot\mathbf{x)})^{1/2}\\
@@ -444,8 +399,8 @@ q_{\alpha}^{R_{p}}(x) &amp;=\mu_{p}(\mathbf{x})+\sigma_{p}(\mathbf{x})q_{\alpha}
 <section id="eulers-theorem" class="level3" data-number="13.2.2">
 <h3 data-number="13.2.2" class="anchored" data-anchor-id="eulers-theorem"><span class="header-section-number">13.2.2</span> Euler’s theorem</h3>
 <p> Euler’s theorem gives an additive decomposition of a homogenous function of degree one.</p>
-<div id="thm-euler-s-theorem" class="theorem">
-<p><span class="theorem-title"><strong>Theorem 13.1 (Euler’s theorem)</strong></span> Let <span class="math inline">\(f(x_{1},\ldots,x_{N})=f(\mathbf{x})\)</span> be a continuous, differentiable and homogenous of degree one function of the variables <span class="math inline">\(\mathbf{x}=(x_{1},\ldots,x_{N})^{\prime}\)</span>. Then, <span class="math display">\[\begin{align*}
+<div id="thm-euler-s-theorem" class="theorem theorem">
+<p><span class="theorem-title"><strong>Theorem 13.1 (Euler’s theorem) </strong></span>Let <span class="math inline">\(f(x_{1},\ldots,x_{N})=f(\mathbf{x})\)</span> be a continuous, differentiable and homogenous of degree one function of the variables <span class="math inline">\(\mathbf{x}=(x_{1},\ldots,x_{N})^{\prime}\)</span>. Then, <span class="math display">\[\begin{align*}
 f(\mathbf{x}) &amp; =x_{1}\cdot\frac{\partial f(\mathbf{x})}{\partial x_{1}}+x_{2}\cdot\frac{\partial f(\mathbf{x})}{\partial x_{2}}+\cdots+x_{N}\cdot\frac{\partial f(\mathbf{x})}{\partial x_{N}}\\
 &amp; =\mathbf{x}^{\prime}\frac{\partial f(\mathbf{x})}{\partial\mathbf{x}},
 \end{align*}\]</span> where, <span class="math display">\[
@@ -456,8 +411,8 @@ f(\mathbf{x}) &amp; =x_{1}\cdot\frac{\partial f(\mathbf{x})}{\partial x_{1}}+x_{
 \end{array}\right).
 \]</span></p>
 </div>
-<div id="exm-verifying-euler-s-theorem" class="example theorem">
-<p><span class="theorem-title"><strong>Example 13.2 (Verifying Euler’s theorem)</strong></span> The function <span class="math inline">\(f(x_{1},x_{2})=x_{1}+x_{2}=f(\mathbf{x})=\mathbf{x}^{\prime}\mathbf{1}\)</span> is homogenous of degree one, and: <span class="math display">\[\begin{align*}
+<div id="exm-verifying-euler-s-theorem" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 13.2 (Verifying Euler’s theorem) </strong></span>The function <span class="math inline">\(f(x_{1},x_{2})=x_{1}+x_{2}=f(\mathbf{x})=\mathbf{x}^{\prime}\mathbf{1}\)</span> is homogenous of degree one, and: <span class="math display">\[\begin{align*}
 \frac{\partial f(\mathbf{x})}{\partial x_{1}} &amp; =\frac{\partial f(\mathbf{x})}{\partial x_{2}}=1,\\
 \frac{\partial f(\mathbf{x})}{\partial\mathbf{x}} &amp; =\left(\begin{array}{c}
 \frac{\partial f(\mathbf{x})}{\partial x_{1}}\\
@@ -489,8 +444,8 @@ f(\mathbf{x})=\mathbf{x}^{\prime}\frac{\partial f(\mathbf{x})}{\partial\mathbf{x
 <section id="risk-decomposition-using-eulers-theorem" class="level3" data-number="13.2.3">
 <h3 data-number="13.2.3" class="anchored" data-anchor-id="risk-decomposition-using-eulers-theorem"><span class="header-section-number">13.2.3</span> Risk decomposition using Euler’s theorem</h3>
 <p></p>
-<div id="prp-additive-risk-decomposition-for-homogenous-of-degree-one-portfolio-risk-measures" class="proposition theorem">
-<p><span class="theorem-title"><strong>Proposition 13.2 (Additive risk decomposition for homogenous of degree one portfolio risk measures)</strong></span> Let <span class="math inline">\(\mathrm{RM}_{p}(\mathbf{x})\)</span> denote a portfolio risk measure that is a homogenous function of degree one in the portfolio weight vector <span class="math inline">\(\mathbf{x}\)</span>. For example, <span class="math inline">\(\mathrm{RM}_{p}(\mathbf{x})=\sigma_{p}(\mathbf{x})\)</span> or <span class="math inline">\(\mathrm{RM}_{p}(\mathbf{x})=\mathrm{VaR}_{p,\alpha}(\mathbf{x}).\)</span> Then, Euler’s theorem gives the additive risk decomposition <span class="math display">\[
+<div id="prp-additive-risk-decomposition-for-homogenous-of-degree-one-portfolio-risk-measures" class="proposition theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 13.2 (Additive risk decomposition for homogenous of degree one portfolio risk measures) </strong></span>Let <span class="math inline">\(\mathrm{RM}_{p}(\mathbf{x})\)</span> denote a portfolio risk measure that is a homogenous function of degree one in the portfolio weight vector <span class="math inline">\(\mathbf{x}\)</span>. For example, <span class="math inline">\(\mathrm{RM}_{p}(\mathbf{x})=\sigma_{p}(\mathbf{x})\)</span> or <span class="math inline">\(\mathrm{RM}_{p}(\mathbf{x})=\mathrm{VaR}_{p,\alpha}(\mathbf{x}).\)</span> Then, Euler’s theorem gives the additive risk decomposition <span class="math display">\[
 \begin{aligned}
 \mathrm{RM}_{p}(\mathbf{x}) &amp; =  x_{1}\frac{\partial\mathrm{RM}_{p}(\mathbf{x})}{\partial x_{1}}+x_{2}\frac{\partial\mathrm{RM}_{p}(\mathbf{x})}{\partial x_{2}}+\cdots+x_{N}\frac{\partial\mathrm{RM}_{p}(\mathbf{x})}{\partial x_{N}}\\
 &amp; = \sum_{i=1}^{N}x_{i}\frac{\partial\mathrm{RM}_{p}(\mathbf{x})}{\partial x_{i}} \\
@@ -508,7 +463,7 @@ f(\mathbf{x})=\mathbf{x}^{\prime}\frac{\partial f(\mathbf{x})}{\partial\mathbf{x
 \mathrm{RM}_{p}(\mathbf{x}) &amp; = x_{1}\cdot\mathrm{MCR}_{1}^{RM}+x_{2}\cdot\mathrm{MCR}_{2}^{RM}+\cdots+x_{N}\cdot\mathrm{MCR}_{N}^{RM}\\
 &amp; =  \mathrm{CR}_{1}^{RM}+\mathrm{CR}_{2}^{RM}+\cdots+\mathrm{CR}_{N}^{RM}\nonumber
 \end{aligned}
-\tag{13.3}\]</span></span> If I divide both sides of <a href="#eq-RiskBudgetRiskDecomposition2" class="quarto-xref">Equation&nbsp;<span>13.3</span></a> by <span class="math inline">\(\mathrm{RM}_{p}(\mathbf{x})\)</span> I get the asset <em>percent contributions to risk</em> (PCRs) <span class="math display">\[
+\tag{13.3}\]</span></span> If I divide both sides of <a href="#eq-RiskBudgetRiskDecomposition2">Equation&nbsp;<span>13.3</span></a> by <span class="math inline">\(\mathrm{RM}_{p}(\mathbf{x})\)</span> I get the asset <em>percent contributions to risk</em> (PCRs) <span class="math display">\[
 \begin{aligned}
 1 &amp; = \frac{\mathrm{CR}_{1}^{RM}}{\mathrm{RM}_{p}(\mathbf{x})}+\frac{\mathrm{CR}_{2}^{RM}}{\mathrm{RM}_{p}(\mathbf{x})}+\cdots+\frac{\mathrm{CR}_{N}^{RM}}{\mathrm{RM}_{p}(\mathbf{x})}\\
 &amp; = \mathrm{PCR}_{1}^{RM}+\mathrm{PCR}_{2}^{RM}+\cdots+\mathrm{PCR}_{N}^{RM}
@@ -537,8 +492,8 @@ f(\mathbf{x})=\mathbf{x}^{\prime}\frac{\partial f(\mathbf{x})}{\partial\mathbf{x
 \tag{13.9}\]</span></span> Notice that: <span class="math display">\[
 \sigma_{p}(\mathbf{x})=\mathbf{x}^{\prime}\frac{\partial\sigma_{p}(\mathbf{x})}{\partial\mathbf{x}}=\mathbf{x}^{\prime}\frac{\boldsymbol{\Sigma} \mathbf{x}}{\sigma_{p}(\mathbf{x})}=\frac{\sigma_{p}^{2}(\mathbf{x})}{\sigma_{p}(\mathbf{x})}=\sigma_{p}(\mathbf{x}).
 \]</span></p>
-<div id="exm-two-asset-example" class="example theorem">
-<p><span class="theorem-title"><strong>Example 13.3 (Two asset example)</strong></span> For a two asset portfolio you have: <span class="math display">\[\begin{eqnarray*}
+<div id="exm-two-asset-example" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 13.3 (Two asset example) </strong></span>For a two asset portfolio you have: <span class="math display">\[\begin{eqnarray*}
 \sigma_{p}(\mathbf{x})=(\mathbf{x}^{\prime}\boldsymbol{\Sigma} \mathbf{x})^{1/2} &amp; = &amp; \left(x_{1}^{2}\sigma_{1}^{2}+x_{2}^{2}\sigma_{2}^{2}+2x_{1}x_{2}\sigma_{12}\right)^{1/2},\\
 \boldsymbol{\Sigma} \mathbf{x} &amp; \mathbf{=} &amp; \left(\begin{array}{cc}
 \sigma_{1}^{2} &amp; \sigma_{12}\\
@@ -593,12 +548,12 @@ x_{2}\sigma_{2}^{2}+x_{1}\sigma_{12}
 \mathrm{CR}_{i}^{\mathrm{VaR}} &amp; = &amp; x_{i}\times W_{0}\times\left(\frac{\left(\boldsymbol{\Sigma} \mathbf{x}\right)_{i}}{\sigma_{p}(\mathbf{x)}}\times q_{\alpha}^{Z}\right)\propto\mathrm{CR}_{i}^{\sigma},\\
 \mathrm{PCR}_{i}^{\mathrm{VaR}} &amp; = &amp; x_{i}\times\frac{\left(\boldsymbol{\Sigma} \mathbf{x}\right)_{i}}{\sigma_{p}^{2}(\mathbf{x)}}=\mathrm{PCR}_{i}^{\sigma},
 \end{eqnarray*}\]</span></p>
-<p>and we see that the portfolio normal VaR risk decompositions above give the same information as the portfolio volatility risk decompositions <a href="#eq-RiskBudgetVolMCR" class="quarto-xref">Equation&nbsp;<span>13.7</span></a> - <a href="#eq-RiskBudgetVolPCR" class="quarto-xref">Equation&nbsp;<span>13.9</span></a>.</p>
+<p>and we see that the portfolio normal VaR risk decompositions above give the same information as the portfolio volatility risk decompositions <a href="#eq-RiskBudgetVolMCR">Equation&nbsp;<span>13.7</span></a> - <a href="#eq-RiskBudgetVolPCR">Equation&nbsp;<span>13.9</span></a>.</p>
 </section>
 </section>
 <section id="interpreting-marginal-contributions-to-risk" class="level3" data-number="13.2.4">
 <h3 data-number="13.2.4" class="anchored" data-anchor-id="interpreting-marginal-contributions-to-risk"><span class="header-section-number">13.2.4</span> Interpreting marginal contributions to risk</h3>
-<p>The risk decomposition <span class="quarto-unresolved-ref">?eq-RiskBudgetRiskDecomposition</span> shows that any risk measure that is homogenous of degree one in the portfolio weights can be additively decomposed into a portfolio weighted average of marginal contributions to risk. The marginal contributions to risk <a href="#eq-RiskBudgetMCR" class="quarto-xref">Equation&nbsp;<span>13.1</span></a> are the partial derivatives of the risk meausre <span class="math inline">\(\mathrm{RM}_{p}(\mathbf{x})\)</span> with respect to the portfolio weights, and so one may think that they can be interpreted as the change in the risk measure associated with a one unit change in a portfolio weight holding the other portfolio weights fixed: <span class="math display">\[
+<p>The risk decomposition <span class="quarto-unresolved-ref">?eq-RiskBudgetRiskDecomposition</span> shows that any risk measure that is homogenous of degree one in the portfolio weights can be additively decomposed into a portfolio weighted average of marginal contributions to risk. The marginal contributions to risk <a href="#eq-RiskBudgetMCR">Equation&nbsp;<span>13.1</span></a> are the partial derivatives of the risk meausre <span class="math inline">\(\mathrm{RM}_{p}(\mathbf{x})\)</span> with respect to the portfolio weights, and so one may think that they can be interpreted as the change in the risk measure associated with a one unit change in a portfolio weight holding the other portfolio weights fixed: <span class="math display">\[
 \mathrm{MCR}_{i}^{\sigma}=\frac{\partial\sigma_{p}(\mathbf{x})}{\partial x_{i}}\approx\frac{\Delta\sigma_{p}}{\Delta x_{i}}\Rightarrow\Delta\sigma_{p}\approx\mathrm{MCR}_{i}^{\sigma}\cdot\Delta x_{i}.
 \]</span> If the portfolio weights were unconstrained this would be the correct interpretation. However, the portfolio weights are constrained to sum to one, <span class="math inline">\(\sum_{i=1}^{N}x_{i}=1\)</span>, so the increase in one weight implies an offsetting decrease in the other weights. Hence, the formula <span class="math inline">\(\Delta\sigma_{p}\approx\mathrm{MCR}_{i}^{\sigma}\cdot\Delta x_{i}\)</span> ignores this re-allocation effect.</p>
 <p>To properly interpret the marginal contributions to risk, consider the total derivative of <span class="math inline">\(\mathrm{RM}_{p}(\mathbf{x})\)</span>: <span id="eq-RiskBudgetTotalDerivative"><span class="math display">\[
@@ -606,7 +561,7 @@ x_{2}\sigma_{2}^{2}+x_{1}\sigma_{12}
 d\mathrm{RM}_{p}(\mathbf{x}) &amp; =\frac{\partial\mathrm{RM}_{p}(\mathbf{x})}{\partial x_{1}}dx_{1}+\frac{\partial\mathrm{RM}_{p}(\mathbf{x})}{\partial x_{2}}dx_{2}+\cdots+\frac{\partial\mathrm{RM}_{p}(\mathbf{x})}{\partial x_{N}}dx_{N}\\
 &amp; =\mathrm{MCR}_{1}^{RM}dx_{1}+\mathrm{MCR}_{2}^{RM}dx_{2}+\cdots+\mathrm{MCR}_{N}^{RM}dx_{N}.\nonumber
 \end{aligned}
-\tag{13.14}\]</span></span> First, consider a small change in <span class="math inline">\(x_{i}\)</span> offset by an equal change in <span class="math inline">\(x_{j},\)</span> <span class="math inline">\(\Delta x_{i}=-\Delta x_{j}\)</span>. That is, the small increase in allocation to asset <span class="math inline">\(i\)</span> is matched by a corresponding decrease in allocation to asset <span class="math inline">\(j\)</span>. From <a href="#eq-RiskBudgetTotalDerivative" class="quarto-xref">Equation&nbsp;<span>13.14</span></a>, the approximate change in the portfolio risk measure is <span id="eq-RiskBudgetChangeInRisk"><span class="math display">\[
+\tag{13.14}\]</span></span> First, consider a small change in <span class="math inline">\(x_{i}\)</span> offset by an equal change in <span class="math inline">\(x_{j},\)</span> <span class="math inline">\(\Delta x_{i}=-\Delta x_{j}\)</span>. That is, the small increase in allocation to asset <span class="math inline">\(i\)</span> is matched by a corresponding decrease in allocation to asset <span class="math inline">\(j\)</span>. From <a href="#eq-RiskBudgetTotalDerivative">Equation&nbsp;<span>13.14</span></a>, the approximate change in the portfolio risk measure is <span id="eq-RiskBudgetChangeInRisk"><span class="math display">\[
 \Delta\mathrm{RM}_{p}(\mathbf{x})\approx\left(\mathrm{MCR}_{i}^{RM}-\mathrm{MCR}_{j}^{RM}\right)\Delta x_{i}.
 \tag{13.15}\]</span></span></p>
 <p>When rebalancing a portfolio, the reallocation does not have to be limited to two assets. Suppose, for example, the reallocation is spread across all of the other assets <span class="math inline">\(j\neq i\)</span> so that <span class="math display">\[
@@ -619,7 +574,7 @@ d\mathrm{RM}_{p}(\mathbf{x}) &amp; =\frac{\partial\mathrm{RM}_{p}(\mathbf{x})}{\
 &amp; =\left(\mathrm{MCR}_{i}^{RM}-\sum_{j\neq i}\alpha_{j}\cdot\mathrm{MCR}_{j}^{RM}\right)\Delta x_{i}.\nonumber
 \end{aligned}
 \tag{13.16}\]</span></span></p>
-<p>In matrix notation the result <a href="#eq-RiskBudgetChangeInRiskMulti" class="quarto-xref">Equation&nbsp;<span>13.16</span></a> be written as <span id="eq-RiskBudgetChangeInRiskMatrix"><span class="math display">\[
+<p>In matrix notation the result <a href="#eq-RiskBudgetChangeInRiskMulti">Equation&nbsp;<span>13.16</span></a> be written as <span id="eq-RiskBudgetChangeInRiskMatrix"><span class="math display">\[
 \Delta\mathrm{RM}(\mathbf{w}) \approx\left((\mathbf{MCR}^{RM})^{\prime}\boldsymbol{\alpha}\right)\Delta x_{i},
 \tag{13.17}\]</span></span> where <span class="math display">\[
 \begin{aligned}
@@ -631,14 +586,10 @@ d\mathrm{RM}_{p}(\mathbf{x}) &amp; =\frac{\partial\mathrm{RM}_{p}(\mathbf{x})}{\
 </section>
 <section id="sec-Portfolio-risk-reports" class="level2" data-number="13.3">
 <h2 data-number="13.3" class="anchored" data-anchor-id="sec-Portfolio-risk-reports"><span class="header-section-number">13.3</span> Portfolio risk reports</h2>
-<p> A <em>portfolio risk report</em> summarizes asset and portfolio risk measures as well as risk budgets. Table <a href="#tbl-RiskBudgetRiskReport" class="quarto-xref">Table&nbsp;<span>13.1</span></a> shows a typical portfolio risk report. The individual asset information is in rows with the portfolio information at the bottom. The total dollar amount invested in the portfolio is <span class="math inline">\(W_{0}\)</span> and the dollar amounts invested in each asset are <span class="math inline">\(d_{i}=x_{i}W_{0}.\)</span> The asset specific (standalone) risk measures are <span class="math inline">\(\mathrm{RM}_{i}\)</span> and the portfolio risk measure is <span class="math inline">\(\mathrm{RM}(\mathbf{x})\)</span>.</p>
-<div id="tbl-RiskBudgetRiskReport" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-RiskBudgetRiskReport-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;13.1: Portfolio Risk Report
-</figcaption>
-<div aria-describedby="tbl-RiskBudgetRiskReport-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table class="caption-top table">
+<p> A <em>portfolio risk report</em> summarizes asset and portfolio risk measures as well as risk budgets. Table <a href="#tbl-RiskBudgetRiskReport">Table&nbsp;<span>13.1</span></a> shows a typical portfolio risk report. The individual asset information is in rows with the portfolio information at the bottom. The total dollar amount invested in the portfolio is <span class="math inline">\(W_{0}\)</span> and the dollar amounts invested in each asset are <span class="math inline">\(d_{i}=x_{i}W_{0}.\)</span> The asset specific (standalone) risk measures are <span class="math inline">\(\mathrm{RM}_{i}\)</span> and the portfolio risk measure is <span class="math inline">\(\mathrm{RM}(\mathbf{x})\)</span>.</p>
+<div id="tbl-RiskBudgetRiskReport" class="anchored">
+<table class="table">
+<caption>Table&nbsp;13.1: Portfolio Risk Report</caption>
 <colgroup>
 <col style="width: 17%">
 <col style="width: 11%">
@@ -708,14 +659,12 @@ Table&nbsp;13.1: Portfolio Risk Report
 </tbody>
 </table>
 </div>
-</figure>
-</div>
-<div id="exm-portfolio-volatility-risk-report" class="example theorem">
-<p><span class="theorem-title"><strong>Example 13.4 (Portfolio volatility risk report)</strong></span> Consider creating a portfolio volatility risk report from an equally weighted portfolio of Microsoft, Nordstrom, and Starbucks stock. The initial wealth invested in the portfolio is $100,000. The expected return vector and covariance matrix is based on sample statistics computed over the five-year period January, 1995 through January, 2000. The asset and portfolio expected return and volatility information is:</p>
+<div id="exm-portfolio-volatility-risk-report" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 13.4 (Portfolio volatility risk report) </strong></span>Consider creating a portfolio volatility risk report from an equally weighted portfolio of Microsoft, Nordstrom, and Starbucks stock. The initial wealth invested in the portfolio is $100,000. The expected return vector and covariance matrix is based on sample statistics computed over the five-year period January, 1995 through January, 2000. The asset and portfolio expected return and volatility information is:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># asset information</span></span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># asset information</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>asset.names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"MSFT"</span>, <span class="st">"NORD"</span>, <span class="st">"SBUX"</span>) </span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>mu.vec <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">0.0427</span>, <span class="fl">0.0015</span>, <span class="fl">0.0285</span>) </span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>sigma.mat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fl">0.0100</span>, <span class="fl">0.0018</span>, <span class="fl">0.0011</span>,                      </span>
@@ -731,23 +680,23 @@ Table&nbsp;13.1: Portfolio Risk Report
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> x<span class="sc">*</span>W0</span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(x) <span class="ot">=</span> asset.names </span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>mu.px <span class="ot">=</span> <span class="fu">as.numeric</span>(<span class="fu">crossprod</span>(x, mu.vec)) </span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>sig.px <span class="ot">=</span> <span class="fu">as.numeric</span>(<span class="fu">sqrt</span>(<span class="fu">t</span>(x)<span class="sc">%*%</span>sigma.mat<span class="sc">%*%</span>x))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>sig.px <span class="ot">=</span> <span class="fu">as.numeric</span>(<span class="fu">sqrt</span>(<span class="fu">t</span>(x)<span class="sc">%*%</span>sigma.mat<span class="sc">%*%</span>x))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>The volatility risk budgeting calculations are:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>MCR.vol.x <span class="ot">=</span> (sigma.mat<span class="sc">%*%</span>x)<span class="sc">/</span>sig.px </span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>MCR.vol.x <span class="ot">=</span> (sigma.mat<span class="sc">%*%</span>x)<span class="sc">/</span>sig.px </span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>CR.vol.x <span class="ot">=</span> x<span class="sc">*</span>MCR.vol.x </span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>PCR.vol.x <span class="ot">=</span> CR.vol.x<span class="sc">/</span>sig.px</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>PCR.vol.x <span class="ot">=</span> CR.vol.x<span class="sc">/</span>sig.px</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>The volatility risk report is computed using:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>riskReportVol.px <span class="ot">=</span> <span class="fu">cbind</span>(d, x, sig.vec, MCR.vol.x, </span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>riskReportVol.px <span class="ot">=</span> <span class="fu">cbind</span>(d, x, sig.vec, MCR.vol.x, </span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                         CR.vol.x, PCR.vol.x) </span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>PORT <span class="ot">=</span> <span class="fu">c</span>(W0, <span class="dv">1</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="fu">sum</span>(CR.vol.x), <span class="fu">sum</span>(PCR.vol.x)) </span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>riskReportVol.px <span class="ot">=</span> <span class="fu">rbind</span>(riskReportVol.px, PORT) </span>
@@ -758,55 +707,55 @@ Table&nbsp;13.1: Portfolio Risk Report
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; MSFT  33333  0.333 0.100 0.0567 0.0189 0.249</span></span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; NORD  33333  0.333 0.104 0.0672 0.0224 0.295</span></span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SBUX  33333  0.333 0.141 0.1037 0.0346 0.456</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; PORT 100000  1.000    NA     NA 0.0759 1.000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; PORT 100000  1.000    NA     NA 0.0759 1.000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>In the equally weighted portfolio, the risk contributions are not equal across assets. Predictably, the ranking of the risk contributions follows the ranking of the individual asset volatilities <span class="math inline">\(\sigma_{i},\)</span> with Starbucks giving the highest contributions to portfolio volatility. So if the portfolio manager wants to reduce portfolio volatility the allocation to Starbucks should be reduced first.</p>
-<p>To interpret the marginal contributions to risk, suppose that the portfolio manager wants to reduce portfolio volatility and chooses the rebalancing strategy: <span class="math inline">\(\varDelta x_{MSFT}=-\varDelta x_{SBUX}=0.1\)</span> (i.e., <span class="math inline">\(x_{MSFT}\)</span> increases to <span class="math inline">\(0.433\)</span> and <span class="math inline">\(x_{SBUX}\)</span> decreases to <span class="math inline">\(0.233).\)</span> Then, from <a href="#eq-RiskBudgetChangeInRisk" class="quarto-xref">Equation&nbsp;<span>13.15</span></a> the predicted change in portfolio standard deviation is:</p>
+<p>To interpret the marginal contributions to risk, suppose that the portfolio manager wants to reduce portfolio volatility and chooses the rebalancing strategy: <span class="math inline">\(\varDelta x_{MSFT}=-\varDelta x_{SBUX}=0.1\)</span> (i.e., <span class="math inline">\(x_{MSFT}\)</span> increases to <span class="math inline">\(0.433\)</span> and <span class="math inline">\(x_{SBUX}\)</span> decreases to <span class="math inline">\(0.233).\)</span> Then, from <a href="#eq-RiskBudgetChangeInRisk">Equation&nbsp;<span>13.15</span></a> the predicted change in portfolio standard deviation is:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>delta.vol.px <span class="ot">=</span> (MCR.vol.x[<span class="st">"MSFT"</span>,] <span class="sc">-</span> MCR.vol.x[<span class="st">"SBUX"</span>,])<span class="sc">*</span><span class="fl">0.1</span> </span>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>delta.vol.px <span class="ot">=</span> (MCR.vol.x[<span class="st">"MSFT"</span>,] <span class="sc">-</span> MCR.vol.x[<span class="st">"SBUX"</span>,])<span class="sc">*</span><span class="fl">0.1</span> </span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>delta.vol.px</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    MSFT </span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; -0.0047</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; -0.0047</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Hence, the predicted volatility after rebalancing is:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>sig.px <span class="sc">+</span> delta.vol.px</span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>sig.px <span class="sc">+</span> delta.vol.px</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   MSFT </span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.0712</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.0712</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>The exact change in volatility from rebalancing is:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>x1 <span class="ot">=</span> x <span class="sc">+</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="dv">0</span>, <span class="sc">-</span><span class="fl">0.1</span>) </span>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>x1 <span class="ot">=</span> x <span class="sc">+</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="dv">0</span>, <span class="sc">-</span><span class="fl">0.1</span>) </span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>sig.px1 <span class="ot">=</span> <span class="fu">as.numeric</span>(<span class="fu">sqrt</span>(<span class="fu">t</span>(x1)<span class="sc">%*%</span>sigma.mat<span class="sc">%*%</span>x1)) </span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>sig.px1 </span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.0729</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.0729</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>The difference between the approximate change in portfolio volatility computed from the risk report and the actual change is:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>sig.px1 <span class="sc">-</span> sig.px</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -0.00293</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>sig.px1 <span class="sc">-</span> sig.px</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -0.00293</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p><span class="math inline">\(\blacksquare\)</span></p>
 </div>
-<div id="exm-portfolio-normal-var-risk-report" class="example theorem">
-<p><span class="theorem-title"><strong>Example 13.5 (Portfolio normal VaR risk report)</strong></span> Using the asset and portfolio data from the previous example, consider creating a normal portfolio VaR report, where VaR is computed with 5% probability. The R calculations are:</p>
+<div id="exm-portfolio-normal-var-risk-report" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 13.5 (Portfolio normal VaR risk report) </strong></span>Using the asset and portfolio data from the previous example, consider creating a normal portfolio VaR report, where VaR is computed with 5% probability. The R calculations are:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># portfolio 5% normal VaR</span></span>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># portfolio 5% normal VaR</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="fl">0.05</span> </span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># risk budget calculations</span></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>VaR.px <span class="ot">=</span> <span class="fu">abs</span>(W0<span class="sc">*</span>(mu.px <span class="sc">+</span> sig.px<span class="sc">*</span><span class="fu">qnorm</span>(alpha))) </span>
@@ -826,33 +775,33 @@ Table&nbsp;13.1: Portfolio Risk Report
 <span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; MSFT  33333  0.333 12179  5053  1684 0.168</span></span>
 <span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; NORD  33333  0.333 17023 10907  3636 0.362</span></span>
 <span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SBUX  33333  0.333 20354 14206  4735 0.471</span></span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; PORT 100000  1.000    NA    NA 10055 1.000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; PORT 100000  1.000    NA    NA 10055 1.000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>The qualitative information in the portfolio normal VaR report is essentially the same as in the portfolio volatility report. Because the VaR calculation involve the asset expected returns, <span class="math inline">\(\boldsymbol{\mu}\)</span>, the results are not exactly the same. If we set <span class="math inline">\(\boldsymbol{\mu}=\mathbf{0}\)</span> in the VaR calculations then the two reports would give same risk information but on different scales (volatility is in return and VaR is in dollars).</p>
-<p>To interpret the marginal contributions to risk, suppose that the portfolio manager wants to reduce portfolio VaR and chooses the rebalancing strategy: <span class="math inline">\(\varDelta x_{MSFT}=-\varDelta x_{SBUX}=0.1\)</span> (i.e., <span class="math inline">\(x_{MSFT}\)</span> increases to <span class="math inline">\(0.433\)</span> and <span class="math inline">\(x_{SBUX}\)</span> decreases to <span class="math inline">\(0.233).\)</span> Then, from <a href="#eq-RiskBudgetChangeInRisk" class="quarto-xref">Equation&nbsp;<span>13.15</span></a> the predicted change in portfolio VaR and new portfolio VaR are:</p>
+<p>To interpret the marginal contributions to risk, suppose that the portfolio manager wants to reduce portfolio VaR and chooses the rebalancing strategy: <span class="math inline">\(\varDelta x_{MSFT}=-\varDelta x_{SBUX}=0.1\)</span> (i.e., <span class="math inline">\(x_{MSFT}\)</span> increases to <span class="math inline">\(0.433\)</span> and <span class="math inline">\(x_{SBUX}\)</span> decreases to <span class="math inline">\(0.233).\)</span> Then, from <a href="#eq-RiskBudgetChangeInRisk">Equation&nbsp;<span>13.15</span></a> the predicted change in portfolio VaR and new portfolio VaR are:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>delta.VaR.px <span class="ot">=</span> (MCR.VaR.x[<span class="st">"MSFT"</span>,] <span class="sc">-</span> MCR.VaR.x[<span class="st">"SBUX"</span>,])<span class="sc">*</span><span class="fl">0.1</span> </span>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>delta.VaR.px <span class="ot">=</span> (MCR.VaR.x[<span class="st">"MSFT"</span>,] <span class="sc">-</span> MCR.VaR.x[<span class="st">"SBUX"</span>,])<span class="sc">*</span><span class="fl">0.1</span> </span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>delta.VaR.px </span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; MSFT </span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; -915</span></span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>VaR.px <span class="sc">+</span> delta.VaR.px</span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; MSFT </span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 9140</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 9140</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>The exact change in portfolio VaR from rebalancing is:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>mu.px1 <span class="ot">=</span> <span class="fu">as.numeric</span>(<span class="fu">crossprod</span>(x1, mu.vec)) </span>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>mu.px1 <span class="ot">=</span> <span class="fu">as.numeric</span>(<span class="fu">crossprod</span>(x1, mu.vec)) </span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>VaR.px1 <span class="ot">=</span> <span class="fu">abs</span>(W0<span class="sc">*</span>(mu.px1 <span class="sc">+</span> sig.px1<span class="sc">*</span><span class="fu">qnorm</span>(alpha))) </span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>VaR.px1 <span class="sc">-</span> VaR.px</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -624</span></span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>VaR.px1</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 9431</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 9431</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Here, the predicted reduction in VaR is about $300 more than the actual change in VaR. <span class="math inline">\(\blacksquare\)</span></p>
@@ -860,26 +809,26 @@ Table&nbsp;13.1: Portfolio Risk Report
 </section>
 <section id="understanding-portfolio-volatility-risk-decompositions" class="level2" data-number="13.4">
 <h2 data-number="13.4" class="anchored" data-anchor-id="understanding-portfolio-volatility-risk-decompositions"><span class="header-section-number">13.4</span> Understanding Portfolio Volatility Risk Decompositions</h2>
-<p>Portfolio volatility risk reports described in the previous sub-section are commonly used in practice. As such, it is important to have a good understanding of the volatility risk decompositions and, in particular, the asset contributions to portfolio volatility. In the portfolio volatility risk decomposition <a href="#eq-RiskBudgetVolDecomposition" class="quarto-xref">Equation&nbsp;<span>13.5</span></a>, the marginal contribution from asset <span class="math inline">\(i\)</span> given by: <span id="eq-RiskBudgetVolMCR2"><span class="math display">\[
+<p>Portfolio volatility risk reports described in the previous sub-section are commonly used in practice. As such, it is important to have a good understanding of the volatility risk decompositions and, in particular, the asset contributions to portfolio volatility. In the portfolio volatility risk decomposition <a href="#eq-RiskBudgetVolDecomposition">Equation&nbsp;<span>13.5</span></a>, the marginal contribution from asset <span class="math inline">\(i\)</span> given by: <span id="eq-RiskBudgetVolMCR2"><span class="math display">\[
 \begin{aligned}
 \mathrm{MCR}_{i}^{\sigma} &amp; = \text{i-th row of }\frac{\boldsymbol{\Sigma} \mathbf{x}}{\sigma_{p}(\mathbf{x})}=\frac{\left(\boldsymbol{\Sigma} \mathbf{x}\right)_{i}}{\sigma_{p}(\mathbf{x})}.
 \end{aligned}
-\tag{13.18}\]</span></span> The interpretation of this formula, however, is not particularly intuitive. With a little bit of algebra, we can derive two alternative representations of <a href="#eq-RiskBudgetVolMCR2" class="quarto-xref">Equation&nbsp;<span>13.18</span></a> that are easier to interpret and give better intuition about the asset contributions to portfolio volatility.</p>
+\tag{13.18}\]</span></span> The interpretation of this formula, however, is not particularly intuitive. With a little bit of algebra, we can derive two alternative representations of <a href="#eq-RiskBudgetVolMCR2">Equation&nbsp;<span>13.18</span></a> that are easier to interpret and give better intuition about the asset contributions to portfolio volatility.</p>
 <section id="sigma-rho-decomposition-for-mathrmmcr_isigma" class="level3" data-number="13.4.1">
 <h3 data-number="13.4.1" class="anchored" data-anchor-id="sigma-rho-decomposition-for-mathrmmcr_isigma"><span class="header-section-number">13.4.1</span> <span class="math inline">\(\sigma-\rho\)</span> decomposition for <span class="math inline">\(\mathrm{MCR}_{i}^{\sigma}\)</span></h3>
-<div id="prp-sigma-rho-decomposition" class="proposition theorem">
-<p><span class="theorem-title"><strong>Proposition 13.3 (<span class="math inline">\(\sigma-\rho\)</span> decomposition)</strong></span> The <span class="math inline">\(\sigma-\rho\)</span> decomposition for <span class="math inline">\(\mathrm{MCR}_{i}^{\sigma}\)</span> is <span id="eq-RiskBudgetMCRrho"><span class="math display">\[
+<div id="prp-sigma-rho-decomposition" class="proposition theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 13.3 (<span class="math inline">\(\sigma-\rho\)</span> decomposition) </strong></span>The <span class="math inline">\(\sigma-\rho\)</span> decomposition for <span class="math inline">\(\mathrm{MCR}_{i}^{\sigma}\)</span> is <span id="eq-RiskBudgetMCRrho"><span class="math display">\[
 \mathrm{MCR}_{i}^{\sigma}=\sigma_{i}\rho_{i,p}(\mathbf{x}),
 \tag{13.19}\]</span></span> where <span class="math inline">\(\rho_{i,p}(\mathbf{x})=\mathrm{corr}(R,R_{p}(\mathbf{x}))\)</span> is the correlation between the return on asset <span class="math inline">\(i\)</span> and the return on the portfolio.</p>
 </div>
 <p>Remarks:</p>
 <ol type="1">
-<li>Equation <a href="#eq-RiskBudgetMCRrho" class="quarto-xref">Equation&nbsp;<span>13.19</span></a> shows that an asset’s marginal contribution to portfolio volatility depends on two components: (1) the asset’s return volatility, <span class="math inline">\(\sigma_{i}\)</span> (sometimes called standalone volatility); (2) the asset’s correlation with the portfolio return, <span class="math inline">\(\rho_{i,p}(\mathbf{x})\)</span>.</li>
+<li>Equation <a href="#eq-RiskBudgetMCRrho">Equation&nbsp;<span>13.19</span></a> shows that an asset’s marginal contribution to portfolio volatility depends on two components: (1) the asset’s return volatility, <span class="math inline">\(\sigma_{i}\)</span> (sometimes called standalone volatility); (2) the asset’s correlation with the portfolio return, <span class="math inline">\(\rho_{i,p}(\mathbf{x})\)</span>.</li>
 <li>For a given standalone volatility, <span class="math inline">\(\sigma_{i},\)</span> the sign and magnitude of <span class="math inline">\(\mathrm{MCR}_{i}^{\sigma}\)</span> depends on <span class="math inline">\(\rho_{i,p}(\mathbf{x})\)</span>. Because <span class="math inline">\(-1\leq\rho_{i,p}(\mathbf{x})\leq1\)</span>, it follows that <span class="math inline">\(\mathrm{MCR}_{i}^{\sigma}\leq\sigma_{i}\)</span> and <span class="math inline">\(\mathrm{MCR}_{i}^{\sigma}=\sigma_{i}\)</span> only if <span class="math inline">\(\rho_{i,p}(\mathbf{x})=1\)</span>.</li>
 <li>If an asset’s return is uncorrelated with all of the returns in the portfolio then <span class="math inline">\(\rho_{i,p}(\mathbf{x})=\left(x_{i}\sigma_{i}\right)/\sigma_{p}\)</span> and <span class="math inline">\(\mathrm{MCR}_{i}^{\sigma}=\left(x_{i}\sigma_{i}^{2}\right)/\sigma_{p}\)</span>.</li>
 </ol>
-<div id="prp-x-sigma-rho-decomposition" class="proposition theorem">
-<p><span class="theorem-title"><strong>Proposition 13.4 (<span class="math inline">\(x-\sigma-\rho\)</span> decomposition)</strong></span> Using <a href="#eq-RiskBudgetMCRrho" class="quarto-xref">Equation&nbsp;<span>13.19</span></a> the <span class="math inline">\(x-\sigma-\rho\)</span> decomposition for <span class="math inline">\(\mathrm{CR}_{i}^{\sigma}=x_{i}\times\mathrm{MCR}_{i}^{\sigma}\)</span> is: <span id="eq-RiskBudgetCRrho"><span class="math display">\[
+<div id="prp-x-sigma-rho-decomposition" class="proposition theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 13.4 (<span class="math inline">\(x-\sigma-\rho\)</span> decomposition) </strong></span>Using <a href="#eq-RiskBudgetMCRrho">Equation&nbsp;<span>13.19</span></a> the <span class="math inline">\(x-\sigma-\rho\)</span> decomposition for <span class="math inline">\(\mathrm{CR}_{i}^{\sigma}=x_{i}\times\mathrm{MCR}_{i}^{\sigma}\)</span> is: <span id="eq-RiskBudgetCRrho"><span class="math display">\[
 \begin{aligned}
 \mathrm{CR}_{i}^{\sigma} &amp; = x_{i}\times\sigma_{i}\times\rho_{i,p}(\mathbf{x})\\
 &amp; = asset\,allocation\times standalone\,volatility\times correlation\,with\,portfolio
@@ -888,12 +837,12 @@ Table&nbsp;13.1: Portfolio Risk Report
 </div>
 <p>Remarks:</p>
 <ol type="1">
-<li>Equation <a href="#eq-RiskBudgetCRrho" class="quarto-xref">Equation&nbsp;<span>13.20</span></a> shows that an asset’s contribution to portfolio volatility depends on three components: (1) the asset’s allocation weight <span class="math inline">\(x_{i}\)</span>; (2) the asset’s standalone return volatility, <span class="math inline">\(\sigma_{i}\)</span>; (3) the asset’s correlation with the portfolio return, <span class="math inline">\(\rho_{i,p}(\mathbf{x})\)</span>.</li>
+<li>Equation <a href="#eq-RiskBudgetCRrho">Equation&nbsp;<span>13.20</span></a> shows that an asset’s contribution to portfolio volatility depends on three components: (1) the asset’s allocation weight <span class="math inline">\(x_{i}\)</span>; (2) the asset’s standalone return volatility, <span class="math inline">\(\sigma_{i}\)</span>; (3) the asset’s correlation with the portfolio return, <span class="math inline">\(\rho_{i,p}(\mathbf{x})\)</span>.</li>
 <li><span class="math inline">\(x_{i}\times\sigma_{i}=\)</span> standalone contribution to portfolio volatility, which ignores correlation effects with other assets. In the typical situation, <span class="math inline">\(\rho_{i,p}\neq1\)</span> which implies that <span class="math inline">\(\mathrm{CR}_{i}^{\sigma}&lt;w_{i}\times\sigma_{i}\)</span>. Hence, an asset’s contribution to portfolio volatility will almost always be less than its standalone contribution to portfolio volatility.</li>
 <li><span class="math inline">\(\mathrm{CR}_{i}^{\sigma}=x_{i}\times\sigma_{i}\)</span> only when <span class="math inline">\(\rho_{i,p}(\mathbf{x})=1\)</span>. That is, an asset’s contribution to portfolio volatility is equal to its standalone contribution only when its return is perfectly correlated with the portfolio return.</li>
 <li>If all assets are perfectly correlated (i.e., <span class="math inline">\(\rho_{ij}=1\)</span> for all <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span>) then all asset contributions to portfolio volatility are equal their standalone contributions, <span class="math inline">\(x_{i}\times\sigma_{i}\)</span>, and <span class="math inline">\(\sigma_{p}(\mathbf{x})=x_{1}\sigma_{1}+x_{2}\sigma_{2}+\cdots+x_{N}\sigma_{N}\)</span>. This is the risk decomposition that would occur if there are no diversification effects.</li>
 </ol>
-<p>The derivation of <a href="#eq-RiskBudgetMCRrho" class="quarto-xref">Equation&nbsp;<span>13.19</span></a> is straightforward. Recall, the vector of asset marginal contributions to portfolio volatility is given by <span class="math display">\[
+<p>The derivation of <a href="#eq-RiskBudgetMCRrho">Equation&nbsp;<span>13.19</span></a> is straightforward. Recall, the vector of asset marginal contributions to portfolio volatility is given by <span class="math display">\[
 \frac{\partial\sigma_{p}(\mathbf{x})}{\partial\mathbf{x}}=\frac{\boldsymbol{\Sigma} \mathbf{x}}{\sigma_{p}(\mathbf{x})}
 \]</span> Now, <span class="math display">\[
 \boldsymbol{\Sigma} \mathbf{x}=\left(\begin{array}{cccc}
@@ -915,29 +864,29 @@ x_{1}\sigma_{1}^{2}+x_{2}\sigma_{12}+\cdots+x_{n}\sigma_{1n}
 &amp; = &amp; \mathrm{cov}(R_{1},x_{1}R_{1})+\mathrm{cov}(R_{1},x_{1}R_{1})+\cdots+\mathrm{cov}(R_{1},x_{n}R_{n})\\
 &amp; = &amp; x_{1}\sigma_{1}^{2}+x_{2}\sigma_{12}+\cdots+x_{n}\sigma_{1n}\\
 &amp; = &amp; \sigma_{1,p}(\mathbf{x})
-\end{eqnarray*}\]</span> Then we can re-write <a href="#eq-RiskBudgetVolMCR2" class="quarto-xref">Equation&nbsp;<span>13.18</span></a> for <span class="math inline">\(i=1\)</span> as <span id="eq-RiskBudgetMCR1"><span class="math display">\[
+\end{eqnarray*}\]</span> Then we can re-write <a href="#eq-RiskBudgetVolMCR2">Equation&nbsp;<span>13.18</span></a> for <span class="math inline">\(i=1\)</span> as <span id="eq-RiskBudgetMCR1"><span class="math display">\[
 \mathrm{MCR}_{1}^{\sigma}=\frac{\left(\boldsymbol{\Sigma} \mathbf{x}\right)_{1}}{\sigma_{p}(\mathbf{x})}=\frac{\sigma_{1,p}(\mathbf{x})}{\sigma_{p}(\mathbf{x})}
 \tag{13.21}\]</span></span></p>
 <p>Define the correlation between the return on asset 1 and the return on the portfoio as <span id="eq-RiskBudgetCorrelation"><span class="math display">\[
 \rho_{1,p}(\mathbf{x}) = \mathrm{corr}(R_{1},R_{p}(\mathbf{x}))=\frac{\mathrm{cov}(R_{1},R_{p}(\mathbf{x}))}{\sigma_{1}\sigma_{p}(\mathbf{x})}=\frac{\sigma_{1,p}(\mathbf{x})}{\sigma_{1}\sigma_{p}(\mathbf{x})}
 \tag{13.22}\]</span></span> Then we can write <span id="eq-RiskBudgetCovariance"><span class="math display">\[
 \sigma_{1,p}(\mathbf{x})=\sigma_{1}\sigma_{p}(\mathbf{x})\rho_{1,p}(\mathbf{x})
-\tag{13.23}\]</span></span> Substituting <a href="#eq-RiskBudgetCovariance" class="quarto-xref">Equation&nbsp;<span>13.23</span></a> into <a href="#eq-RiskBudgetMCR1" class="quarto-xref">Equation&nbsp;<span>13.21</span></a> gives the <span class="math inline">\(\sigma-\rho\)</span> decomposition for <span class="math inline">\(\mathrm{MCR}_{1}^{\sigma}\)</span> <span class="math display">\[
+\tag{13.23}\]</span></span> Substituting <a href="#eq-RiskBudgetCovariance">Equation&nbsp;<span>13.23</span></a> into <a href="#eq-RiskBudgetMCR1">Equation&nbsp;<span>13.21</span></a> gives the <span class="math inline">\(\sigma-\rho\)</span> decomposition for <span class="math inline">\(\mathrm{MCR}_{1}^{\sigma}\)</span> <span class="math display">\[
 \mathrm{MCR}_{1}^{\sigma}=\frac{\sigma_{1}\sigma_{p}(\mathbf{x})\rho_{1,p}(\mathbf{x})}{\sigma_{p}(\mathbf{x})}=\sigma_{1}\rho_{1,p}(\mathbf{x})
 \]</span></p>
-<div id="exm-adding-rho-to-the-portfolio-volatility-risk-report" class="example theorem">
-<p><span class="theorem-title"><strong>Example 13.6 (Adding <span class="math inline">\(\rho_{i,p}(\mathbf{x})\)</span> to the portfolio volatility risk report)</strong></span> Once you have the volatility risk report, you can easily calculate <span class="math inline">\(\rho_{i,p}(\mathbf{x})\)</span> from <a href="#eq-RiskBudgetMCRrho" class="quarto-xref">Equation&nbsp;<span>13.19</span></a> using <span class="math display">\[
+<div id="exm-adding-rho-to-the-portfolio-volatility-risk-report" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 13.6 (Adding <span class="math inline">\(\rho_{i,p}(\mathbf{x})\)</span> to the portfolio volatility risk report) </strong></span>Once you have the volatility risk report, you can easily calculate <span class="math inline">\(\rho_{i,p}(\mathbf{x})\)</span> from <a href="#eq-RiskBudgetMCRrho">Equation&nbsp;<span>13.19</span></a> using <span class="math display">\[
 \rho_{i,p}(\mathbf{x})=\frac{\mathrm{MCR}_{i}^{\sigma}}{\sigma_{i}}
 \]</span> For example, to calculate <span class="math inline">\(\rho_{i,p}(\mathbf{x})\)</span> for the volatility risk report for the equally weighted portfolio of Microsoft, Nordstrom, and Starbucks use:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>rho.x <span class="ot">=</span> MCR.vol.x<span class="sc">/</span>sig.vec </span>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>rho.x <span class="ot">=</span> MCR.vol.x<span class="sc">/</span>sig.vec </span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>rho.x</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       [,1]</span></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; MSFT 0.567</span></span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; NORD 0.644</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SBUX 0.735</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SBUX 0.735</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Here we see that all assets are positively correlated with the portfolio, Microsoft has the smallest correlation (0.567), and Starbucks has the largest correlation (0.735). In this respect, Microsoft is most beneficial in terms of diversification and Starbucks is least beneficial. If all correlations were equal to one, then each asset MCR would be equal to its standalone volatility.</p>
@@ -954,14 +903,14 @@ x_{1}\sigma_{1}^{2}+x_{2}\sigma_{12}+\cdots+x_{n}\sigma_{1n}
 </section>
 <section id="sigma-beta-decomposition-for-mathrmmcr_isigma" class="level3" data-number="13.4.2">
 <h3 data-number="13.4.2" class="anchored" data-anchor-id="sigma-beta-decomposition-for-mathrmmcr_isigma"><span class="header-section-number">13.4.2</span> <span class="math inline">\(\sigma-\beta\)</span> decomposition for <span class="math inline">\(\mathrm{MCR}_{i}^{\sigma}\)</span></h3>
-<div id="prp-sigma-beta-decomposition" class="proposition theorem">
-<p><span class="theorem-title"><strong>Proposition 13.5 (<span class="math inline">\(\sigma-\beta\)</span> decomposition)</strong></span> The <span class="math inline">\(\sigma-\beta\)</span> decomposition for <span class="math inline">\(\mathrm{MCR}_{i}^{\sigma}\)</span> is <span id="eq-RiskBudgetMCbeta"><span class="math display">\[
+<div id="prp-sigma-beta-decomposition" class="proposition theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 13.5 (<span class="math inline">\(\sigma-\beta\)</span> decomposition) </strong></span>The <span class="math inline">\(\sigma-\beta\)</span> decomposition for <span class="math inline">\(\mathrm{MCR}_{i}^{\sigma}\)</span> is <span id="eq-RiskBudgetMCbeta"><span class="math display">\[
 \mathrm{MCR}_{i}^{\sigma}=\beta_{i,p}(\mathbf{x})\sigma_{p}(\mathbf{x})
 \tag{13.24}\]</span></span> where <span id="eq-RiskBudgetBeta"><span class="math display">\[
 \beta_{i,p}(\mathbf{x})=\frac{\mathrm{cov}(R_{i},R_{p}(\mathbf{x}))}{\mathrm{var}(R_{p}(\mathbf{x}))}=\frac{\mathrm{cov}(R_{i},R_{p}(\mathbf{x}))}{\sigma_{p}^{2}(\mathbf{x})}
 \tag{13.25}\]</span></span></p>
 </div>
-<p>Here, <span class="math inline">\(\beta_{i,p}(\mathbf{x})\)</span> is called asset <span class="math inline">\(i\)</span>’s <em>beta to the portfolio</em>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> This decomposition follows directly from the <span class="math inline">\(\sigma-\rho\)</span> decomposition <a href="#eq-RiskBudgetMCRrho" class="quarto-xref">Equation&nbsp;<span>13.19</span></a> since <span class="math display">\[
+<p>Here, <span class="math inline">\(\beta_{i,p}(\mathbf{x})\)</span> is called asset <span class="math inline">\(i\)</span>’s <em>beta to the portfolio</em>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> This decomposition follows directly from the <span class="math inline">\(\sigma-\rho\)</span> decomposition <a href="#eq-RiskBudgetMCRrho">Equation&nbsp;<span>13.19</span></a> since <span class="math display">\[
 \beta_{i,p}(\mathbf{x})=\frac{\mathrm{cov}(R_{i},R_{p}(\mathbf{x}))}{\sigma_{p}^{2}(\mathbf{x})}=\frac{\rho_{i,p}(\mathbf{x})\sigma_{i}\sigma_{p}(\mathbf{x})}{\sigma_{p}^{2}(\mathbf{x})}\Rightarrow\rho_{i,p}(x)=\frac{\beta_{i,p}(\mathbf{x})\sigma_{p}(\mathbf{x})}{\sigma_{i}}.
 \]</span> It follows that: <span id="eq-RiskBudgetXBetaRho"><span class="math display">\[
 \mathrm{CR}_{i}^{\sigma} = x_{i}\times\beta_{i,p}(\mathbf{x})\times\sigma_{p}(\mathbf{x})
@@ -977,19 +926,19 @@ x_{1}\sigma_{1}^{2}+x_{2}\sigma_{12}+\cdots+x_{n}\sigma_{1n}
 <li>When <span class="math inline">\(\beta_{i,p}(\mathbf{x})&gt;1\)</span>, <span class="math inline">\(\mathrm{MCR}_{i}^{\sigma}&gt;\sigma_{p}(\mathbf{x})\)</span>, <span class="math inline">\(\mathrm{CR}_{i}^{\sigma}&gt;w_{i}\sigma_{p}(\mathbf{x})\)</span>, and <span class="math inline">\(\mathrm{PCR}_{i}^{\sigma}&gt;x_{i}\)</span>. In this case, the asset’s marginal contribution to portfolio volatility is more than portfolio volatility and its percent contribution to portfolio volatility is more than its allocation weight. Intuitively, when <span class="math inline">\(\beta_{i,p}(\mathbf{x})&gt;1\)</span> the asset has more risk, in terms of volatility contribution, than the portfolio. That is, having the asset in the portfolio increases the portfolio volatility.</li>
 <li>When <span class="math inline">\(\beta_{i,p}(\mathbf{x})&lt;1\)</span>, <span class="math inline">\(\mathrm{MCR}_{i}^{\sigma}&lt;\sigma_{p}(\mathbf{x})\)</span>, <span class="math inline">\(\mathrm{CR}_{i}^{\sigma}&lt;x_{i}\sigma_{p}(\mathbf{x})\)</span>, and <span class="math inline">\(\mathrm{PCR}_{i}^{\sigma}&lt;x_{i}\)</span>. In this case, the asset’s marginal contribution to portfolio volatility is less than portfolio volatility and its percent contribution to portfolio volatility is less than its allocation weight. Intuitively, when <span class="math inline">\(\beta_{i,p}(\mathbf{x})&lt;1\)</span> the asset has less risk, in terms of volatility contribution, than the portfolio. That is, having the asset in the portfolio decreases the portfolio volatility.</li>
 </ul>
-<div id="exm-adding-beta-to-the-portfolio-volatility-risk-report" class="example theorem">
-<p><span class="theorem-title"><strong>Example 13.7 (Adding <span class="math inline">\(\beta_{i,p}(\mathbf{x})\)</span> to the portfolio volatility risk report)</strong></span> Once you have the volatility risk report, you can easily calculate <span class="math inline">\(\beta_{i,p}(\mathbf{x})\)</span> from <a href="#eq-RiskBudgetMCbeta" class="quarto-xref">Equation&nbsp;<span>13.24</span></a> using <span class="math display">\[
+<div id="exm-adding-beta-to-the-portfolio-volatility-risk-report" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 13.7 (Adding <span class="math inline">\(\beta_{i,p}(\mathbf{x})\)</span> to the portfolio volatility risk report) </strong></span>Once you have the volatility risk report, you can easily calculate <span class="math inline">\(\beta_{i,p}(\mathbf{x})\)</span> from <a href="#eq-RiskBudgetMCbeta">Equation&nbsp;<span>13.24</span></a> using <span class="math display">\[
 \beta_{i,p}(\mathbf{x})=\frac{\mathrm{MCR}_{i}^{\sigma}}{\sigma_{p}(\mathbf{x})}
 \]</span> For example, to calculate <span class="math inline">\(\beta_{i,p}(\mathbf{x})\)</span> for the volatility risk report for the equally weighted portfolio of Microsoft, Nordstrom, and Starbucks use:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>beta.x <span class="ot">=</span> MCR.vol.x<span class="sc">/</span>sig.px </span>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>beta.x <span class="ot">=</span> MCR.vol.x<span class="sc">/</span>sig.px </span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>beta.x</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       [,1]</span></span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; MSFT 0.747</span></span>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; NORD 0.886</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SBUX 1.367</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SBUX 1.367</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Here, both <span class="math inline">\(\beta_{MSFT,p}(\mathbf{x})\)</span> and <span class="math inline">\(\beta_{NORD,p}(\mathbf{x})\)</span> are less than one whereas <span class="math inline">\(\beta_{SBUX,p}(\mathbf{x})\)</span> is greater than one. We can say that Microsoft and Nordstrom are portfolio volatility reducers whereas Starbucks is a portfolio volatility enhancer.</p>
@@ -1015,17 +964,17 @@ x_{1}\sigma_{1}^{2}+x_{2}\sigma_{12}+\cdots+x_{n}\sigma_{1n}
 \frac{\mu_{T}-r_{f}}{\sigma_{T}^{2}}=\frac{\mu_{i}-r_{f}}{\sigma_{i,T}}
 \]</span></li>
 </ul>
-<p>Volatility risk budgets for optimized portfolios have some interesting properties. For example, consider the global minimum variance portfolio allowing for short sales. In chapter <a href="11-PortfolioTheoryMatrix-new.html" class="quarto-xref"><span>Chapter 11</span></a> we showed that <span class="math display">\[
+<p>Volatility risk budgets for optimized portfolios have some interesting properties. For example, consider the global minimum variance portfolio allowing for short sales. In chapter <a href="11-PortfolioTheoryMatrix-new.html"><span>Chapter&nbsp;11</span></a> we showed that <span class="math display">\[
 \mathbf{m}=\frac{\boldsymbol{\Sigma}^{-1}\mathbf{1}}{\mathbf{1}^{\prime}\boldsymbol{\Sigma}^{-1}\mathbf{1}}.
-\]</span> Plugging this portfolio weight vector into <a href="#eq-RiskBudgeVolMCRvector" class="quarto-xref">Equation&nbsp;<span>13.6</span></a> gives <span class="math display">\[
+\]</span> Plugging this portfolio weight vector into <a href="#eq-RiskBudgeVolMCRvector">Equation&nbsp;<span>13.6</span></a> gives <span class="math display">\[
 \frac{\partial\sigma_{p}(\mathbf{m})}{\partial\mathbf{m}}=\frac{\boldsymbol{\Sigma} \mathbf{m}}{\sigma_{p}(\mathbf{m})}=\frac{\boldsymbol{\Sigma}\boldsymbol{\Sigma}^{-1}\mathbf{1}}{\sigma_{p}(\mathbf{m})\times\mathbf{1}^{\prime}\boldsymbol{\Sigma}^{-1}\mathbf{1}}=\left(\frac{1}{\sigma_{p}(\mathbf{m})\times\mathbf{1}^{\prime}\boldsymbol{\Sigma}^{-1}\mathbf{1}}\right)\times\mathbf{1}=c\times\mathbf{1}
 \]</span> which is a constant <span class="math inline">\(c\)</span> times the one vector where <span class="math display">\[
 c=\frac{1}{\sigma_{p}(\mathbf{m})\times\mathbf{1}^{\prime}\boldsymbol{\Sigma}^{-1}\mathbf{1}}.
 \]</span> As a result, for each asset <span class="math inline">\(i=1,\ldots,n\)</span> we have <span class="math display">\[
 \mathrm{MCR}_{i}^{\sigma}=c.
 \]</span> That is, each asset in the global minimum variance portfolio has the same marginal contribution to portfolio volatility. This has to be the case, otherwise we could rebalance the portfolio and lower the volatility. To see this, suppose <span class="math inline">\(\mathrm{MCR}_{i}^{\sigma}&gt;c\)</span> for some asset <span class="math inline">\(i\)</span>. Then we could lower portfolio volatility by reducing the allocation to asset <span class="math inline">\(i\)</span> and increasing the allocation to any other asset in the portfolio. Similarly, if <span class="math inline">\(\mathrm{MCR}_{i}^{\sigma}&lt;c\)</span> we could lower portfolio volatility by increasing the allocation to asset <span class="math inline">\(i\)</span> and decreasing the allocation to any other asset in the portfolio.</p>
-<div id="exm-volatility-risk-budgeting-for-the-global-minimum-variance-portfolio" class="example theorem">
-<p><span class="theorem-title"><strong>Example 13.8 (Volatility risk budgeting for the global minimum variance portfolio)</strong></span> to be completed</p>
+<div id="exm-volatility-risk-budgeting-for-the-global-minimum-variance-portfolio" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 13.8 (Volatility risk budgeting for the global minimum variance portfolio) </strong></span>to be completed</p>
 <p><span class="math inline">\(\blacksquare\)</span></p>
 </div>
 </section>
@@ -1157,9 +1106,9 @@ x_S &amp; = \frac{\beta_{Bp}}{\beta_{Sp}+\beta_{Bp}} = \frac{\beta_{Sp}^{-1}}{\b
 <h3 data-number="13.6.3" class="anchored" data-anchor-id="example-data"><span class="header-section-number">13.6.3</span> Example Data</h3>
 <p>The example data from WealthFront is:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>r.f <span class="ot">=</span> <span class="fl">0.0175</span></span>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>r.f <span class="ot">=</span> <span class="fl">0.0175</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>mu.S <span class="ot">=</span> <span class="fl">0.0625</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>sig.S <span class="ot">=</span> <span class="fl">0.1725</span></span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>sig2.S <span class="ot">=</span> sig.S<span class="sc">^</span><span class="dv">2</span></span>
@@ -1175,10 +1124,10 @@ x_S &amp; = \frac{\beta_{Bp}}{\beta_{Sp}+\beta_{Bp}} = \frac{\beta_{Sp}^{-1}}{\b
 <span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>              <span class="st">"$</span><span class="sc">\\</span><span class="st">mathrm{SR}_{B}$"</span>,<span class="st">"$</span><span class="sc">\\</span><span class="st">mathrm{SR}_{S}$"</span>,<span class="st">"$</span><span class="sc">\\</span><span class="st">sigma_{BS}$"</span>,<span class="st">"$</span><span class="sc">\\</span><span class="st">rho_{BS}$"</span>)</span>
 <span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="fu">kbl</span>(data.tbl, <span class="at">col.names=</span>col.names, <span class="at">caption =</span> <span class="st">"Example data for two asset portfolio"</span>,</span>
 <span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="st">"TableExampleData"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>   <span class="fu">kable_styling</span>(<span class="at">full_width=</span><span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>   <span class="fu">kable_styling</span>(<span class="at">full_width=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<table class="table caption-top table-sm table-striped small">
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
 <caption>Example data for two asset portfolio</caption>
 <thead>
 <tr class="header">
@@ -1207,32 +1156,34 @@ x_S &amp; = \frac{\beta_{Bp}}{\beta_{Sp}+\beta_{Bp}} = \frac{\beta_{Sp}^{-1}}{\b
 </tr>
 </tbody>
 </table>
+
+
 </div>
 </div>
 <p>The matrix input are:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>mu.vec <span class="ot">=</span> <span class="fu">c</span>(mu.B, mu.S)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>cov.mat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(sig2.B, sig.BS, sig.BS, sig2.S), <span class="dv">2</span>,<span class="dv">2</span>, <span class="at">byrow=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>mu.vec <span class="ot">=</span> <span class="fu">c</span>(mu.B, mu.S)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>cov.mat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(sig2.B, sig.BS, sig.BS, sig2.S), <span class="dv">2</span>,<span class="dv">2</span>, <span class="at">byrow=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Portfolios of B and S</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>x.B <span class="ot">=</span> <span class="fu">seq</span>(<span class="at">from=</span><span class="sc">-</span><span class="fl">0.4</span>, <span class="at">to=</span><span class="fl">1.4</span>, <span class="at">by=</span><span class="fl">0.1</span>)</span>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>x.B <span class="ot">=</span> <span class="fu">seq</span>(<span class="at">from=</span><span class="sc">-</span><span class="fl">0.4</span>, <span class="at">to=</span><span class="fl">1.4</span>, <span class="at">by=</span><span class="fl">0.1</span>)</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>x.S <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> x.B</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>mu.p <span class="ot">=</span> x.B<span class="sc">*</span>mu.B <span class="sc">+</span> x.S<span class="sc">*</span>mu.S</span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>sig2.p <span class="ot">=</span> x.B<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.B <span class="sc">+</span> x.S<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.S <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x.B<span class="sc">*</span>x.S<span class="sc">*</span>sig.BS</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>sig.p <span class="ot">=</span> <span class="fu">sqrt</span>(sig2.p)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>sig.p <span class="ot">=</span> <span class="fu">sqrt</span>(sig2.p)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Compute equal weight, 60-40, global minimum variance, and tangency portfolios:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># equal weight</span></span>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># equal weight</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>mu.ew <span class="ot">=</span> <span class="fl">0.5</span><span class="sc">*</span>mu.B <span class="sc">+</span> <span class="fl">0.5</span><span class="sc">*</span>mu.S</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>x.ew <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>)</span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>sig2.ew <span class="ot">=</span> <span class="fl">0.5</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.B <span class="sc">+</span> <span class="fl">0.5</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.S <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span><span class="fl">0.5</span><span class="sc">*</span><span class="fl">0.5</span><span class="sc">*</span>sig.BS</span>
@@ -1257,110 +1208,102 @@ x_S &amp; = \frac{\beta_{Bp}}{\beta_{Sp}+\beta_{Bp}} = \frac{\beta_{Sp}^{-1}}{\b
 <span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>x.tan <span class="ot">=</span> <span class="fu">c</span>(x.B.tan, x.S.tan)</span>
 <span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>mu.tan <span class="ot">=</span> x.B.tan<span class="sc">*</span>mu.B <span class="sc">+</span> x.S.tan<span class="sc">*</span>mu.S</span>
 <span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>sig2.tan <span class="ot">=</span> x.B.tan<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.B <span class="sc">+</span> x.S.tan<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.S <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x.B.tan<span class="sc">*</span>x.S.tan<span class="sc">*</span>sig.BS</span>
-<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>sig.tan <span class="ot">=</span> <span class="fu">sqrt</span>(sig2.tan)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>sig.tan <span class="ot">=</span> <span class="fu">sqrt</span>(sig2.tan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Compute risk parity portfolio:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>xB.rp <span class="ot">=</span> sig.S<span class="sc">/</span>(sig.B <span class="sc">+</span> sig.S)</span>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>xB.rp <span class="ot">=</span> sig.S<span class="sc">/</span>(sig.B <span class="sc">+</span> sig.S)</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>xS.rp <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> xB.rp</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>x.rp <span class="ot">=</span> <span class="fu">c</span>(xB.rp, xS.rp)</span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>mu.rp <span class="ot">=</span> xB.rp<span class="sc">*</span>mu.B <span class="sc">+</span> xS.rp<span class="sc">*</span>mu.S</span>
 <span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>sig2.rp <span class="ot">=</span> xB.rp<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.B <span class="sc">+</span> xS.rp<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig2.S <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>xB.rp<span class="sc">*</span>xS.rp<span class="sc">*</span>sig.BS</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>sig.rp <span class="ot">=</span> <span class="fu">sqrt</span>(sig2.rp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>sig.rp <span class="ot">=</span> <span class="fu">sqrt</span>(sig2.rp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Compute risk contributions for portfolios:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># risk parity portfolio</span></span>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># risk parity portfolio</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">riskReport</span>(mu.vec, cov.mat, x.rp)</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         Weight   Vol Rho.p Beta.p    MCR     CR PCR</span></span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset B  0.793 0.045 0.775   0.63 0.0349 0.0276 0.5</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset S  0.207 0.172 0.775   2.42 0.1336 0.0276 0.5</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset S  0.207 0.172 0.775   2.42 0.1336 0.0276 0.5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># equal weight portfolio</span></span>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># equal weight portfolio</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">riskReport</span>(mu.vec, cov.mat, x.ew)</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         Weight   Vol Rho.p Beta.p    MCR      CR   PCR</span></span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset B    0.5 0.045 0.426  0.205 0.0192 0.00958 0.103</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset S    0.5 0.172 0.972  1.795 0.1676 0.08381 0.897</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset S    0.5 0.172 0.972  1.795 0.1676 0.08381 0.897</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 60-40 portfolio</span></span>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 60-40 portfolio</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">riskReport</span>(mu.vec, cov.mat, x<span class="fl">.64</span>)</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         Weight   Vol Rho.p Beta.p   MCR      CR    PCR</span></span>
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset B    0.4 0.045 0.357  0.148 0.016 0.00642 0.0591</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset S    0.6 0.172 0.987  1.568 0.170 0.10212 0.9409</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset S    0.6 0.172 0.987  1.568 0.170 0.10212 0.9409</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># global minimum variance portfolio</span></span>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># global minimum variance portfolio</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">riskReport</span>(mu.vec, cov.mat, x.min)</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         Weight   Vol Rho.p Beta.p    MCR      CR    PCR</span></span>
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset B 0.9835 0.045 0.998      1 0.0449 0.04417 0.9835</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset S 0.0165 0.172 0.260      1 0.0449 0.00074 0.0165</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset S 0.0165 0.172 0.260      1 0.0449 0.00074 0.0165</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># tangency portfolio</span></span>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># tangency portfolio</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">riskReport</span>(mu.vec, cov.mat, x.tan)</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         Weight   Vol Rho.p Beta.p    MCR      CR   PCR</span></span>
 <span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset B 0.9143 0.045 0.950  0.921 0.0428 0.03909 0.842</span></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset S 0.0857 0.172 0.496  1.842 0.0855 0.00733 0.158</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Asset S 0.0857 0.172 0.496  1.842 0.0855 0.00733 0.158</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Plot of portfolios</p>
 <div class="cell">
 <div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="13-riskBudgeting-new_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
+<p><img src="13-riskBudgeting-new_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Leverage RP portfolio to have the same volatility as EW:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> sig.ew<span class="sc">/</span>sig.rp</span>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> sig.ew<span class="sc">/</span>sig.rp</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>mu.y <span class="ot">=</span> r.f <span class="sc">+</span> y<span class="sc">*</span>(mu.rp <span class="sc">-</span> r.f)</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>sig.y <span class="ot">=</span> y<span class="sc">*</span>sig.rp</span>
 <span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(mu.y, sig.y)</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.0634 0.0934</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.0634 0.0934</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Compute SR</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>SR.rp <span class="ot">=</span> (mu.rp <span class="sc">-</span> r.f)<span class="sc">/</span>sig.rp</span>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>SR.rp <span class="ot">=</span> (mu.rp <span class="sc">-</span> r.f)<span class="sc">/</span>sig.rp</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>SR<span class="fl">.64</span> <span class="ot">=</span> (mu<span class="fl">.64</span><span class="sc">-</span>r.f)<span class="sc">/</span>sig<span class="fl">.64</span></span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(SR.rp, SR<span class="fl">.64</span>)</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.491 0.332</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.491 0.332</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="13-riskBudgeting-new_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
+<p><img src="13-riskBudgeting-new_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -1375,8 +1318,8 @@ x_S &amp; = \frac{\beta_{Bp}}{\beta_{Sp}+\beta_{Bp}} = \frac{\beta_{Sp}^{-1}}{\b
 </section>
 <section id="exercises" class="level2" data-number="13.7">
 <h2 data-number="13.7" class="anchored" data-anchor-id="exercises"><span class="header-section-number">13.7</span> Exercises</h2>
-<div id="exm-risk-report-for-equally-weighted-portfolio-of-vanguard-mutual-funds" class="example theorem">
-<p><span class="theorem-title"><strong>Example 13.9 (Risk report for equally weighted portfolio of Vanguard Mutual Funds)</strong></span> &nbsp;</p>
+<div id="exm-risk-report-for-equally-weighted-portfolio-of-vanguard-mutual-funds" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 13.9 (Risk report for equally weighted portfolio of Vanguard Mutual Funds) </strong></span>&nbsp;</p>
 <ul>
 <li>To be completed</li>
 </ul>
@@ -1394,58 +1337,43 @@ x_S &amp; = \frac{\beta_{Bp}}{\beta_{Sp}+\beta_{Bp}} = \frac{\beta_{Sp}^{-1}}{\b
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
-  window.document.addEventListener("DOMContentLoaded", function (event) {
-    const icon = "";
-    const anchorJS = new window.AnchorJS();
-    anchorJS.options = {
-      placement: 'right',
-      icon: icon
-    };
-    anchorJS.add('.anchored');
-    const isCodeAnnotation = (el) => {
-      for (const clz of el.classList) {
-        if (clz.startsWith('code-annotation-')) {                     
-          return true;
-        }
-      }
-      return false;
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
     }
-    const onCopySuccess = function(e) {
-      // button target
-      const button = e.trigger;
-      // don't keep focus
-      button.blur();
-      // flash "checked"
-      button.classList.add('code-copy-button-checked');
-      var currentTitle = button.getAttribute("title");
-      button.setAttribute("title", "Copied!");
-      let tooltip;
-      if (window.bootstrap) {
-        button.setAttribute("data-bs-toggle", "tooltip");
-        button.setAttribute("data-bs-placement", "left");
-        button.setAttribute("data-bs-title", "Copied!");
-        tooltip = new bootstrap.Tooltip(button, 
-          { trigger: "manual", 
-            customClass: "code-copy-button-tooltip",
-            offset: [0, -8]});
-        tooltip.show();    
-      }
-      setTimeout(function() {
-        if (tooltip) {
-          tooltip.hide();
-          button.removeAttribute("data-bs-title");
-          button.removeAttribute("data-bs-toggle");
-          button.removeAttribute("data-bs-placement");
-        }
-        button.setAttribute("title", currentTitle);
-        button.classList.remove('code-copy-button-checked');
-      }, 1000);
-      // clear code selection
-      e.clearSelection();
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
     }
-    const getTextToCopy = function(trigger) {
-      const outerScaffold = trigger.parentElement.cloneNode(true);
-      const codeEl = outerScaffold.querySelector('code');
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
       for (const childEl of codeEl.children) {
         if (isCodeAnnotation(childEl)) {
           childEl.remove();
@@ -1453,360 +1381,207 @@ x_S &amp; = \frac{\beta_{Bp}}{\beta_{Sp}+\beta_{Bp}} = \frac{\beta_{Sp}^{-1}}{\b
       }
       return codeEl.innerText;
     }
-    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-      text: getTextToCopy
-    });
-    clipboard.on('success', onCopySuccess);
-    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-        text: getTextToCopy,
-        container: window.document.getElementById('quarto-embedded-source-code-modal')
-      });
-      clipboardModal.on('success', onCopySuccess);
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
     }
-      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
-      var isInternal = (href) => {
-          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
       }
-      // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-      for (var i=0; i<links.length; i++) {
-        const link = links[i];
-        if (!isInternal(link.href)) {
-          // undo the damage that might have been done by quarto-nav.js in the case of
-          // links that we want to consider external
-          if (link.dataset.originalHref !== undefined) {
-            link.href = link.dataset.originalHref;
-          }
-        }
-      }
-    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-      const config = {
-        allowHTML: true,
-        maxWidth: 500,
-        delay: 100,
-        arrow: false,
-        appendTo: function(el) {
-            return el.parentElement;
-        },
-        interactive: true,
-        interactiveBorder: 10,
-        theme: 'quarto',
-        placement: 'bottom-start',
-      };
-      if (contentFn) {
-        config.content = contentFn;
-      }
-      if (onTriggerFn) {
-        config.onTrigger = onTriggerFn;
-      }
-      if (onUntriggerFn) {
-        config.onUntrigger = onUntriggerFn;
-      }
-      window.tippy(el, config); 
-    }
-    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-    for (var i=0; i<noterefs.length; i++) {
-      const ref = noterefs[i];
-      tippyHover(ref, function() {
-        // use id or data attribute instead here
-        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-        try { href = new URL(href).hash; } catch {}
-        const id = href.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note) {
-          return note.innerHTML;
-        } else {
-          return "";
-        }
-      });
-    }
-    const xrefs = window.document.querySelectorAll('a.quarto-xref');
-    const processXRef = (id, note) => {
-      // Strip column container classes
-      const stripColumnClz = (el) => {
-        el.classList.remove("page-full", "page-columns");
-        if (el.children) {
-          for (const child of el.children) {
-            stripColumnClz(child);
-          }
-        }
-      }
-      stripColumnClz(note)
-      if (id === null || id.startsWith('sec-')) {
-        // Special case sections, only their first couple elements
-        const container = document.createElement("div");
-        if (note.children && note.children.length > 2) {
-          container.appendChild(note.children[0].cloneNode(true));
-          for (let i = 1; i < note.children.length; i++) {
-            const child = note.children[i];
-            if (child.tagName === "P" && child.innerText === "") {
-              continue;
-            } else {
-              container.appendChild(child.cloneNode(true));
-              break;
-            }
-          }
-          if (window.Quarto?.typesetMath) {
-            window.Quarto.typesetMath(container);
-          }
-          return container.innerHTML
-        } else {
-          if (window.Quarto?.typesetMath) {
-            window.Quarto.typesetMath(note);
-          }
-          return note.innerHTML;
-        }
-      } else {
-        // Remove any anchor links if they are present
-        const anchorLink = note.querySelector('a.anchorjs-link');
-        if (anchorLink) {
-          anchorLink.remove();
-        }
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(note);
-        }
-        if (note.classList.contains("callout")) {
-          return note.outerHTML;
-        } else {
-          return note.innerHTML;
-        }
-      }
-    }
-    for (var i=0; i<xrefs.length; i++) {
-      const xref = xrefs[i];
-      tippyHover(xref, undefined, function(instance) {
-        instance.disable();
-        let url = xref.getAttribute('href');
-        let hash = undefined; 
-        if (url.startsWith('#')) {
-          hash = url;
-        } else {
-          try { hash = new URL(url).hash; } catch {}
-        }
-        if (hash) {
-          const id = hash.replace(/^#\/?/, "");
-          const note = window.document.getElementById(id);
-          if (note !== null) {
-            try {
-              const html = processXRef(id, note.cloneNode(true));
-              instance.setContent(html);
-            } finally {
-              instance.enable();
-              instance.show();
-            }
-          } else {
-            // See if we can fetch this
-            fetch(url.split('#')[0])
-            .then(res => res.text())
-            .then(html => {
-              const parser = new DOMParser();
-              const htmlDoc = parser.parseFromString(html, "text/html");
-              const note = htmlDoc.getElementById(id);
-              if (note !== null) {
-                const html = processXRef(id, note);
-                instance.setContent(html);
-              } 
-            }).finally(() => {
-              instance.enable();
-              instance.show();
-            });
-          }
-        } else {
-          // See if we can fetch a full url (with no hash to target)
-          // This is a special case and we should probably do some content thinning / targeting
-          fetch(url)
-          .then(res => res.text())
-          .then(html => {
-            const parser = new DOMParser();
-            const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.querySelector('main.content');
-            if (note !== null) {
-              // This should only happen for chapter cross references
-              // (since there is no id in the URL)
-              // remove the first header
-              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-                note.children[0].remove();
-              }
-              const html = processXRef(null, note);
-              instance.setContent(html);
-            } 
-          }).finally(() => {
-            instance.enable();
-            instance.show();
-          });
-        }
-      }, function(instance) {
-      });
-    }
-        let selectedAnnoteEl;
-        const selectorForAnnotation = ( cell, annotation) => {
-          let cellAttr = 'data-code-cell="' + cell + '"';
-          let lineAttr = 'data-code-annotation="' +  annotation + '"';
-          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-          return selector;
-        }
-        const selectCodeLines = (annoteEl) => {
-          const doc = window.document;
-          const targetCell = annoteEl.getAttribute("data-target-cell");
-          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-          const lineIds = lines.map((line) => {
-            return targetCell + "-" + line;
-          })
-          let top = null;
-          let height = null;
-          let parent = null;
-          if (lineIds.length > 0) {
-              //compute the position of the single el (top and bottom and make a div)
-              const el = window.document.getElementById(lineIds[0]);
-              top = el.offsetTop;
-              height = el.offsetHeight;
-              parent = el.parentElement.parentElement;
-            if (lineIds.length > 1) {
-              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-              height = bottom - top;
-            }
-            if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
-              let div = window.document.getElementById("code-annotation-line-highlight");
-              if (div === null) {
-                div = window.document.createElement("div");
-                div.setAttribute("id", "code-annotation-line-highlight");
-                div.style.position = 'absolute';
-                parent.appendChild(div);
-              }
-              div.style.top = top - 2 + "px";
-              div.style.height = height + 4 + "px";
-              div.style.left = 0;
-              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-              if (gutterDiv === null) {
-                gutterDiv = window.document.createElement("div");
-                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-                gutterDiv.style.position = 'absolute';
-                const codeCell = window.document.getElementById(targetCell);
-                const gutter = codeCell.querySelector('.code-annotation-gutter');
-                gutter.appendChild(gutterDiv);
-              }
-              gutterDiv.style.top = top - 2 + "px";
-              gutterDiv.style.height = height + 4 + "px";
-            }
-            selectedAnnoteEl = annoteEl;
-          }
-        };
-        const unselectCodeLines = () => {
-          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-          elementsIds.forEach((elId) => {
-            const div = window.document.getElementById(elId);
-            if (div) {
-              div.remove();
-            }
-          });
-          selectedAnnoteEl = undefined;
-        };
-          // Handle positioning of the toggle
-      window.addEventListener(
-        "resize",
-        throttle(() => {
-          elRect = undefined;
-          if (selectedAnnoteEl) {
-            selectCodeLines(selectedAnnoteEl);
-          }
-        }, 10)
-      );
-      function throttle(fn, ms) {
-      let throttle = false;
-      let timer;
-        return (...args) => {
-          if(!throttle) { // first call gets through
-              fn.apply(this, args);
-              throttle = true;
-          } else { // all the others get throttled
-              if(timer) clearTimeout(timer); // cancel #2
-              timer = setTimeout(() => {
-                fn.apply(this, args);
-                timer = throttle = false;
-              }, ms);
-          }
-        };
-      }
-        // Attach click handler to the DT
-        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-        for (const annoteDlNode of annoteDls) {
-          annoteDlNode.addEventListener('click', (event) => {
-            const clickedEl = event.target;
-            if (clickedEl !== selectedAnnoteEl) {
-              unselectCodeLines();
-              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-              if (activeEl) {
-                activeEl.classList.remove('code-annotation-active');
-              }
-              selectCodeLines(clickedEl);
-              clickedEl.classList.add('code-annotation-active');
-            } else {
-              // Unselect the line
-              unselectCodeLines();
-              clickedEl.classList.remove('code-annotation-active');
-            }
-          });
-        }
-    const findCites = (el) => {
-      const parentEl = el.parentElement;
-      if (parentEl) {
-        const cites = parentEl.dataset.cites;
-        if (cites) {
-          return {
-            el,
-            cites: cites.split(' ')
-          };
-        } else {
-          return findCites(el.parentElement)
-        }
-      } else {
-        return undefined;
-      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
     };
-    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-    for (var i=0; i<bibliorefs.length; i++) {
-      const ref = bibliorefs[i];
-      const citeInfo = findCites(ref);
-      if (citeInfo) {
-        tippyHover(citeInfo.el, function() {
-          var popup = window.document.createElement('div');
-          citeInfo.cites.forEach(function(cite) {
-            var citeDiv = window.document.createElement('div');
-            citeDiv.classList.add('hanging-indent');
-            citeDiv.classList.add('csl-entry');
-            var biblioDiv = window.document.getElementById('ref-' + cite);
-            if (biblioDiv) {
-              citeDiv.innerHTML = biblioDiv.innerHTML;
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
             }
-            popup.appendChild(citeDiv);
-          });
-          return popup.innerHTML;
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
         });
       }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
     }
-  });
-  </script>
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./12-portfolioTheoryNoShortSales-new.html" class="pagination-link" aria-label="Portfolio Theory with Short Sales Constraints">
+      <a href="./12-portfolioTheoryNoShortSales-new.html" class="pagination-link">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Portfolio Theory with Short Sales Constraints</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./14-statisticalAnalysisPortfolios-new.html" class="pagination-link" aria-label="Statistical Analysis of Portfolios">
+      <a href="./14-statisticalAnalysisPortfolios-new.html" class="pagination-link">
         <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Statistical Analysis of Portfolios</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
-
 
 
 

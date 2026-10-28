@@ -2,23 +2,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.18">
+<meta name="generator" content="quarto-1.3.450">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>3&nbsp; Matrix Algebra Review – Introduction to Computational Finance and Financial Econometrics with R</title>
+<title>Introduction to Computational Finance and Financial Econometrics with R - 3&nbsp; Matrix Algebra Review</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
+code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: 1.5em;}
-div.column{flex: auto;}
-@media screen {
-div.columns{gap: min(4vw, 1.5em);}
-div.column{overflow-x: auto;}
-}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -27,7 +21,6 @@ ul.task-list li input[type="checkbox"] {
   vertical-align: middle;
 }
 /* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -92,29 +85,22 @@ div.csl-indent {
 <meta name="quarto:offset" content="./">
 <link href="./04-timeSeriesConcepts-new.html" rel="next">
 <link href="./02-probReview-new.html" rel="prev">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-631496449bf32ff9b0bb69a6bfd9195d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 50,
-  "keyboard-shortcut": [
-    "f",
-    "/",
-    "s"
-  ],
-  "show-item-context": false,
+  "limit": 20,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -123,58 +109,30 @@ div.csl-indent {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
-    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
 
-<body class="nav-sidebar floating quarto-light">
+<body class="nav-sidebar floating">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03-matrixReview-new.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Algebra Review</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-        </a>
-      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03-matrixReview-new.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Algebra Review</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -183,7 +141,7 @@ window.Quarto = {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Introduction to Computational Finance and Financial Econometrics with R</a> 
@@ -307,7 +265,7 @@ window.Quarto = {
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -368,20 +326,18 @@ window.Quarto = {
   </div>
   
 
-
 </header>
-
 
 <p>Updated: September 3, 2026</p>
 <p>Copyright © Eric Zivot 2026</p>
 <p>This chapter reviews some basic matrix algebra concepts that we will use throughout the book. Many of the formulas that involve multiple variables that we derive in the book can be simplified using matrix algebra. This aids in understanding general concepts. For example, portfolio risk and return calculations for portfolios with more than two assets is easy to express using matrix algebra. If returns are jointly normally distributed, then this multivariate normal distribution can be expressed concisely using matrix algebra. The first order conditions involving the portfolio weights for mean-variance optimized portfolios is a system of linear equations that can be set-up and solved using matrix algebra. In addition, R is a matrix programming language. Pretty much anything that you can represent in matrix algebra you can evaluate in R using matrix calculations that have a syntax very much like the matrix algebra representation. Lastly, many R calculations can be efficiently evaluated if they are <em>vectorized</em> - that is, if they operate on vectors of elements instead of looping over individual elements.</p>
-<p>This chapter is organized as follows. <a href="#sec-Matrices-and-Vectors" class="quarto-xref"><span>Section 3.1</span></a> gives definitions of matrices and vectors and shows how to represent these objects in R. <a href="#sec-Basic-Matrix-Operations" class="quarto-xref"><span>Section 3.2</span></a> reviews basic matrix operations (addition, subtraction, multiplication), and <a href="#sec-Representing-Summation-Using-Matrix-Notation" class="quarto-xref"><span>Section 3.3</span></a> shows how common summation calculations can be represented using matrix notation. <a href="#sec-Systems-of-Linear-Equations" class="quarto-xref"><span>Section 3.4</span></a> covers systems of linear equations and shows how the inverse of a matrix is related to the solutions to a system of linear equations. <a href="#sec-Positive-Definite-Matrices" class="quarto-xref"><span>Section 3.5</span></a> discusses positive definite matrices and Cholesky decomposition. The use of matrix algebra for representing multivariate probability distributions is presented in <a href="#sec-Multivariate-Probability-Distributions-Using-Matrix-Algebra" class="quarto-xref"><span>Section 3.6</span></a>, and portfolio calculations using matrix algebra is presented in<br>
-<a href="#sec-Portfolio-Math-Using-Matrix-Algebra" class="quarto-xref"><span>Section 3.7</span></a>. <a href="#sec-Derivatives-of-Simple-Matrix-Functions" class="quarto-xref"><span>Section 3.8</span></a> concludes with a discussion of derivatives of some simple matrix functions.</p>
+<p>This chapter is organized as follows. <a href="#sec-Matrices-and-Vectors"><span>Section&nbsp;3.1</span></a> gives definitions of matrices and vectors and shows how to represent these objects in R. <a href="#sec-Basic-Matrix-Operations"><span>Section&nbsp;3.2</span></a> reviews basic matrix operations (addition, subtraction, multiplication), and <a href="#sec-Representing-Summation-Using-Matrix-Notation"><span>Section&nbsp;3.3</span></a> shows how common summation calculations can be represented using matrix notation. <a href="#sec-Systems-of-Linear-Equations"><span>Section&nbsp;3.4</span></a> covers systems of linear equations and shows how the inverse of a matrix is related to the solutions to a system of linear equations. <a href="#sec-Positive-Definite-Matrices"><span>Section&nbsp;3.5</span></a> discusses positive definite matrices and Cholesky decomposition. The use of matrix algebra for representing multivariate probability distributions is presented in <a href="#sec-Multivariate-Probability-Distributions-Using-Matrix-Algebra"><span>Section&nbsp;3.6</span></a>, and portfolio calculations using matrix algebra is presented in<br>
+<a href="#sec-Portfolio-Math-Using-Matrix-Algebra"><span>Section&nbsp;3.7</span></a>. <a href="#sec-Derivatives-of-Simple-Matrix-Functions"><span>Section&nbsp;3.8</span></a> concludes with a discussion of derivatives of some simple matrix functions.</p>
 <p>The R packages used in this chapter are <strong>Matrix</strong> and <strong>mvtnorm</strong>. Make sure these packages are downloaded and installed prior to replicating the R examples in this chapter.</p>
 <section id="sec-Matrices-and-Vectors" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="sec-Matrices-and-Vectors"><span class="header-section-number">3.1</span> Matrices and Vectors</h2>
-<div id="def-matrix" class="definition theorem">
-<p><span class="theorem-title"><strong>Definition 3.1 (Matrix)</strong></span> A <em>matrix</em> is just an array of numbers. The <em>dimension</em> of a matrix is determined by the number of its rows and columns.</p>
+<div id="def-matrix" class="definition theorem definition">
+<p><span class="theorem-title"><strong>Definition 3.1 (Matrix) </strong></span>A <em>matrix</em> is just an array of numbers. The <em>dimension</em> of a matrix is determined by the number of its rows and columns.</p>
 </div>
 <p>For example, a matrix <span class="math inline">\(\mathbf{A}\)</span> with <span class="math inline">\(n\)</span> rows and <span class="math inline">\(m\)</span> columns is illustrated below: <span class="math display">\[
 \underset{(n\times m)}{\mathbf{A}}=\left[\begin{array}{cccc}
@@ -391,8 +347,8 @@ a_{21} &amp; a_{22} &amp; \ldots &amp; a_{2m}\\
 a_{n1} &amp; a_{n2} &amp; \ldots &amp; a_{nm}
 \end{array}\right]
 \]</span> where <span class="math inline">\(a_{ij}\)</span> denotes the <span class="math inline">\(i^{th}\)</span> row and <span class="math inline">\(j^{th}\)</span> column element of <span class="math inline">\(\mathbf{A}\)</span>.</p>
-<div id="def-vector" class="definition theorem">
-<p><span class="theorem-title"><strong>Definition 3.2 (Vector)</strong></span> A <em>vector</em> is simply a matrix with <span class="math inline">\(1\)</span> column.</p>
+<div id="def-vector" class="definition theorem definition">
+<p><span class="theorem-title"><strong>Definition 3.2 (Vector) </strong></span>A <em>vector</em> is simply a matrix with <span class="math inline">\(1\)</span> column.</p>
 </div>
 <p>For example, <span class="math display">\[
 \underset{(n\times1)}{\mathbf{x}}=\left[\begin{array}{c}
@@ -402,71 +358,71 @@ x_{2}\\
 x_{n}
 \end{array}\right]
 \]</span> is an <span class="math inline">\(n\times1\)</span> vector with elements <span class="math inline">\(x_{1},x_{2},\ldots,x_{n}\)</span>. Vectors and matrices are often written in bold type (or underlined) to distinguish them from scalars (single elements of vectors or matrices).</p>
-<div id="exm-matrix-creation-in-r" class="example theorem">
-<p><span class="theorem-title"><strong>Example 3.1 (Matrix creation in R)</strong></span> In R, matrix objects are created using the <code>matrix()</code> function. For example, to create the <span class="math inline">\(2\times3\)</span> matrix: <span class="math display">\[
+<div id="exm-matrix-creation-in-r" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 3.1 (Matrix creation in R) </strong></span>In R, matrix objects are created using the <code>matrix()</code> function. For example, to create the <span class="math inline">\(2\times3\)</span> matrix: <span class="math display">\[
 \underset{(2\times3)}{\mathbf{A}}=\left[\begin{array}{ccc}
 1 &amp; 2 &amp; 3\\
 4 &amp; 5 &amp; 6
 \end{array}\right]
 \]</span> use,</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>matA <span class="ot">=</span> <span class="fu">matrix</span>(<span class="at">data=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>),<span class="at">nrow=</span><span class="dv">2</span>,<span class="at">ncol=</span><span class="dv">3</span>,<span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>matA <span class="ot">=</span> <span class="fu">matrix</span>(<span class="at">data=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>),<span class="at">nrow=</span><span class="dv">2</span>,<span class="at">ncol=</span><span class="dv">3</span>,<span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>matA</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2] [,3]</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]    1    2    3</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]    4    5    6</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(matA)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "matrix" "array"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "matrix" "array"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>The optional argument <code>byrow=TRUE</code> fills the matrix row-by-row.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> The default is <code>byrow=FALSE</code> which fills the matrix column-by-column:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">matrix</span>(<span class="at">data=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>),<span class="at">nrow=</span><span class="dv">2</span>,<span class="at">ncol=</span><span class="dv">3</span>)</span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">matrix</span>(<span class="at">data=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>),<span class="at">nrow=</span><span class="dv">2</span>,<span class="at">ncol=</span><span class="dv">3</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2] [,3]</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]    1    3    5</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]    2    4    6</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]    2    4    6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Matrix objects (i.e., objects of class <code>"matrix"</code>) have row and column dimension attributes which can be examined with the <code>dim()</code> function:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(matA)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 2 3</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(matA)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 2 3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>The rows and columns can be given names using:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dimnames</span>(matA) <span class="ot">=</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="st">"row1"</span>,<span class="st">"row2"</span>),<span class="fu">c</span>(<span class="st">"col1"</span>,<span class="st">"col2"</span>,<span class="st">"col3"</span>))</span>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dimnames</span>(matA) <span class="ot">=</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="st">"row1"</span>,<span class="st">"row2"</span>),<span class="fu">c</span>(<span class="st">"col1"</span>,<span class="st">"col2"</span>,<span class="st">"col3"</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>matA</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      col1 col2 col3</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; row1    1    2    3</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; row2    4    5    6</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; row2    4    5    6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>or,</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(matA) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"col1"</span>, <span class="st">"col2"</span>, <span class="st">"col3"</span>)</span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(matA) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"col1"</span>, <span class="st">"col2"</span>, <span class="st">"col3"</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(matA) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"row1"</span>, <span class="st">"row2"</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>matA</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      col1 col2 col3</span></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; row1    1    2    3</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; row2    4    5    6</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; row2    4    5    6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>The elements of a matrix can be extracted or subsetted as follows:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>matA[<span class="dv">1</span>, <span class="dv">2</span>]</span>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>matA[<span class="dv">1</span>, <span class="dv">2</span>]</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 2</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>matA[<span class="st">"row1"</span>, <span class="st">"col1"</span>]</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
@@ -475,30 +431,30 @@ x_{n}
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    1    2    3</span></span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>matA[, <span class="dv">2</span>]</span>
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; row1 row2 </span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    2    5</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    2    5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>To preserve the dimension attributes when subsetting, use the <code>drop=FALSE</code> option:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>matA[<span class="dv">1</span>, , drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>matA[<span class="dv">1</span>, , drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      col1 col2 col3</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; row1    1    2    3</span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>matA[, <span class="dv">2</span>, drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      col2</span></span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; row1    2</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; row2    5</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; row2    5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p><span class="math inline">\(\blacksquare\)</span></p>
 </div>
-<div id="exm-creating-vectors-in-r" class="example theorem">
-<p><span class="theorem-title"><strong>Example 3.2 (Creating vectors in R)</strong></span> Vectors can be created in R using a variety of methods. The easiest way is to use the combine function <code>c()</code>:</p>
+<div id="exm-creating-vectors-in-r" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 3.2 (Creating vectors in R) </strong></span>Vectors can be created in R using a variety of methods. The easiest way is to use the combine function <code>c()</code>:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>xvec <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>)</span>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>xvec <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>xvec</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1 2 3</span></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>xvec <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span></span>
@@ -506,44 +462,44 @@ x_{n}
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1 2 3</span></span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>xvec <span class="ot">=</span> <span class="fu">seq</span>(<span class="at">from=</span><span class="dv">1</span>,<span class="at">to=</span><span class="dv">3</span>,<span class="at">by=</span><span class="dv">1</span>)</span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>xvec</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1 2 3</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1 2 3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Vectors of numbers in R are of class <code>"numeric"</code> and do not have a dimension attribute:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(xvec)</span>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(xvec)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "numeric"</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(xvec)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; NULL</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; NULL</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>The elements of a vector can be assigned names using the <code>names()</code> function:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(xvec) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"x1"</span>, <span class="st">"x2"</span>, <span class="st">"x3"</span>)</span>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(xvec) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"x1"</span>, <span class="st">"x2"</span>, <span class="st">"x3"</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>xvec</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; x1 x2 x3 </span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1  2  3</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1  2  3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>To force a dimension attribute onto a vector, coerce it to a <code>"matrix"</code> object using <code>as.matrix()</code>:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.matrix</span>(xvec)</span>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.matrix</span>(xvec)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    [,1]</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; x1    1</span></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; x2    2</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; x3    3</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; x3    3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p><span class="math inline">\(\blacksquare\)</span></p>
 </div>
-<div id="def-transpose" class="definition theorem">
-<p><span class="theorem-title"><strong>Definition 3.3 (Transpose)</strong></span> The <em>transpose</em> of an <span class="math inline">\(n\times m\)</span> matrix <span class="math inline">\(\mathbf{A}\)</span> is a new matrix with the rows and columns of <span class="math inline">\(\mathbf{A}\)</span> interchanged, and is denoted <span class="math inline">\(\mathbf{A}^{\prime}\)</span> or <span class="math inline">\(\mathbf{A}^{\intercal}\)</span>.</p>
+<div id="def-transpose" class="definition theorem definition">
+<p><span class="theorem-title"><strong>Definition 3.3 (Transpose) </strong></span>The <em>transpose</em> of an <span class="math inline">\(n\times m\)</span> matrix <span class="math inline">\(\mathbf{A}\)</span> is a new matrix with the rows and columns of <span class="math inline">\(\mathbf{A}\)</span> interchanged, and is denoted <span class="math inline">\(\mathbf{A}^{\prime}\)</span> or <span class="math inline">\(\mathbf{A}^{\intercal}\)</span>.</p>
 </div>
 <p>For example, <span class="math display">\[
 \begin{aligned}
@@ -564,7 +520,7 @@ x_{n}
 \end{aligned}
 \]</span></p>
 <div id="def-symmetric-matrix" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 3.4 (Symmetric matrix)</strong></span> A <em>symmetric</em> matrix <span class="math inline">\(\mathbf{A}\)</span> is such that <span class="math inline">\(\mathbf{A}=\mathbf{A}^{\prime}\)</span>.</p>
+<p><span class="theorem-title"><strong>Definition 3.4 (Symmetric matrix) </strong></span>A <em>symmetric</em> matrix <span class="math inline">\(\mathbf{A}\)</span> is such that <span class="math inline">\(\mathbf{A}=\mathbf{A}^{\prime}\)</span>.</p>
 </div>
 <p>Obviously, symmetry can only occur if <span class="math inline">\(\mathbf{A}\)</span> is a <em>square</em> matrix; i.e., the number of rows of <span class="math inline">\(\mathbf{A}\)</span> is equal to the number of columns. For example, consider the <span class="math inline">\(2\times2\)</span> matrix: <span class="math display">\[
 \mathbf{A}=\left[\begin{array}{cc}
@@ -578,11 +534,11 @@ x_{n}
 \end{array}\right].
 \]</span></p>
 <div id="exm-transpose-of-a-matrix-in-r" class="theorem example">
-<p><span class="theorem-title"><strong>Example 3.3 (Transpose of a matrix in R)</strong></span> To take the transpose of a matrix or vector, use the <code>t()</code> function:</p>
+<p><span class="theorem-title"><strong>Example 3.3 (Transpose of a matrix in R) </strong></span>To take the transpose of a matrix or vector, use the <code>t()</code> function:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>matA <span class="ot">=</span> <span class="fu">matrix</span>(<span class="at">data=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>),<span class="at">nrow=</span><span class="dv">2</span>,<span class="at">ncol=</span><span class="dv">3</span>,<span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>matA <span class="ot">=</span> <span class="fu">matrix</span>(<span class="at">data=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>),<span class="at">nrow=</span><span class="dv">2</span>,<span class="at">ncol=</span><span class="dv">3</span>,<span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>matA</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2] [,3]</span></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]    1    2    3</span></span>
@@ -595,7 +551,7 @@ x_{n}
 <span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>xvec <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>)</span>
 <span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="fu">t</span>(xvec)</span>
 <span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2] [,3]</span></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]    1    2    3</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]    1    2    3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Notice that, when applied to a <code>"numeric"</code> vector with <span class="math inline">\(n\)</span> elements, the <code>t()</code> function returns a <code>"matrix"</code> object with dimension <span class="math inline">\(1\times n\)</span>.</p>
@@ -609,7 +565,7 @@ x_{n}
 <h3 data-number="3.2.1" class="anchored" data-anchor-id="addition-and-subtraction"><span class="header-section-number">3.2.1</span> Addition and subtraction</h3>
 <p></p>
 <div id="def-matrix-addition" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 3.5 (Matrix addition)</strong></span> Matrix addition and subtraction are element by element operations and only apply to matrices of the same dimension.</p>
+<p><span class="theorem-title"><strong>Definition 3.5 (Matrix addition) </strong></span>Matrix addition and subtraction are element by element operations and only apply to matrices of the same dimension.</p>
 </div>
 <p>For example, let, <span class="math display">\[
 \mathbf{A}=\left[\begin{array}{cc}
@@ -650,11 +606,11 @@ x_{n}
 \end{aligned}
 \]</span></p>
 <div id="exm-matrix-addition-and-subtraction-in-r" class="theorem example">
-<p><span class="theorem-title"><strong>Example 3.4 (Matrix addition and subtraction in R)</strong></span> Matrix addition and subtraction is straightforward in R:</p>
+<p><span class="theorem-title"><strong>Example 3.4 (Matrix addition and subtraction in R) </strong></span>Matrix addition and subtraction is straightforward in R:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>matA <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">9</span>,<span class="dv">2</span>,<span class="dv">1</span>),<span class="dv">2</span>,<span class="dv">2</span>,<span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>matA <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">9</span>,<span class="dv">2</span>,<span class="dv">1</span>),<span class="dv">2</span>,<span class="dv">2</span>,<span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>matB <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">7</span>),<span class="dv">2</span>,<span class="dv">2</span>,<span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>matA</span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2]</span></span>
@@ -675,7 +631,7 @@ x_{n}
 <span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>matD</span>
 <span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2]</span></span>
 <span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]    2    9</span></span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]    2   -6</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]    2   -6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p><span class="math inline">\(\blacksquare\)</span></p>
@@ -698,17 +654,17 @@ c\cdot\mathbf{A}=\left[\begin{array}{cc}
 0 &amp; 10
 \end{array}\right].
 \]</span></p>
-<div id="exm-scalar-multiplication-in-r" class="example theorem">
-<p><span class="theorem-title"><strong>Example 3.5 (Scalar multiplication in R)</strong></span> &nbsp;</p>
+<div id="exm-scalar-multiplication-in-r" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 3.5 (Scalar multiplication in R) </strong></span>&nbsp;</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>matA <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">3</span>,<span class="sc">-</span><span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">5</span>),<span class="dv">2</span>,<span class="dv">2</span>,<span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>matA <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">3</span>,<span class="sc">-</span><span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">5</span>),<span class="dv">2</span>,<span class="dv">2</span>,<span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>matC <span class="ot">=</span> <span class="dv">2</span><span class="sc">*</span>matA</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>matC</span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2]</span></span>
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]    6   -2</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]    0   10</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]    0   10</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p><span class="math inline">\(\blacksquare\)</span></p>
@@ -719,7 +675,7 @@ c\cdot\mathbf{A}=\left[\begin{array}{cc}
 <p></p>
 <p>Matrix multiplication only applies to <em>conformable</em> matrices.</p>
 <div id="def-conformable-matrices" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 3.6 (Conformable matrices)</strong></span> <span class="math inline">\(\mathbf{A}\)</span> and <span class="math inline">\(\mathbf{B}\)</span> are conformable matrices if the number of columns in <span class="math inline">\(\mathbf{A}\)</span> is equal to the number of rows in <span class="math inline">\(\mathbf{B}.\)</span></p>
+<p><span class="theorem-title"><strong>Definition 3.6 (Conformable matrices) </strong></span><span class="math inline">\(\mathbf{A}\)</span> and <span class="math inline">\(\mathbf{B}\)</span> are conformable matrices if the number of columns in <span class="math inline">\(\mathbf{A}\)</span> is equal to the number of rows in <span class="math inline">\(\mathbf{B}.\)</span></p>
 </div>
 <p>For example, if <span class="math inline">\(\mathbf{A}\)</span> is <span class="math inline">\(n\times m\)</span> and <span class="math inline">\(\mathbf{B}\)</span> is <span class="math inline">\(m\times p\)</span> then <span class="math inline">\(\mathbf{A}\)</span> and <span class="math inline">\(\mathbf{B}\)</span> are conformable and the matrix product of <span class="math inline">\(\mathbf{A}\)</span> and <span class="math inline">\(\mathbf{B}\)</span> has dimension <span class="math inline">\(n\times p\)</span>. The mechanics of matrix multiplication is best explained by example. Let, <span class="math display">\[
 \underset{(2\times2)}{\mathbf{A}}=\left[\begin{array}{cc}
@@ -804,12 +760,12 @@ c\cdot\mathbf{A}=\left[\begin{array}{cc}
 6
 \end{array}\right]=1\cdot4+2\cdot5+3\cdot6=32
 \]</span></p>
-<div id="exm-matrix-multiplication-in-r" class="example theorem">
-<p><span class="theorem-title"><strong>Example 3.6 (Matrix multiplication in R)</strong></span> In R, matrix multiplication is performed with the <code>% * %</code> operator. For example:</p>
+<div id="exm-matrix-multiplication-in-r" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 3.6 (Matrix multiplication in R) </strong></span>In R, matrix multiplication is performed with the <code>% * %</code> operator. For example:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>matA <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>matA <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>matB <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">2</span>),<span class="dv">2</span>,<span class="dv">3</span>,<span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>matA</span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2]</span></span>
@@ -827,14 +783,14 @@ c\cdot\mathbf{A}=\left[\begin{array}{cc}
 <span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>matC</span>
 <span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2] [,3]</span></span>
 <span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]    7   10    5</span></span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]   15   22   11</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]   15   22   11</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>The next example shows that matrix multiplication in R also works on numeric vectors:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>matA <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>), <span class="dv">2</span>, <span class="dv">2</span>, <span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>matA <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>), <span class="dv">2</span>, <span class="dv">2</span>, <span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>vecB <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">6</span>)</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>matA<span class="sc">%*%</span>vecB</span>
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1]</span></span>
@@ -847,7 +803,7 @@ c\cdot\mathbf{A}=\left[\begin{array}{cc}
 <span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]   32</span></span>
 <span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="fu">crossprod</span>(vecX, vecY)</span>
 <span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1]</span></span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]   32</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]   32</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p><span class="math inline">\(\blacksquare\)</span></p>
@@ -903,12 +859,12 @@ a_{21} &amp; a_{22}
 \end{array}\right]=\mathbf{A}.
 \end{aligned}
 \]</span></p>
-<div id="exm-the-identity-matrix-in-r" class="example theorem">
-<p><span class="theorem-title"><strong>Example 3.7 (The identity matrix in R)</strong></span> Use the <code>diag()</code> function to create an identity matrix:</p>
+<div id="exm-the-identity-matrix-in-r" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 3.7 (The identity matrix in R) </strong></span>Use the <code>diag()</code> function to create an identity matrix:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>matI <span class="ot">=</span> <span class="fu">diag</span>(<span class="dv">2</span>)</span>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>matI <span class="ot">=</span> <span class="fu">diag</span>(<span class="dv">2</span>)</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>matI</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2]</span></span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]    1    0</span></span>
@@ -921,7 +877,7 @@ a_{21} &amp; a_{22}
 <span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>matA<span class="sc">%*%</span>matI</span>
 <span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2]</span></span>
 <span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]    1    2</span></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]    3    4</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]    3    4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p><span class="math inline">\(\blacksquare\)</span></p>
@@ -963,27 +919,27 @@ d_{1} &amp; u_{12} &amp; u_{13} &amp; \cdots &amp; u_{1n}\\
 0 &amp; 0 &amp; 0 &amp; \cdots &amp; d_{n}
 \end{array}\right].
 \]</span></p>
-<div id="exm-creating-a-diagonal-matrix-in-r" class="example theorem">
-<p><span class="theorem-title"><strong>Example 3.8 (Creating a diagonal matrix in R)</strong></span> Diagonal matrices can be created with the <code>diag()</code> function. To create a <span class="math inline">\(3\times3\)</span> diagonal matrix with <span class="math inline">\(\mbox{d}=(1,2,3)\)</span> along the main diagonal, use</p>
+<div id="exm-creating-a-diagonal-matrix-in-r" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 3.8 (Creating a diagonal matrix in R) </strong></span>Diagonal matrices can be created with the <code>diag()</code> function. To create a <span class="math inline">\(3\times3\)</span> diagonal matrix with <span class="math inline">\(\mbox{d}=(1,2,3)\)</span> along the main diagonal, use</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>matD <span class="ot">=</span> <span class="fu">diag</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>matD <span class="ot">=</span> <span class="fu">diag</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>matD</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2] [,3]</span></span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]    1    0    0</span></span>
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]    0    2    0</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [3,]    0    0    3</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [3,]    0    0    3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p><span class="math inline">\(\blacksquare\)</span></p>
 </div>
-<div id="exm-extracting-lower-and-upper-triangular-elements-of-a-square-matrix" class="example theorem">
-<p><span class="theorem-title"><strong>Example 3.9 (Extracting lower and upper triangular elements of a square matrix)</strong></span> The R functions <code>lower.tri()</code> and <code>upper.tri()</code> can be used to extract the lower and upper triangular parts of a square matrix:</p>
+<div id="exm-extracting-lower-and-upper-triangular-elements-of-a-square-matrix" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 3.9 (Extracting lower and upper triangular elements of a square matrix) </strong></span>The R functions <code>lower.tri()</code> and <code>upper.tri()</code> can be used to extract the lower and upper triangular parts of a square matrix:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>matA <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>,<span class="dv">9</span>), <span class="dv">3</span>, <span class="dv">3</span>)</span>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>matA <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>,<span class="dv">9</span>), <span class="dv">3</span>, <span class="dv">3</span>)</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>matA</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2] [,3]</span></span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]    1    4    7</span></span>
@@ -1002,7 +958,7 @@ d_{1} &amp; u_{12} &amp; u_{13} &amp; \cdots &amp; u_{1n}\\
 <span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>matA[<span class="fu">lower.tri</span>(matA)]</span>
 <span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 2 3 6</span></span>
 <span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>matA[<span class="fu">upper.tri</span>(matA)]</span>
-<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 4 7 8</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 4 7 8</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p><span class="math inline">\(\blacksquare\)</span></p>
@@ -1046,12 +1002,12 @@ y_{1}\\
 y_{n}
 \end{array}\right]=x_{1}y_{1}+\cdots x_{n}y_{n}=\sum_{k=1}^{n}x_{k}y_{k}.
 \]</span> Note that <span class="math inline">\(\mathbf{x}^{\prime}\mathbf{y=y}^{\prime}\mathbf{x}\)</span>.</p>
-<div id="exm-computing-sums-in-r" class="example theorem">
-<p><span class="theorem-title"><strong>Example 3.10 (Computing sums in R)</strong></span> In R, summing the elements in a vector can be done using matrix algebra.</p>
+<div id="exm-computing-sums-in-r" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 3.10 (Computing sums in R) </strong></span>In R, summing the elements in a vector can be done using matrix algebra.</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create vector of 1's and a vector of x</span></span>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create vector of 1's and a vector of x</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>onevec <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">1</span>,<span class="dv">3</span>)</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>onevec</span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1 1 1</span></span>
@@ -1059,36 +1015,36 @@ y_{n}
 <span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co"># sum elements in x</span></span>
 <span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="fu">t</span>(xvec)<span class="sc">%*%</span>onevec</span>
 <span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1]</span></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]    6</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]    6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>The functions <code>crossprod()</code> and <code>sum()</code> are generally computationally more efficient:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">crossprod</span>(xvec,onevec)</span>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">crossprod</span>(xvec,onevec)</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1]</span></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]    6</span></span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(xvec)</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 6</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Sums of squares are best computed using:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">crossprod</span>(xvec)</span>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">crossprod</span>(xvec)</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1]</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]   14</span></span>
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(xvec<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 14</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 14</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>The dot-product two vectors can be conveniently computed using the <code>crossprod()</code> function:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>yvec <span class="ot">=</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">6</span></span>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>yvec <span class="ot">=</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">6</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>xvec</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1 2 3</span></span>
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>yvec</span>
@@ -1098,7 +1054,7 @@ y_{n}
 <span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]   32</span></span>
 <span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="fu">crossprod</span>(yvec,xvec)</span>
 <span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1]</span></span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]   32</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]   32</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p><span class="math inline">\(\blacksquare\)</span></p>
@@ -1111,17 +1067,13 @@ x+y=1,
 \tag{3.3}\]</span></span> <span id="eq-eq2"><span class="math display">\[
 2x-y =1.
 \tag{3.4}\]</span></span></p>
-<p>As shown in <a href="#fig-MatrixReview2eqns" class="quarto-xref">Figure&nbsp;<span>3.1</span></a>, equations <a href="#eq-eq1" class="quarto-xref">Equation&nbsp;<span>3.3</span></a> and <a href="#eq-eq2" class="quarto-xref">Equation&nbsp;<span>3.4</span></a> represent two straight lines which intersect at the point <span class="math inline">\(x=2/3\)</span> and <span class="math inline">\(y=1/3\)</span>. This point of intersection is determined by solving for the values of <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> such that <span class="math inline">\(x+y=2x-y\)</span><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
-<div class="cell" data-layout-align="center">
+<p>As shown in <a href="#fig-MatrixReview2eqns">Figure&nbsp;<span>3.1</span></a>, equations <a href="#eq-eq1">Equation&nbsp;<span>3.3</span></a> and <a href="#eq-eq2">Equation&nbsp;<span>3.4</span></a> represent two straight lines which intersect at the point <span class="math inline">\(x=2/3\)</span> and <span class="math inline">\(y=1/3\)</span>. This point of intersection is determined by solving for the values of <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> such that <span class="math inline">\(x+y=2x-y\)</span><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
 <div class="cell-output-display">
-<div id="fig-MatrixReview2eqns" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-MatrixReview2eqns-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="03-matrixReview-new_files/figure-html/fig-MatrixReview2eqns-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-MatrixReview2eqns-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3.1: System of two linear equations.
-</figcaption>
+<div id="fig-MatrixReview2eqns" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="03-matrixReview-new_files/figure-html/fig-MatrixReview2eqns-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.1: System of two linear equations.</figcaption>
 </figure>
 </div>
 </div>
@@ -1211,7 +1163,7 @@ a_{22}a_{11}-a_{12}a_{21} &amp; 0\\
 0 &amp; 1
 \end{array}\right].
 \end{aligned}
-\]</span> Let’s apply the above rule to find the inverse of <span class="math inline">\(\mathbf{A}\)</span> in our example linear system <a href="#eq-eq1" class="quarto-xref">Equation&nbsp;<span>3.3</span></a> and <a href="#eq-eq2" class="quarto-xref">Equation&nbsp;<span>3.4</span></a>: <span class="math display">\[
+\]</span> Let’s apply the above rule to find the inverse of <span class="math inline">\(\mathbf{A}\)</span> in our example linear system <a href="#eq-eq1">Equation&nbsp;<span>3.3</span></a> and <a href="#eq-eq2">Equation&nbsp;<span>3.4</span></a>: <span class="math display">\[
 \mathbf{A}^{-1}=\frac{1}{-1-2}\left[\begin{array}{cc}
 -1 &amp; -1\\
 -2 &amp; 1
@@ -1249,20 +1201,20 @@ y
 \end{array}\right],
 \end{aligned}
 \]</span> so that <span class="math inline">\(x=2/3\)</span> and <span class="math inline">\(y=1/3\)</span>.</p>
-<div id="exm-solving-systems-of-linear-equations-in-r" class="example theorem">
-<p><span class="theorem-title"><strong>Example 3.11 (Solving systems of linear equations in R)</strong></span> In R, the <code>solve()</code> function is used to compute the inverse of a matrix and solve a system of linear equations. The linear system <span class="math inline">\(x+y=1\)</span> and <span class="math inline">\(2x-y=1\)</span> can be represented using:</p>
+<div id="exm-solving-systems-of-linear-equations-in-r" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 3.11 (Solving systems of linear equations in R) </strong></span>In R, the <code>solve()</code> function is used to compute the inverse of a matrix and solve a system of linear equations. The linear system <span class="math inline">\(x+y=1\)</span> and <span class="math inline">\(2x-y=1\)</span> can be represented using:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>matA <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="sc">-</span><span class="dv">1</span>), <span class="dv">2</span>, <span class="dv">2</span>, <span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>vecB <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>matA <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="sc">-</span><span class="dv">1</span>), <span class="dv">2</span>, <span class="dv">2</span>, <span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>vecB <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>First we solve for <span class="math inline">\(\mathbf{A}^{-1}\)</span>:<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>matA.inv <span class="ot">=</span> <span class="fu">solve</span>(matA)</span>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>matA.inv <span class="ot">=</span> <span class="fu">solve</span>(matA)</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>matA.inv</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       [,1]   [,2]</span></span>
 <span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,] 0.333  0.333</span></span>
@@ -1274,18 +1226,18 @@ y
 <span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>matA<span class="sc">%*%</span>matA.inv</span>
 <span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1]     [,2]</span></span>
 <span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]    1 5.55e-17</span></span>
-<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]    0 1.00e+00</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]    0 1.00e+00</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Then we solve the system <span class="math inline">\(\mathbf{z}=\mathbf{A}^{-1}\mathbf{b}\)</span>:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">=</span> matA.inv<span class="sc">%*%</span>vecB</span>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">=</span> matA.inv<span class="sc">%*%</span>vecB</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>z</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       [,1]</span></span>
 <span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,] 0.667</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,] 0.333</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,] 0.333</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p><span class="math inline">\(\blacksquare\)</span></p>
@@ -1323,7 +1275,7 @@ b_{n}
 <h3 data-number="3.4.1" class="anchored" data-anchor-id="rank-of-a-matrix"><span class="header-section-number">3.4.1</span> Rank of a matrix</h3>
 <p></p>
 <div id="def-linear-independence-of-vectors" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 3.7 (Linear independence of vectors)</strong></span> Consider an <span class="math inline">\(n\times m\)</span> matrix <span class="math inline">\(\mathbf{A}\)</span> with <span class="math inline">\(m\)</span> columns <span class="math inline">\(\mathbf{a}_{1},\mathbf{a}_{2},\ldots,\mathbf{a}_{m}\)</span> where each column is an <span class="math inline">\(n\times1\)</span> vector and <span class="math inline">\(n\)</span> rows where each row is an <span class="math inline">\(1\times m\)</span> row vector: <span class="math display">\[
+<p><span class="theorem-title"><strong>Definition 3.7 (Linear independence of vectors) </strong></span>Consider an <span class="math inline">\(n\times m\)</span> matrix <span class="math inline">\(\mathbf{A}\)</span> with <span class="math inline">\(m\)</span> columns <span class="math inline">\(\mathbf{a}_{1},\mathbf{a}_{2},\ldots,\mathbf{a}_{m}\)</span> where each column is an <span class="math inline">\(n\times1\)</span> vector and <span class="math inline">\(n\)</span> rows where each row is an <span class="math inline">\(1\times m\)</span> row vector: <span class="math display">\[
 \underset{(n\times m)}{\mathbf{A}}=\left[\begin{array}{cccc}
 a_{11} &amp; a_{12} &amp; \ldots &amp; a_{1m}\\
 a_{21} &amp; a_{22} &amp; \ldots &amp; a_{2m}\\
@@ -1334,23 +1286,23 @@ a_{n1} &amp; a_{n2} &amp; \ldots &amp; a_{nm}
 \]</span> Two vectors <span class="math inline">\(\mathbf{a}_{1}\)</span> and <span class="math inline">\(\mathbf{a}_{2}\)</span> are linearly independent if <span class="math inline">\(c_{1}\mathbf{a}_{1}+c_{2}\mathbf{a}_{2}=0\)</span> implies that <span class="math inline">\(c_{1}=c_{2}=0\)</span>. A set of vectors <span class="math inline">\(\mathbf{a}_{1},\mathbf{a}_{2},\ldots,\mathbf{a}_{m}\)</span> are linearly independent if <span class="math inline">\(c_{1}\mathbf{a}_{1}+c_{2}\mathbf{a}_{2}+\cdots+c_{m}\mathbf{a}_{m}=0\)</span> implies that <span class="math inline">\(c_{1}=c_{2}=\cdots=c_{m}=0\)</span>. That is, no vector <span class="math inline">\(\mathbf{a}_{i}\)</span> can be expressed as a non-trivial linear combination of the other vectors.</p>
 </div>
 <div id="def-rank-of-a-matrix" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 3.8 (Rank of a matrix)</strong></span> The <em>column rank</em> of the <span class="math inline">\(n\times m\)</span> matrix <span class="math inline">\(\mathbf{A}\)</span>, denoted <span class="math inline">\(\mathrm{rank}(\mathbf{A})\)</span>, is equal to the maximum number of linearly independent columns. The row rank of a matrix is equal to the maximum number of linearly independent rows, and is given by <span class="math inline">\(\mathrm{rank}(\mathbf{A}^{\prime})\)</span>.</p>
+<p><span class="theorem-title"><strong>Definition 3.8 (Rank of a matrix) </strong></span>The <em>column rank</em> of the <span class="math inline">\(n\times m\)</span> matrix <span class="math inline">\(\mathbf{A}\)</span>, denoted <span class="math inline">\(\mathrm{rank}(\mathbf{A})\)</span>, is equal to the maximum number of linearly independent columns. The row rank of a matrix is equal to the maximum number of linearly independent rows, and is given by <span class="math inline">\(\mathrm{rank}(\mathbf{A}^{\prime})\)</span>.</p>
 </div>
 <p>It turns out that the column rank and row rank of a matrix are the same. Hence, <span class="math inline">\(\mathrm{rank}(\mathbf{A})\)</span><span class="math inline">\(=\mathrm{rank}(\mathbf{A}^{\prime})\leq\mathrm{min}(m,n)\)</span>. If <span class="math inline">\(\mathrm{rank}(\mathbf{A})=m\)</span> then <span class="math inline">\(\mathbf{A}\)</span> is called <em>full column rank</em>, and if <span class="math inline">\(\mathrm{rank}(\mathbf{A})=n\)</span> then <span class="math inline">\(\mathbf{A}\)</span> is called <em>full row rank</em>. If <span class="math inline">\(\mathbf{A}\)</span> is not full rank then it is called <em>reduced rank</em>.</p>
-<div id="exm-determining-the-rank-of-a-matrix-in-r" class="example theorem">
-<p><span class="theorem-title"><strong>Example 3.12 (Determining the rank of a matrix in R)</strong></span> Consider the <span class="math inline">\(2\times3\)</span> matrix <span class="math display">\[
+<div id="exm-determining-the-rank-of-a-matrix-in-r" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 3.12 (Determining the rank of a matrix in R) </strong></span>Consider the <span class="math inline">\(2\times3\)</span> matrix <span class="math display">\[
 \mathbf{A}=\left(\begin{array}{ccc}
 1 &amp; 3 &amp; 5\\
 2 &amp; 4 &amp; 6
 \end{array}\right)
 \]</span> Here, <span class="math inline">\(\mathrm{rank}(\mathbf{A})\leq min(3,2)=2\)</span>, the number of rows. Now, <span class="math inline">\(\mathrm{rank}(\mathbf{A})=2\)</span> since the rows of <span class="math inline">\(\mathbf{A}\)</span> are linearly independent. In R, the rank of a matrix can be found using the <strong>Matrix</strong> function <code>rankMatrix()</code>:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Matrix)</span>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Matrix)</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>Amat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>), <span class="dv">2</span>, <span class="dv">3</span>, <span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">as.numeric</span>(<span class="fu">rankMatrix</span>(Amat))</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p><span class="math inline">\(\blacksquare\)</span></p>
@@ -1397,12 +1349,12 @@ a_{n1} &amp; a_{n2} &amp; \ldots &amp; a_{nm}
 15 &amp; 16
 \end{array}\right].
 \end{eqnarray*}\]</span></p>
-<div id="exm-combining-sub-matrices-in-r" class="example theorem">
-<p><span class="theorem-title"><strong>Example 3.13 (Combining sub-matrices in R)</strong></span> In R sub-matrices can be combined column-wise using <code>cbind()</code>, and row-wise using <code>rbind()</code>. For example, to create the matrix <span class="math inline">\(\mathbf{A}\)</span> from the sub-matrices use</p>
+<div id="exm-combining-sub-matrices-in-r" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 3.13 (Combining sub-matrices in R) </strong></span>In R sub-matrices can be combined column-wise using <code>cbind()</code>, and row-wise using <code>rbind()</code>. For example, to create the matrix <span class="math inline">\(\mathbf{A}\)</span> from the sub-matrices use</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>A11mat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">5</span>,<span class="dv">6</span>), <span class="dv">2</span>, <span class="dv">2</span>, <span class="at">byrow=</span><span class="cn">TRUE</span>) </span>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>A11mat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">5</span>,<span class="dv">6</span>), <span class="dv">2</span>, <span class="dv">2</span>, <span class="at">byrow=</span><span class="cn">TRUE</span>) </span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>A12mat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">7</span>,<span class="dv">8</span>), <span class="dv">2</span>, <span class="dv">2</span>, <span class="at">byrow=</span><span class="cn">TRUE</span>) </span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>A21mat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">9</span>,<span class="dv">10</span>,<span class="dv">13</span>,<span class="dv">14</span>), <span class="dv">2</span>, <span class="dv">2</span>, <span class="at">byrow=</span><span class="cn">TRUE</span>) </span>
 <span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>A22mat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">11</span>,<span class="dv">12</span>,<span class="dv">15</span>,<span class="dv">16</span>), <span class="dv">2</span>, <span class="dv">2</span>, <span class="at">byrow=</span><span class="cn">TRUE</span>) </span>
@@ -1412,7 +1364,7 @@ a_{n1} &amp; a_{n2} &amp; \ldots &amp; a_{nm}
 <span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]    1    2    3    4</span></span>
 <span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]    5    6    7    8</span></span>
 <span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [3,]    9   10   11   12</span></span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4,]   13   14   15   16</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4,]   13   14   15   16</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p><span class="math inline">\(\blacksquare\)</span></p>
@@ -1468,13 +1420,13 @@ a_{n1} &amp; a_{n2} &amp; \ldots &amp; a_{nm}
 <section id="sec-Positive-Definite-Matrices" class="level2" data-number="3.5">
 <h2 data-number="3.5" class="anchored" data-anchor-id="sec-Positive-Definite-Matrices"><span class="header-section-number">3.5</span> Positive Definite Matrices</h2>
 <div id="def-positive-definite-matrix" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 3.9 (Positive definite matrix)</strong></span> Let <span class="math inline">\(\mathbf{A}\)</span> be an <span class="math inline">\(n\times n\)</span> symmetrix matrix. The matrix <span class="math inline">\(\mathbf{A}\)</span> is <em>positive definite</em> if for any <span class="math inline">\(n\times1\)</span> vector <span class="math inline">\(\mathbf{x\neq0}\)</span> <span class="math display">\[
+<p><span class="theorem-title"><strong>Definition 3.9 (Positive definite matrix) </strong></span>Let <span class="math inline">\(\mathbf{A}\)</span> be an <span class="math inline">\(n\times n\)</span> symmetrix matrix. The matrix <span class="math inline">\(\mathbf{A}\)</span> is <em>positive definite</em> if for any <span class="math inline">\(n\times1\)</span> vector <span class="math inline">\(\mathbf{x\neq0}\)</span> <span class="math display">\[
 \mathbf{x}^{\prime}\mathbf{A}\mathbf{x}&gt;0.
 \]</span></p>
 </div>
 <p>This condition implies that there is no non-zero vector <span class="math inline">\(\mathbf{x}\)</span> such that <span class="math inline">\(\mathbf{Ax}=\mathbf{0}\)</span>, which implies that <span class="math inline">\(\mathbf{A}\)</span> has full rank <span class="math inline">\(n\)</span>.</p>
 <div id="def-positive-semi-definite-matrix" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 3.10 (Positive semi-definite matrix)</strong></span> The matrix <span class="math inline">\(\mathbf{A}\)</span> is <em>positive semi-definite</em> if for any <span class="math inline">\(n\times1\)</span> vector <span class="math inline">\(\mathbf{x\neq0}\)</span> <span class="math display">\[
+<p><span class="theorem-title"><strong>Definition 3.10 (Positive semi-definite matrix) </strong></span>The matrix <span class="math inline">\(\mathbf{A}\)</span> is <em>positive semi-definite</em> if for any <span class="math inline">\(n\times1\)</span> vector <span class="math inline">\(\mathbf{x\neq0}\)</span> <span class="math display">\[
 \mathbf{x}^{\prime}\mathbf{A}\mathbf{x}\geq0.
 \]</span></p>
 </div>
@@ -1485,27 +1437,27 @@ a_{n1} &amp; a_{n2} &amp; \ldots &amp; a_{nm}
 a=\sqrt{a}\times\sqrt{a}=a^{1/2}\times a^{1/2}.
 \]</span> That is, we can factorize any positive number into the product of its square root. It turns out we can do a similar factorization for a positive definite and symmetric matrix.</p>
 <div id="prp-cholesky-factorization" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 3.1 (Cholesky factorization)</strong></span> Let <span class="math inline">\(\mathbf{A}\)</span> be an <span class="math inline">\(n\times n\)</span> positive definite and symmetric matrix. Then it is possible to factor <span class="math inline">\(\mathbf{A}\)</span> as <span class="math display">\[
+<p><span class="theorem-title"><strong>Proposition 3.1 (Cholesky factorization) </strong></span>Let <span class="math inline">\(\mathbf{A}\)</span> be an <span class="math inline">\(n\times n\)</span> positive definite and symmetric matrix. Then it is possible to factor <span class="math inline">\(\mathbf{A}\)</span> as <span class="math display">\[
 \mathbf{A}=\mathbf{C^{\prime}}\mathbf{C},
 \]</span> where <span class="math inline">\(\mathbf{C}\)</span> is an <span class="math inline">\(n\times n\)</span> upper triangular matrix with non-negative diagonal elements called the <em>Cholesky factor</em> of <span class="math inline">\(\mathbf{A}\)</span>. This factorization is also called a <em>matrix square root factorization</em> by defining the square root matrix <span class="math inline">\(\mathbf{A}^{1/2}=\mathbf{C}\)</span>. Then we can write <span class="math inline">\(\mathbf{A}=\mathbf{A}^{1/2\prime}\mathbf{A}^{1/2}\)</span>. <a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> If all of the diagonal elements of <span class="math inline">\(\mathbf{C}\)</span> are positive then <span class="math inline">\(\mathbf{A}\)</span> is positive definite. Otherwise, <span class="math inline">\(\mathbf{A}\)</span> is positive semi-definite.</p>
 </div>
-<div id="exm-cholesky-decomposition-in-r" class="example theorem">
-<p><span class="theorem-title"><strong>Example 3.14 (Cholesky decomposition in R)</strong></span> The R function <code>chol()</code> computes the Cholesky factorization of a square symmetrix matrix. For example, consider the <span class="math inline">\(2\times2\)</span> correlation matrix:</p>
+<div id="exm-cholesky-decomposition-in-r" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 3.14 (Cholesky decomposition in R) </strong></span>The R function <code>chol()</code> computes the Cholesky factorization of a square symmetrix matrix. For example, consider the <span class="math inline">\(2\times2\)</span> correlation matrix:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>Rho <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.75</span>, <span class="fl">0.75</span>, <span class="dv">1</span>), <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>Rho <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.75</span>, <span class="fl">0.75</span>, <span class="dv">1</span>), <span class="dv">2</span>, <span class="dv">2</span>)</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>Rho</span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2]</span></span>
 <span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,] 1.00 0.75</span></span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,] 0.75 1.00</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,] 0.75 1.00</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>The Cholesky matrix square root factorization is</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>C <span class="ot">=</span> <span class="fu">chol</span>(Rho)</span>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>C <span class="ot">=</span> <span class="fu">chol</span>(Rho)</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>C</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1]  [,2]</span></span>
 <span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]    1 0.750</span></span>
@@ -1513,32 +1465,32 @@ a=\sqrt{a}\times\sqrt{a}=a^{1/2}\times a^{1/2}.
 <span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="fu">t</span>(C)<span class="sc">%*%</span>C</span>
 <span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2]</span></span>
 <span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,] 1.00 0.75</span></span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,] 0.75 1.00</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,] 0.75 1.00</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Here, all the diagonal elements of <span class="math inline">\(\mathbf{C}\)</span> are positive so that covariance matrix is positive definite. Next, suppose the correlation matrix is</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>Rho <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>Rho <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="dv">2</span>, <span class="dv">2</span>)</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>Rho</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2]</span></span>
 <span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]    1    1</span></span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]    1    1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]    1    1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>so that the two variables are perfectly correlated. Then</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chol</span>(Rho, <span class="at">pivot=</span><span class="cn">TRUE</span>)</span>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chol</span>(Rho, <span class="at">pivot=</span><span class="cn">TRUE</span>)</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2]</span></span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]    1    1</span></span>
 <span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]    0    0</span></span>
 <span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; attr(,"pivot")</span></span>
 <span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1 2</span></span>
 <span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; attr(,"rank")</span></span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Here, we see that one of the diagonal elements of the Cholesky factor is zero and that the correlation matrix is rank deficient.</p>
@@ -1623,11 +1575,11 @@ E[(X_{2}-\mu_{2})(X_{1}-\mu_{1})] &amp; E[(X_{2}-\mu_{2})^{2}]
 \end{array}\right).
 \]</span></p>
 <div id="exm-computing-correlation-matrix-from-covariance-matrix-in-r" class="theorem example">
-<p><span class="theorem-title"><strong>Example 3.15 (Computing correlation matrix from covariance matrix in R)</strong></span> In R the <code>cov2cor()</code> function can be used to compute the correlation matrix given the covariance matrix using <a href="#eq-MatrixReviewCov2Cor" class="quarto-xref">Equation&nbsp;<span>3.10</span></a>:</p>
+<p><span class="theorem-title"><strong>Example 3.15 (Computing correlation matrix from covariance matrix in R) </strong></span>In R the <code>cov2cor()</code> function can be used to compute the correlation matrix given the covariance matrix using <a href="#eq-MatrixReviewCov2Cor">Equation&nbsp;<span>3.10</span></a>:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>sigma<span class="fl">.1</span> <span class="ot">=</span> <span class="dv">1</span></span>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>sigma<span class="fl">.1</span> <span class="ot">=</span> <span class="dv">1</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>sigma<span class="fl">.2</span> <span class="ot">=</span> <span class="dv">2</span></span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>rho<span class="fl">.12</span> <span class="ot">=</span> <span class="fl">0.5</span></span>
 <span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>sigma<span class="fl">.12</span> <span class="ot">=</span> rho<span class="fl">.12</span><span class="sc">*</span>sigma<span class="fl">.1</span><span class="sc">*</span>sigma<span class="fl">.2</span></span>
@@ -1640,7 +1592,7 @@ E[(X_{2}-\mu_{2})(X_{1}-\mu_{1})] &amp; E[(X_{2}-\mu_{2})^{2}]
 <span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cov2cor</span>(Sigma)</span>
 <span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2]</span></span>
 <span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]  1.0  0.5</span></span>
-<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]  0.5  1.0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]  0.5  1.0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p><span class="math inline">\(\blacksquare\)</span></p>
@@ -1708,8 +1660,8 @@ E[(X_{2}-\mu_{2})(X_{1}-\mu_{1})] &amp; E[(X_{2}-\mu_{2})^{2}]
 f(\mathbf{x}) &amp; =\frac{1}{2\pi^{n/2}\det(\boldsymbol{\Sigma})^{1/2}}e^{-\frac{1}{2}(\mathbf{x}-\boldsymbol{\mu})^{\prime}\boldsymbol{\Sigma}^{-1}(\mathbf{x}-\boldsymbol{\mu})}\\
 &amp; =(2\pi)^{-n/2}\det(\boldsymbol{\Sigma})^{-1/2}e^{-\frac{1}{2}(\mathbf{x}-\boldsymbol{\mu})^{\prime}\boldsymbol{\Sigma}^{-1}(\mathbf{x}-\boldsymbol{\mu})}.
 \end{align*}\]</span></p>
-<div id="exm-creating-a-multivariate-normal-random-vector-from-a-vector-of-independent-standard-normal-random-variables" class="example theorem">
-<p><span class="theorem-title"><strong>Example 3.16 (Creating a multivariate normal random vector from a vector of independent standard normal random variables)</strong></span> Let <span class="math inline">\(\mathbf{Z}=(Z_{1},\ldots,Z_{n})^{\prime}\)</span> denote a vector of <span class="math inline">\(n\)</span> iid standard normal random variables. Then <span class="math inline">\(\mathbf{Z}\sim N(\mathbf{0},\,\mathbf{I}_{n})\)</span> where <span class="math inline">\(\mathbf{I}_{n}\)</span> denotes the <span class="math inline">\(n-\)</span>dimensional identity matrix. Given <span class="math inline">\(\mathbf{Z}\)</span>, we would like to create a random vector <span class="math inline">\(\mathbf{X}\)</span> such that <span class="math inline">\(\mathbf{X}\sim N(\boldsymbol{\mu},\,\boldsymbol{\Sigma}).\)</span> Let <span class="math inline">\(\boldsymbol{\Sigma}^{1/2}\)</span> denote the upper triangular Cholesky factor of <span class="math inline">\(\boldsymbol{\Sigma}\)</span> such that <span class="math inline">\(\boldsymbol{\Sigma}=\boldsymbol{\Sigma}^{1/2 \prime}\boldsymbol{\Sigma}^{1/2}.\)</span> Define <span class="math inline">\(\mathbf{X}\)</span> using <span class="math display">\[
+<div id="exm-creating-a-multivariate-normal-random-vector-from-a-vector-of-independent-standard-normal-random-variables" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 3.16 (Creating a multivariate normal random vector from a vector of independent standard normal random variables) </strong></span>Let <span class="math inline">\(\mathbf{Z}=(Z_{1},\ldots,Z_{n})^{\prime}\)</span> denote a vector of <span class="math inline">\(n\)</span> iid standard normal random variables. Then <span class="math inline">\(\mathbf{Z}\sim N(\mathbf{0},\,\mathbf{I}_{n})\)</span> where <span class="math inline">\(\mathbf{I}_{n}\)</span> denotes the <span class="math inline">\(n-\)</span>dimensional identity matrix. Given <span class="math inline">\(\mathbf{Z}\)</span>, we would like to create a random vector <span class="math inline">\(\mathbf{X}\)</span> such that <span class="math inline">\(\mathbf{X}\sim N(\boldsymbol{\mu},\,\boldsymbol{\Sigma}).\)</span> Let <span class="math inline">\(\boldsymbol{\Sigma}^{1/2}\)</span> denote the upper triangular Cholesky factor of <span class="math inline">\(\boldsymbol{\Sigma}\)</span> such that <span class="math inline">\(\boldsymbol{\Sigma}=\boldsymbol{\Sigma}^{1/2 \prime}\boldsymbol{\Sigma}^{1/2}.\)</span> Define <span class="math inline">\(\mathbf{X}\)</span> using <span class="math display">\[
 \mathbf{X}=\boldsymbol{\mu}+\boldsymbol{\Sigma}^{1/2 \prime}\mathbf{Z}.
 \]</span> Then <span class="math display">\[\begin{eqnarray*}
 E[\mathbf{X}] &amp; = &amp; \boldsymbol{\mu}+\boldsymbol{\Sigma}^{1/2}E[\mathbf{Z}]=\boldsymbol{\mu},\\
@@ -1717,17 +1669,17 @@ E[\mathbf{X}] &amp; = &amp; \boldsymbol{\mu}+\boldsymbol{\Sigma}^{1/2}E[\mathbf{
 \end{eqnarray*}\]</span> Hence, <span class="math inline">\(\mathbf{X}\sim N(\boldsymbol{\mu},\,\boldsymbol{\Sigma}).\)</span></p>
 <p><span class="math inline">\(\blacksquare\)</span></p>
 </div>
-<div id="exm-simulating-multivariate-normal-random-vectors-in-r" class="example theorem">
-<p><span class="theorem-title"><strong>Example 3.17 (Simulating multivariate normal random vectors in R)</strong></span> Here, we illustrate how to simulate <span class="math inline">\(\mathbf{X} \sim N(\boldsymbol{\mu}, \boldsymbol{\Sigma})\)</span> where <span class="math inline">\(\boldsymbol{\mu} = (1,1)^{\prime}\)</span> and <span class="math display">\[
+<div id="exm-simulating-multivariate-normal-random-vectors-in-r" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 3.17 (Simulating multivariate normal random vectors in R) </strong></span>Here, we illustrate how to simulate <span class="math inline">\(\mathbf{X} \sim N(\boldsymbol{\mu}, \boldsymbol{\Sigma})\)</span> where <span class="math inline">\(\boldsymbol{\mu} = (1,1)^{\prime}\)</span> and <span class="math display">\[
 \boldsymbol{\Sigma} = \left(\begin{array}{ll}
 1 &amp; 1\\
 1 &amp; 4
 \end{array}\right)
 \]</span> First, specify the mean vector and covariance matrix for the the bivariate normal distribution:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>mu.vec <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>)</span>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>mu.vec <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>)</span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>sigma<span class="fl">.1</span> <span class="ot">=</span> <span class="dv">1</span></span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>sigma<span class="fl">.2</span> <span class="ot">=</span> <span class="dv">2</span></span>
 <span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>rho<span class="fl">.12</span> <span class="ot">=</span> <span class="fl">0.5</span></span>
@@ -1739,38 +1691,38 @@ E[\mathbf{X}] &amp; = &amp; \boldsymbol{\mu}+\boldsymbol{\Sigma}^{1/2}E[\mathbf{
 <span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>Sigma</span>
 <span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2]</span></span>
 <span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]    1    1</span></span>
-<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]    1    4</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]    1    4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Second, compute the Cholesky factorization of <span class="math inline">\(\boldsymbol{\Sigma}\)</span>:</p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>Sigma<span class="fl">.5</span> <span class="ot">=</span> <span class="fu">chol</span>(Sigma)</span>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>Sigma<span class="fl">.5</span> <span class="ot">=</span> <span class="fu">chol</span>(Sigma)</span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>Sigma<span class="fl">.5</span></span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2]</span></span>
 <span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]    1 1.00</span></span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]    0 1.73</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]    0 1.73</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Third, simulate <span class="math inline">\(\mathbf{Z} \sim N(\mathbf{0}, \mathbf{I}_{2})\)</span></p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">2</span></span>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">2</span></span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>Z <span class="ot">=</span> <span class="fu">rnorm</span>(n)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>Z <span class="ot">=</span> <span class="fu">rnorm</span>(n)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Fourth, compute <span class="math inline">\(\mathbf{X} = \boldsymbol{\mu} + \boldsymbol{\Sigma}^{1/2 \prime}\mathbf{Z}\)</span></p>
 <div class="cell">
-<details open="" class="code-fold">
+<details open="">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> mu.vec <span class="sc">+</span> <span class="fu">t</span>(Sigma<span class="fl">.5</span>)<span class="sc">%*%</span>Z</span>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> mu.vec <span class="sc">+</span> <span class="fu">t</span>(Sigma<span class="fl">.5</span>)<span class="sc">%*%</span>Z</span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>X</span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        [,1]</span></span>
 <span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,] 0.4395</span></span>
-<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,] 0.0408</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,] 0.0408</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p><span class="math inline">\(\blacksquare\)</span></p>
@@ -1790,7 +1742,7 @@ R_{p,x}=x_{A}R_{A}+x_{B}R_{B}+x_{C}R_{C}.
 \sigma_{p,x}^{2}&amp;=\mathrm{var}(R_{p,x})=x_{A}^{2}\sigma_{A}^{2}+x_{B}^{2}\sigma_{B}^{2}+x_{C}^{2}\sigma_{C}^{2}+2x_{A}x_{B}\sigma_{AB} \nonumber\\
 &amp;+2x_{A}x_{C}\sigma_{AC}+2x_{B}x_{C}\sigma_{BC}.
 \end{aligned}
-\tag{3.18}\]</span></span> Notice that variance of the portfolio return depends on three variance terms and six covariance terms. Hence, with three assets there are twice as many covariance terms than variance terms contributing to portfolio variance. Even with three assets, the algebra representing the portfolio characteristics <a href="#eq-Rpx" class="quarto-xref">Equation&nbsp;<span>3.16</span></a> - <a href="#eq-var-px" class="quarto-xref">Equation&nbsp;<span>3.18</span></a> is cumbersome. We can greatly simplify the portfolio algebra using matrix notation.</p>
+\tag{3.18}\]</span></span> Notice that variance of the portfolio return depends on three variance terms and six covariance terms. Hence, with three assets there are twice as many covariance terms than variance terms contributing to portfolio variance. Even with three assets, the algebra representing the portfolio characteristics <a href="#eq-Rpx">Equation&nbsp;<span>3.16</span></a> - <a href="#eq-var-px">Equation&nbsp;<span>3.18</span></a> is cumbersome. We can greatly simplify the portfolio algebra using matrix notation.</p>
 <p>Define the following <span class="math inline">\(3\times1\)</span> column vectors containing the asset returns and portfolio weights: <span class="math display">\[
 \mathbf{R}=\left(\begin{array}{c}
 R_{A}\\
@@ -1922,7 +1874,7 @@ x_{2}
 y_{1}\\
 y_{2}
 \end{array}\right).
-\]</span> First, consider <a href="#eq-matrix-deriv-1" class="quarto-xref">Equation&nbsp;<span>3.19</span></a>. Now, <span class="math display">\[
+\]</span> First, consider <a href="#eq-matrix-deriv-1">Equation&nbsp;<span>3.19</span></a>. Now, <span class="math display">\[
 \mathbf{x}^{\prime}\mathbf{y}=x_{1}y_{1}+x_{2}y_{2}.
 \]</span> Then, <span class="math display">\[
 \frac{\partial}{\partial\mathbf{x}}\mathbf{x}^{\prime}\mathbf{y}=\left(\begin{array}{c}
@@ -1935,7 +1887,7 @@ y_{2}
 y_{1}\\
 y_{2}
 \end{array}\right)=\mathbf{y}.
-\]</span> Next, consider <a href="#eq-matrix-deriv-2" class="quarto-xref">Equation&nbsp;<span>3.20</span></a>. Note that, <span class="math display">\[
+\]</span> Next, consider <a href="#eq-matrix-deriv-2">Equation&nbsp;<span>3.20</span></a>. Note that, <span class="math display">\[
 \mathbf{Ax}=\left(\begin{array}{cc}
 a &amp; b\\
 b &amp; c
@@ -1956,7 +1908,7 @@ bx_{1}+cx_{2}
 a &amp; b\\
 b &amp; c
 \end{array}\right)=\mathbf{A.}
-\]</span> Finally, consider <a href="#eq-matrix-deriv-3" class="quarto-xref">Equation&nbsp;<span>3.21</span></a>. We have, <span class="math display">\[
+\]</span> Finally, consider <a href="#eq-matrix-deriv-3">Equation&nbsp;<span>3.21</span></a>. We have, <span class="math display">\[
 \mathbf{x}^{\prime}\mathbf{Ax}=\left(\begin{array}{cc}
 x_{1} &amp; x_{2}\end{array}\right)\left(\begin{array}{cc}
 a &amp; b\\
@@ -1984,7 +1936,7 @@ x_{2}
 \end{aligned}
 \]</span></p>
 <div id="exm-calculating-asset-marginal-contribution-to-portfolio-volatility" class="theorem example">
-<p><span class="theorem-title"><strong>Example 3.18 (Calculating an asset’s marginal contribution to portfolio volatility)</strong></span> In portfolio risk budgeting (see chapter <a href="13-riskBudgeting-new.html" class="quarto-xref"><span>Chapter 13</span></a>), asset <em>i</em>’s marginal contribution to portfolio volatility <span class="math inline">\(\sigma_{p}=\left(\mathbf{x}^{\prime}\boldsymbol{\Sigma} \mathbf{x}\right)^{1/2}\)</span> is given by <span class="math display">\[
+<p><span class="theorem-title"><strong>Example 3.18 (Calculating an asset’s marginal contribution to portfolio volatility) </strong></span>In portfolio risk budgeting (see chapter <a href="13-riskBudgeting-new.html"><span>Chapter&nbsp;13</span></a>), asset <em>i</em>’s marginal contribution to portfolio volatility <span class="math inline">\(\sigma_{p}=\left(\mathbf{x}^{\prime}\boldsymbol{\Sigma} \mathbf{x}\right)^{1/2}\)</span> is given by <span class="math display">\[
 \mathrm{MCR_{i}^{\sigma}}=\frac{\partial\sigma_{p}}{\partial x_{i}}=\frac{\partial \left(\mathbf{x}^{\prime}\boldsymbol{\Sigma} \mathbf{x}\right)^{1/2}}{\partial x_{i}},
 \]</span> and approximates how much portfolio volatility changes when the allocation to asset <em>i</em> increases by a small amount. Using the chain rule and matrix derivatives we can compute the entire vector of asset marginal contributions at once:</p>
 <p><span class="math display">\[
@@ -1996,8 +1948,8 @@ x_{2}
 \]</span> Then asset <span class="math inline">\(i\)</span>’s marginal contribution is given by the <span class="math inline">\(i\)</span>-th row of <span class="math inline">\(\frac{\boldsymbol{\Sigma} \mathbf{x}}{\sigma_{p}}\)</span>.</p>
 <p><span class="math inline">\(\blacksquare\)</span></p>
 </div>
-<div id="exm-finding-the-global-minimum-variance-portfolio" class="example theorem">
-<p><span class="theorem-title"><strong>Example 3.19 (Finding the global minimum variance portfolio)</strong></span> Let <span class="math inline">\(\mathbf{R}\)</span> denote an <span class="math inline">\(n\times1\)</span> random vector of asset returns with <span class="math inline">\(E[\mathbf{R}]=\mu\)</span> and <span class="math inline">\(\mathrm{var}(\mathbf{R})=\boldsymbol{\Sigma}\)</span>. The global minimum variance portfolio (see Chapter <a href="10-introductionPortfolioTheory-new.html" class="quarto-xref"><span>Chapter 10</span></a>, <a href="10-introductionPortfolioTheory-new.html#sec-Efficient-portfolios-with-two-risky-assets" class="quarto-xref"><span>Section 10.3</span></a>) <span class="math inline">\(\mathbf{m}\)</span> solves the constrained minimization problem: <span id="eq-global-min-matrix-1"><span class="math display">\[
+<div id="exm-finding-the-global-minimum-variance-portfolio" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 3.19 (Finding the global minimum variance portfolio) </strong></span>Let <span class="math inline">\(\mathbf{R}\)</span> denote an <span class="math inline">\(n\times1\)</span> random vector of asset returns with <span class="math inline">\(E[\mathbf{R}]=\mu\)</span> and <span class="math inline">\(\mathrm{var}(\mathbf{R})=\boldsymbol{\Sigma}\)</span>. The global minimum variance portfolio (see Chapter <a href="10-introductionPortfolioTheory-new.html"><span>Chapter&nbsp;10</span></a>, <a href="10-introductionPortfolioTheory-new.html#sec-Efficient-portfolios-with-two-risky-assets"><span>Section&nbsp;10.3</span></a>) <span class="math inline">\(\mathbf{m}\)</span> solves the constrained minimization problem: <span id="eq-global-min-matrix-1"><span class="math display">\[
 \min_{\mathbf{m}}~\sigma_{p,m}^{2}=\mathbf{m}^{\prime}\boldsymbol{\Sigma} \mathbf{m}\text{ s.t. }\mathbf{m}^{\prime}\mathbf{1}=1.
 \tag{3.22}\]</span></span> The Lagrangian function is: <span class="math display">\[
 L(\mathbf{m},\lambda)=\mathbf{m}^{\prime}\boldsymbol{\Sigma} \mathbf{m}+\lambda\mathbf{(m}^{\prime}\mathbf{1}-1).
@@ -2041,8 +1993,8 @@ L(\mathbf{m},\lambda)=\mathbf{m}^{\prime}\boldsymbol{\Sigma} \mathbf{m}+\lambda\
 </section>
 <section id="problems-matrix-algebra-review" class="level2" data-number="3.10">
 <h2 data-number="3.10" class="anchored" data-anchor-id="problems-matrix-algebra-review"><span class="header-section-number">3.10</span> Problems: Matrix Algebra Review</h2>
-<div id="exr-01" class="exercise theorem">
-<p><span class="theorem-title"><strong>Exercise 3.1</strong></span> Use R to answer the following questions. 1. Create the following matrices and vectors <span class="math display">\[
+<div id="exr-01" class="exercise theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 3.1 </strong></span>Use R to answer the following questions. 1. Create the following matrices and vectors <span class="math display">\[
 \mathbf{A}=\left[\begin{array}{ccc}
 1 &amp; 4 &amp; 7\\
 2 &amp; 4 &amp; 8\\
@@ -2062,8 +2014,8 @@ L(\mathbf{m},\lambda)=\mathbf{m}^{\prime}\boldsymbol{\Sigma} \mathbf{m}+\lambda\
 \end{array}\right]
 \]</span> 2. Compute the transposes of the above matrices and vectors. 3. Compute <span class="math inline">\(\mathbf{A}+\mathbf{B},\:\mathbf{A}-\mathbf{B},\,2\mathbf{A},\,\mathbf{Ax},\,\mathbf{AB,\,y^{\prime}Ax}\)</span></p>
 </div>
-<div id="exr-02" class="exercise theorem">
-<p><span class="theorem-title"><strong>Exercise 3.2</strong></span> Consider the system of linear equations <span class="math display">\[\begin{eqnarray*}
+<div id="exr-02" class="exercise theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 3.2 </strong></span>Consider the system of linear equations <span class="math display">\[\begin{eqnarray*}
 x+y &amp; = &amp; 1\\
 2x+4y &amp; = &amp; 2
 \end{eqnarray*}\]</span></p>
@@ -2072,8 +2024,8 @@ x+y &amp; = &amp; 1\\
 <li>Write the system in matrix notation as <span class="math inline">\(\mathbf{Az}=\mathbf{b}\)</span> and solve for <span class="math inline">\(\mathbf{z}\)</span> by computing <span class="math inline">\(\mathbf{z}=\mathbf{A}^{-1}\mathbf{b}\)</span>.</li>
 </ol>
 </div>
-<div id="exr-03" class="exercise theorem">
-<p><span class="theorem-title"><strong>Exercise 3.3</strong></span> Consider creating an equally weighted portfolio of three assets denoted A, B, and C. Assume the following information <span class="math display">\[
+<div id="exr-03" class="exercise theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 3.3 </strong></span>Consider creating an equally weighted portfolio of three assets denoted A, B, and C. Assume the following information <span class="math display">\[
 \mu=\left[\begin{array}{c}
 0.01\\
 0.04\\
@@ -2085,8 +2037,8 @@ x+y &amp; = &amp; 1\\
 \end{array}\right].
 \]</span> Use R to answer the following questions. 1. Create the vector of portfolio weights. 2. Compute the expected return on the portfolio. 3. Compute the variance and standard deviation of the portfolio.</p>
 </div>
-<div id="exr-04" class="exercise theorem">
-<p><span class="theorem-title"><strong>Exercise 3.4</strong></span> Let <span class="math inline">\(R_{i}\)</span> be a random variable denoting the simple return on asset <span class="math inline">\(i\,(i=1,\ldots,N)\)</span> with <span class="math inline">\(E[R_{i}]=\mu_{i},\)</span> <span class="math inline">\(\mathrm{var}(R_{i})=\sigma_{i}^{2}\)</span> and <span class="math inline">\(\mathrm{cov}(R_{i},R_{j})=\sigma_{ij}.\)</span> Define the <span class="math inline">\(N\times1\)</span> vectors <span class="math inline">\(\mathbf{R}=(R_{1},\ldots,R_{N})^{\prime},\)</span> <span class="math inline">\(\boldsymbol{\mu}=(\mu_{1},\ldots,\mu_{N})^{\prime},\)</span> <span class="math inline">\(\mathbf{x}=(x_{1},\ldots,x_{N})^{\prime},\)</span> <span class="math inline">\(\mathbf{y}=(y_{1},\ldots,y_{N})^{\prime},\)</span> and <span class="math inline">\(\mathbf{1}=(1,\ldots,1)^{\prime}\)</span>, and the <span class="math inline">\(N\times N\)</span> covariance matrix <span class="math display">\[
+<div id="exr-04" class="exercise theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 3.4 </strong></span>Let <span class="math inline">\(R_{i}\)</span> be a random variable denoting the simple return on asset <span class="math inline">\(i\,(i=1,\ldots,N)\)</span> with <span class="math inline">\(E[R_{i}]=\mu_{i},\)</span> <span class="math inline">\(\mathrm{var}(R_{i})=\sigma_{i}^{2}\)</span> and <span class="math inline">\(\mathrm{cov}(R_{i},R_{j})=\sigma_{ij}.\)</span> Define the <span class="math inline">\(N\times1\)</span> vectors <span class="math inline">\(\mathbf{R}=(R_{1},\ldots,R_{N})^{\prime},\)</span> <span class="math inline">\(\boldsymbol{\mu}=(\mu_{1},\ldots,\mu_{N})^{\prime},\)</span> <span class="math inline">\(\mathbf{x}=(x_{1},\ldots,x_{N})^{\prime},\)</span> <span class="math inline">\(\mathbf{y}=(y_{1},\ldots,y_{N})^{\prime},\)</span> and <span class="math inline">\(\mathbf{1}=(1,\ldots,1)^{\prime}\)</span>, and the <span class="math inline">\(N\times N\)</span> covariance matrix <span class="math display">\[
 \boldsymbol{\Sigma}=\left(\begin{array}{cccc}
 \sigma_{1}^{2} &amp; \sigma_{12} &amp; \cdots &amp; \sigma_{1N}\\
 \sigma_{12} &amp; \sigma_{2}^{2} &amp; \cdots &amp; \sigma_{2N}\\
@@ -2108,19 +2060,19 @@ x+y &amp; = &amp; 1\\
 Abadir, K. M., and J. R. Magnus. 2005. <em>Matrix Algebra (Econometric Exercises, Vol. 1)</em>. Cambridge University Press.
 </div>
 <div id="ref-banerjee-2014" class="csl-entry" role="listitem">
-Banerjee, S., and A. Roy. 2014. <em>Linear Algebra and Matrix Analysis for Statistics</em>. Chapman; Hall/CRC.
+Banerjee, S., and A. Roy. 2014. <em>Linear Algebra and Matrix Analysis for Statistics</em>. London: Chapman; Hall/CRC.
 </div>
 <div id="ref-chiang-1984" class="csl-entry" role="listitem">
-Chiang, A. 1984. <em>Fundamental Methods of Mathematical Economics, Third Edition</em>. McGraw-Hill.
+Chiang, A. 1984. <em>Fundamental Methods of Mathematical Economics, Third Edition</em>. New York: McGraw-Hill.
 </div>
 <div id="ref-fieller-2015" class="csl-entry" role="listitem">
-Fieller, N. 2015. <em>Basics of Matrix Algebra for Statistics with r</em>. Taylor &amp; Francis.
+Fieller, N. 2015. <em>Basics of Matrix Algebra for Statistics with r</em>. Boca Raton: Taylor &amp; Francis.
 </div>
 <div id="ref-lutkepohl-1997" class="csl-entry" role="listitem">
 Lutkepohl, H. 1997. <em>Handbook of Matrices</em>. Wiley.
 </div>
 <div id="ref-searle-1982" class="csl-entry" role="listitem">
-Searle, S. 1982. <em>Matrix Algebra Useful for Statistics</em>. Wiley.
+Searle, S. 1982. <em>Matrix Algebra Useful for Statistics</em>. New York: Wiley.
 </div>
 <div id="ref-strang-1980" class="csl-entry" role="listitem">
 Strang, G. 1980. <em>Linear Algebra and Its Applications</em>. Academic Press.
@@ -2139,58 +2091,43 @@ Strang, G. 1980. <em>Linear Algebra and Its Applications</em>. Academic Press.
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
-  window.document.addEventListener("DOMContentLoaded", function (event) {
-    const icon = "";
-    const anchorJS = new window.AnchorJS();
-    anchorJS.options = {
-      placement: 'right',
-      icon: icon
-    };
-    anchorJS.add('.anchored');
-    const isCodeAnnotation = (el) => {
-      for (const clz of el.classList) {
-        if (clz.startsWith('code-annotation-')) {                     
-          return true;
-        }
-      }
-      return false;
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
     }
-    const onCopySuccess = function(e) {
-      // button target
-      const button = e.trigger;
-      // don't keep focus
-      button.blur();
-      // flash "checked"
-      button.classList.add('code-copy-button-checked');
-      var currentTitle = button.getAttribute("title");
-      button.setAttribute("title", "Copied!");
-      let tooltip;
-      if (window.bootstrap) {
-        button.setAttribute("data-bs-toggle", "tooltip");
-        button.setAttribute("data-bs-placement", "left");
-        button.setAttribute("data-bs-title", "Copied!");
-        tooltip = new bootstrap.Tooltip(button, 
-          { trigger: "manual", 
-            customClass: "code-copy-button-tooltip",
-            offset: [0, -8]});
-        tooltip.show();    
-      }
-      setTimeout(function() {
-        if (tooltip) {
-          tooltip.hide();
-          button.removeAttribute("data-bs-title");
-          button.removeAttribute("data-bs-toggle");
-          button.removeAttribute("data-bs-placement");
-        }
-        button.setAttribute("title", currentTitle);
-        button.classList.remove('code-copy-button-checked');
-      }, 1000);
-      // clear code selection
-      e.clearSelection();
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
     }
-    const getTextToCopy = function(trigger) {
-      const outerScaffold = trigger.parentElement.cloneNode(true);
-      const codeEl = outerScaffold.querySelector('code');
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
       for (const childEl of codeEl.children) {
         if (isCodeAnnotation(childEl)) {
           childEl.remove();
@@ -2198,360 +2135,207 @@ Strang, G. 1980. <em>Linear Algebra and Its Applications</em>. Academic Press.
       }
       return codeEl.innerText;
     }
-    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-      text: getTextToCopy
-    });
-    clipboard.on('success', onCopySuccess);
-    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-        text: getTextToCopy,
-        container: window.document.getElementById('quarto-embedded-source-code-modal')
-      });
-      clipboardModal.on('success', onCopySuccess);
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
     }
-      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
-      var isInternal = (href) => {
-          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
       }
-      // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-      for (var i=0; i<links.length; i++) {
-        const link = links[i];
-        if (!isInternal(link.href)) {
-          // undo the damage that might have been done by quarto-nav.js in the case of
-          // links that we want to consider external
-          if (link.dataset.originalHref !== undefined) {
-            link.href = link.dataset.originalHref;
-          }
-        }
-      }
-    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-      const config = {
-        allowHTML: true,
-        maxWidth: 500,
-        delay: 100,
-        arrow: false,
-        appendTo: function(el) {
-            return el.parentElement;
-        },
-        interactive: true,
-        interactiveBorder: 10,
-        theme: 'quarto',
-        placement: 'bottom-start',
-      };
-      if (contentFn) {
-        config.content = contentFn;
-      }
-      if (onTriggerFn) {
-        config.onTrigger = onTriggerFn;
-      }
-      if (onUntriggerFn) {
-        config.onUntrigger = onUntriggerFn;
-      }
-      window.tippy(el, config); 
-    }
-    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-    for (var i=0; i<noterefs.length; i++) {
-      const ref = noterefs[i];
-      tippyHover(ref, function() {
-        // use id or data attribute instead here
-        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-        try { href = new URL(href).hash; } catch {}
-        const id = href.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note) {
-          return note.innerHTML;
-        } else {
-          return "";
-        }
-      });
-    }
-    const xrefs = window.document.querySelectorAll('a.quarto-xref');
-    const processXRef = (id, note) => {
-      // Strip column container classes
-      const stripColumnClz = (el) => {
-        el.classList.remove("page-full", "page-columns");
-        if (el.children) {
-          for (const child of el.children) {
-            stripColumnClz(child);
-          }
-        }
-      }
-      stripColumnClz(note)
-      if (id === null || id.startsWith('sec-')) {
-        // Special case sections, only their first couple elements
-        const container = document.createElement("div");
-        if (note.children && note.children.length > 2) {
-          container.appendChild(note.children[0].cloneNode(true));
-          for (let i = 1; i < note.children.length; i++) {
-            const child = note.children[i];
-            if (child.tagName === "P" && child.innerText === "") {
-              continue;
-            } else {
-              container.appendChild(child.cloneNode(true));
-              break;
-            }
-          }
-          if (window.Quarto?.typesetMath) {
-            window.Quarto.typesetMath(container);
-          }
-          return container.innerHTML
-        } else {
-          if (window.Quarto?.typesetMath) {
-            window.Quarto.typesetMath(note);
-          }
-          return note.innerHTML;
-        }
-      } else {
-        // Remove any anchor links if they are present
-        const anchorLink = note.querySelector('a.anchorjs-link');
-        if (anchorLink) {
-          anchorLink.remove();
-        }
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(note);
-        }
-        if (note.classList.contains("callout")) {
-          return note.outerHTML;
-        } else {
-          return note.innerHTML;
-        }
-      }
-    }
-    for (var i=0; i<xrefs.length; i++) {
-      const xref = xrefs[i];
-      tippyHover(xref, undefined, function(instance) {
-        instance.disable();
-        let url = xref.getAttribute('href');
-        let hash = undefined; 
-        if (url.startsWith('#')) {
-          hash = url;
-        } else {
-          try { hash = new URL(url).hash; } catch {}
-        }
-        if (hash) {
-          const id = hash.replace(/^#\/?/, "");
-          const note = window.document.getElementById(id);
-          if (note !== null) {
-            try {
-              const html = processXRef(id, note.cloneNode(true));
-              instance.setContent(html);
-            } finally {
-              instance.enable();
-              instance.show();
-            }
-          } else {
-            // See if we can fetch this
-            fetch(url.split('#')[0])
-            .then(res => res.text())
-            .then(html => {
-              const parser = new DOMParser();
-              const htmlDoc = parser.parseFromString(html, "text/html");
-              const note = htmlDoc.getElementById(id);
-              if (note !== null) {
-                const html = processXRef(id, note);
-                instance.setContent(html);
-              } 
-            }).finally(() => {
-              instance.enable();
-              instance.show();
-            });
-          }
-        } else {
-          // See if we can fetch a full url (with no hash to target)
-          // This is a special case and we should probably do some content thinning / targeting
-          fetch(url)
-          .then(res => res.text())
-          .then(html => {
-            const parser = new DOMParser();
-            const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.querySelector('main.content');
-            if (note !== null) {
-              // This should only happen for chapter cross references
-              // (since there is no id in the URL)
-              // remove the first header
-              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-                note.children[0].remove();
-              }
-              const html = processXRef(null, note);
-              instance.setContent(html);
-            } 
-          }).finally(() => {
-            instance.enable();
-            instance.show();
-          });
-        }
-      }, function(instance) {
-      });
-    }
-        let selectedAnnoteEl;
-        const selectorForAnnotation = ( cell, annotation) => {
-          let cellAttr = 'data-code-cell="' + cell + '"';
-          let lineAttr = 'data-code-annotation="' +  annotation + '"';
-          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-          return selector;
-        }
-        const selectCodeLines = (annoteEl) => {
-          const doc = window.document;
-          const targetCell = annoteEl.getAttribute("data-target-cell");
-          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-          const lineIds = lines.map((line) => {
-            return targetCell + "-" + line;
-          })
-          let top = null;
-          let height = null;
-          let parent = null;
-          if (lineIds.length > 0) {
-              //compute the position of the single el (top and bottom and make a div)
-              const el = window.document.getElementById(lineIds[0]);
-              top = el.offsetTop;
-              height = el.offsetHeight;
-              parent = el.parentElement.parentElement;
-            if (lineIds.length > 1) {
-              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-              height = bottom - top;
-            }
-            if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
-              let div = window.document.getElementById("code-annotation-line-highlight");
-              if (div === null) {
-                div = window.document.createElement("div");
-                div.setAttribute("id", "code-annotation-line-highlight");
-                div.style.position = 'absolute';
-                parent.appendChild(div);
-              }
-              div.style.top = top - 2 + "px";
-              div.style.height = height + 4 + "px";
-              div.style.left = 0;
-              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-              if (gutterDiv === null) {
-                gutterDiv = window.document.createElement("div");
-                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-                gutterDiv.style.position = 'absolute';
-                const codeCell = window.document.getElementById(targetCell);
-                const gutter = codeCell.querySelector('.code-annotation-gutter');
-                gutter.appendChild(gutterDiv);
-              }
-              gutterDiv.style.top = top - 2 + "px";
-              gutterDiv.style.height = height + 4 + "px";
-            }
-            selectedAnnoteEl = annoteEl;
-          }
-        };
-        const unselectCodeLines = () => {
-          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-          elementsIds.forEach((elId) => {
-            const div = window.document.getElementById(elId);
-            if (div) {
-              div.remove();
-            }
-          });
-          selectedAnnoteEl = undefined;
-        };
-          // Handle positioning of the toggle
-      window.addEventListener(
-        "resize",
-        throttle(() => {
-          elRect = undefined;
-          if (selectedAnnoteEl) {
-            selectCodeLines(selectedAnnoteEl);
-          }
-        }, 10)
-      );
-      function throttle(fn, ms) {
-      let throttle = false;
-      let timer;
-        return (...args) => {
-          if(!throttle) { // first call gets through
-              fn.apply(this, args);
-              throttle = true;
-          } else { // all the others get throttled
-              if(timer) clearTimeout(timer); // cancel #2
-              timer = setTimeout(() => {
-                fn.apply(this, args);
-                timer = throttle = false;
-              }, ms);
-          }
-        };
-      }
-        // Attach click handler to the DT
-        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-        for (const annoteDlNode of annoteDls) {
-          annoteDlNode.addEventListener('click', (event) => {
-            const clickedEl = event.target;
-            if (clickedEl !== selectedAnnoteEl) {
-              unselectCodeLines();
-              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-              if (activeEl) {
-                activeEl.classList.remove('code-annotation-active');
-              }
-              selectCodeLines(clickedEl);
-              clickedEl.classList.add('code-annotation-active');
-            } else {
-              // Unselect the line
-              unselectCodeLines();
-              clickedEl.classList.remove('code-annotation-active');
-            }
-          });
-        }
-    const findCites = (el) => {
-      const parentEl = el.parentElement;
-      if (parentEl) {
-        const cites = parentEl.dataset.cites;
-        if (cites) {
-          return {
-            el,
-            cites: cites.split(' ')
-          };
-        } else {
-          return findCites(el.parentElement)
-        }
-      } else {
-        return undefined;
-      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
     };
-    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-    for (var i=0; i<bibliorefs.length; i++) {
-      const ref = bibliorefs[i];
-      const citeInfo = findCites(ref);
-      if (citeInfo) {
-        tippyHover(citeInfo.el, function() {
-          var popup = window.document.createElement('div');
-          citeInfo.cites.forEach(function(cite) {
-            var citeDiv = window.document.createElement('div');
-            citeDiv.classList.add('hanging-indent');
-            citeDiv.classList.add('csl-entry');
-            var biblioDiv = window.document.getElementById('ref-' + cite);
-            if (biblioDiv) {
-              citeDiv.innerHTML = biblioDiv.innerHTML;
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
             }
-            popup.appendChild(citeDiv);
-          });
-          return popup.innerHTML;
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
         });
       }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
     }
-  });
-  </script>
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./02-probReview-new.html" class="pagination-link" aria-label="Review of Random Variables">
+      <a href="./02-probReview-new.html" class="pagination-link">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Review of Random Variables</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./04-timeSeriesConcepts-new.html" class="pagination-link" aria-label="Time Series Concepts">
+      <a href="./04-timeSeriesConcepts-new.html" class="pagination-link">
         <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Time Series Concepts</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
-
 
 
 

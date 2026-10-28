@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Introduction to Computational Finance and Financial Econometrics with R - 14&nbsp; Single Index Model</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./13-riskBudgeting-new.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./14-singleIndexModel-new.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Single Index Model</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Introduction to Computational Finance and Financial Econometrics with R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-ReturnCalculations-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Return Calculations</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-probReview-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Review of Random Variables</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-matrixReview-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Algebra Review</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-timeSeriesConcepts-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Time Series Concepts</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-descriptiveStatistics-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Descriptive Statistics for Financial Data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-GWNModel-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">The Gaussian White Noise Return Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-GWNModelEstimation-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Estimation of The GWN Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-bootstrap-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Estimating Functions of GWN Model Parameters</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-hypothesisTestingGWNModel-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Hypothesis Testing in the GWN Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-introductionPortfolioTheory-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introduction to Portfolio Theory</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-PortfolioTheoryMatrix-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Portfolio Theory with Matrix Algebra</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-portfolioTheoryNoShortSales-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Portfolio Theory with Short Sales Constraints</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-riskBudgeting-new.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Portfolio Risk Budgeting</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14-singleIndexModel-new.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Single Index Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">14.1</span> Introduction</a></li>
+  <li><a href="#sec-si-motivation" id="toc-sec-si-motivation" class="nav-link" data-scroll-target="#sec-si-motivation"><span class="header-section-number">14.2</span> Motivation</a></li>
+  <li><a href="#sec-Sharpe-si-model" id="toc-sec-Sharpe-si-model" class="nav-link" data-scroll-target="#sec-Sharpe-si-model"><span class="header-section-number">14.3</span> William Sharpe’s SI Model</a>
+  <ul class="collapse">
+  <li><a href="#interpretation-of-single-index-model" id="toc-interpretation-of-single-index-model" class="nav-link" data-scroll-target="#interpretation-of-single-index-model"><span class="header-section-number">14.3.1</span> Interpretation of single index model</a></li>
+  <li><a href="#statistical-properties-of-returns-in-the-si-model" id="toc-statistical-properties-of-returns-in-the-si-model" class="nav-link" data-scroll-target="#statistical-properties-of-returns-in-the-si-model"><span class="header-section-number">14.3.2</span> Statistical properties of returns in the SI model</a></li>
+  <li><a href="#si-model-and-portfolios" id="toc-si-model-and-portfolios" class="nav-link" data-scroll-target="#si-model-and-portfolios"><span class="header-section-number">14.3.3</span> SI model and portfolios</a></li>
+  </ul></li>
+  <li><a href="#sec-si-model-matrix" id="toc-sec-si-model-matrix" class="nav-link" data-scroll-target="#sec-si-model-matrix"><span class="header-section-number">14.4</span> The SI model in matrix notation</a></li>
+  <li><a href="#sec-si-model-portfolio" id="toc-sec-si-model-portfolio" class="nav-link" data-scroll-target="#sec-si-model-portfolio"><span class="header-section-number">14.5</span> Single index model portfolio theory</a></li>
+  <li><a href="#sec-si-model-monte-carlo" id="toc-sec-si-model-monte-carlo" class="nav-link" data-scroll-target="#sec-si-model-monte-carlo"><span class="header-section-number">14.6</span> Monte Carlo Simulation of the SI Model</a></li>
+  <li><a href="#sec-si-model-further-reading" id="toc-sec-si-model-further-reading" class="nav-link" data-scroll-target="#sec-si-model-further-reading"><span class="header-section-number">14.7</span> Further Reading: Single Index Model</a></li>
+  <li><a href="#exercicses" id="toc-exercicses" class="nav-link" data-scroll-target="#exercicses"><span class="header-section-number">14.8</span> Exercicses</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-Single-Index-Model" class="quarto-section-identifier"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Single Index Model</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Updated: September 18, 2026</p>
+<p>Copyright © Eric Zivot 2026</p>
+<section id="introduction" class="level2" data-number="14.1">
+<h2 data-number="14.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">14.1</span> Introduction</h2>
+<p>To be completed</p>
+<p>Notes:</p>
+<ol type="1">
+<li>For consistency follow the chapter format of the GWN model</li>
+<li>Give the model in excess return form - stress the interpretation and linkage later on to the CAPM and general factor models</li>
+</ol>
+<p>Outline</p>
+<ol type="1">
+<li>Monte Carlo Simulation</li>
+<li>Single Index Model and Portfolio Theory
+<ol type="a">
+<li>portfolio optimization using SI covariance matrix
+<ol type="i">
+<li>always pd, reduces number of estimated components in matrix.</li>
+<li>Compare results with sample covariance matrix - in estimation chapter</li>
+</ol></li>
+<li>Risk analysis of asset and portfolios: factor risk reports</li>
+</ol></li>
+</ol>
+<p>The R packages used in this chapter are <strong>corrplot</strong>, <strong>introcompfinr</strong>, <strong>xts</strong>, and <strong>PerformanceAnalytics</strong>.</p>
+</section>
+<section id="sec-si-motivation" class="level2" data-number="14.2">
+<h2 data-number="14.2" class="anchored" data-anchor-id="sec-si-motivation"><span class="header-section-number">14.2</span> Motivation</h2>
+<p>The GWN model for monthly asset returns assumes that returns are jointly normally distributed with a constant mean vector and covariance matrix. This model captures many of the stylized facts for monthly asset returns. While the GWN model captures the covariances and correlations between different asset returns it does not explain where these covariances and correlations come from. The single index model is an extension of the GWN model that explains the covariance and correlation structure among asset returns as resulting from common exposures to an underlying market index. The intuition behind the single index model can be illustrated by examining some example monthly returns.</p>
+<div id="exm-monthly-returns-for-single-index-model-examples" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 14.1 (Monthly returns for single index model examples) </strong></span>For the single index model examples in this chapter, consider the monthly adjusted closing prices on four Northwest stocks (with tickers in parentheses): Boeing (BA), Nordstrom (JWN), Microsoft (MSFT), Starbucks (SBUX). I will also use the monthly adjusted closing prices on the S&amp;P 500 index as the proxy for the market index. These prices are extracted from the <strong>introcompfinr</strong> package as follows:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>baPrices <span class="ot">=</span> <span class="fu">to.monthly</span>(baDailyPrices, <span class="at">OHLC=</span><span class="cn">FALSE</span>) </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>jwnPrices <span class="ot">=</span> <span class="fu">to.monthly</span>(jwnDailyPrices, <span class="at">OHLC=</span><span class="cn">FALSE</span>) </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>msftPrices <span class="ot">=</span> <span class="fu">to.monthly</span>(msftDailyPrices, <span class="at">OHLC=</span><span class="cn">FALSE</span>) </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>sbuxPrices <span class="ot">=</span> <span class="fu">to.monthly</span>(sbuxDailyPrices, <span class="at">OHLC=</span><span class="cn">FALSE</span>) </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>sp500Prices <span class="ot">=</span> <span class="fu">to.monthly</span>(sp500DailyPrices, <span class="at">OHLC=</span><span class="cn">FALSE</span>) </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>siPrices <span class="ot">=</span> <span class="fu">merge</span>(baPrices, jwnPrices, msftPrices, </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>                 sbuxPrices, sp500Prices)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The data sample is from January, 1998 through May, 2012 and returns are simple returns:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>smpl <span class="ot">=</span> <span class="st">"1998-01::2012-05"</span> </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>siPrices <span class="ot">=</span> siPrices[smpl] </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>siRetS <span class="ot">=</span> <span class="fu">na.omit</span>(<span class="fu">Return.calculate</span>(siPrices, <span class="at">method=</span><span class="st">"simple"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-SIexamplePrices" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="14-singleIndexModel-new_files/figure-html/fig-SIexamplePrices-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;14.1: Monthly closing prices on four Northwest stocks and the S&amp;P 500 index.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Prices are shown in <a href="#fig-SIexamplePrices">Figure&nbsp;<span>14.1</span></a>. The time plots of prices show some common movements among the stocks that are similar to movements of the S&amp;P 500 index . During the dot-com boom-bust at the beginning of the sample, except for Starbucks, prices rise during the boom and fall during the bust. For all assets, prices rise during the five year boom period prior to the financial crisis, fall sharply after 2008 during the bust, and then rise afterward.</p>
+<p><a href="#fig-SIexampleReturns">Figure&nbsp;<span>14.2</span></a> shows time plots of the monthly returns on each stock together with the return on the S&amp;P 500 index.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-SIexampleReturns" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="14-singleIndexModel-new_files/figure-html/fig-SIexampleReturns-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;14.2: Monthly returns on four Northwest stocks. The orange line in each panel is the monthly return on the stock, and the blue line is the monthly return on the S&amp;P 500 index.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><a href="#fig-SIexampleReturns">Figure&nbsp;<span>14.2</span></a> shows that the individual stock returns are more volatile than the S&amp;P 500 returns, and that the movement in stock returns (orange lines) tends to follow the movements in the S&amp;P 500 returns indicating positive covariances and correlations.</p>
+<p>The sample return covariance and correlation matrices are computed using:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>covmatHat <span class="ot">=</span> <span class="fu">cov</span>(siRetS)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>cormatHat <span class="ot">=</span> <span class="fu">cov2cor</span>(covmatHat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The sample correlation matrix is visualized in <a href="#fig-SIsampleCorrelationMatrix">Figure&nbsp;<span>14.3</span></a> using the <strong>corrplot</strong> function <code>corrplot.mixed()</code>:</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot.mixed</span>(cormatHat, <span class="at">upper=</span><span class="st">"ellipse"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-SIsampleCorrelationMatrix" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="14-singleIndexModel-new_files/figure-html/fig-SIsampleCorrelationMatrix-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;14.3: Sample correlation matrix of monthly returns.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>All returns are positively correlated and each stock return has the highest positive correlation with the S&amp;P 500 index.</p>
+<p>The positive covariance and correlation of each stock return with the market return can also be visualized with scatterplots as illustrated in <a href="#fig-SIexampleScatter">Figure&nbsp;<span>14.4</span></a>:</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-SIexampleScatter" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="14-singleIndexModel-new_files/figure-html/fig-SIexampleScatter-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;14.4: Monthly return scatterplots of each stock vs.&nbsp;the S&amp;P 500 index.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The scatterplots show that as the market index return increases, the returns on each stock increase in a linear way. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+<section id="sec-Sharpe-si-model" class="level2" data-number="14.3">
+<h2 data-number="14.3" class="anchored" data-anchor-id="sec-Sharpe-si-model"><span class="header-section-number">14.3</span> William Sharpe’s SI Model</h2>
+<p></p>
+<ul>
+<li>What is SI model used for? Extension of the GWN model to capture the stylized fact of a common component in the returns of many assets.
+<ul>
+<li>Provides an explanation as to why assets are correlated with each other: share an exposure to a common source.</li>
+<li>Provides a simplification of the covariance matrix of a large number of asset returns.</li>
+<li>Provides additional intuition about risk reduction through diversification.</li>
+</ul></li>
+<li>Example of a factor model for asset returns. Factor models are used heavily in academic theories of asset pricing and in industry for explaining asset returns, portfolio construction and risk analysis. Sharpe’s SI model is the most widely used.</li>
+<li>Motivate by showing positive correlation between individual asset returns and market index (sp500)</li>
+<li>Mostly used for simple returns; but can be used for cc returns for risk analysis.</li>
+</ul>
+<p>Let <span class="math inline">\(R_{it}\)</span> denote the simple return on asset <span class="math inline">\(i\)</span> over the investment horizon between times <span class="math inline">\(t-1\)</span> and <span class="math inline">\(t\)</span>. Let <span class="math inline">\(R_{Mt}\)</span> denote the simple return on a well diversified market index portfolio, such as the S&amp;P 500 index. The <em>single index (SI) model</em> for <span class="math inline">\(R_{it}\)</span> has the form:<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p><span id="eq-SI-SIreturn"><span class="math display">\[
+R_{it} = \beta_{i,0}+\beta_{i,M}R_{Mt}+\varepsilon_{it},
+\tag{14.1}\]</span></span> <span id="eq-SI-SImarket"><span class="math display">\[
+R_{Mt} \sim iid\,N(\mu_{M},\sigma_{M}^{2}),
+\tag{14.2}\]</span></span> <span id="eq-SI-SIerror"><span class="math display">\[
+\varepsilon_{it} \sim \mathrm{GWN}\,(0,\sigma_{\varepsilon,i}^{2}),
+\tag{14.3}\]</span></span> <span id="eq-SI-SImarketError"><span class="math display">\[
+\mathrm{cov}(R_{Mt},\varepsilon_{is}) = 0, ~ for ~ all ~  t ~ and ~ s ,
+\tag{14.4}\]</span></span> <span id="eq-SI-errorAssets"><span class="math display">\[
+\mathrm{cov}(\varepsilon_{it},\varepsilon_{js}) = 0,\,\mathrm{for\,all}\,i\neq j\,\mathrm{and\,all}\,t\,\mathrm{and}\,s.
+\tag{14.5}\]</span></span></p>
+<p>The SI model <a href="#eq-SI-SIreturn">Equation&nbsp;<span>14.1</span></a> - <a href="#eq-SI-errorAssets">Equation&nbsp;<span>14.5</span></a> assumes that all individual asset returns, <span class="math inline">\(R_{it},\)</span> are: (1) iid, (2) normally distributed, (3) a linear function of the market index return, <span class="math inline">\(R_{Mt},\)</span> and an asset specific error term, <span class="math inline">\(\varepsilon_{it}.\)</span> The market index, <span class="math inline">\(R_{Mt}\)</span> is assumed to be independent of the asset specific error term <span class="math inline">\(\varepsilon_{it}\)</span>. In contrast to the GWN model, in the SI model the asset specific error terms are assumed to be independent across assets. That is, <span class="math inline">\(\mathrm{cov}(\varepsilon_{it},\varepsilon_{js}) = 0\)</span> for all <span class="math inline">\(i \ne j\)</span>.</p>
+<p>The SI model is an important extension of the regression form of the GWN model. In the SI model individual asset returns are explained by two distinct sources: (1) a common (to all assets) market-wide source <span class="math inline">\(R_{Mt}\)</span>, and (2) an asset specific source <span class="math inline">\(\varepsilon_{it}\)</span>. <span class="math inline">\(R_{Mt}\)</span> represents common news that impacts all assets and <span class="math inline">\(\varepsilon_{it}\)</span> represents news that is only specific to asset <span class="math inline">\(i\)</span>. In the SI model, different assets are contemporaneously correlated because they share an exposure to a common market index.</p>
+<section id="interpretation-of-single-index-model" class="level3" data-number="14.3.1">
+<h3 data-number="14.3.1" class="anchored" data-anchor-id="interpretation-of-single-index-model"><span class="header-section-number">14.3.1</span> Interpretation of single index model</h3>
+<p></p>
+<p><em>Interpretation of <span class="math inline">\(\beta_{i,M}\)</span></em></p>
+<p>First, consider the interpretation of <span class="math inline">\(\beta_{i,M}\)</span> in <a href="#eq-SI-SIreturn">Equation&nbsp;<span>14.1</span></a>. The coefficient <span class="math inline">\(\beta_{i,M}\)</span> is called the asset’s <em>market exposure</em> or <em>market “beta”</em> . It represents the slope coefficient in the linear relationship between <span class="math inline">\(R_{it}\)</span> and <span class="math inline">\(R_{Mt}\)</span>. Because it is assumed that <span class="math inline">\(R_{Mt}\)</span> and <span class="math inline">\(\varepsilon_{it}\)</span> are independent, <span class="math inline">\(\beta_{i,M}\)</span> can be interpreted as the partial derivative <span class="math display">\[
+\frac{\partial R_{it}}{\partial R_{Mt}}=\frac{\partial}{\partial R_{Mt}}(\beta_{i,0}+\beta_{i,M}R_{Mt}+\varepsilon_{it})=\beta_{i,M}.
+\]</span> Then, for small changes in <span class="math inline">\(R_{Mt}\)</span> and holding <span class="math inline">\(\varepsilon_{it}\)</span> fixed, I have the approximation <span class="math display">\[
+\frac{\Delta R_{it}}{\Delta R_{Mt}}\approx\beta_{i,M}\Rightarrow\Delta R_{it}\approx\beta_{i,M}\times\Delta R_{Mt},
+\]</span> Hence, for a given change in the market return <span class="math inline">\(\beta_{i,M}\)</span> determines the magnitude of the response of asset <span class="math inline">\(i's\)</span> return. The larger (smaller) is <span class="math inline">\(\beta_{i,M}\)</span> the larger (smaller) is the response of asset <span class="math inline">\(i\)</span> to the movement in the market return.</p>
+<p>The coefficient <span class="math inline">\(\beta_{i,M}\)</span> in <a href="#eq-SI-SIreturn">Equation&nbsp;<span>14.1</span></a> has another interpretation that is directly related to portfolio risk budgeting. To see this, assume that the market index is a diversified portfolio of <span class="math inline">\(N\)</span> assets</p>
+<p><span class="math display">\[
+R_{Mt} = x_1R_1+\cdots + x_NR_N.
+\]</span></p>
+<p>In <a href="13-riskBudgeting-new.html"><span>Chapter&nbsp;13</span></a> I derived the following results using the <span class="math inline">\(\sigma-\beta\)</span> decomposition:</p>
+<p><span id="eq-SI-marketBeta"><span class="math display">\[
+\beta_{i,M} =\frac{\mathrm{cov}(R_{it},R_{Mt})}{\mathrm{var}(R_{Mt})}=\frac{\sigma_{iM}}{\sigma_{M}^{2}},
+\tag{14.6}\]</span></span> <span id="eq-SI-MCR-beta"><span class="math display">\[
+\mathrm{MCR}_{i}^{\sigma_{M}}=\beta_{i,M}\sigma_{M},
+\tag{14.7}\]</span></span> <span id="eq-SI-CR-beta"><span class="math display">\[
+\mathrm{CR}_{i}^{\sigma_{M}} = x_{i}\beta_{i,M}\sigma_{M}
+\tag{14.8}\]</span></span> <span id="eq-SI-CR-beta"><span class="math display">\[
+\mathrm{PCR}_{i}^{\sigma_{M}} = x_{i}\beta_{i,M}
+\tag{14.9}\]</span></span></p>
+<p>Here, you see that <span class="math inline">\(\beta_{i,M}\)</span> is the “beta” of asset <span class="math inline">\(i\)</span> with respect to the market index portfolio and is proportional to the marginal contribution of asset <span class="math inline">\(i\)</span> to the volatility of the market index portfolio. Therefore, assets with large (small) values of <span class="math inline">\(\beta_{i,M}\)</span> have large (small) contributions to the volatility of the market index portfolio. In this regard, <span class="math inline">\(\beta_{i,M}\)</span> can be thought of as a measure of an asset’s portfolio risk. Increasing allocations to assets with high (low) <span class="math inline">\(\beta_{i,M}\)</span> values will increase (decrease) portfolio risk (as measured by portfolio volatility). In particular, when <span class="math inline">\(\beta_{i,M}=1\)</span> asset <span class="math inline">\(i's\)</span> percent contribution to the volatility of the market portfolio is equal to its allocation weight. When <span class="math inline">\(\beta_{i,M}&gt;1\)</span> asset <span class="math inline">\(i's\)</span> percent contribution to the volatility of the market portfolio is greater than its allocation weight, and when <span class="math inline">\(\beta_{i,M}&lt;1\)</span> asset <span class="math inline">\(i's\)</span> percent contribution to the volatility of the market portfolio is less than its allocation weight.</p>
+<p>The derivation of <a href="#eq-SI-marketBeta">Equation&nbsp;<span>14.6</span></a> using <a href="#eq-SI-SIreturn">Equation&nbsp;<span>14.1</span></a> - <a href="#eq-SI-errorAssets">Equation&nbsp;<span>14.5</span></a> is straightforward. Using <a href="#eq-SI-SIreturn">Equation&nbsp;<span>14.1</span></a> I can write <span class="math display">\[\begin{align*}
+\mathrm{cov}(R_{it},R_{Mt}) &amp; =\mathrm{cov}(\beta_{i,0}+\beta_{i,M}R_{Mt}+\varepsilon_{it},R_{Mt})\\
+&amp; =\mathrm{cov}(\beta_{i,M}R_{Mt},R_{Mt})+\mathrm{cov}(\varepsilon_{it},R_{Mt})\\
+&amp; =\beta_{i,M}\mathrm{var}(R_{Mt})\text{ }\ (\text{since }\mathrm{cov}(\varepsilon_{it},R_{Mt})=0)\\
+&amp; \Rightarrow\beta_{i,M}=\frac{\mathrm{cov}(R_{it},R_{Mt})}{\mathrm{var}(R_{Mt})} = \frac{\sigma_{iM}}{\sigma_{M}^{2}}.
+\end{align*}\]</span></p>
+<p><em>Interpretation of <span class="math inline">\(\beta_{i,0}\)</span></em></p>
+<p>The parameter <span class="math inline">\(\beta_{i,0}\)</span> is the intercept in the linear SI model relationship between <span class="math inline">\(R_{it}\)</span> and <span class="math inline">\(R_{Mt}\)</span>. To interpret <span class="math inline">\(\beta_{i,0}\)</span>, use <a href="#eq-SI-SIreturn">Equation&nbsp;<span>14.1</span></a> and take expectations:</p>
+<p><span class="math display">\[\begin{align*}
+E[R_{it}] &amp;= \mu_{i} = \beta_{i,0} + \beta_{i,M}E[R_{Mt}] + E[\varepsilon_{it}] \\
+&amp;= \beta_{i,0} + \beta_{i,M} \mu_{M}
+\end{align*}\]</span></p>
+<p>Solving for <span class="math inline">\(\beta_{i,0}\)</span> gives <span id="eq-SI-SIintercept"><span class="math display">\[
+\beta_{i,0}=\mu_{i}-\beta_{i,M}\mu_{M}.
+\tag{14.10}\]</span></span></p>
+<p>Hence, the intercept term <span class="math inline">\(\beta_{i,0}\)</span> can be interpreted as the average return on asset <span class="math inline">\(i\)</span> that is in excess of the average return due to the market.</p>
+<p>Using <a href="#eq-SI-SIintercept">Equation&nbsp;<span>14.10</span></a>, the SI model model <a href="#eq-SI-SIreturn">Equation&nbsp;<span>14.1</span></a> can be re-expressed as <span id="eq-SI-SImeanAdj"><span class="math display">\[
+\begin{aligned}
+R_{it} &amp;= \beta_{i,0} + \beta_{i,M}R_{Mt} + \varepsilon_{it} \\
+       &amp;= \mu_{i} - \beta_{i,M}\mu_{M} + \varepsilon_{it} \\
+       &amp;= \mu_{i} + \beta_{i,M}(R_{Mt} - \mu_{M}) + \varepsilon_{it}.
+\end{aligned}
+\tag{14.11}\]</span></span></p>
+<p><em>Interpretation of <span class="math inline">\(R_{Mt}\)</span> and <span class="math inline">\(\varepsilon_{it}\)</span></em></p>
+<p>To aid in the interpretation of <span class="math inline">\(R_{Mt}\)</span> and <span class="math inline">\(\varepsilon_{it}\)</span> in <a href="#eq-SI-SIreturn">Equation&nbsp;<span>14.1</span></a>, consider <a href="#eq-SI-SImeanAdj">Equation&nbsp;<span>14.11</span></a> expressed in terms of asset <span class="math inline">\(i's\)</span> suprise return <span class="math inline">\(R_{it}-\mu_{i}\)</span>: <span id="eq-SI-supriseReturn"><span class="math display">\[
+R_{it}-\mu_{i} = \beta_{i,M}(R_{Mt} - \mu_{M}) + \varepsilon_{it}.
+\tag{14.12}\]</span></span></p>
+<p>In <a href="#eq-SI-supriseReturn">Equation&nbsp;<span>14.12</span></a>, you see that asset <span class="math inline">\(i's\)</span> suprise return <span class="math inline">\(R_{it}-\mu_{i}\)</span> is equal to a component proportional to the surprise return on the market index, <span class="math inline">\(\beta_{i,M}(R_{Mt}-\mu_{M})\)</span>, and an asset specific surprise component, <span class="math inline">\(\varepsilon_{it}\)</span>. You can think of <span class="math inline">\(R_{Mt}-\mu_{M}\)</span> as capturing unexpected “market-wide” news at time <span class="math inline">\(t\)</span> that is common to all assets, and <span class="math inline">\(\beta_{i,M}\)</span> captures the sensitivity or exposure of asset <span class="math inline">\(i\)</span> to this unexpected market-wide news. <a href="#eq-SI-supriseReturn">Equation&nbsp;<span>14.12</span></a> shows that an asset’s surprise return is zero if the market’s surprise return is zero and the asset specific surprise return is zero (or the two surprise returns exactly counter-act each other). An example of unexpected market-wide news is the release of information by the government about the national unemployment rate. If the news is good then you might expect <span class="math inline">\(R_{Mt}-\mu_{M}\)</span> to increase because general business conditions are good. Different assets will respond differently to this news and this differential impact is captured by <span class="math inline">\(\beta_{i,M}.\)</span> Assets with positive values of <span class="math inline">\(\beta_{i,M}\)</span> will see their returns increase because of good unexpected market-wide news, and assets with negative values of <span class="math inline">\(\beta_{i,M}\)</span> will see their returns decrease because of this good news. Hence, the magnitude and direction of correlation between asset returns can be partially explained by their exposures to common unexpected market-wide news. Because <span class="math inline">\(\varepsilon_{it}\)</span> is assumed to be independent of <span class="math inline">\(R_{Mt}\)</span> and of <span class="math inline">\(\varepsilon_{jt}\)</span>, you can think of <span class="math inline">\(\varepsilon_{it}\)</span> as capturing unexpected specific news to asset <span class="math inline">\(i\)</span> that is unrelated to market news or to unexpected specific news to any other asset <span class="math inline">\(j\)</span>. Examples of unexpected asset-specific news are company earnings reports and reports about corporate restructuring (e.g., CEO resigning). Hence, unexpected specific news for asset <span class="math inline">\(i\)</span> only effects the return on asset <span class="math inline">\(i\)</span> and not the return on any other asset <span class="math inline">\(j\)</span>.</p>
+<p>The GWN model <span class="math display">\[
+R_{it} = \mu_{i} + \varepsilon_{it}
+\]</span> does not distinguish between overall market and asset specific news and so allows the unexpected news shocks <span class="math inline">\(\varepsilon_{it}\)</span> to be correlated across assets. Some news is common to all assets but some is specific to a given asset and the GWN model error includes both types of news. In this regard, the GWN model for an asset’s return is not a special case of the SI model when <span class="math inline">\(\beta_{i,M}=0\)</span> because the SI model assumes that <span class="math inline">\(\varepsilon_{it}\)</span> is uncorrelated across assets.</p>
+</section>
+<section id="statistical-properties-of-returns-in-the-si-model" class="level3" data-number="14.3.2">
+<h3 data-number="14.3.2" class="anchored" data-anchor-id="statistical-properties-of-returns-in-the-si-model"><span class="header-section-number">14.3.2</span> Statistical properties of returns in the SI model</h3>
+<p> In this sub-section I present and derive the statistical properties of returns in the SI model <a href="#eq-SI-SIreturn">Equation&nbsp;<span>14.1</span></a> - <a href="#eq-SI-errorAssets">Equation&nbsp;<span>14.5</span></a>. I will derive two types of statistical properties: unconditional and conditional. The unconditional properties are based on unconditional or marginal distribution of returns. The conditional properties are based on the distribution of returns conditional on the value of the market return.</p>
+<section id="unconditional-properties" class="level4" data-number="14.3.2.1">
+<h4 data-number="14.3.2.1" class="anchored" data-anchor-id="unconditional-properties"><span class="header-section-number">14.3.2.1</span> Unconditional properties</h4>
+<p> The unconditional properties of returns in the SI model <a href="#eq-SI-SIreturn">Equation&nbsp;<span>14.1</span></a> - <a href="#eq-SI-errorAssets">Equation&nbsp;<span>14.5</span></a> are summarized in the following Proposition:</p>
+<div id="prp-unconditional-properties-of-returns-in-the-si-model" class="proposition theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 14.1 (Unconditional properties of returns in the SI model) </strong></span>Let returns be described by the SI model <a href="#eq-SI-SIreturn">Equation&nbsp;<span>14.1</span></a> - <a href="#eq-SI-errorAssets">Equation&nbsp;<span>14.5</span></a>. Then</p>
+</div>
+<p><span id="eq-SI-SImean"><span class="math display">\[
+E[R_{it}] =  \mu_{i}=\beta_{i,0}+\beta_{i,M}\mu_{M},
+\tag{14.13}\]</span></span> <span id="eq-SI-SIvariance"><span class="math display">\[
+\mathrm{var}(R_{it})  =  \sigma_{i}^{2}=\beta_{i,M}^{2}\sigma_{M}^{2}+\sigma_{\varepsilon,i}^{2},
+\tag{14.14}\]</span></span> <span id="eq-SI-SIcovariance"><span class="math display">\[
+\mathrm{cov}(R_{it},R_{jt}) = \sigma_{ij}=\beta_{i,M}\beta_{j}\sigma_{M}^{2},
+\tag{14.15}\]</span></span> <span id="eq-SI-SIcorrelation"><span class="math display">\[
+\mathrm{cor}(R_{it},R_{jt}) = \rho_{ij}=\frac{\beta_{i,M}\beta_{j}\sigma_{M}^{2}}{\sqrt{(\beta_{i,M}^{2}\sigma_{M}^{2}+\sigma_{\varepsilon,i}^{2})(\beta_{j}^{2}\sigma_{M}^{2}+\sigma_{\varepsilon,j}^{2})}},
+\tag{14.16}\]</span></span> <span id="eq-SI-SIdistribution"><span class="math display">\[
+R_{it} \sim iid\,N(\mu_{i},\sigma_{i}^{2})=N(\beta_{i,0}+\beta_{i,M}\mu_{M},\beta_{i,M}^{2}\sigma_{M}^{2}+\sigma_{\varepsilon,i}^{2})
+\tag{14.17}\]</span></span></p>
+<p>The derivations of these properties are straightforward and are left as end-of-chapter exercises.</p>
+<p>From property <a href="#eq-SI-SIvariance">Equation&nbsp;<span>14.14</span></a>, an asset’s return variance is additively decomposed into two independent components: <span id="eq-SI-varianceDecomposition"><span class="math display">\[
+\begin{aligned}
+\mathrm{var}(R_{it}) &amp; = &amp; \sigma_{i}^{2}=\beta_{i,M}^{2}\sigma_{M}^{2}+\sigma_{\varepsilon,i}^{2}\\
+\mathrm{(total\,asset\,}i\,\mathrm{variance} &amp; = &amp; \mathrm{market\,variance}+\mathrm{asset\,specific\,variance)}
+\end{aligned}
+\tag{14.18}\]</span></span> Here, <span class="math inline">\(\beta_{i,M}^{2}\sigma_{M}^{2}\)</span> is the contribution of the market index return <span class="math inline">\(R_{Mt}\)</span> to the total variance of asset <span class="math inline">\(i\)</span>, and <span class="math inline">\(\sigma_{\varepsilon,i}^{2}\)</span> is the contribution of the asset specific component <span class="math inline">\(\varepsilon_{it}\)</span> to the total return variance, respectively. If you divide both sides of <a href="#eq-SI-varianceDecomposition">Equation&nbsp;<span>14.18</span></a> by <span class="math inline">\(\sigma_{i}^{2}\)</span> you get <span class="math display">\[\begin{eqnarray*}
+1 &amp; = &amp; \frac{\beta_{i,M}^{2}\sigma_{M}^{2}}{\sigma_{i}^{2}}+\frac{\sigma_{\varepsilon,i}^{2}}{\sigma_{i}^{2}}\\
+&amp; = &amp; R^2 +(1-R^{2}),
+\end{eqnarray*}\]</span> where <span id="eq-SI-R2"><span class="math display">\[
+R^{2}=\frac{\beta_{i,M}^{2}\sigma_{M}^{2}}{\sigma_{i}^{2}}
+\tag{14.19}\]</span></span> is the proportion of asset <span class="math inline">\(i's\)</span> variance that is explained by the variability of the market return <span class="math inline">\(R_{Mt}\)</span> and <span id="eq-SI-oneMinusR2"><span class="math display">\[
+1-R^{2}=\frac{\sigma_{\varepsilon,i}^{2}}{\sigma_{i}^{2}}
+\tag{14.20}\]</span></span> is the proportion of asset <span class="math inline">\(i's\)</span> variance that is explained by the variability of the asset specific component <span class="math inline">\(\varepsilon_{it}.\)</span></p>
+<ul>
+<li>Sharpe’s rule of thumb. A typical stock has <span class="math inline">\(R^{2}=0.30\)</span>. That is, 30% of an asset’s variability is explained by the market movements. - <span class="math inline">\(R^{2}\)</span> can be interpreted as the fraction of risk that is non-diversifiable, <span class="math inline">\(1-R^{2}\)</span> gives the fraction of risk that is diversifiable. Come back to this point after discussing the SI model and portfolios below.</li>
+<li>This is an example of factor risk budgeting</li>
+</ul>
+<p>Properties <a href="#eq-SI-SIcovariance">Equation&nbsp;<span>14.15</span></a> and <a href="#eq-SI-SIcorrelation">Equation&nbsp;<span>14.16</span></a> show how assets are correlated in the SI model. In particular,</p>
+<ul>
+<li><span class="math inline">\(\sigma_{ij}=0\)</span> if <span class="math inline">\(\beta_{i,M}=0\)</span> or <span class="math inline">\(\beta_{j}=0\)</span> or both. Assets <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> are uncorrelated if asset <span class="math inline">\(i\)</span> or asset <span class="math inline">\(j\)</span> or both do not respond to market news.</li>
+<li><span class="math inline">\(\sigma_{ij}&gt;0\)</span> if <span class="math inline">\(\beta_{i,M},\beta_{j}&gt;0\)</span> or <span class="math inline">\(\beta_{i,M},\beta_{j}&lt;0\)</span> . Assets <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> are positively correlated if both assets respond to market news in the same direction.</li>
+<li><span class="math inline">\(\sigma_{ij}&lt;0\)</span> if <span class="math inline">\(\beta_{i,M}&gt;0\)</span> and <span class="math inline">\(\beta_{j}&lt;0\)</span> or if <span class="math inline">\(\beta_{i,M}&lt;0\)</span> and <span class="math inline">\(\beta_{j}&gt;0\)</span>. Assets <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> are negatively correlated if they respond to market news in opposite directions.</li>
+</ul>
+<p>From <a href="#eq-SI-SIcorrelation">Equation&nbsp;<span>14.16</span></a>, assets <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> are perfectly correlated (<span class="math inline">\(\rho_{ij}=\pm1)\)</span> only if <span class="math inline">\(\sigma_{\varepsilon,i}=\sigma_{\varepsilon,j}=0\)</span>.</p>
+<p>Property <a href="#eq-SI-SIdistribution">Equation&nbsp;<span>14.17</span></a> shows that the distribution of asset returns in the SI model is normal with mean and variance given by <a href="#eq-SI-SImean">Equation&nbsp;<span>14.13</span></a> and <a href="#eq-SI-SIvariance">Equation&nbsp;<span>14.14</span></a>, respectively.</p>
+<p>In summary, the unconditional properties of returns in the SI model are similar to the properties of returns in the GWN model: Returns are covariance stationary with constant means, variances, and covariances. Returns on different assets can be contemporaneously correlated and all asset returns uncorrelated over time. The SI model puts more structure on the expected returns, variances and covariances than the GWN model and this allows for a deeper understanding of the behavior of asset returns.</p>
+</section>
+<section id="conditional-properties" class="level4" data-number="14.3.2.2">
+<h4 data-number="14.3.2.2" class="anchored" data-anchor-id="conditional-properties"><span class="header-section-number">14.3.2.2</span> Conditional properties</h4>
+<p> The properties of returns in the SI model <a href="#eq-SI-SIreturn">Equation&nbsp;<span>14.1</span></a> - <a href="#eq-SI-errorAssets">Equation&nbsp;<span>14.5</span></a> conditional on <span class="math inline">\(R_{Mt}=r_{Mt}\)</span> are: <span class="math display">\[\begin{eqnarray}
+E[R_{it}|R_{Mt} &amp; = &amp; r_{Mt}]=\beta_{i,0}+\beta_{i,M}r_{Mt},\\
+\mathrm{var}(R_{it}|R_{Mt} &amp; = &amp; r_{Mt}]=\sigma_{\varepsilon,i}^{2},\\
+\mathrm{cov}(R_{it},R_{jt}|R_{Mt} &amp; = &amp; r_{Mt}]=0,\\
+\mathrm{cor}(R_{it},R_{jt}|R_{Mt} &amp; = &amp; r_{Mt}]=0,\\
+R_{it}|R_{Mt} &amp; \sim &amp; iid\,N(\beta_{i,0}+\beta_{i,M}r_{Mt},\sigma_{\varepsilon,i}^{2}).
+\end{eqnarray}\]</span></p>
+<p>Recall, conditioning on a random variable means you observe its value. In the SI model, once you observe the market return two important things happen: (1) an asset’s return variance reduces to its asset specific variance; and (2) asset returns become uncorrelated.</p>
+</section>
+</section>
+<section id="si-model-and-portfolios" class="level3" data-number="14.3.3">
+<h3 data-number="14.3.3" class="anchored" data-anchor-id="si-model-and-portfolios"><span class="header-section-number">14.3.3</span> SI model and portfolios</h3>
+<p> A nice feature of the SI model for asset returns is that it also holds for a portfolio of asset returns. This property follows because asset returns are a linear function of the market return. To illustrate, consider a two asset portfolio with investment weights <span class="math inline">\(x_{1}\)</span>and <span class="math inline">\(x_{2}\)</span> where each asset return is explained by the SI model: <span class="math display">\[\begin{eqnarray*}
+R_{1t} &amp; = &amp; \beta_{1,0}+\beta_{1,M}R_{Mt}+\varepsilon_{1t},\\
+R_{2t} &amp; = &amp; \beta_{2,0}+\beta_{2,M}R_{Mt}+\varepsilon_{2t}.
+\end{eqnarray*}\]</span> Then the portfolio return is <span class="math display">\[
+\begin{aligned}
+R_{p,t} &amp; =x_{1}R_{1t}+x_{2}R_{2t}\\
+&amp; =x_{1}(\beta_{1,0}+\beta_{1,M}R_{Mt}+\varepsilon_{1t})+x_{2}(\beta_{2,0}+\beta_{2,M}R_{Mt}+\varepsilon_{2t})\\
+&amp; =\left(x_{1}\beta_{1,0}+x_{2}\beta_{2,0}\right)+\left(x_{1}\beta_{1,M}+x_{2}\beta_{2,M}\right)R_{Mt}+\left(x_{1}\varepsilon_{1t}+x_{2}\varepsilon_{2t}\right)\\
+&amp; =\beta_{p,0}+\beta_{p,M}R_{Mt}+\varepsilon_{p,t}
+\end{aligned}
+\]</span> where <span class="math inline">\(\beta_{p,0}=x_{1}\beta_{1,0}+x_{2}\beta_{2,0}\)</span>, <span class="math inline">\(\beta_{p,M}=x_{1}\beta_{1,M}+x_{2}\beta_{2,M}\)</span>, and <span class="math inline">\(\varepsilon_{p,t}=x_{1}\varepsilon_{1t}+x_{2}\varepsilon_{2t}\)</span>.</p>
+<p>This result easily extends to portfolios with <span class="math inline">\(N\)</span> assets. Let <span class="math inline">\(R_{it} = \beta_{i,0}+\beta_{i,M}R_{Mt}+\varepsilon_{it}\)</span> for <span class="math inline">\(i=1,\ldots,N\)</span>, and let <span class="math inline">\(R_{p,t}=\sum_{i=1}^Nx_{i}R_{it}\)</span>. Then</p>
+<p><span id="eq-SI-SIportfolio"><span class="math display">\[
+R_{p,t} = \beta_{p,0}+\beta_{p,M}R_{Mt}+\varepsilon_{p,t}
+\tag{14.21}\]</span></span> where <span class="math display">\[
+\begin{aligned}
+\beta_{p,0} &amp;=x_{1}\beta_{1,0}+ \cdots +x_{N}\beta_{N,0} \\
+\beta_{p,M} &amp;= x_{1}\beta_{1,M}+ \cdots +x_{N}\beta_{N,M}
+\end{aligned}
+\]</span></p>
+<section id="si-model-and-large-portfolios" class="level4" data-number="14.3.3.1">
+<h4 data-number="14.3.3.1" class="anchored" data-anchor-id="si-model-and-large-portfolios"><span class="header-section-number">14.3.3.1</span> SI model and large portfolios</h4>
+<p>Consider an equally weighted portfolio of <span class="math inline">\(N\)</span> assets, where <span class="math inline">\(N\)</span> is a large number (e.g.&nbsp;<span class="math inline">\(N=500\)</span>) whose returns are described by the SI model. Here, <span class="math inline">\(x_{i}=1/N\)</span> for <span class="math inline">\(i=1,\ldots,N\)</span>. Then the portfolio return is <span class="math display">\[
+\begin{aligned}
+R_{p,t} &amp; =\sum_{i=1}^{N}x_{i}R_{it}\\
+&amp; =\sum_{i=1}^{N}x_{i}\left(\beta_{i,0}+\beta_{i,M}R_{Mt}+\varepsilon_{it}\right)\\
+&amp; =\sum_{i=1}^{N}x_{i}\beta_{i,0}+\left(\sum_{i=1}^{N}x_{i}\beta_{i,M}\right)R_{Mt}+\sum_{i=1}^{N}x_{i}\varepsilon_{it}\\
+&amp; =\frac{1}{N}\sum_{i=1}^{N}\beta_{i,0}+\left(\frac{1}{N}\sum_{i=1}^{N}\beta_{i,M}\right)R_{Mt}+\frac{1}{N}\sum_{i=1}^{N}\varepsilon_{it}\\
+&amp; =\bar{\beta_{0}}+\bar{\beta}R_{Mt}+\bar{\varepsilon}_{t},
+\end{aligned}
+\]</span> where <span class="math inline">\(\bar{\beta}_{i,0}=\frac{1}{N}\sum_{i=1}^{N}\beta_{i,0}\)</span>, <span class="math inline">\(\bar{\beta}_{i,M}=\frac{1}{N}\sum_{i=1}^{N}\beta_{i,M}\)</span> and <span class="math inline">\(\bar{\varepsilon}_{t}=\frac{1}{N}\sum_{i=1}^{N}\varepsilon_{it}\)</span>. Now, <span class="math display">\[
+\mathrm{var}(\bar{\varepsilon}_{t})=\mathrm{var}\left(\frac{1}{N}\sum_{i=1}^{N}\varepsilon_{it}\right)=\frac{1}{N^{2}}\sum_{i=1}^{N}\mathrm{var}(\varepsilon_{it})=\frac{1}{N}\left(\frac{1}{N}\sum_{i=1}^{N}\sigma_{\varepsilon,i}^{2}\right)=\frac{1}{N}\bar{\sigma}^{2}
+\]</span> where <span class="math inline">\(\bar{\sigma}^{2}=\frac{1}{N}\sum_{i=1}^{N}\sigma_{\varepsilon,i}^{2}\)</span> is the average of the asset specific variances. For large <span class="math inline">\(N\)</span>, <span class="math inline">\(\frac{1}{N}\bar{\sigma}^{2}\approx0\)</span> and you have the Law of Large Numbers result <span class="math display">\[
+\bar{\varepsilon}_{t}=\frac{1}{N}\sum_{i=1}^{N}\varepsilon_{it}\approx E[\varepsilon_{it}]=0.
+\]</span> As a result, in a large equally weighted portfolio you have the following:</p>
+<ul>
+<li><span class="math inline">\(R_{p,t}\approx\bar{\beta}_{i,0}+\bar{\beta}_{i,M}R_{Mt}:\)</span> all non-market asset-specific risk is diversified away and only market risk remains.</li>
+<li><span class="math inline">\(\mathrm{var}(R_{p,t})=\bar{\beta}^{2}\mathrm{var}(R_{Mt})\Rightarrow\mathrm{SD}(R_{p,t})=|\bar{\beta}|\times\mathrm{SD}(R_{Mt}):\)</span> portfolio volatility is proportional to market volatility where the factor of proportionality is the absolute value of portfolio beta.</li>
+<li><span class="math inline">\(R^{2}\approx1:\)</span> Approximately 100% of portfolio variance is due to market variance.</li>
+<li><span class="math inline">\(\bar{\beta}\approx1\)</span>. A large equally weighted portfolio resembles the market portfolio (e.g., as proxied by the S&amp;P 500 index) and so the beta of a well diversified portfolio will be close to the beta of the market portfolio which is one by definition.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></li>
+</ul>
+<p>These results help us to understand the type of risk that gets diversified away and the type of risk that remains when you form diversified portfolios. Asset specific risk, which is uncorrelated across assets, gets diversified away whereas market risk, which is common to all assets, does not get diversified away.</p>
+<ul>
+<li>(Relate to average covariance calculation from portfolio theory chapter).</li>
+<li>Related to asset R2 discussed earlier. R2 of an asset shows the portion of risk that cannot be diversified away when forming portfolios.</li>
+</ul>
+</section>
+</section>
+</section>
+<section id="sec-si-model-matrix" class="level2" data-number="14.4">
+<h2 data-number="14.4" class="anchored" data-anchor-id="sec-si-model-matrix"><span class="header-section-number">14.4</span> The SI model in matrix notation</h2>
+<ul>
+<li>Need to emphasize that the SI model covariance matrix is always positive definite. This is an important result because it allows for the mean-variance analysis of very large portfolios.</li>
+</ul>
+<p>For <span class="math inline">\(i=1,\ldots,N\)</span> assets, stacking <a href="#eq-SI-SIreturn">Equation&nbsp;<span>14.1</span></a> gives the SI model in matrix notation <span class="math display">\[
+\left(\begin{array}{c}
+R_{1t}\\
+\vdots\\
+R_{Nt}
+\end{array}\right)=\left(\begin{array}{c}
+\beta_{1,0}\\
+\vdots\\
+\beta_{N,0}
+\end{array}\right)+\left(\begin{array}{c}
+\beta_{1,M}\\
+\vdots\\
+\beta_{N,M}
+\end{array}\right)R_{Mt}+\left(\begin{array}{c}
+\varepsilon_{1t}\\
+\vdots\\
+\varepsilon_{Nt}
+\end{array}\right),
+\]</span> or <span id="eq-SI-SImatrix"><span class="math display">\[
+\mathbf{R}_{t}=\boldsymbol{\beta}_{0}+\boldsymbol{\beta}_{M} R_{Mt}+\boldsymbol{\varepsilon}_{t}.
+\tag{14.22}\]</span></span> The unconditional statistical properties of returns <a href="#eq-SI-SImean">Equation&nbsp;<span>14.13</span></a>, <a href="#eq-SI-SIvariance">Equation&nbsp;<span>14.14</span></a>, <a href="#eq-SI-SIcovariance">Equation&nbsp;<span>14.15</span></a> and <a href="#eq-SI-SIdistribution">Equation&nbsp;<span>14.17</span></a> can be re-expressed using matrix notation as follows: <span id="eq-SI-SImatrixMean"><span class="math display">\[
+E[\mathbf{R}_{t}] = \boldsymbol{\mu}=\boldsymbol{\beta}_{0}+\boldsymbol{\beta}_{M}\mu_{M},
+\tag{14.23}\]</span></span> <span id="eq-SI-SImatrixVariance"><span class="math display">\[
+\mathrm{var}(\mathbf{R}_{t}) = \boldsymbol{\Sigma}=\sigma_{M}^{2}\boldsymbol{\beta}_{M} \boldsymbol{\beta}_{M}^{\prime}+\mathbf{D},
+\tag{14.24}\]</span></span> <span id="eq-SI-SImatrixDistribution"><span class="math display">\[
+\mathbf{R}_{t} \sim  iid\,N(\boldsymbol{\mu},\boldsymbol{\Sigma})=N(\boldsymbol{\beta}_{0}+\boldsymbol{\beta}_{M}\mu_{M},\sigma_{M}^{2}\boldsymbol{\beta}_{M} \boldsymbol{\beta}_{M}^{\prime} +\mathbf{D}),
+\tag{14.25}\]</span></span> where <span class="math display">\[\begin{eqnarray}
+\mathbf{D} &amp; = &amp; \mathrm{var}(\boldsymbol{\varepsilon}_{t})=\left(\begin{array}{cccc}
+\sigma_{\varepsilon,1}^{2} &amp; 0 &amp; \cdots &amp; 0\\
+0 &amp; \sigma_{\varepsilon,2}^{2} &amp; \cdots &amp; 0\\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots\\
+0 &amp; 0 &amp; \cdots &amp; \sigma_{\varepsilon,N}^{2}
+\end{array}\right)\\
+&amp; = &amp; \mathrm{diag}(\sigma_{\varepsilon,1}^{2},\sigma_{\varepsilon,1}^{2},\ldots,\sigma_{\varepsilon,N}^{2}).\nonumber
+\end{eqnarray}\]</span></p>
+<p>The derivation of the SI model covariance matrix <a href="#eq-SI-SImatrixVariance">Equation&nbsp;<span>14.24</span></a> is <span class="math display">\[\begin{eqnarray*}
+\mathrm{var}(\mathbf{R}_{t}) &amp; = &amp; \boldsymbol{\Sigma}=\boldsymbol{\beta}_{M} \mathrm{var}(R_{Mt})\boldsymbol{\beta}_{M}^{\prime}+\mathrm{var}(\boldsymbol{\varepsilon}_{t})\\
+&amp; = &amp; \sigma_{M}^{2}\boldsymbol{\beta}_{M} \boldsymbol{\beta}_{M}^{\prime}+\mathbf{D},
+\end{eqnarray*}\]</span> which uses the assumption that the market return <span class="math inline">\(R_{Mt}\)</span> is uncorrelated will all asset specific error terms in <span class="math inline">\(\varepsilon_{t}\)</span>.</p>
+<div id="exm-si-covariance-matrix-for-three-asset-portfolio" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 14.2 (SI covariance matrix for three asset portfolio.) </strong></span>It is useful to examine the SI covariance matrix <a href="#eq-SI-SImatrixVariance">Equation&nbsp;<span>14.24</span></a> for a three asset portfolio. In this case, you have <span class="math display">\[\begin{align*}
+R_{it} &amp; =\beta_{i,0}+\beta_{i,M}R_{Mt}+\varepsilon_{it},\text{ }i=1,2,3\\
+\sigma_{i}^{2} &amp; =\mathrm{var}(R_{it})=\beta_{i,M}^{2}\sigma_{M}^{2}+\sigma_{\varepsilon,i}^{2}\\
+\sigma_{ij} &amp; =\mathrm{cov}(R_{it},R_{jt})=\sigma_{M}^{2}\beta_{i,M}\beta_{j,M}
+\end{align*}\]</span> The <span class="math inline">\(3\times3\)</span> covariance matrix is <span class="math display">\[\begin{align*}
+\Sigma &amp; =\left(\begin{array}{ccc}
+\sigma_{1}^{2} &amp; \sigma_{12} &amp; \sigma_{13}\\
+\sigma_{12} &amp; \sigma_{2}^{2} &amp; \sigma_{23}\\
+\sigma_{13} &amp; \sigma_{23} &amp; \sigma_{3}^{2}
+\end{array}\right)\\
+&amp; =\left(\begin{array}{ccc}
+\beta_{1,M}^{2}\sigma_{M}^{2}+\sigma_{\varepsilon,1}^{2} &amp; \sigma_{M}^{2}\beta_{1,M}\beta_{2,M} &amp; \sigma_{M}^{2}\beta_{1,M}\beta_{3,M}\\
+\sigma_{M}^{2}\beta_{1,M}\beta_{2,M} &amp; \beta_{2,M}^{2}\sigma_{M}^{2}+\sigma_{\varepsilon,2}^{2} &amp; \sigma_{M}^{2}\beta_{2,M}\beta_{3,M}\\
+\sigma_{M}^{2}\beta_{1,M}\beta_{3,M} &amp; \sigma_{M}^{2}\beta_{2,M}\beta_{3,M} &amp; \beta_{3,M}^{2}\sigma_{M}^{2}+\sigma_{\varepsilon,3}^{2}
+\end{array}\right)\\
+&amp; =\sigma_{M}^{2}\left(\begin{array}{ccc}
+\beta_{1,M}^{2} &amp; \beta_{1,M}\beta_{2,M} &amp; \beta_{1,M}\beta_{3,M}\\
+\beta_{1,M}\beta_{2,M} &amp; \beta_{2,M}^{2} &amp; \beta_{2,M}\beta_{3,M}\\
+\beta_{1,M}\beta_{3,M} &amp; \beta_{2,M}\beta_{3,M} &amp; \beta_{3,M}^{2}
+\end{array}\right)+\left(\begin{array}{ccc}
+\sigma_{\varepsilon,1}^{2} &amp; 0 &amp; 0\\
+0 &amp; \sigma_{\varepsilon,2}^{2} &amp; 0\\
+0 &amp; 0 &amp; \sigma_{\varepsilon,3}^{2}
+\end{array}\right).
+\end{align*}\]</span> The first matrix shows the return variance and covariance contributions due to the market returns, and the second matrix shows the contributions due to the asset specific errors. Define <span class="math inline">\(\boldsymbol{\beta}_{M} =(\beta_{1,M},\beta_{2,M},\beta_{3,M})^{\prime}.\)</span> Then <span class="math display">\[\begin{eqnarray*}
+\sigma_{M}^{2}\boldsymbol{\beta}_{M} \boldsymbol{\beta}_{M}^{\prime} &amp; = &amp; \sigma_{M}^{2}\left(\begin{array}{c}
+\beta_{1,M}\\
+\beta_{2,M}\\
+\beta_{3,M}
+\end{array}\right)\left(\begin{array}{ccc}
+\beta_{1,M} &amp; \beta_{2,M} &amp; \beta_{3,M}\end{array}\right)=\sigma_{M}^{2}\left(\begin{array}{ccc}
+\beta_{1,M}^{2} &amp; \beta_{1,M}\beta_{2,M} &amp; \beta_{1,M}\beta_{3,M}\\
+\beta_{1,M}\beta_{2,M} &amp; \beta_{2,M}^{2} &amp; \beta_{2,M}\beta_{3,M}\\
+\beta_{1,M}\beta_{3,M} &amp; \beta_{2,M}\beta_{3,M} &amp; \beta_{3,M}^{2}
+\end{array}\right),\\
+\mathbf{D} &amp; = &amp; \mathrm{diag}(\sigma_{\varepsilon,1}^{2},\sigma_{\varepsilon,2}^{2},\sigma_{\varepsilon,3}^{2})=\left(\begin{array}{ccc}
+\sigma_{\varepsilon,1}^{2} &amp; 0 &amp; 0\\
+0 &amp; \sigma_{\varepsilon,2}^{2} &amp; 0\\
+0 &amp; 0 &amp; \sigma_{\varepsilon,3}^{2}
+\end{array}\right),
+\end{eqnarray*}\]</span> and so <span class="math display">\[
+\boldsymbol{\Sigma}=\sigma_{M}^{2}\boldsymbol{\beta}_{M} \boldsymbol{\beta}_{M}^{\prime}+\mathbf{D}.
+\]</span></p>
+<p>The matrix form of the SI model <a href="#eq-SI-SImatrixMean">Equation&nbsp;<span>14.23</span></a> - <a href="#eq-SI-SImatrixDistribution">Equation&nbsp;<span>14.25</span></a> is useful for portfolio analysis. For example, consider a portfolio with <span class="math inline">\(N\times1\)</span> weight vector <span class="math inline">\(\mathbf{x}=(x_{1},\ldots,x_{N})^{\prime}.\)</span> Using <a href="#eq-SI-SImatrix">Equation&nbsp;<span>14.22</span></a>, the SI model for the portfolio return <span class="math inline">\(R_{p,t}=\mathbf{x}^{\prime}\mathbf{R}_{t}\)</span> is <span class="math display">\[\begin{eqnarray*}
+R_{p,t} &amp; = &amp; \mathbf{x}^{\prime}(\boldsymbol{\beta}_{0}+\boldsymbol{\beta}_{M} R_{Mt}+\boldsymbol{\varepsilon}_{t})\\
+&amp; = &amp; \mathbf{x}^{\prime}\boldsymbol{\beta}_{0}+\mathbf{x}^{\prime}\boldsymbol{\beta}_{M} R_{Mt}+\mathbf{x}^{\prime}\boldsymbol{\varepsilon}_{t}\\
+&amp; = &amp; \beta_{p,0}+\beta_{p,M}R_{Mt}+\varepsilon_{p,t},
+\end{eqnarray*}\]</span> where <span class="math inline">\(\beta_{p,0}=\mathbf{x}^{\prime}\boldsymbol{\beta}_{0}\)</span>, <span class="math inline">\(\beta_{p}=\mathbf{x}^{\prime}\boldsymbol{\beta}_{M}\)</span> and <span class="math inline">\(\varepsilon_{p,t}=\mathbf{x}^{\prime}\boldsymbol{\varepsilon}_{t}\)</span>. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+<section id="sec-si-model-portfolio" class="level2" data-number="14.5">
+<h2 data-number="14.5" class="anchored" data-anchor-id="sec-si-model-portfolio"><span class="header-section-number">14.5</span> Single index model portfolio theory</h2>
+<ol type="1">
+<li>Reduces the number of free parameters to estimate</li>
+<li>Give conditions for which the covariance matrix is positive definite and full rank</li>
+<li>solves the problem of less than full return covariance matrix.</li>
+<li>Does not provide an alternative way to estimate expected returns</li>
+</ol>
+</section>
+<section id="sec-si-model-monte-carlo" class="level2" data-number="14.6">
+<h2 data-number="14.6" class="anchored" data-anchor-id="sec-si-model-monte-carlo"><span class="header-section-number">14.6</span> Monte Carlo Simulation of the SI Model</h2>
+<p> To give a first step reality check for the SI model, consider simulating data from the SI model for a single asset. The steps to create a Monte Carlo simulation from the SI model are:</p>
+<ol type="1">
+<li>Fix values for the SI model parameters <span class="math inline">\(\beta_{i,0}\)</span>, <span class="math inline">\(\beta_{i,M}\)</span>, <span class="math inline">\(\sigma_{\varepsilon,i}\)</span>, <span class="math inline">\(\mu_{M}\)</span> and <span class="math inline">\(\sigma_{M}\)</span></li>
+<li>Determine the number of simulated returns, <span class="math inline">\(T\)</span>, to create.</li>
+<li>Use a computer random number generator to simulate <span class="math inline">\(T\)</span> iid values of <span class="math inline">\(R_{Mt}\sim N(\mu_{M},\sigma_{M}^{2})\)</span> and <span class="math inline">\(\varepsilon_{i,t}\sim N(0,\sigma_{\varepsilon,i}^{2})\)</span>, where <span class="math inline">\(R_{Mt}\)</span> is simulated independently from <span class="math inline">\(\varepsilon_{i,t}\)</span>.</li>
+<li>Create the simulated asset returns <span class="math inline">\(\tilde{R}_{it}=\beta_{i,0}+\beta_{i,M}\tilde{R}_{Mt}\)</span>+<span class="math inline">\(\tilde{\varepsilon}_{it}\)</span> for <span class="math inline">\(t=1,\ldots,T\)</span></li>
+</ol>
+<p>The following example illustrates simulating SI model returns for Boeing.</p>
+<div id="exm-simulating-monthly-returns-from-the-si-model-for-boeing" class="example theorem example">
+<p><span class="theorem-title"><strong>Example 14.3 (Simulating monthly returns from the SI model for Boeing) </strong></span>Consider simulating monthly returns on Boeing from the SI model where the S&amp;P 500 index is used as the market index. The SI model parameters are calibrated from the actual monthly returns on Boeing and the S&amp;P 500 index using sample statistics, as discussed in the next section, and are given by: <span class="math display">\[
+\beta_{BA,0}=0.005,\,\beta_{BA,M}=0.98,\,\sigma_{\varepsilon,BA}=0.08,\,\mu_{M}=0.003,\,\sigma_{M}=0.048.
+\]</span> These values are set in R using:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>alpha.BA <span class="ot">=</span> <span class="fl">0.005</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>beta.BA <span class="ot">=</span> <span class="fl">0.98</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>sd.e.BA <span class="ot">=</span> <span class="fl">0.08</span> </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>mu.sp500 <span class="ot">=</span> <span class="fl">0.003</span> </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>sd.sp500 <span class="ot">=</span> <span class="fl">0.048</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The simulated returns for the S&amp;P 500 index and Boeing are created using:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>n.sim <span class="ot">=</span> <span class="fu">nrow</span>(siRetS) </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>sp500.sim <span class="ot">=</span> <span class="fu">rnorm</span>(n.sim, mu.sp500, sd.sp500) </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>e.BA.sim <span class="ot">=</span> <span class="fu">rnorm</span>(n.sim, <span class="dv">0</span>, sd.e.BA) </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>BA.sim <span class="ot">=</span> alpha.BA <span class="sc">+</span> beta.BA<span class="sc">*</span>sp500.sim <span class="sc">+</span> e.BA.sim </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>BA.sim <span class="ot">=</span> <span class="fu">xts</span>(BA.sim, <span class="fu">index</span>(siRetS)) </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>sp500.sim <span class="ot">=</span> <span class="fu">xts</span>(sp500.sim, <span class="fu">index</span>(siRetS)) </span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(BA.sim) <span class="ot">=</span> <span class="st">"BA.sim"</span> </span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(sp500.sim) <span class="ot">=</span> <span class="st">"SP500.sim"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-SIsimulatedBoeing" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="14-singleIndexModel-new_files/figure-html/fig-SIsimulatedBoeing-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;14.5: Simulated SI model monthly returns on the S&amp;P 500 index and Boeing.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
+<div class="cell-output-display">
+<div id="fig-SIsimulatedBoeing2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="14-singleIndexModel-new_files/figure-html/fig-SIsimulatedBoeing2-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;14.6: Simulated SI model monthly returns on the S&amp;P 500 index and Boeing. The orange line is the equation <span class="math inline">\(R_{BA,t}=\alpha_{BA}+\beta_{BA}R_{Mt}=0.005+0.98\times R_{Mt}.\)</span></figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The simulate returns are illustrated in <a href="#fig-SIsimulatedBoeing">Figure&nbsp;<span>14.5</span></a> and <a href="#fig-SIsimulatedBoeing2">Figure&nbsp;<span>14.6</span></a>. The time plot and scatterplot of the simulated returns on the S&amp;P 500 index look much like the corresponding plots of the actual returns shows in the top left panels of <a href="#fig-SIexampleReturns">Figure&nbsp;<span>14.2</span></a> and <a href="#fig-SIexampleScatter">Figure&nbsp;<span>14.4</span></a>, respectively. Hence, the SI model for the S&amp;P 500 index and Boeing passes the first step reality check. In <a href="#fig-SIsimulatedBoeing2">Figure&nbsp;<span>14.6</span></a>, the line <span class="math inline">\(\beta_{i,0}+\beta_{i,M}R_{Mt}=0.005+0.98R_{Mt}\)</span> is shown in orange. This line represents the predictions of Boeing’s return given the S&amp;P 500 return. For example, if <span class="math inline">\(R_{Mt}=0.05\)</span> then the predicted return for Boeing is <span class="math inline">\(R_{BA}=0.005+0.98\times(0.05)=0.054\)</span>. The differences between the observed Boeing returns and (blue dots) and the predicted returns (orange line) are the asset specific error terms. These are the random asset specific news components. The standard deviation of these components, <span class="math inline">\(\sigma_{\varepsilon,BA}=0.08\)</span>, represents the typical magnitude of these components. Here, you would not be too surprised if the observed Boeing return is <span class="math inline">\(0.08\)</span> above or below the orange line. How close the Boeing returns are to the predicted returns is determined by the <span class="math inline">\(R^{2}\)</span> value given by <a href="#eq-SI-R2">Equation&nbsp;<span>14.19</span></a>. Here, <span class="math inline">\(\sigma_{BA}^{2}=\beta_{BA,M}^{2}\sigma_{M}^{2}+\sigma_{\varepsilon,BA}^{2}=(0.98)^{2}(0.048)^{2}+(0.08)^{2}=0.00861\)</span> and so <span class="math inline">\(R^{2}=(0.98)^{2}(0.048)^{2}/0.00861=0.257\)</span>. Hence, 25.7% of the variability (risk) of Boeing returns are explained by the variability of the S&amp;P 500 returns. As a result, 74.3% <span class="math inline">\((1-R^{2}=0.743)\)</span> of the variability of Boeing returns are due to the random asset specific terms. <span class="math inline">\(\blacksquare\)</span></p>
+</div>
+</section>
+<section id="sec-si-model-further-reading" class="level2" data-number="14.7">
+<h2 data-number="14.7" class="anchored" data-anchor-id="sec-si-model-further-reading"><span class="header-section-number">14.7</span> Further Reading: Single Index Model</h2>
+<p>To be completed …</p>
+</section>
+<section id="exercicses" class="level2" data-number="14.8">
+<h2 data-number="14.8" class="anchored" data-anchor-id="exercicses"><span class="header-section-number">14.8</span> Exercicses</h2>
+<div id="exr-unconditional-properties-of-returns-in-the-si-model" class="exercise theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 14.1 (Unconditional properties of returns in the SI model.) </strong></span>Derive equations <a href="#eq-SI-SImean">Equation&nbsp;<span>14.13</span></a> - <a href="#eq-SI-SIcorrelation">Equation&nbsp;<span>14.16</span></a>.</p>
+</div>
+<p>{Ruppert} Ruppert, D.A.. , Springer-Verlag.</p>
+<p>{MartinSchererYollin}Martin, R.D., Scherer, B., and Yollin, G. (2016).</p>
+
+
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>The <code>plot()</code> method for <strong>xts</strong> objects creates a plot object. Calling <code>lines()</code> adds additional series to the plot. You only want to print the final plot object.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>The single index model is also called the* market model* or the <em>single factor model</em>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>The S&amp;P 500 index is a value weighted index and so is not equal to an equally weighted portfolio of the stocks in the S&amp;P 500 index. However, since most stocks in the S&amp;P 500 index have large market capitalizations the values weights are not too different from equal weights.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./13-riskBudgeting-new.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Portfolio Risk Budgeting</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
