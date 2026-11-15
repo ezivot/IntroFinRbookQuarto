@@ -595,7 +595,7 @@ Remarks
 </details>
 </div>
 <p>These data are illustrated in <a href="#fig-CerModelEstimation3returns">Figure&nbsp;<span>7.2</span></a> and <a href="#fig-CerModelEstimation3returnsScatter">Figure&nbsp;<span>7.3</span></a>.</p>
-<div class="cell" data-layout-align="center" data-fig.asp="0.75" data-hash="07-GWNModelEstimation-new_cache/html/fig-CerModelEstimation3returns_d3136ca79f14b2ccc1281753b80b8efa">
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
 <div class="cell-output-display">
 <div id="fig-CerModelEstimation3returns" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -686,7 +686,7 @@ Remarks
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "gwn_model"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>The function <code>estimate_gwn_model()</code> takes an <code>xts</code> object of asset returns and creates a <code>gwn_model</code>. This object has the following components:</p>
+<p>The function <code>estimate_gwn_model()</code> takes an <code>xts</code> object of asset returns and creates a <code>gwn_model</code> object. This object has the following components:</p>
 <div class="cell">
 <details open="">
 <summary>Code</summary>
@@ -732,7 +732,7 @@ Remarks
 <span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SP500 0.0028     0.0478</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Here, the <code>print</code> method only shows the estimate of <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>.</p>
+<p>Here, the <code>print</code> method only shows the estimates of <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>.</p>
 <p>The <code>summary</code> method shows the estimates and estimated standard errors. I will come back to this later on in the chapter. The <code>plot</code> method provides some useful visualizations. For example, to create a risk-return scatterplot use:</p>
 <div class="cell">
 <details open="">

@@ -813,7 +813,7 @@ x_{(1)}&lt;x_{(2)}&lt;\cdots&lt;x_{(T)}.
 </div>
 <div id="exm-example0514" class="theorem example">
 <p><span class="theorem-title"><strong>Example 5.14 (Student’s t QQ-plot for Microsoft returns) </strong></span>The function <code>qqPlot()</code> from the <strong>car</strong> package or the function <code>chart.QQPlot()</code> from the <strong>PerformanceAnalytics</strong> package can be used to create a QQ-plot against any reference distribution that has a corresponding quantile function implemented in R. For example, a QQ-plot for the Microsoft returns using a Student’s t reference distribution with 5 degrees of freedom can be created using:</p>
-<div class="cell" data-layout-align="center" data-fig.asp="0.75" data-hash="05-descriptiveStatistics-new_cache/html/fig-DSqqplotStudent_d05ddb03d61b415a0dcecc45b0dd54ce">
+<div class="cell" data-layout-align="center" data-fig.asp="0.75">
 <details open="">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qqPlot</span>(<span class="fu">coredata</span>(msftMonthlyRetS), <span class="at">distribution=</span><span class="st">"t"</span>, </span>
