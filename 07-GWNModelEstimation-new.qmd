@@ -747,7 +747,7 @@ To simplify the estimation of the GWN model parameters, you can use the `estimat
 gwn_fit = estimate_gwn_model(gwnRetS)
 class(gwn_fit)
 ```
-The function `estimate_gwn_model()` takes an `xts` object of asset returns and creates a `gwn_model`. This object has the following components:
+The function `estimate_gwn_model()` takes an `xts` object of asset returns and creates a `gwn_model` object. This object has the following components:
 
 ```{r}
 names(gwn_fit)
@@ -766,7 +766,7 @@ In R, most fitting functions have `print`, `summary` and `plot` methods. The `pr
 ```{r}
 gwn_fit
 ```
-Here, the `print` method only shows the estimate of $\mu$ and $\sigma$. 
+Here, the `print` method only shows the estimates of $\mu$ and $\sigma$. 
 
 The `summary` method shows the estimates and estimated standard errors. I will come back to this later on in the chapter. The `plot` method provides some useful visualizations. For example, to create a risk-return scatterplot use:
 
