@@ -1639,11 +1639,6 @@ the z-score $z_{\theta=\theta_{0}}=\frac{\hat{\theta}-\theta_{0}}{\widehat{\math
 
 To be completed
 
-## Using the Bootstrap for Hypothesis Testing
-
-To be completed
-
-* duality between HT and CIs can be exploited by the bootstrap. Use bootstrap to compute CI and see if hypothesized values lies in the interval. Illustrate with testing equality of 2 Sharpe ratios
 
 ## Further Reading: Hypothesis Testing in the GWN Model
 
