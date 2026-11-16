@@ -1,6 +1,6 @@
 # Hypothesis Testing in the GWN Model {#sec-Hypothesis-Testing}
 
-Updated: October 31, 2026
+Updated: November 15, 2026
 
 Copyright © Eric Zivot 2026
 
@@ -16,28 +16,6 @@ suppressPackageStartupMessages(library(PerformanceAnalytics))
 suppressPackageStartupMessages(library(tseries))
 options(digits=3)
 ```
-
-
-1.  Hypothesis Testing in the GWN Model
-    a.  Specification tests
-        i.  Normal distribution
-            A.  Tests for skewness and kurtosis
-            B.  JB test
-            C.  What to do if returns are not normally distributed?
-        ii.  No autocorrelation
-            A.  individual and joint tests
-        iii.  Constant parameters (covariance stationarity)
-            A.  Formal tests: testing same mean, volatility in sub-samples
-            B.  Informal diagnostics - standard error bands on rolling estimators
-    b.  Using Monte Carlo Simulation to Understand Hypothesis tests
-        i.  Size
-        ii.  Power
-    c. Using the bootstrap for hypothesis tests
-        a. exploit duality between hypothesis tests and confidence intervals
-
-2.  Appendix: Distributions for test statistics
-    a.  Student's t distribution
-    b.  Chi-square distribution
 
 ## Review of General Principles {#sec-Review-of-General-Principles}
 
@@ -1196,12 +1174,12 @@ Let's use the z-score @eq-HT-zscoredeltahatSR to test the hypothesis of equal Sh
 
 ```{r}
 r.f = 0.03/12
-SR.msft = (muhat.vals["MSFT"]-r.f)/sigmahat.vals["MSFT"]
-SR.sbux = (muhat.vals["SBUX"]-r.f)/sigmahat.vals["SBUX"]
-corhat = cor(gwnMonthlyRetC[, c("MSFT", "SBUX")])[1,2]
+SR.msft = (gwn_fit$muhat["MSFT"]-r.f)/gwn_fit$sigmahat["MSFT"]
+SR.sbux = (gwn_fit$muhat["SBUX"]-r.f)/gwn_fit$sigmahat["SBUX"]
+corhat = gwn_fit$rhohat["MSFT.SBUX"]
 delta.hat = SR.msft - SR.sbux
 var.deltahat = (2 + 0.5*(SR.msft^2 + SR.sbux^2)
-                -2*corhat*(1+0.5*corhat*SR.msft*SR.sbux))/nrow(gwnMonthlyRetC)
+                -2*corhat*(1+0.5*corhat*SR.msft*SR.sbux))/gwn_fit$n.obs
 se.deltahat = sqrt(var.deltahat)
 z.score.delta = delta.hat/se.deltahat
 S = abs(z.score.delta)

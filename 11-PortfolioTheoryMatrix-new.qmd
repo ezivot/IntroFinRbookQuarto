@@ -1,16 +1,16 @@
 # Portfolio Theory with Matrix Algebra {#sec-Portfolio-Theory-with-Matrix-Algebra}
 
-Updated: September 11, 2026
+Updated: November 15, 2026
 Copyright © Eric Zivot 2026
 
 
 In this chapter, I extend the mean-variance portfolio theory introduced
-in chapter @sec-Introduction-to-Portfolio-Theory to handle
+in @sec-Introduction-to-Portfolio-Theory to handle
 more than two risky assets. This extension allows the theory to be
 applied to the analysis of real world portfolios that consist of many
 risky assets as well as a risk-free asset. When working with large
 portfolios, the algebra of representing portfolio expected returns
-and variances becomes extremely cumbersome. As shown in chapter @sec-Matrix-Algebra-Review,
+and variances becomes extremely cumbersome. As shown in @sec-Matrix-Algebra-Review,
 the use of matrix algebra can greatly simplify many of these computations.
 Matrix algebra formulations are also very useful when it comes to do actual computations on the computer. 
 The matrix algebra formulas are easy to translate into matrix programming languages like R. Popular
@@ -28,11 +28,8 @@ for determining mean-variance efficient portfolios. I give Explicit formulas
 for the global minimum variance portfolio, a minimum variance
 portfolio that achieves a specified target expected return, and the
 tangency portfolio. I also present a simple algorithm to easily trace out the risky
-asset only efficient frontier. In Section 6 I discuss
-some practical problems associated with very large portfolios, and in 
-section 7 I summarize the **introcompfinr** functions for portfolio
-analysis. In @sec-Real-World-Application-to-Vanguard-Mutual-Funds I give a real-world 
-application of the theory to asset allocation among Vanguard mutual funds.
+asset only efficient frontier. In @sec-Practical-Considerations-for-Large-Portfolios I discuss some practical problems associated with very large portfolios, and in 
+@sec-Summary-of-IntroCompFinR-Functions I summarize the **introcompfinr** functions for portfolio analysis. In @sec-Real-World-Application-to-Vanguard-Mutual-Funds I give a real-world application of the theory to asset allocation among Vanguard mutual funds.
 
 
 The examples I show in this chapter use the **corrplot**, **introcompfinr**
@@ -82,7 +79,7 @@ terms and $100\times99=9900$ covariance terms. With $N$ assets,
 the algebra representing the portfolio return and risk characteristics
 is cumbersome, especially for the variance. You can greatly simplify
 the portfolio algebra using matrix notation, and this was previewed
-in Chapter 3.
+in @sec-Matrix-Algebra-Review.
 
 ### Portfolio return and risk characteristics using matrix notation
 
@@ -99,14 +96,14 @@ x_{1}\\
 x_{N}
 \end{array}\right).
 $$
-In matrix notation we can lump multiple returns in a single vector
-which we denote by $\mathbf{R}$. Since each of the elements in $\mathbf{R}$
-is a random variable we call $\mathbf{R}$ a *random vector*.
+In matrix notation you can lump multiple returns in a single vector
+which is denote by $\mathbf{R}$. Since each of the elements in $\mathbf{R}$
+is a random variable, $\mathbf{R}$ is a *random vector*.
 The probability distribution of the random vector $\mathbf{R}$ is
 simply the joint distribution of the elements of $\mathbf{R}$. In
 the GWN model all returns are jointly normally distributed and this
 joint distribution is completely characterized by the means, variances
-and covariances of the returns. We can easily express these values
+and covariances of the returns. You can easily express these values
 using matrix notation as follows. The $N\times1$ vector of portfolio
 expected values is: 
 $$
@@ -392,16 +389,16 @@ head(cbind(x.msft, x.nord, x.sbux))
 as grey dots, of these 200 random portfolios of the three assets.
 Notice that the grey dots outline a bullet-shaped area (Markowitz
 bullet) that has an outer boundary that looks like the line characterizing
-the two-asset portfolio frontier. If we let the number of random portfolios
+the two-asset portfolio frontier. If you let the number of random portfolios
 get very large then the grey dots will fill in a solid area. At the
 tip of the Markowitz bullet is the minimum variance portfolio. 
 
 
 Recall the definition of a mean-variance efficient portfolio given
-in Chapter @sec-Introduction-to-Portfolio-Theory. For a fixed
+in @sec-Introduction-to-Portfolio-Theory. For a fixed
 volatility $\sigma_{p,0}$ the efficient portfolio is the one with
 the highest expected return. From @fig-PortMatrixRandomPortfolios,
-we can see that efficient portfolios will lie on the outer boundary
+you can see that efficient portfolios will lie on the outer boundary
 (above the minimum variance portfolio at the tip of the Markowitz
 bullet) of the set of feasible portfolios.
 
@@ -460,7 +457,7 @@ Now,
 \end{array}\right)\\
 &=\text{ sum of all elements in } \boldsymbol{\Sigma}.
 \end{align*}
-As a result, we can write: 
+As a result, you can write: 
 $$
 \mathbf{1}^{\prime}\boldsymbol{\Sigma}\mathbf{1}=\sum_{i=1}^{N}\sigma_{i}^{2}+\sum_{j\neq i}\sigma_{ij},
 $$
@@ -503,10 +500,10 @@ for large $N$.
 
 #### Large portfolio with perfectly positively correlated assets
 
-In chapter @sec-Introduction-to-Portfolio-Theory I showed that the volatility of a long-only 
+In @sec-Introduction-to-Portfolio-Theory I showed that the volatility of a long-only 
 portfolio of two risky assets with perfectly positively correlated returns ($\rho_{12}=1$) is equal to a share
 weighted average of the asset volatilities: $\sigma_{p}=x_{1}\sigma_{1}+x_{2}\sigma_{2}.$
-Here, we show using matrix algebra that this result generalizes to the 
+Here, I show using matrix algebra that this result generalizes to the 
 case of $N$ assets. Let $\mathbf{R}$ be an $N\times1$ vector of
 asset returns and assume that all returns are perfectly positively
 correlated ($\rho_{ij}=1$ for all $i,j$). The $N\times N$ return correlation matrix is then:
@@ -630,7 +627,7 @@ $$
 \end{array}\right).
 $$
 Provided $\mathbf{A}_{m}$ is invertible, the solution for $\mathbf{z}_{m}$
-is:^[For $\mathbf{A}_{m}$ to be invertible we need $\boldsymbol{\Sigma}$
+is:^[For $\mathbf{A}_{m}$ to be invertible you need $\boldsymbol{\Sigma}$
 to be invertible, which requires $|\rho_{ij}|\neq1$ for $i\neq j$
 and $\sigma_{i}^{2}>0$ for all $i$.] 
 $$
@@ -713,7 +710,7 @@ text(sig.gmin, mu.gmin, labels="GMIN", pos=2.5, cex = cex.val)
 
 ### Alternative derivation of global minimum variance portfolio
 
-We can use the first order conditions @eq-PortMatrixGlobalMinFOC1
+You can use the first order conditions @eq-PortMatrixGlobalMinFOC1
 - @eq-PortMatrixGlobalMinFOC2 to give an explicit solution
 for the global minimum variance portfolio $\mathbf{m}$ as follows.
 First, use @eq-PortMatrixGlobalMinFOC1 to solve for $\mathbf{m}$
@@ -736,7 +733,7 @@ Notice that @eq-PortMatrixGlobalMinSolutionM shows that a solution for $\mathbf{
 
 ::: {#exm-finding-global-minimum-variance-portfolio-for-example-data .example name="Finding global minimum variance portfolio for example data"}
 
-Using the data in Table @tbl-Table-ThreeAssetExample, we can
+Using the data in Table @tbl-Table-ThreeAssetExample, you can
 use R to compute the global minimum variance portfolio weights from
 @eq-PortMatrixGlobalMinSolutionM as follows:
 
@@ -765,9 +762,7 @@ two assets, the investment opportunity set in ($\mu_{p},\sigma_{p}$)-space
 lies on a curve (one side of a hyperbola). With three or more assets,
 the investment opportunity set in ($\mu_{p},\sigma_{p}$)-space is
 described by set of values whose general shape is complicated and
-depends crucially on the covariance terms $\sigma_{ij}$.^[This set is partially visualized in  @fig-PortMatrixRandomPortfolios using random portfolios.] However, we do not have to fully characterize the entire investment opportunity set. If we assume that investors choose portfolios to
-maximize expected return subject to a target level of risk, or, equivalently,
-to minimize risk subject to a target expected return, then we can
+depends crucially on the covariance terms $\sigma_{ij}$.^[This set is partially visualized in  @fig-PortMatrixRandomPortfolios using random portfolios.] However, you do not have to fully characterize the entire investment opportunity set. If you assume that investors choose portfolios to maximize expected return subject to a target level of risk, or, equivalently, to minimize risk subject to a target expected return, then you can
 simplify the asset allocation problem by only concentrating on the
 set of efficient portfolios. These portfolios lie on the boundary
 of the investment opportunity set above the global minimum variance
@@ -775,8 +770,8 @@ portfolio. This is the framework originally developed by Harry Markowitz,
 the father of portfolio theory and winner of the Nobel Prize in economics.
 
 
-Following Markowitz, we assume that investors wish to find portfolios
-that have the best expected return-risk trade-off. We can characterize
+Following Markowitz, I assume that investors wish to find portfolios
+that have the best expected return-risk trade-off. I can characterize
 these efficient portfolios in two equivalent ways. In the first way,
 investors seek to find portfolios that maximize portfolio expected
 return for a given level of risk as measured by portfolio variance.
@@ -835,7 +830,7 @@ $$
 $$ {#eq-PortMatrixEfficientFOC3}
 
 These FOCs consist of $N+2$ linear equations in $N+2$ unknowns ($\mathbf{x},\,\lambda_{1},\,\lambda_{2})$.
-We can represent the system of linear equations using matrix algebra
+you can represent the system of linear equations using matrix algebra
 as: 
 $$
 \left(\begin{array}{ccc}
@@ -945,7 +940,7 @@ and are smaller than the corresponding values for Microsoft (see Table
 ::: {#exm-efficient-portfolio-with-the-same-expected-return-as-starbucks .example name="Efficient portfolio with the same expected return as Starbucks"}
 
 To find a minimum variance portfolio $\mathbf{y}=(y_{\textrm{msft}},y_{\textrm{nord}},y_{\textrm{sbux}})^{\prime}$
-with the same expected return as Starbucks we use @eq-PortMatrixEfficientPortfolioSolution
+with the same expected return as Starbucks use @eq-PortMatrixEfficientPortfolioSolution
 with $\mathbf{b}_{\textrm{sbux}}=(\mathbf{0}',\mu_{\textrm{sbux}},1)^{\prime}$:
 
 ```{r}
@@ -1029,7 +1024,7 @@ $$
 $$ {#eq-PortMatrixEfficientX}
 Define the $N\times2$ matrix $\mathbf{M}=[\boldsymbol{\mu}$ $\vdots$
 $\mathbf{1}]$ and the $2\times1$ vector $\boldsymbol{\lambda}=(\lambda_{1},\lambda_{2})^{\prime}$.
-Then we can rewrite @eq-PortMatrixEfficientX in matrix form
+Then you can rewrite @eq-PortMatrixEfficientX in matrix form
 as: 
 $$
 \mathbf{x}=-\frac{1}{2}\boldsymbol{\Sigma}^{-1}\mathbf{M}\boldsymbol{\lambda}.
@@ -1047,9 +1042,9 @@ $$
 1= \mathbf{1}^{\prime}\mathbf{x}= -\frac{1}{2}\lambda_{1}\mathbf{1}^{\prime}\boldsymbol{\Sigma}^{-1}\boldsymbol{\mu} 
 -\frac{1}{2}\lambda_{2}\mathbf{1}^{\prime}\boldsymbol{\Sigma}^{-1}\mathbf{1}.
 $$ {#eq-PortMatrixEfficientLambda2}
-Now, we have two linear equations @eq-PortMatrixEfficientLambda1
+Now, you have two linear equations @eq-PortMatrixEfficientLambda1
 and @eq-PortMatrixEfficientLambda2 involving $\lambda_{1}$
-and $\lambda_{2}$ which we can write in matrix notation as: 
+and $\lambda_{2}$ which you can write in matrix notation as: 
 $$
 -\frac{1}{2}\left(\begin{array}{cc}
 \boldsymbol{\mu}^{\prime}\boldsymbol{\Sigma}^{-1}\boldsymbol{\mu} & \boldsymbol{\mu}^{\prime}\boldsymbol{\Sigma}^{-1}\mathbf{1}\\
@@ -1073,7 +1068,7 @@ Define,
 1
 \end{array}\right),
 \end{align*}
-so that we can rewrite @eq-PortMatrixEfficientLambdaEqn as,
+so that you can rewrite @eq-PortMatrixEfficientLambdaEqn as,
 $$
 -\frac{1}{2}\mathbf{B}\boldsymbol{\lambda}=\tilde{\boldsymbol{\mu}}_{0}.
 $$
@@ -1118,7 +1113,7 @@ portfolio is greater than the expected return on the global minimum variance
 portfolio, then the portfolio is an efficient frontier portfolio.
 Otherwise, the portfolio is an inefficient frontier portfolio. As
 a result, to compute the portfolio frontier in $(\mu_{p},\sigma_{p})$
-space (Markowitz bullet) we only need to find two efficient portfolios.
+space (Markowitz bullet) you only need to find two efficient portfolios.
 The remaining frontier portfolios can then be expressed as linear
 combinations of these two portfolios. The following proposition describes the process for the three risky
 asset case using matrix algebra.
@@ -1268,15 +1263,15 @@ Given the two minimum variance portfolios with target expected returns
 equal to the expected returns on Microsoft and Starbucks, respectively,
 consider creating a frontier portfolio with target expected return
 equal to $0.05$. To determine the value of $\alpha$ that corresponds
-with this portfolio we use the equation 
+with this portfolio you use the equation 
 $$
 \mu_{p,z}=\alpha_{.05}\mu_{p,x}+(1-\alpha_{.05})\mu_{p,y}=0.05.
 $$
-We can then solve for $\alpha_{.05}$: 
+You can then solve for $\alpha_{.05}$: 
 $$
 \alpha_{.05}=\frac{0.05-\mu_{p,y}}{\mu_{p,x}-\mu_{p,y}}=\frac{0.05-0.0285}{0.0427-0.0285}=1.51.
 $$
-Given $\alpha_{.05}$ we can solve for the portfolio weights using:
+Given $\alpha_{.05}$ you can solve for the portfolio weights using:
 \begin{eqnarray*}
 \mathbf{z}_{.05} & = & \alpha_{.05}\mathbf{x}+(1-\alpha_{.05})\mathbf{y}\\
  & = & 1.51\times\left(\begin{array}{c}
@@ -1294,7 +1289,7 @@ Given $\alpha_{.05}$ we can solve for the portfolio weights using:
 0.292
 \end{array}\right).
 \end{eqnarray*}
-We can then compute the mean and variance of this portfolio using
+You can then compute the mean and variance of this portfolio using
 $\mu_{p,z_{.05}}=\mathbf{z}_{.05}^{\prime}\boldsymbol{\mu}$ and $\sigma_{p,z_{.05}}^{2}=\mathbf{z}_{.05}^{\prime}\boldsymbol{\Sigma} \mathbf{z}_{.05}.$ 
 Using R, the calculations are:
 
@@ -1326,7 +1321,7 @@ equal to the expected return on Nordstrom. Then,
 $$
 \mu_{p,z}=\alpha_{nord}\mu_{p,x}+(1-\alpha_{nord})\mu_{p,y}=\mu_{\textrm{nord}}=0.0015,
 $$
-and we can solve for $\alpha_{nord}$ using: 
+and you can solve for $\alpha_{nord}$ using: 
 $$
 \alpha_{nord}=\frac{\mu_{\textrm{nord}}-\mu_{p,y}}{\mu_{p,x}-\mu_{p,y}}=\frac{0.0015-0.0285}{0.0427-0.0285}=-1.901.
 $$
@@ -1471,9 +1466,9 @@ text(sig.px, mu.px, labels="E1", pos=2, cex = cex.val)
 
 Each point on the efficient frontier is a portfolio of Microsoft,
 Nordstrom and Starbucks. It is instructive to visualize the weights
-in these portfolios as we move along the frontier from the global
+in these portfolios as you move along the frontier from the global
 minimum variance portfolio to the efficient portfolio with expected
-return equal to the expected return on Microsoft. We can do this easily
+return equal to the expected return on Microsoft. You can do this easily
 using the **PerformanceAnalytics** function `chart.StackedBar()`:
 
 ```{r}
@@ -1492,7 +1487,7 @@ chart.StackedBar(z.mat, xaxis.labels=round(sqrt(sig2.z),digits=3),
 ```
 
 The resulting plot is shown in  @fig-PortMatrixFrontierWeights.
-As we move along the frontier, the allocation to Microsoft increases
+As you move along the frontier, the allocation to Microsoft increases
 and the allocation to Nordstrom decreases whereas the allocation to
 Starbucks stays about the same.
 \hfill{}$\blacksquare$
@@ -1500,7 +1495,7 @@ Starbucks stays about the same.
 
 ## Computing Efficient Portfolios of N risky Assets and a Risk-Free Asset Using Matrix Algebra {#sec-Efficient-portfolios-of}
 \index{Efficient portfolio of multiple risky assets and a risk-free asset}
-In Chapter @sec-Introduction-to-Portfolio-Theory, we showed
+In @sec-Introduction-to-Portfolio-Theory, I showed
 that efficient portfolios of two risky assets and a single risk-free
 (T-Bill) asset are portfolios consisting of the highest Sharpe ratio
 portfolio (tangency portfolio) and the T-Bill. With three or more
@@ -1683,7 +1678,7 @@ $$
 $$ {#eq-port-risk-premium-2}
 To find the minimum variance portfolio of risky assets and a risk
 free asset that achieves the target excess return $\tilde{\mu}_{p,0}=\mu_{p,0}-r_{f}$
-we solve the minimization problem: 
+you solve the minimization problem: 
 $$
 \min_{\mathbf{x}}~\sigma_{p,x}^{2}=\mathbf{x}^{\prime}\boldsymbol{\Sigma} \mathbf{x}\textrm{ s.t. }\tilde{\mu}_{p,x}=\tilde{\mu}_{p,0}.
 $$
@@ -1700,7 +1695,7 @@ $$ {#eq-foc-tan-1}
 $$
 \frac{\partial L(\mathbf{x},\lambda)}{\partial\lambda}  =\mathbf{x}^{\prime}\tilde{\boldsymbol{\mu}}-\tilde{\mu}_{p,0}=0.
 $$ {#eq-foc-tan-2}
-Using the @eq-foc-tan-1, we can solve for $\mathbf{x}$
+Using the @eq-foc-tan-1, you can solve for $\mathbf{x}$
 in terms of $\lambda$: 
 $$
 \mathbf{x}=-\frac{1}{2}\lambda\boldsymbol{\Sigma}^{-1}\tilde{\boldsymbol{\mu}}.
@@ -1711,7 +1706,7 @@ gives:
 $$
 \tilde{\boldsymbol{\mu}}^{\prime}\mathbf{x}=-\frac{1}{2}\lambda\tilde{\boldsymbol{\mu}}^{\prime}\boldsymbol{\Sigma}^{-1}\tilde{\boldsymbol{\mu}}=\tilde{\mu}_{p,0},
 $$
-which we can use to solve for $\lambda$: 
+which you can use to solve for $\lambda$: 
 $$
 \lambda=-\frac{2\tilde{\mu}_{p,0}}{\tilde{\boldsymbol{\mu}}^{\prime}\boldsymbol{\Sigma}^{-1}\tilde{\boldsymbol{\mu}}}.
 $$ {#eq-lambda-tan}
@@ -1738,7 +1733,7 @@ then gives an explicit solution for $\mathbf{t}$:
 \mathbf{t} & \mathbf{=}\left(\frac{\tilde{\boldsymbol{\mu}}^{\prime}\boldsymbol{\Sigma}^{-1}\tilde{\boldsymbol{\mu}}}{\mathbf{1}^{\prime}\boldsymbol{\Sigma}^{-1}\tilde{\boldsymbol{\mu}}}\right)\frac{\boldsymbol{\Sigma}^{-1}\tilde{\boldsymbol{\mu}}}{\tilde{\boldsymbol{\mu}}^{\prime}\boldsymbol{\Sigma}^{-1}\tilde{\boldsymbol{\mu}}}=\frac{\boldsymbol{\Sigma}^{-1}\tilde{\boldsymbol{\mu}}}{\mathbf{1}^{\prime}\boldsymbol{\Sigma}^{-1}\tilde{\boldsymbol{\mu}}}\\
  & =\frac{\boldsymbol{\Sigma}^{-1}(\boldsymbol{\mu}-r_{f}\cdot\mathbf{1})}{\mathbf{1}^{\prime}\boldsymbol{\Sigma}^{-1}(\boldsymbol{\mu}-r_{f}\cdot\mathbf{1})},
 \end{align*}
-which is the result @eq-PortMatrixTangencySolution we got
+which is the result @eq-PortMatrixTangencySolution you got
 from finding the portfolio of risky assets that has the maximum Sharpe
 ratio.
 
@@ -1797,7 +1792,7 @@ ans
 The efficient portfolios of T-Bills and the tangency portfolio is
 illustrated in  @fig-PortMatrixEfficientPortfolioExample.
 
-We want to compute an efficient portfolio that would be preferred
+You want to compute an efficient portfolio that would be preferred
 by a highly risk averse investor, and a portfolio that would be preferred
 by a highly risk tolerant investor. A highly risk averse investor
 might have a low volatility (risk) target for his efficient portfolio.
@@ -1959,7 +1954,7 @@ A quick way to determine if $\hat{\boldsymbol{\Sigma}}$ is full rank
 where $\hat{\mathbf{C}}$ is a lower triangular matrix with non-negative
 diagonal elements. If all of the diagonal elements of $\hat{\mathbf{C}}$
 are positive then $\hat{\boldsymbol{\Sigma}}$ is positive definite, full
-rank, and invertible. In R, we compute $\hat{\mathbf{C}}$ using the
+rank, and invertible. In R, you can compute $\hat{\mathbf{C}}$ using the
 function `chol()`:
 
 ```{r}
@@ -1969,8 +1964,8 @@ function `chol()`:
 ```
 
 Here, `chol()` returns an error that indicates $\hat{\boldsymbol{\Sigma}}$
-is not positive definite and less than full rank. If we try to invert
-$\hat{\boldsymbol{\Sigma}}$ using `solve()` we will also get an
+is not positive definite and less than full rank. If you try to invert
+$\hat{\boldsymbol{\Sigma}}$ using `solve()` you will also get an
 error indicating $\hat{\boldsymbol{\Sigma}}$ is not invertible:^[The **Matrix** function `rankMatrix()` can be used to
 compute the exact rank of a matrix.]
 
@@ -1987,7 +1982,7 @@ Due to these practical problems of using the sample covariance matrix
 $\hat{\boldsymbol{\Sigma}}$ to compute mean-variance efficient portfolios
 when $N$ is large, there is a need for alternative methods for estimating
 $\boldsymbol{\Sigma}$ when $N$ is large. One such method based on the
-*Single Index Model*\index{Single index model} for returns is presented in Chapter @sec-Single-Index-Model.
+*Single Index Model*\index{Single index model} for returns is presented in  @sec-Single-Index-Model.
 
 ## Portfolio Analysis Functions in R {#sec-Portfolio-Analysis-Functions}
 \index{Portfolio analysis functions}
@@ -2188,7 +2183,7 @@ The resulting plot is shown in @fig-PortMatrixEfficientFrontierPlot.
 
 ## Application to Vanguard Mutual Fund
 
-In this section, we use mean-variance portfolio theory to study asset
+In this section, I use mean-variance portfolio theory to study asset
 allocation among a collection of Vanguard mutual Funds. To motivate
 this example, consider an investor who is deciding how to allocate
 savings in an employee-sponsored retirement plan.^[Common employee-sponsored retirement portfolios in the US are 401K
@@ -2233,7 +2228,7 @@ vpacx             Vanguard Pacific Stock Index          Tracks the MSCI Pacific 
 : Vanguard mutual funds. {#tbl-PortMatrixTableVanguard} 
 
 
-We construct mean-variance efficient portfolios using annualized GWN
+I construct mean-variance efficient portfolios using annualized GWN
 model estimates of the expected return vector and covariance matrix
 based on simple returns over the sub-period January, 2010 through
 December, 2014. These estimates are computed using:
@@ -2298,7 +2293,7 @@ and bond funds in a portfolio should be beneficial in terms of risk
 diversification. 
 
 
-We use the **introcompfinr** portfolio functions to compute estimates
+I use the **introcompfinr** portfolio functions to compute estimates
 of the global minimum variance portfolio, the tangency portfolio,
 and the efficient frontier of risky assets:
 

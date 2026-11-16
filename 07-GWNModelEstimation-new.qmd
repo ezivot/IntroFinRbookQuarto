@@ -644,7 +644,7 @@ and @fig-CerModelEstimation3returnsScatter.
 #| label: fig-CerModelEstimation3returns
 #| echo: false
 #| results: hide
-#| cache: true
+#| cache: false
 #| fig-cap: Monthly cc returns on Microsoft stock, Starbucks stock, and the S\&P 500
 #|   index, over the period January 1998 through May 2012.
 #| out-width: 80%

@@ -1,10 +1,9 @@
 # Introduction to Portfolio Theory {#sec-Introduction-to-Portfolio-Theory}
 
-Updated: September 10, 2026
+Updated: November 16, 2026
 Copyright © Eric Zivot 2026
 
-
-Chapters @sec-Estimation-of-The-GWN-Model through @sec-Hypothesis-Testing
+@sec-Estimation-of-The-GWN-Model through @sec-Hypothesis-Testing
 focused on the development and estimation of, and the statistical
 inference for, the GWN model for asset returns. In this chapter, I
 use the GWN model for asset returns as the basis for the quantitative
@@ -77,7 +76,7 @@ investors:
 3.  Investors only care about portfolio expected return and portfolio variance. Investors like portfolios with high expected return but dislike portfolios with high return variance. 
 
 The first assumption is supported by the stylized facts of asset returns for investment
-horizons of at least a month as discussed in Chapter @sec-Descriptive-Statistics-for-Financial-Data. The second assumption can be thought of
+horizons of at least a month as discussed in  @sec-Descriptive-Statistics-for-Financial-Data. The second assumption can be thought of
 as assuming that investors have access to high quality information that they can use to determine expected returns, variances, and covariances. For example, investors can
 download asset price data from `finance.yahoo.com` and compute estimates of expected
 returns, variances, and covariances using sample statistics. Two points are relevant for the third assumption. First, if the distribution of assets returns is jointly normal then
@@ -177,7 +176,7 @@ the short sale are usually kept on account with a broker and there may be restri
 use of these funds for the purchase of other assets. The short position
 is closed out when the asset is repurchased and then returned to original
 owner. If the asset drops in value then a gain is made on the short
-sale and if the asset increases in value a loss is made. See Chapter  @sec-Portfolio-Theory-No-Shorts for more details on short selling assets] Since all wealth is put into the two investments it follows that
+sale and if the asset increases in value a loss is made. See   @sec-Portfolio-Theory-No-Shorts for more details on short selling assets] Since all wealth is put into the two investments it follows that
 $x_{A}+x_{B}=1$. If asset A is shorted, then it is assumed that
 the proceeds of the short sale are used to purchase more of asset
 B and vice-versa.  
@@ -196,7 +195,7 @@ $R_{A}$ and $R_{B}$. Since $R_{A}$ and $R_{B}$ are assumed to
 be normally distributed, $R_{p}$ is also normally distributed. 
 
 Using the properties of linear combinations of random variables from 
-Chapter @sec-Review-of-Random-Variables it follows that
+@sec-Review-of-Random-Variables it follows that
 
 $$
 \mu_{p} =E[R_{p}]=x_{A}\mu_{A}+x_{B}\mu_{B},
@@ -236,7 +235,7 @@ The investor cares most about the distribution of end-of-period wealth $W_{1}$, 
 depends on the values of $W_{0}$, $\mu_{p}$, and $\sigma_{p}^2$. Since $\mu_{p}$ and $\sigma_{p}^2$ are functions of $x_{A}$ and $x_{B}$, the portfolio problem is to find the values of $x_{A}$ and $x_{B}$ that makes the investor most happy with respect to the probability distribution of end-of-period wealth.^[In formal terms, the portfolio problem is to find the values of $x_{A}$ and $x_{B}$ that maximizes the investor's expected utility over end-of-period wealth]
 
 The results @eq-port-ER and @eq-port-var are so important
-to portfolio theory that it is worthwhile to review the derivations.^[See chapter @sec-Review-of-Random-Variables section @sec-Random-Variables.]
+to portfolio theory that it is worthwhile to review the derivations.^[See  @sec-Review-of-Random-Variables @sec-Random-Variables.]
 For the first result @eq-port-ER, you have: 
 $$
 E[R_{p}]=E[x_{A}R_{A}+x_{B}R_{B}]=x_{A}E[R_{A}]+x_{B}E[R_{B}]=x_{A}\mu_{A}+x_{B}\mu_{B},
@@ -673,13 +672,17 @@ this portfolio is called the *global minimum variance portfolio*.\index{Global m
 
 ### Computing the global minimum variance portfolio
 
-The global minimum variance portfolio plays a key role in mean-variance portfolio theory and it is important to know how to determine its weights. Here, I show that it is a simple exercise in calculus to find the global minimum variance portfolio weights. I solve the *constrained optimization* problem^[A review of optimization and constrained optimization is given in
-the appendix to this chapter.]: 
+The global minimum variance portfolio plays a key role in mean-variance portfolio theory and it is important to know how to determine its weights. Here, I show that it is a simple exercise in calculus to find the global minimum variance portfolio weights^[A review of optimization and constrained optimization is given in
+the appendix to this chapter.]. 
+
+:::{#def-global-minimum-variance-portfolio .definition name="Global minimum variance portfolio"}
+The *global minimum variance portfolio* solves the *constrained optimization* problem: 
 
 \begin{align*}
 \underset{x_{A},x_{B}}{\min}\sigma_{p}^{2} & =x_{A}^{2}\sigma_{A}^{2}+x_{B}^{2}\sigma_{B}^{2}+2x_{A}x_{B}\sigma_{AB}\\
 ~s.t.~x_{A}+x_{B} & =1.
 \end{align*}
+:::
 
 This constrained optimization problem can be solved using two methods.
 The first method, called the *method of substitution*\index{Method of substitution}, uses
@@ -690,6 +693,8 @@ optimization problem in one variable. The second method, called the
 called the *Lagrange multiplier* and transforms the constrained optimization
 problem in two variables into an unconstrained optimization problem
 in three variables. 
+
+*method of substitution*
 
 The substitution method is straightforward. Substituting $x_{B}=1-x_{A}$
 into the formula for $\sigma_{p}^{2}$ reduces the problem to: 
@@ -705,6 +710,8 @@ and straightforward calculations yield,
 $$
 x_{A}^{\min}=\frac{\sigma_{B}^{2}-\sigma_{AB}}{\sigma_{A}^{2}+\sigma_{B}^{2}-2\sigma_{AB}},~x_{B}^{\min}=1-x_{A}^{\min}.
 $$ {#eq-minvar-port}
+
+*method of Lagrange multipliers*
 
 The method of Lagrange multipliers involves two steps. In the first
 step, the constraint $x_{A}+x_{B}=1$ is put into homogenous form
@@ -853,7 +860,7 @@ when $\rho_{AB}=-1$ I use @eq-minvar-port and the fact that
 $\sigma_{AB}=\rho_{AB}\sigma_{A}\sigma_{B}$ to give: 
 $$
 x_{A}^{\min}=\frac{\sigma_{B}}{\sigma_{A}+\sigma_{B}},~x_{B}^{\min}=1-x_{A}.
-$$
+$$ {#eq-minvar-port-rho-1}
 
 ## Efficient portfolios with two risky assets {#sec-Efficient-portfolios-with-two-risky-assets}
 \index{Efficient portfolios}
@@ -970,7 +977,7 @@ The more you invest in the risky asset the higher the risk premium on the portfo
 
 Because the risk-free rate is constant, the portfolio variance only depends on the variability of the risky asset and is given by: 
 $$
-\sigma_{p}^{2}= \mathrm{var(R_{p})} = \mathrm{var(xR)}= x^{2}\sigma^{2}.
+\sigma_{p}^{2}= \mathrm{var}(R_{p}) = \mathrm{var}(xR)= x^{2}\sigma^{2}.
 $$
 The portfolio standard deviation is therefore proportional to the
 standard deviation on the risky asset:^[Here, you can allow $x$ to be positive or negative but $\sigma$ is always positive. ]
@@ -1022,15 +1029,15 @@ $$
 \mu_{p}=r_{f}+\frac{\mu-r_{f}}{\sigma}\cdot\sigma_{p},
 $$ {#eq-CAL}
 
-Equation @eq-CAL describes a straight line in ($\mu_{p},\sigma_{p}$)-space with
+@eq-CAL describes a straight line in ($\mu_{p},\sigma_{p}$)-space with
 intercept $r_{f}$ and slope $(\mu-r_{f})/\sigma$. This line characterizes the linear risk-return tradeoff of portfolios of T-Bills and a risky asset when the risky asset is not shorted. This line has a positive slope provided the risk premium is positive. 
 
 This line described by @eq-CAL is often called the *capital allocation line*\index{Capital allocation line} (CAL) as it describes how investment capital is allocated between T-Bills and the risky asset. Points on the line close to the y-axis represent portfolios mostly allocated to T-Bills, and points far away from the y-axis represent portfolios mostly allocated to the risky asset. 
 The slope of the CAL is called the *Sharpe ratio*\index{Sharpe ratio} (SR) (named after the economist William Sharpe), and it measures the risk premium on the asset per unit of risk (as measured by the
 standard deviation of the asset). From @eq-CAL you get
 $$
-\frac{d\mu_{p}}{d\sigma_{p}}=\frac{\mu-r_{f}}{\sigma}=SR.
-$$
+\frac{d\mu_{p}}{d\sigma_{p}}=\frac{\mu-r_{f}}{\sigma}=\mathrm{SR}.
+$$ {#eq-SharpeRatio}
 
 ::: {#exm-portfolios-of-t-bills-and-risky-assets-for-example-data .example name="Portfolios of T-Bills and risky assets for example data"}
 
@@ -1099,7 +1106,40 @@ assets based on their Sharpe ratios.
 
 ### Portfolios with one risky asset and one risk-free asset with different borrowing and lending rates
 
-TBD
+@fig-IntroPortTbills shows the risk-return properties of portfolios of T-Bills and a single risky asset when the borrowing and lending rates are the same. The T-Bill rate represents two types of rates: the *lending rate* and the *borrowing rate*. For investors who purchase T-Bills, the T-Bill rate is the lending rate from the U.S. government. It is the interest rate that the U.S. government pays to investors who purchase T-Bills. For the U.S. government, the T-Bill rate is the borrowing rate. It represents the interest rate the U.S. government has to pay to borrow money for a short time horizon (e.g., one month) from investors. Since the U.S. government is considered to be the safest borrower (least likely to default), the T-Bill rate represents the lowest possible borrowing rate for any investor.  In practice, most investors can only borrow at rates higher than the T-Bill rate as they are considered to be riskier borrowers than the U.S. government. Hence, the investor borrowing rate is typically higher than the T-Bill rate.
+
+```{r}
+#| label: fig-IntroPortTbillsBorrowing
+#| echo: false
+#| results: hide
+#| fig-cap: Portfolios of T-Bills and risky assets with different borrowing and lending
+#| rates.
+r.f = 0.03
+r.b = 0.1
+x.A = seq(from=0, to=2, by=0.1)
+mu.p.A = r.f + x.A*(mu.A - r.f)
+sig.p.A = x.A*sig.A
+plot(sig.p.A, mu.p.A, type="b", col=c(rep("black", 11), rep("blue", 10)), ylim=c(0, max(mu.p.A)),
+     xlim=c(0, max(sig.p.A, sig.p.B)), pch=16, cex = cex.val,
+     xlab=expression(sigma[p]), ylab=expression(mu[p]), cex.lab = cex.val)
+text(x=0, y=r.f, labels=expression(r[f]), pos=2, cex = 1.25)
+text(x=sig.A, y=mu.A, labels="Asset A", pos=4, cex = cex.val)
+
+
+mu.p.A.b = r.b + x.A*(mu.A - r.b)
+mu.p.A.b[1:11] = mu.p.A[1:11]
+points(sig.p.A, mu.p.A.b, type="b", col=c(rep("black", 11), rep("red", 10)), pch=16, cex = cex.val)
+
+```
+@fig-IntroPortTbillsBorrowing shows portfolios of T-Bills and asset A when the investor can borrow and lend at the T-Bill rate $r_f = 0.03$. The black dots represent long-only portfolios of T-Bills and asset A. The blue dots represent long-short portfolios where they investor borrows at the T-Bill rate to finance additional investment in asset A. The slope of the line representing these portfolios is the Sharpe ratio of asset A:
+$$
+\mathrm{SR}_{A}=\frac{\mu_{A}-r_{f}}{\sigma_{A}}= \frac{0.175 - 0.03}{0.258} = 0.562.
+$$
+If the investor can only borrow at a rate higher than the T-Bill rate, say $r_b = 0.10$, then the return-risk tradeoff for long-short portfolios of T-Bills and asset A changes. The slope of the line representing these portfolios is now the Sharpe ratio of asset A with respect to the borrowing rate $r_b=0.10$:
+$$
+\mathrm{SR}_{A}^{b}=\frac{\mu_{A}-r_{b}}{\sigma_{A}}= \frac{0.175 - 0.10}{0.258} = 0.291.
+$$
+This slope is lower than the slope of the line representing portfolios of T-Bills and asset A when the investor can borrow at the T-Bill rate. Hence, the risk-return tradeoff is worse for investors who can only borrow at a rate higher than the T-Bill rate. Graphically, the line representing long-short portfolios of T-Bills and asset A with borrowing rate $r_b=0.10$, the red dots, is flatter than the line representing long-short portfolios of T-Bills and asset A with borrowing rate $r_f=0.03$. 
 
 ## Efficient portfolios with two risky assets and a risk-free asset {#sec-Efficient-portfolios-with-two-risky-assets-and-a-risk-free-asset}
 
@@ -1181,8 +1221,11 @@ and asset B.
 
 You can determine the proportions of each asset in the tangency portfolio
 by finding the values of $x_{A}$ and $x_{B}$ that maximize the Sharpe
-ratio of a portfolio that is on the envelope of the Markowitz bullet. Formally,
-you solve the constrained maximization problem: 
+ratio of a portfolio that is on the envelope of the Markowitz bullet. 
+
+:::{#def-tangency-portfolio .definition name="Tangency Portfolio"}
+
+To find the *tangency portfolio* you solve the constrained maximization problem: 
 
 \begin{align*}
  & \underset{x_{A},x_{B}}{\max}~\mathrm{SR}_{p}=\frac{\mu_{p}-r_{f}}{\sigma_{p}}~s.t.\\
@@ -1190,6 +1233,7 @@ you solve the constrained maximization problem:
 \sigma_{p}^{2} & =x_{A}^{2}\sigma_{A}^{2}+x_{B}^{2}\sigma_{B}^{2}+2x_{A}x_{B}\sigma_{AB},\\
 1 & =x_{A}+x_{B}.
 \end{align*}
+:::
 
 Using the method of substitution with $x_{B} = 1 - x_{A}$ and rearranging, the above problem can be reduced to solving the unconstrained maximization:
 $$
@@ -1262,14 +1306,14 @@ portfolio, $1-x_{T}$ represents the fraction of wealth invested
 in T-Bills, and $\mu_{tan}$ and $\sigma_{tan}$ are the expected return
 and standard deviation of the tangency portfolio, respectively. This
 important result is known as the *mutual fund separation theorem*.\index{Mutual fund separation theorem}
-The tangency portfolio can be considered as a mutual fund (i.e. portfolio) of the two
+The tangency portfolio can be considered as a mutual fund (i.e., portfolio) of the two
 risky assets, where the shares of the two assets in the mutual fund
 are determined by the tangency portfolio weights ($x_{A}^{tan}$ and
-$x_{B}^{tan}$ determined from @eq-tangency-port, and the T-bill
+$x_{B}^{tan}$ determined from @eq-tangency-port), and the T-bill
 can be considered as a mutual fund of risk-free assets. The expected
 return-risk trade-off of these portfolios is given by the line connecting
 the risk-free rate to the tangency point on the efficient frontier
-of risky asset only portfolios. 
+of risky asset only portfolios. The slope of this line is the SR of the tangency portfolio. The mutual fund separation theorem states that all investors will hold the same mutual fund of risky assets (the tangency portfolio) and will differ only in the fraction of wealth invested in the tangency portfolio and the T-bill.
 
 The optimal combination of the tangency portfolio and the T-bill an investor will choose depends on the investor's risk preferences. If the investor is very risk averse, then she will choose a portfolio with low volatility which will be a portfolio with
 very little weight in the tangency portfolio and a lot of weight in
@@ -1389,7 +1433,7 @@ Notice that by diversifying our holding into assets A, B and
 T-bills you can obtain a portfolio with the same risk as asset B but
 with almost twice the expected return! By moving from asset B into
 an efficient portfolio you raise the Sharpe ratio of the investment
-from $SR_{B}=0.217$ to $SR_{tan}=0.6434$. 
+from $\mathrm{SR}_{B}=0.217$ to $\mathrm{SR}_{tan}=0.6434$. 
 
 Next, consider finding an efficient portfolio that has the same expected
 return as asset B. Visually, this involves finding the combination
