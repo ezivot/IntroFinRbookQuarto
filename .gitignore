@@ -8,3 +8,6 @@
 /.quarto/
 /_book/
 **/*.quarto_ipynb
+
+*_cache/
+*_files/
