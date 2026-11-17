@@ -1603,7 +1603,7 @@ The R code for the Monte Carlo simulation loop is:
 
 ```{r}
 #| echo: true
-#| cache: true
+#| cache: false
 
 mu = 0.05 
 sigma = 0.10 
@@ -1661,7 +1661,7 @@ The dotted white lines indicate the true values, $f_j(\boldsymbol{\theta})$.
 ```{r}
 #| label: fig-CerModelEstimationMCVaR
 #| echo: false
-#| cache: true
+#| cache: false
 #| fig-cap: Histograms of $\hat{f}_{j}$ (for $j=1,\ldots, 4$) computed from $N=1000$
 #|   Monte Carlo samples from the GWN model.
 #| out-width: 80%

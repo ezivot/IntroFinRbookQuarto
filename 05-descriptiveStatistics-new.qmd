@@ -926,7 +926,7 @@ distribution with 5 degrees of freedom can be created using:
 
 ```{r}
 #| label: fig-DSqqplotStudent
-#| cache: true
+#| cache: false
 #| fig-cap: QQ-plot of Microsoft returns using Student's t distribution with 5 degrees
 #|   of freedom as the reference distribution.
 #| out-width: 80%
