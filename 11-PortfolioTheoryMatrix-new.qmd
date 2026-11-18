@@ -1,6 +1,6 @@
 # Portfolio Theory with Matrix Algebra {#sec-Portfolio-Theory-with-Matrix-Algebra}
 
-Updated: November 15, 2026
+Updated: November 17, 2026
 Copyright © Eric Zivot 2026
 
 
@@ -577,12 +577,18 @@ so $\sigma_{p}$ will be less than $\sum_{i=1}^{N}x_{i}\sigma_{i}.$
 
 ## Determining the Global Minimum Variance Portfolio Using Matrix Algebra {#sec-Determining-the-Global-Minimum-Variance-Portfolio-Using-Matrix-Algebra}
 \index{Global minimum variance portfolio}
+
+In @sec-Introduction-to-Portfolio-Theory I defined the optimization problem to find the global minimum variance portfolio with two risky assets. With matrix algebra I can define the optimization problem to find the global minimum variance portfolio with an arbitray number of risky assets.
+
+:::{#def-global-minimum-variance-portfolio-matrix .definition name="Global minimum variance portfolio with matrix algebra"}
 The global minimum variance portfolio $\mathbf{m}=(m_{1},\ldots,m_{N})^{\prime}$
 for the $N$ asset case solves the constrained minimization problem:
 
 $$
 \min_{\mathbf{m}}~\sigma_{p,m}^{2}=\mathbf{m^{\prime}{\Sigma} m}, ~ s.t. ~ \mathbf{m^{\prime}1}=1.
 $$ {#eq-PortMatrixGlobalMinObjective}
+:::
+
 The Lagrangian for this problem is: 
 \begin{align*}
 L(\mathbf{m},\lambda) & =\mathbf{m}^{\prime}\boldsymbol{\Sigma} \mathbf{m}+\lambda(\mathbf{m}^{\prime}\mathbf{1}-1),
@@ -1157,7 +1163,7 @@ where $\sigma_{p,x}^{2}=\mathbf{x}^{\prime}\boldsymbol{\Sigma} \mathbf{x},\sigma
 2.  If $\mu_{p,z}\geq\mu_{p,m}$, where $\mu_{p,m}$ is the expected return on the global minimum variance portfolio, then portfolio $\mathbf{z}$ is an efficient frontier portfolio. Otherwise, $\mathbf{z}$ is an inefficient frontier portfolio. 
 :::
 
-The proof of @creating-a-frontier-portfolio-from-two-minimum-variance-portfolios a follows directly from applying @eq-PortMatrixEfficientXsolution
+The proof of @prp-creating-a-frontier-portfolio-from-two-minimum-variance-portfolios follows directly from applying @eq-PortMatrixEfficientXsolution
 to portfolios $\mathbf{x}$ and $\mathbf{y}$: 
 \begin{align*}
 \mathbf{x} & =\boldsymbol{\Sigma}^{-1}\mathbf{MB}^{-1}\tilde{\boldsymbol{\mu}}_{x},\\
@@ -1404,6 +1410,8 @@ of the assets under consideration. The choice of these two efficient
 portfolios makes it easy to produce a nice plot of the efficient frontier.
 The steps for constructing the efficient frontier are: 
 
+:::{.callout-note}
+## Algorithm for computing efficient frontier
 1.  Compute the global minimum variance portfolio $\mathbf{m}$ by solving @eq-PortMatrixGlobalMinObjective, and compute $\mu_{p,m}=\mathbf{m}^{\prime}\boldsymbol{\mu}$ and $\sigma_{p,m}^{2}=\mathbf{m}^{\prime}\boldsymbol{\Sigma} \mathbf{m}$. 
 2.  Compute the efficient portfolio $\mathbf{x}$ with target expected return equal to the maximum expected return of the assets under consideration. That is, solve @eq-PortMatrixEfficientPortfolio2 with $\mu_{0}=\max\{\mu_{1},\ldots,\mu_{N}\}$, and compute $\mu_{p,x}=\mathbf{x}^{\prime}\boldsymbol{\mu}$ and $\sigma_{p,x}^{2}=\mathbf{x}^{\prime}\boldsymbol{\Sigma} \mathbf{x}$. 
 3.  Compute $\mathrm{cov}(R_{p,m},R_{p,x})=\sigma_{mx}=\mathbf{m}^{\prime}\boldsymbol{\Sigma} \mathbf{x}$. 
@@ -1413,7 +1421,7 @@ $$
 $$
 and compute their expected returns and variances using @eq-PortMatrixConvexCombination, @eq-PortMatrixMupz and @eq-PortMatrixSig2pz, respectively.
 5.  Plot $\mu_{p,z}$ against $\sigma_{p,z}$ and adjust the grid of $\alpha$ values appropriately to create a nice plot. Negative values of $\alpha$ will give inefficient frontier portfolios. Values of $\alpha$ greater than one will give efficient frontier portfolios with expected returns greater than $\mu_{0}.$
-
+:::
 
 ::: {#exm-compute-and-plot-the-efficient-frontier-of-risky-assets-markowitz-bullet .example name="Compute and plot the efficient frontier of risky assets (Markowitz bullet)"}
 
@@ -1530,7 +1538,7 @@ looks similar to the formula for the global minimum variance portfolio
 in the numerator and $\mathbf{1}^{\prime}\boldsymbol{\Sigma}^{-1}$ in
 the denominator.
  
-::: {callout-note}
+::: {.callout-note}
 ## Remark
 The location of the tangency portfolio, and the sign of the Sharpe
 ratio, depends on the relationship between the risk-free rate $r_{f}$
@@ -1729,10 +1737,12 @@ $$
 $$ {#eq-risk-premium-tan}
 Plugging @eq-risk-premium-tan back into @eq-x-tan-2
 then gives an explicit solution for $\mathbf{t}$: 
-\begin{align*}
-\mathbf{t} & \mathbf{=}\left(\frac{\tilde{\boldsymbol{\mu}}^{\prime}\boldsymbol{\Sigma}^{-1}\tilde{\boldsymbol{\mu}}}{\mathbf{1}^{\prime}\boldsymbol{\Sigma}^{-1}\tilde{\boldsymbol{\mu}}}\right)\frac{\boldsymbol{\Sigma}^{-1}\tilde{\boldsymbol{\mu}}}{\tilde{\boldsymbol{\mu}}^{\prime}\boldsymbol{\Sigma}^{-1}\tilde{\boldsymbol{\mu}}}=\frac{\boldsymbol{\Sigma}^{-1}\tilde{\boldsymbol{\mu}}}{\mathbf{1}^{\prime}\boldsymbol{\Sigma}^{-1}\tilde{\boldsymbol{\mu}}}\\
+$$
+\begin{aligned}
+\mathbf{t} & =\left(\frac{\tilde{\boldsymbol{\mu}}^{\prime}\boldsymbol{\Sigma}^{-1}\tilde{\boldsymbol{\mu}}}{\mathbf{1}^{\prime}\boldsymbol{\Sigma}^{-1}\tilde{\boldsymbol{\mu}}}\right)\frac{\boldsymbol{\Sigma}^{-1}\tilde{\boldsymbol{\mu}}}{\tilde{\boldsymbol{\mu}}^{\prime}\boldsymbol{\Sigma}^{-1}\tilde{\boldsymbol{\mu}}}=\frac{\boldsymbol{\Sigma}^{-1}\tilde{\boldsymbol{\mu}}}{\mathbf{1}^{\prime}\boldsymbol{\Sigma}^{-1}\tilde{\boldsymbol{\mu}}}\\
  & =\frac{\boldsymbol{\Sigma}^{-1}(\boldsymbol{\mu}-r_{f}\cdot\mathbf{1})}{\mathbf{1}^{\prime}\boldsymbol{\Sigma}^{-1}(\boldsymbol{\mu}-r_{f}\cdot\mathbf{1})},
-\end{align*}
+\end{aligned}
+$$
 which is the result @eq-PortMatrixTangencySolution you got
 from finding the portfolio of risky assets that has the maximum Sharpe
 ratio.

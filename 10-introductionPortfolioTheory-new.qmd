@@ -1112,8 +1112,7 @@ assets based on their Sharpe ratios.
 #| label: fig-IntroPortTbillsBorrowing
 #| echo: false
 #| results: hide
-#| fig-cap: Portfolios of T-Bills and risky assets with different borrowing and lending
-#| rates.
+#| fig-cap: Portfolios of T-Bills and risky assets with different borrowing and lending rates.
 r.f = 0.03
 r.b = 0.1
 x.A = seq(from=0, to=2, by=0.1)
